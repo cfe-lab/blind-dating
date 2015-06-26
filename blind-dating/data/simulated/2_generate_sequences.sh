@@ -1,0 +1,3 @@
+./indelible
+mv *.fas simulated/
+

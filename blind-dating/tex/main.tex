@@ -1,0 +1,52 @@
+\documentclass[10pt,a4paper,twocolumn]{article}
+
+\usepackage[round]{natbib}
+\usepackage{crop}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{array}
+\usepackage{color}
+\usepackage{amssymb}
+\usepackage{flushend}
+\usepackage{stfloats}
+\usepackage{amsthm}
+\usepackage{times}
+\usepackage{tabularx}
+\usepackage{pstricks}
+ 
+\begin{document}
+
+\title{Blind dating -- A phylogenetic approach to dating HIV reservoir sequences}
+
+\author{Joshua Horacsek$^{1,2}$, Jeffrey B. Joy$^2$, \\ Zabrina L. Brumme$^{1,2}$, and Art F.Y. Poon$^{1,2,3}$}
+% 1 Simon Fraser University
+% 2 BC Centre for Excellence in HIV/AIDS
+% 3 University of British Columbia
+\twocolumn[
+  \begin{@twocolumnfalse}
+    \maketitle
+    \begin{abstract}
+\input{abstract.tex}
+    \end{abstract}
+  \end{@twocolumnfalse}
+]
+
+\input{introduction.tex}
+\input{methods.tex}
+\input{results.tex}
+\input{discussion.tex}
+\input{conclusion.tex}
+
+\section{Acknowledgments} \label{sec:ackn}
+The authors would like to thank XXX.
+
+\bibliographystyle{natbib}
+%\bibliographystyle{achemnat}
+%\bibliographystyle{plainnat}
+%\bibliographystyle{abbrv}
+%\bibliographystyle{bioinformatics}
+%\bibliographystyle{plain}
+
+\bibliography{main}
+
+\end{document}

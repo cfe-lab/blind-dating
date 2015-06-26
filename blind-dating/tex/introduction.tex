@@ -1,0 +1,18 @@
+\section{Introduction} \label{sec:intro}
+Latent viral reservoirs within HIV-1 infected individuals are a major obstacle to overcome on the path to a cure for HIV \citep{Pace11}. Reservoirs are cells that contain integrated viral DNA but have entered a dormant state that not only has a low output of virus, but can persist for years. Even though antiretroviral therapy (ART) can reduce a patient's virial load to below detectable levels, if a patient stops ART, these latent reservoirs can reseed an infection \citep{Joos08, Pomerantz03, Richman09}.
+
+Not much is known about when latent reservoirs are established during the course of infection. The timing of the establishment of reservoirs is of interest because the age of the stored virus may provide information as to the types of adaptations to the host's immune system the virus may have developed. Specifically, it may have an influence on how those infected cells react to immune-mediate or therapeutic treatments. 
+
+However, there hasn't been much work assigning dates to sequences that are suspected to be latent (there has been work on detecting latent reservoirs \cite{Immonen14}). We propose a simple framework that utilizes the assumption of a strict molecular clock on the evolution of HIV within host, and that extracts timing information from the phylogenetic relationship between the virus sampled at various timepoints along the infection. We first construct a phylogeny for plasma and PBMC samples from a patient, then calibrate a strict clock for that tree based on solely the timing for the plasma sequences. We assume that PBMC cells are latent, as they contain only integrated cells, and therefore have stopped evolving. We don't try to do any classification of these cells.
+
+The main effect of latency on a phylogenetic tree, is that you'll probably end up seeing branches that terminate before their sampling date. If you want to estimate these dates, you can no longer make the assumption that sampling time represents when that element left the population. The death event of a birth death model is when that cDNA gets integrated into the cell. Therefore, we try to accept the parsimonious model, and argue that, when a strict clock is appropriate, we should use it. 
+
+We first tested our methodology on simulated data without any latent behavior to assess the sensitivity of reconstruction on the underlying data. When then used previously published data on plasma sequences only to to reconstruct plasma dates. Finally we applied our methodology to sequence data to X patients scraped off of the HIV lanl database. 
+
+Talk about why we didn't use beast and Bayesian approaches. 
+
+\begin{figure} \label{fig:latenttree}
+	\centering
+	\scalebox{5}{\input{figures/example.tex}}
+	\caption[Example of latent behavior]{The dotted line in the above figure is an example of latency. It was archived at time $t$, yet was collected at the same time as B, that is, at time $t^\prime$}
+\end{figure}
