@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.1415926-2.4-0.9998 (TeX Live 2012) (format=xelatex 2012.6.30)  26 JUN 2015 15:38
+This is XeTeX, Version 3.1415926-2.4-0.9998 (TeX Live 2012) (format=xelatex 2012.6.30)  26 JUN 2015 16:48
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -420,21 +420,37 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [3])
-(./results.tex) (./discussion.tex) (./conclusion.tex [4]) (./main.bbl
+(./results.tex) (./discussion.tex) (./conclusion.tex) (./main.bbl
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <7> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 11.
-)
+ [4])
 
 Package natbib Warning: There were undefined citations.
 
-Extra height:0.0pt when 417.40106pt
-(2)Left:417.40106pt Right:400.85236pt Output:417.40106pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:0.0pt when 32.75772pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+(2)Left:32.75772pt Right:30.51544pt Output:32.75772pt
 - LAST -
 Extra skip:0.0pt
-Left:417.40106pt
-Right:400.85236pt
-Output:417.40106pt
-[5] (./main.aux) ) 
+Left:32.75772pt
+Right:30.51544pt
+Output:32.75772pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [5
+
+]
+(./main.aux)
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+ ) 
 Here is how much of TeX's memory you used:
  4172 strings out of 494004
  53753 string characters out of 3150890
