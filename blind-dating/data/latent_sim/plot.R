@@ -8,6 +8,7 @@ source('include/raxml.R')
 
 trim <- function (x) gsub("^\\s+|\\s+$", "", x)
 extract_dates <- function(x) as.numeric(gsub("(.+)_([0-9\\.]+)$", "\\2", x, perl=T))
+extract_tag <- function(x) gsub("(u[0-9]+_t[0-9]+)_([0-9\\.]+)$", "\\1", x, perl=T)
 
 n.simulated <- 50
 
@@ -37,6 +38,18 @@ ml.tree <- function(i){
 	tree
 }
 
+tr <-  read.tree("~/Desktop/paper/blind-dating/data/latent_sim/trees/HIV_ml_13_out.nwk")
+plot(tr)
+
+prep.tree <-function(tr){
+	latentize.tree(tr, 0.5, function(name){
+			tag <- extract_tag(name)
+			date <- extract_dates(name)
+			ret <- sprintf("%s_PBMC_%s", tag, date)
+			ret
+	})
+}
+
 trees.read <- function(base.path) {
 	ml.tree.read <- function(i, path){
 		read.tree(sprintf("%s/HIV_ml_%d_out.nwk", path, i))
@@ -63,52 +76,6 @@ n.runs <- 1
 #for(remove in c(1, 5, 10, 25)){
 pdf(sprintf('hist.pdf', run_name, remove), width=11.5, height=8.5)
 add <- F
-
-get.affected.tips <- function(t, edge) {
-	to.remove <- queue(T)
-	tips <- queue(T)
-
-	is.tip <- function(t, i) {
-		if( i <= t$Nnode+1){
-			return(T);
-		}
-		return(F);
-	}
-
-	enqueue(to.remove, t$edge[edge, 2])
-	while(length(to.remove$q) > 0) {
-		node <- dequeue(to.remove)
-
-		if(is.tip(t, node)){
-			enqueue(tips, node)
-		} else {
-			for(next_edg in t$edge[t$edge[,1] == node,2]){
-				enqueue(tips, next_edg)
-			}
-		}
-	}
-	unlist(tips$q)
-}
-
-latentize.tree <- function(tr, scale, rename_funct=NULL) {
-	tips <- c()
-
-	for(s in scale){
-		# Choose a branch at random
-		br <- sample(1:(tr$Nnode*2), 1)
-
-		# Scale that branch
-		tr$edge.length[br] = tr$edge.length[br] * s
-		tips <- unique(c(tips, get.affected.tips(tr, br)))
-	}
-
-	if(!is.null(rename_funct)) {
-		for(tip in tips) {
-			tr$tip.label[tip] <- rename_funct(tr$tip.label[tip])
-		}
-	}
-	tr
-}
 
 for(remove in c(25)) {
 

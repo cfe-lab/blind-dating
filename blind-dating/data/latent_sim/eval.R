@@ -52,96 +52,41 @@ hiv.rna.read <- function(){
 	lapply(trs, ml.tree.read)
 }
 
-#trees <- mclapply(1:n.simulated, ml.tree, mc.cores=1)
+trees <- mclapply(1:n.simulated, ml.tree, mc.cores=1)
 #trees <- hiv.rna.read()
-trees <- trees.read("trees/")
+#trees <- trees.read("simulated/tree/")
+
 n.simulated <- length(trees)
 run_name <- "HIV RNA"
 species <- "Simulated"
-n.runs <- 1
+n.runs <- 100
 
-#for(remove in c(1, 5, 10, 25)){
-pdf(sprintf('hist.pdf', run_name, remove), width=11.5, height=8.5)
-add <- F
+for(remove in c(1, 5, 10, 25)){
+	pdf(sprintf('%s_%d.pdf', run_name, remove), width=11.5, height=8.5)
 
-get.affected.tips <- function(t, edge) {
-	to.remove <- queue(T)
-	tips <- queue(T)
-
-	is.tip <- function(t, i) {
-		if( i <= t$Nnode+1){
-			return(T);
+	mse <- rep(0, n.simulated*n.runs)
+	for(i in 1:n.simulated){
+		if(length(trees[[i]]$tip.label) <= remove) {
+			next
 		}
-		return(F);
-	}
-
-	enqueue(to.remove, t$edge[edge, 2])
-	while(length(to.remove$q) > 0) {
-		node <- dequeue(to.remove)
-
-		if(is.tip(t, node)){
-			enqueue(tips, node)
-		} else {
-			for(next_edg in t$edge[t$edge[,1] == node,2]){
-				enqueue(tips, next_edg)
+		tip.dates <- extract_dates(trees[[i]]$tip.label)
+		r <- test.n.plot.rtt(trees[[i]], tip.dates, remove, name=sprintf("%s: %s-no.%d (Remove %d)", run_name, species, i, remove))
+		if(is.null(r)){
+			next
+		}
+		for(j in 1:n.runs) {
+			err  <- test.rtt(trees[[i]], tip.dates, remove)
+			if(!is.null(err)) {
+				mse[(j-1)*n.simulated + i] <- err
 			}
 		}
 	}
-	unlist(tips$q)
-}
 
-latentize.tree <- function(tr, scale, rename_funct=NULL) {
-	tips <- c()
-
-	for(s in scale){
-		# Choose a branch at random
-		br <- sample(1:(tr$Nnode*2), 1)
-
-		# Scale that branch
-		tr$edge.length[br] = tr$edge.length[br] * s
-		tips <- unique(c(tips, get.affected.tips(tr, br)))
-	}
-
-	if(!is.null(rename_funct)) {
-		for(tip in tips) {
-			tr$tip.label[tip] <- rename_funct(tr$tip.label[tip])
-		}
-	}
-	tr
-}
-
-for(remove in c(25)) {
-
-	for(i in 1:n.simulated){
-
-		if(length(trees[[i]]$tip.label) <= remove) { next }
-		tip.dates <- extract_dates(trees[[i]]$tip.label)
-
-		for(j in 1:n.runs) {
-			print(remove)
-			err  <- test.rtt.err(trees[[i]], tip.dates, remove)
-			hist(err, 
-				add=add, 
-				main="Histogram of Difference ",  
-				col=rgb(0.4,0.0,0.2,0.05), 
-				xlim=c(-0.2,0.2), 
-				freq = T,
-				breaks=10)
-			# dens <- density(err, adjust=10)
-			# lines(dens)
-
-			add <- T
-		# 	# if(!is.null(err)) {
-		# 	# 	mse[(j-1)*n.simulated + i] <- err
-		# 	# }
-		}
-	}
-
-# 	par(mfrow = c(1, 1))
-# 	mean_mse <- mean(mse)
-# 	hist(mse, breaks=100,  main="Histogram of MSE", sub=sprintf("(Average MSE [in red]: %s)", signif(mean_mse, digits=6)))
-# 	abline(v = mean_mse, col = "red", lwd = 2)
- }
+	par(mfrow = c(1, 1))
+	mean_mse <- mean(mse)
+	hist(mse, breaks=100,  main="Histogram of MSE", sub=sprintf("(Average MSE [in red]: %s)", signif(mean_mse, digits=6)))
+	abline(v = mean_mse, col = "red", lwd = 2)
 	dev.off()
+}
 
 
