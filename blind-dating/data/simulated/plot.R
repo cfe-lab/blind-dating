@@ -5,37 +5,12 @@ library(parallel)
 source('include/rtt.R')
 source('include/test.R')
 source('include/raxml.R')
+source('queue.R')
 
 trim <- function (x) gsub("^\\s+|\\s+$", "", x)
 extract_dates <- function(x) as.numeric(gsub("(.+)_([0-9\\.]+)$", "\\2", x, perl=T))
 
 n.simulated <- 50
-
-ml.tree <- function(i){
-	dna.file <- sprintf("__tmp%d.dna",i)
-	unlink(dna.file)
-
-	simenv.dna <- read.FASTA(sprintf("simulated/HIV_%d_out_TRUE.fas", i))
-	#simenv.dna <- read.dna(sprintf("simulated/HIV_SIM_%d.phy", i))
-	uid <- sample(1:length(names(simenv.dna)), length(names(simenv.dna)), replace=F)
-	# read.FASTA is buggy, and creates the DNABin structure incorrectly
-	# BUT, it's so broken that we can mess around with the names, then...
-	for(j in 1:length(names(simenv.dna))) { 
-		# give each bin a unique name 
-		names(simenv.dna)[j] <- sprintf("u%s_%s", uid[j], names(simenv.dna)[j])
-	}
-
-	# ... output a file (which works for some reason)
-	write.dna(simenv.dna, dna.file)
-	# and re-read it as a properly formatted DNA Bin
-	simenv.dna <- read.dna(dna.file)
-
-	tree <- raxml(simenv.dna, N=100, parsimony.seed=10000, bootstrap.seed=1000)
-	write.tree(tree, sprintf("trees/HIV_ml_%d_out.nwk", i))
-
-	unlink(dna.file)
-	tree
-}
 
 trees.read <- function(base.path) {
 	ml.tree.read <- function(i, path){
@@ -62,86 +37,69 @@ n.runs <- 1
 
 #for(remove in c(1, 5, 10, 25)){
 pdf(sprintf('hist.pdf', run_name, remove), width=11.5, height=8.5)
+par(mfrow=c(1, 2), pty="s")
+
+## Show an example of one of these simulated trees
+tr <- trees[[1]]
+tip.dates <- extract_dates(tr$tip.label)
+
+
+sub.lengths <- tree.ed(tr)
+
+to.remove <- sort(choose.tips.to.remove(tr, tip.dates, 25))
+real <- tip.dates[to.remove]
+tip.dates[to.remove] <- NA
+
+missing.indices <- which(is.na(tip.dates))
+valid.indices <- which(!is.na(tip.dates))
+subs <- sub.lengths[missing.indices]
+
+tr <- rtt(tr, tip.dates)
+model <- build.tree.lm(tr, tip.dates, valid.indices)
+
+plot(
+	tip.dates[valid.indices], sub.lengths[valid.indices], 
+	xlab="Time", 
+	ylab="Expected Number of Subs.")
+mtext("A) Simulated Data", side=3, adj=0, line=1.1, cex=1.5, font=2); 
+points(real, subs, col="red")
+abline(model)
+##
+
+plot(c(1,1), xlim=c(-0.1,0.1), ylim=c(0, 25), xlab="Normalized Error", ylab="Density")
 add <- F
-
-get.affected.tips <- function(t, edge) {
-	to.remove <- queue(T)
-	tips <- queue(T)
-
-	is.tip <- function(t, i) {
-		if( i <= t$Nnode+1){
-			return(T);
-		}
-		return(F);
-	}
-
-	enqueue(to.remove, t$edge[edge, 2])
-	while(length(to.remove$q) > 0) {
-		node <- dequeue(to.remove)
-
-		if(is.tip(t, node)){
-			enqueue(tips, node)
-		} else {
-			for(next_edg in t$edge[t$edge[,1] == node,2]){
-				enqueue(tips, next_edg)
-			}
-		}
-	}
-	unlist(tips$q)
-}
-
-latentize.tree <- function(tr, scale, rename_funct=NULL) {
-	tips <- c()
-
-	for(s in scale){
-		# Choose a branch at random
-		br <- sample(1:(tr$Nnode*2), 1)
-
-		# Scale that branch
-		tr$edge.length[br] = tr$edge.length[br] * s
-		tips <- unique(c(tips, get.affected.tips(tr, br)))
-	}
-
-	if(!is.null(rename_funct)) {
-		for(tip in tips) {
-			tr$tip.label[tip] <- rename_funct(tr$tip.label[tip])
-		}
-	}
-	tr
-}
+errs <- c()
+dens <- queue(TRUE)
 
 for(remove in c(25)) {
-
 	for(i in 1:n.simulated){
-
 		if(length(trees[[i]]$tip.label) <= remove) { next }
 		tip.dates <- extract_dates(trees[[i]]$tip.label)
 
+		min_date <- min(tip.dates)
+		max_date <- max(tip.dates)
+		tip.dates <- (tip.dates - min_date)/(max_date - min_date)
+		rerr <- c()
+
+
 		for(j in 1:n.runs) {
-			print(remove)
+
 			err  <- test.rtt.err(trees[[i]], tip.dates, remove)
-			hist(err, 
-				add=add, 
-				main="Histogram of Difference ",  
-				col=rgb(0.4,0.0,0.2,0.05), 
-				xlim=c(-0.2,0.2), 
-				freq = T,
-				breaks=10)
-			# dens <- density(err, adjust=10)
-			# lines(dens)
-
-			add <- T
-		# 	# if(!is.null(err)) {
-		# 	# 	mse[(j-1)*n.simulated + i] <- err
-		# 	# }
+			rerr <- c(rerr,err)
+			errs <- c(errs, err)
 		}
-	}
 
-# 	par(mfrow = c(1, 1))
-# 	mean_mse <- mean(mse)
-# 	hist(mse, breaks=100,  main="Histogram of MSE", sub=sprintf("(Average MSE [in red]: %s)", signif(mean_mse, digits=6)))
-# 	abline(v = mean_mse, col = "red", lwd = 2)
- }
-	dev.off()
+		d <- density(rerr, bw=0.015) #// adjust = 10)
+		enqueue(dens, d)
+		polygon(d, 
+			col=rgb(0.5,0.0,0.9,1/(n.simulated)), xlim=c(-0.2,0.2),  border=rgb(1,1,1,0), add=T)
+			# add <- T
+	}
+}
+
+abline(h = 0, col = "black", lwd = 1)
+abline(v = median(errs), col = "black", lwd = 2) 
+
+dev.off()
 
 

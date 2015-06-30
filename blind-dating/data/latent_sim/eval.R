@@ -30,7 +30,7 @@ ml.tree <- function(i){
 	# and re-read it as a properly formatted DNA Bin
 	simenv.dna <- read.dna(dna.file)
 
-	tree <- raxml(simenv.dna, N=100, parsimony.seed=10000, bootstrap.seed=1000)
+	tree <- raxml(simenv.dna, N=100, parsimony.seed=10000, bootstrap.seed=1000,threads=6)
 	write.tree(tree, sprintf("trees/HIV_ml_%d_out.nwk", i))
 
 	unlink(dna.file)

@@ -15,7 +15,7 @@ library(NELSI)
 n.trees <- 10
 n.partitions <- 50
 n.replicates <- 1
-n.tips <- 50
+n.tips <- 100
 
 
 # These are somewhat abitrarily set
@@ -24,7 +24,7 @@ mu <- c(2)
 sampprob <-c(0.5)
 times<-c(0)
 
-sim.params <- list(rate = 0.3, noise = 0.1)
+sim.params <- list(rate = 0.001, noise = 0.1)
 sim.clockmodel <- simulate.clock
 
 
@@ -50,11 +50,11 @@ indel_control <-
 
 [SETTINGS]
   [output]                   FASTA 
+  [randomseed]               1568745
 
 [MODEL]    HKY_HIV
   [submodel] HKY 9.5               
   [statefreq] 0.42 0.15 0.15 0.28
-
 "
 
 for(i in 1:n.trees) {

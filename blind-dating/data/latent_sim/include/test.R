@@ -1,5 +1,5 @@
 library(Hmisc)
-source("queue.R")
+source("include/queue.R")
 
 tree.ed <- function(tree) {
 	l <- length(tree$tip.label)

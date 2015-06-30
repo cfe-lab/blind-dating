@@ -32,6 +32,13 @@ predict.time <- function(model, dists) {
 	(dists/b - a/b)
 }
 
+choose.tips.to.remove <- function(t, tip.dates, remove = 1, random = T) {
+
+	to.remove <- if(!random) 
+	remove
+	else
+	sample(length(tip.dates), remove, replace = F)
+}
 
 #### 
 # OLD STUFF
