@@ -5,50 +5,12 @@ library(parallel)
 source('include/rtt.R')
 source('include/test.R')
 source('include/raxml.R')
+source('include/queue.R')
 
 trim <- function (x) gsub("^\\s+|\\s+$", "", x)
 extract_dates <- function(x) as.numeric(gsub("(.+)_([0-9\\.]+)$", "\\2", x, perl=T))
-extract_tag <- function(x) gsub("(u[0-9]+_t[0-9]+)_([0-9\\.]+)$", "\\1", x, perl=T)
 
 n.simulated <- 50
-
-ml.tree <- function(i){
-	dna.file <- sprintf("__tmp%d.dna",i)
-	unlink(dna.file)
-
-	simenv.dna <- read.FASTA(sprintf("simulated/HIV_%d_out_TRUE.fas", i))
-	#simenv.dna <- read.dna(sprintf("simulated/HIV_SIM_%d.phy", i))
-	uid <- sample(1:length(names(simenv.dna)), length(names(simenv.dna)), replace=F)
-	# read.FASTA is buggy, and creates the DNABin structure incorrectly
-	# BUT, it's so broken that we can mess around with the names, then...
-	for(j in 1:length(names(simenv.dna))) { 
-		# give each bin a unique name 
-		names(simenv.dna)[j] <- sprintf("u%s_%s", uid[j], names(simenv.dna)[j])
-	}
-
-	# ... output a file (which works for some reason)
-	write.dna(simenv.dna, dna.file)
-	# and re-read it as a properly formatted DNA Bin
-	simenv.dna <- read.dna(dna.file)
-
-	tree <- raxml(simenv.dna, N=100, parsimony.seed=10000, bootstrap.seed=1000)
-	write.tree(tree, sprintf("trees/HIV_ml_%d_out.nwk", i))
-
-	unlink(dna.file)
-	tree
-}
-
-tr <-  read.tree("~/Desktop/paper/blind-dating/data/latent_sim/trees/HIV_ml_13_out.nwk")
-plot(tr)
-
-prep.tree <-function(tr){
-	latentize.tree(tr, 0.5, function(name){
-			tag <- extract_tag(name)
-			date <- extract_dates(name)
-			ret <- sprintf("%s_PBMC_%s", tag, date)
-			ret
-	})
-}
 
 trees.read <- function(base.path) {
 	ml.tree.read <- function(i, path){
@@ -65,50 +27,148 @@ hiv.rna.read <- function(){
 	lapply(trs, ml.tree.read)
 }
 
+extract_dates <- function(x) as.numeric(gsub("(.+)_([0-9\\.]+)$", "\\2", x, perl=T))
+extract_tag <- function(x) (gsub("(.+)_([0-9\\.]+)$", "\\1", x, perl=T))
+
+extract_plasm_tag <- function(x) (gsub("(.+)_PLASMA_([0-9\\.]+)$", "\\1", x, perl=T))
+types <- function(x) gsub("(.+)_((PLASMA)|(PBMC))_([0-9\\.]+)'?$", "\\2", x, perl=T)
+extract_dates_pp <- function(x) as.numeric(gsub("(.+)_([0-9\\.]+)'?$", "\\2", x, perl=T))
+
 #trees <- mclapply(1:n.simulated, ml.tree, mc.cores=1)
 #trees <- hiv.rna.read()
 trees <- trees.read("trees/")
 n.simulated <- length(trees)
 run_name <- "HIV RNA"
 species <- "Simulated"
-n.runs <- 1
+n.runs <- 10
 
 #for(remove in c(1, 5, 10, 25)){
 pdf(sprintf('hist.pdf', run_name, remove), width=11.5, height=8.5)
+par(mfrow=c(1, 2), pty="s")
+
+## Show an example of one of these simulated trees
+tree <- trees[[25]]
+
+for(j in 1:length(tree$tip.label)) {
+	name <- tree$tip.label[j]
+	date <- extract_dates(name)
+	tag <- extract_tag(name)
+	tree$tip.label[j] <- sprintf("%s_PLASMA_%s", tag, date)
+
+}
+tree <- latentize.tree(tree, runif(5) * 0.8 + 0.1, function(name){
+	sprintf("%s_PBMC_%s", extract_plasm_tag(name), extract_dates(name))
+});
+
+tip.dates <- extract_dates_pp(tree$tip.label)
+tip.types <- types(tree$tip.label)
+
+# Mark the PBMC and PLASMA cells
+tip.pbmc <- tip.types == "PBMC"
+tip.plasma <- tip.types == "PLASMA"
+
+plasma.dates <- tip.dates
+plasma.dates[tip.pbmc] <- NA
+
+tree <- rtt(tree, plasma.dates)
+
+plasma.dates <- tip.dates[tip.plasma]
+pbmc.s.dates <- tip.dates[tip.pbmc] #sampled dates
+
+distances <- node.depth.edgelength(tree)[1:length(tip.dates)]
+plasma.dists <- distances[tip.plasma]
+pbmc.dists <- distances[tip.pbmc]
+
+model <- glm(plasma.dists ~ plasma.dates)
+
+a<-model$coefficients[[1]]
+b<-model$coefficients[[2]]
+
+(pbmc.dists/b - a/b)
+
+plot(
+	plasma.dates, plasma.dists, 
+	xlab="Time", 
+	ylab="Expected Number of Subs.")
+mtext("B) Latent Simulated Data", side=3, adj=0, line=1.1, cex=1.5, font=2); 
+points(pbmc.s.dates, pbmc.dists, col="red")
+abline(model)
+##
+
+plot(c(1,1), xlim=c(-0.1,0.2), ylim=c(0, 30), xlab="Normalized Error", ylab="Density")
 add <- F
+errs <- c()
+dens <- queue(TRUE)
 
-for(remove in c(25)) {
-
+for(remove in c(50)) {
 	for(i in 1:n.simulated){
 
-		if(length(trees[[i]]$tip.label) <= remove) { next }
-		tip.dates <- extract_dates(trees[[i]]$tip.label)
+		for(k in 1:n.runs) {
+			tree <- trees[[i]]
+		# plot(tree, cex=0.25)
+			for(j in 1:length(tree$tip.label)) {
+				name <- tree$tip.label[j]
 
-		for(j in 1:n.runs) {
-			print(remove)
-			err  <- test.rtt.err(trees[[i]], tip.dates, remove)
-			hist(err, 
-				add=add, 
-				main="Histogram of Difference ",  
-				col=rgb(0.4,0.0,0.2,0.05), 
-				xlim=c(-0.2,0.2), 
-				freq = T,
-				breaks=10)
-			# dens <- density(err, adjust=10)
-			# lines(dens)
+				date <- extract_dates(name)
+				tag <- extract_tag(name)
+				tree$tip.label[j] <- sprintf("%s_PLASMA_%s", tag, date)
 
-			add <- T
-		# 	# if(!is.null(err)) {
-		# 	# 	mse[(j-1)*n.simulated + i] <- err
-		# 	# }
+			}
+			tree <- latentize.tree(tree, runif(5) * 0.8 + 0.1, function(name){
+				sprintf("%s_PBMC_%s", extract_plasm_tag(name), extract_dates(name))
+			});
+			# plot(tree, cex=0.25);
+
+			#####
+			#
+			#####
+			tip.dates <- extract_dates_pp(tree$tip.label)
+			tip.types <- types(tree$tip.label)
+
+			# Mark the PBMC and PLASMA cells
+			tip.pbmc <- tip.types == "PBMC"
+			tip.plasma <- tip.types == "PLASMA"
+
+			print(tip.pbmc)
+			if(length(which(tip.pbmc==F)) <= 2){
+				next
+			}
+
+			min_date <- min(tip.dates)
+			max_date <- max(tip.dates)
+
+			tip.dates <- (tip.dates - min_date)/(max_date - min_date)
+
+
+			plasma.dates <- tip.dates
+			plasma.dates[tip.pbmc] <- NA
+			
+			tree <- rtt(tree, plasma.dates)
+
+			plasma.dates <- tip.dates[tip.plasma]
+			pbmc.s.dates <- tip.dates[tip.pbmc] #sampled dates
+
+			distances <- node.depth.edgelength(tree)[1:length(tip.dates)]
+			plasma.dists <- distances[tip.plasma]
+			pbmc.dists <- distances[tip.pbmc]
+
+			model <- glm(plasma.dists ~ plasma.dates)
+
+			a<-model$coefficients[[1]]
+			b<-model$coefficients[[2]]
+
+			err <- pbmc.s.dates - (pbmc.dists/b - a/b)
+			d <- density(err, bw=0.015)
+			polygon(d, col=rgb(0.5, 0.0, 0.9, 1/(2*n.simulated)), xlim=c(-0.1,0.2),  border=rgb(1,1,1,0))
+			errs <- c(err, errs)
 		}
 	}
+}
 
-# 	par(mfrow = c(1, 1))
-# 	mean_mse <- mean(mse)
-# 	hist(mse, breaks=100,  main="Histogram of MSE", sub=sprintf("(Average MSE [in red]: %s)", signif(mean_mse, digits=6)))
-# 	abline(v = mean_mse, col = "red", lwd = 2)
- }
-	dev.off()
+abline(h = 0, col = "black", lwd = 1)
+abline(v = mean(errs), col = "black", lwd = 2) 
+abline(v = median(errs), col = "red", lwd = 2) 
+warnings()
+dev.off()
 
 

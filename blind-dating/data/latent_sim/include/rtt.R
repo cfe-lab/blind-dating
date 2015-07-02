@@ -20,7 +20,12 @@ rtt <- function(t, tip.dates, ncpu = 1, objective = "correlation", opt.tol = .Ma
     objective <- function(x, y) -summary(lm(y ~ x))$sigma^2
   else
     stop('objective must be one of "correlation", "rsquared", or "rms"')
-  
+ 
+ 
+  # Save the tip labels somewhere
+  saved.tips <- t$tip.label
+  t$tip.label <- unlist(lapply(1:length(t$tip.label), toString))
+   
   # Find the tips of the tree that're missing dates
   missing.indices <- which(is.na(tip.dates))
   valid.indices <- which(!is.na(tip.dates))

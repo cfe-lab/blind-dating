@@ -1,6 +1,5 @@
 library(Hmisc)
 source("include/queue.R")
-
 tree.ed <- function(tree) {
 	l <- length(tree$tip.label)
 	node.depth.edgelength(tree)[1:l]
@@ -12,7 +11,6 @@ tree.ed <- function(tree) {
 build.tree.lm <- function(tree, tip.dates, keep=NULL) {
 	
 	# Input is time
-	l <- length(tip.dates)
 	time <- tip.dates
 	response <- tree.ed(tree)
 
@@ -23,6 +21,23 @@ build.tree.lm <- function(tree, tip.dates, keep=NULL) {
 
 	glm(response ~ time)
 }
+
+# Predicts time from distance
+predict.time <- function(model, dists) {
+	a<-model$coefficients[[1]]
+	b<-model$coefficients[[2]]
+
+	(dists/b - a/b)
+}
+
+choose.tips.to.remove <- function(t, tip.dates, remove = 1, random = T) {
+
+	to.remove <- if(!random) 
+	remove
+	else
+	sample(length(tip.dates), remove, replace = F)
+}
+
 
 # Predicts time from distance
 predict.time <- function(model, dists) {
@@ -66,7 +81,7 @@ latentize.tree <- function(tr, scale, rename_funct=NULL) {
 	for(s in scale){
 		# Choose a branch at random
 		br <- sample(1:(tr$Nnode*2), 1)
-		print(br)
+		# print(br)
 
 		# Scale that branch
 		tr$edge.length[br] = tr$edge.length[br] * s

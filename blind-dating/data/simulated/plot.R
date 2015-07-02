@@ -9,6 +9,7 @@ source('queue.R')
 
 trim <- function (x) gsub("^\\s+|\\s+$", "", x)
 extract_dates <- function(x) as.numeric(gsub("(.+)_([0-9\\.]+)$", "\\2", x, perl=T))
+extract_tag <- function(x) (gsub("(.+)_([0-9\\.]+)$", "\\1", x, perl=T))
 
 n.simulated <- 50
 

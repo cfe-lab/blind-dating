@@ -42,6 +42,10 @@ rtt <- function(t, tip.dates, ncpu = 1, objective = "correlation", opt.tol = .Ma
     else
       return (objective(tip.dates[valid.indices], dist[row, valid.indices])) # Only do the regression over data that exist
   }
+
+  # Save the tip labels somewhere
+  saved.tips <- t$tip.label
+  t$tip.label <- unlist(lapply(1:length(t$tip.label), toString))
   
   # Apply the objective function
   fits <- if (ncpu > 1)
