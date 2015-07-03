@@ -95,7 +95,7 @@ points(pbmc.s.dates, pbmc.dists, col="red")
 abline(model)
 ##
 
-plot(c(1,1), xlim=c(-0.1,0.2), ylim=c(0, 30), xlab="Normalized Error", ylab="Density")
+plot(c(1,1), xlim=c(-0.1,0.2), ylim=c(0, 25), xlab="Normalized Error", ylab="Density")
 add <- F
 errs <- c()
 dens <- queue(TRUE)
@@ -159,7 +159,7 @@ for(remove in c(50)) {
 
 			err <- pbmc.s.dates - (pbmc.dists/b - a/b)
 			d <- density(err, bw=0.015)
-			polygon(d, col=rgb(0.5, 0.0, 0.9, 1/(2*n.simulated)), xlim=c(-0.1,0.2),  border=rgb(1,1,1,0))
+			polygon(d, col=rgb(0.5, 0.0, 0.9, 1/(n.simulated)), xlim=c(-0.1,0.2),  border=rgb(1,1,1,0))
 			errs <- c(err, errs)
 		}
 	}
