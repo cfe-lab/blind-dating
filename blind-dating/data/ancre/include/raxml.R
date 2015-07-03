@@ -1,6 +1,6 @@
 library(ape)
 
-raxml <- function(seq, parsimony.seed=NULL, bootstrap.seed=NULL, executable='~/Binaries/raxmlHPC', threads=12, N=10, name='raxml', clear=TRUE, model="GTRGAMMA") {
+raxml <- function(seq, parsimony.seed=NULL, bootstrap.seed=NULL, outgrp=NULL, executable='~/Binaries/raxmlHPC', threads=12, N=10, name='raxml', clear=TRUE, model="GTRGAMMA") {
 	if(class(seq) != "DNAbin") stop('seq should be of class \'DNAbin\'')
 	if(is.null(parsimony.seed)) {
 		parsimony.seed <- as.integer(sample(2**31,1))
@@ -16,6 +16,10 @@ raxml <- function(seq, parsimony.seed=NULL, bootstrap.seed=NULL, executable='~/B
 		cwd <- dir()
 		unlink(cwd[grep('^RAxML_', cwd)])
 	}
+	outgroup <- ""
+	if(!is.null(outgrp)){
+		outgroup <- sprintf("-o %s", outgrp)
+	}
 
 	wd <- path.expand(getwd())
 	executable <- path.expand(executable)
@@ -25,14 +29,14 @@ raxml <- function(seq, parsimony.seed=NULL, bootstrap.seed=NULL, executable='~/B
 	dnafile <- tempfile()
 	write.dna(seq, dnafile)
 
-	cmd <- sprintf('%s -T %d -b %d -m %s -p %d -N %d -s %s -n %s -w %s -O', 
-					executable, threads, bootstrap.seed, model, parsimony.seed, N, dnafile, r.name, wd)
+	cmd <- sprintf('%s -T %d -b %d -m %s -p %d -N %d -s %s -n %s -w %s -O %s', 
+					executable, threads, bootstrap.seed, model, parsimony.seed, N, dnafile, r.name, wd, outgroup)
 
-	cmd2 <- sprintf('%s -T %d -f d -m %s  -s %s -N %d -n %s -w %s -p %d -O', 
-					executable, threads, model,  dnafile, N, b.name, wd, parsimony.seed)
+	cmd2 <- sprintf('%s -T %d -f d -m %s  -s %s -N %d -n %s -w %s -p %d -O %s', 
+					executable, threads, model,  dnafile, N, b.name, wd, parsimony.seed, outgroup)
 	
-	cmd3 <- sprintf('%s -T %d -f b -n %s -m %s -t %s/RAxML_bestTree.%s -z %s/RAxML_bootstrap.%s -s %s -w %s -O', 
-					executable, threads, name, model, wd, b.name, wd, r.name, dnafile, wd)
+	cmd3 <- sprintf('%s -T %d -f b -n %s -m %s -t %s/RAxML_bestTree.%s -z %s/RAxML_bootstrap.%s -s %s -w %s -O %s', 
+					executable, threads, name, model, wd, b.name, wd, r.name, dnafile, wd, outgroup)
 
 	system(cmd)
 	system(cmd2)

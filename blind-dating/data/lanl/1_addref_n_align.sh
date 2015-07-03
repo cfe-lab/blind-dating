@@ -9,7 +9,7 @@ for f in fasta_unaligned/*.fasta; do
 
 	## B concensus 
 	python trim.py  ${f} > ${f#fasta_unaligned/}.unaligned 6045 8795 ;
-	cat reference/B.ENV.CONCENSUS.fasta ${f#fasta_unaligned/}.unaligned > ${f#fasta_unaligned/}.trim ;
+	cat reference/B.ENV.ANCESTOR.fasta ${f#fasta_unaligned/}.unaligned > ${f#fasta_unaligned/}.trim ;
 
 	muscle -in ${f#fasta_unaligned/}.trim -out aligned/${f#fasta_unaligned/} -maxiters 32
 	# MAFFT

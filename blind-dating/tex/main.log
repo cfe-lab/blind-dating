@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.1415926-2.4-0.9998 (TeX Live 2012) (format=xelatex 2012.6.30)  26 JUN 2015 16:48
+This is XeTeX, Version 3.1415926-2.4-0.9998 (TeX Live 2012) (format=xelatex 2012.6.30)  3 JUL 2015 15:18
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -369,93 +369,98 @@ Package natbib Warning: Citation `NELSI' on page 2 undefined on input line 5.
 Missing character: There is no “ in font ptmr7t!
 Missing character: There is no ” in font ptmr7t!
 
-Underfull \hbox (badness 5403) in paragraph at lines 14--15
+Underfull \hbox (badness 5403) in paragraph at lines 16--17
 []\OT1/ptm/m/n/10 We se-lected pub-lished stud-ies that had well-
  []
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 46--46
-[]|\OT1/ptm/m/n/10 # of
+[2]
+Underfull \hbox (badness 10000) in paragraph at lines 50--50
+[]|\OT1/ptm/m/n/10 Total # of
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 46--46
-\OT1/ptm/m/n/10 plasma
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 46--46
-[]|\OT1/ptm/m/n/10 # of
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 46--46
-\OT1/ptm/m/n/10 PBMC
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 46--46
+Underfull \hbox (badness 10000) in paragraph at lines 50--50
 []|\OT1/ptm/m/n/10 # Plasma
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 46--46
-\OT1/ptm/m/n/10 Time
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 46--46
+Underfull \hbox (badness 10000) in paragraph at lines 50--50
 []|\OT1/ptm/m/n/10 # PBMC
  []
 
-[2]
 
-Package natbib Warning: Citation `HIVBANC' on page 3 undefined on input line 55
+Underfull \hbox (badness 10000) in paragraph at lines 50--50
+[]|\OT1/ptm/m/n/10 Total Time
+ []
+
+
+Package natbib Warning: Citation `HIVBANC' on page 3 undefined on input line 59
 .
 
+) (./results.tex
+File: figures/simulated.pdf Graphic file (type QTm)
+ <use  "figures/simulated.pdf" >
+
+Package xetex.def Warning: No clipping support in XeTeX yet on input line 6.
+
+File: figures/simulated_latent.pdf Graphic file (type QTm)
+<use  "figures/simulated_latent.pdf" >
+
+Package xetex.def Warning: No clipping support in XeTeX yet on input line 7.
+
+File: figures/ancre.pdf Graphic file (type QTm)
+<use  "figures/ancre.pdf" >
+
+Package xetex.def Warning: No clipping support in XeTeX yet on input line 8.
+
+File: figures/lanl.pdf Graphic file (type QTm)
+<use  "figures/lanl.pdf" >
+
+Package xetex.def Warning: No clipping support in XeTeX yet on input line 9.
+
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
-
+ [3]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [3])
-(./results.tex) (./discussion.tex) (./conclusion.tex) (./main.bbl
+)
+(./discussion.tex) (./conclusion.tex
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [4])
+(./main.bbl
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <7> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 11.
- [4])
+)
 
 Package natbib Warning: There were undefined citations.
 
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
+Underfull \vbox (badness 1199) has occurred while \output is active []
 
-Extra height:0.0pt when 32.75772pt
+Extra height:0.0pt when 386.8403pt
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
+Underfull \vbox (badness 1199) has occurred while \output is active []
 
-(2)Left:32.75772pt Right:30.51544pt Output:32.75772pt
+(2)Left:386.8403pt Right:401.38086pt Output:386.8403pt
+(2)Left:401.38086pt Right:364.03088pt Output:401.38086pt
 - LAST -
 Extra skip:0.0pt
-Left:32.75772pt
-Right:30.51544pt
-Output:32.75772pt
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [5
-
-]
+Left:401.38086pt
+Right:364.03088pt
+Output:401.38086pt
+ [5]
 (./main.aux)
 
 LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
 
  ) 
 Here is how much of TeX's memory you used:
- 4172 strings out of 494004
- 53753 string characters out of 3150890
- 172050 words of memory out of 3000000
- 7349 multiletter control sequences out of 15000+200000
+ 4183 strings out of 494004
+ 53923 string characters out of 3150890
+ 164050 words of memory out of 3000000
+ 7355 multiletter control sequences out of 15000+200000
  16717 words of font info for 53 fonts, out of 3000000 for 9000
  1144 hyphenation exceptions out of 8191
  32i,10n,38p,874b,458s stack positions out of 5000i,500n,10000p,200000b,50000s

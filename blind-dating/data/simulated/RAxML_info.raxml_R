@@ -1,0 +1,84 @@
+
+
+IMPORTANT WARNING: Sequences u94_t67_0.738195681494367 and u2_t71_0.737344998121734 are exactly identical
+
+
+IMPORTANT WARNING: Sequences u50_t96_0.454412998076885 and u44_t27_0.453443274136435 are exactly identical
+
+
+IMPORTANT WARNING: Sequences u32_t65_0.465006111281747 and u49_t50_0.464359887341295 are exactly identical
+
+IMPORTANT WARNING
+Found 3 sequences that are exactly identical to other sequences in the alignment.
+Normally they should be excluded from the analysis.
+
+Just in case you might need it, an alignment file with 
+sequence duplicates removed is printed to file /var/folders/c+/c+EZCbkQHjqdDO-XYXwWy++++Tk/-Tmp-//RtmpSlu9ml/file743e1528ac25.reduced
+
+
+Using BFGS method to optimize GTR rate parameters, to disable this specify "--no-bfgs" 
+
+
+
+This is RAxML version 8.1.16 released by Alexandros Stamatakis on January 19 2015.
+
+With greatly appreciated code contributions by:
+Andre Aberer      (HITS)
+Simon Berger      (HITS)
+Alexey Kozlov     (HITS)
+Kassian Kobert    (HITS)
+David Dao         (KIT and HITS)
+Nick Pattengale   (Sandia)
+Wayne Pfeiffer    (SDSC)
+Akifumi S. Tanabe (NRIFS)
+
+Alignment has 690 distinct alignment patterns
+
+Proportion of gaps and completely undetermined characters in this alignment: 0.00%
+
+RAxML rapid hill-climbing mode
+
+Using 1 distinct models/data partitions with joint branch length optimization
+
+
+Executing 100 non-parametric bootstrap inferences
+
+All free model parameters will be estimated by RAxML
+GAMMA model of rate heteorgeneity, ML estimate of alpha-parameter
+
+GAMMA Model parameters will be estimated up to an accuracy of 0.1000000000 Log Likelihood units
+
+Partition: 0
+Alignment Patterns: 690
+Name: No Name Provided
+DataType: DNA
+Substitution Matrix: GTR
+
+
+
+
+RAxML was called as follows:
+
+/Users/joshuah/Binaries/raxmlHPC -T 6 -b 1000 -m GTRGAMMA -p 10000 -N 100 -s /var/folders/c+/c+EZCbkQHjqdDO-XYXwWy++++Tk/-Tmp-//RtmpSlu9ml/file743e1528ac25 -n raxml_R -w /Users/joshuah/Desktop/paper/blind-dating/data/simulated -O 
+
+
+
+WARNING the alpha parameter with a value of 12.436778 estimated by RAxML for partition number 0 with the name "No Name Provided"
+is larger than 10.000000. You should do a model test and confirm that you actually need to incorporate a model of rate heterogeneity!
+You can run inferences with a plain substitution model (without rate heterogeneity) by specifyng the CAT model and the "-V" option!
+
+
+WARNING the alpha parameter with a value of 26.413025 estimated by RAxML for partition number 0 with the name "No Name Provided"
+is larger than 10.000000. You should do a model test and confirm that you actually need to incorporate a model of rate heterogeneity!
+You can run inferences with a plain substitution model (without rate heterogeneity) by specifyng the CAT model and the "-V" option!
+
+
+WARNING the alpha parameter with a value of 56.129008 estimated by RAxML for partition number 0 with the name "No Name Provided"
+is larger than 10.000000. You should do a model test and confirm that you actually need to incorporate a model of rate heterogeneity!
+You can run inferences with a plain substitution model (without rate heterogeneity) by specifyng the CAT model and the "-V" option!
+
+
+WARNING the alpha parameter with a value of 121.001497 estimated by RAxML for partition number 0 with the name "No Name Provided"
+is larger than 10.000000. You should do a model test and confirm that you actually need to incorporate a model of rate heterogeneity!
+You can run inferences with a plain substitution model (without rate heterogeneity) by specifyng the CAT model and the "-V" option!
+

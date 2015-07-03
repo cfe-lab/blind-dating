@@ -1,0 +1,92 @@
+
+
+IMPORTANT WARNING: Sequences u94_t67_0.738195681494367 and u2_t71_0.737344998121734 are exactly identical
+
+
+IMPORTANT WARNING: Sequences u50_t96_0.454412998076885 and u44_t27_0.453443274136435 are exactly identical
+
+
+IMPORTANT WARNING: Sequences u32_t65_0.465006111281747 and u49_t50_0.464359887341295 are exactly identical
+
+IMPORTANT WARNING
+Found 3 sequences that are exactly identical to other sequences in the alignment.
+Normally they should be excluded from the analysis.
+
+An alignment file with sequence duplicates removed has already
+been printed to file /var/folders/c+/c+EZCbkQHjqdDO-XYXwWy++++Tk/-Tmp-//RtmpSlu9ml/file743e1528ac25.reduced
+
+
+Using BFGS method to optimize GTR rate parameters, to disable this specify "--no-bfgs" 
+
+
+
+This is RAxML version 8.1.16 released by Alexandros Stamatakis on January 19 2015.
+
+With greatly appreciated code contributions by:
+Andre Aberer      (HITS)
+Simon Berger      (HITS)
+Alexey Kozlov     (HITS)
+Kassian Kobert    (HITS)
+David Dao         (KIT and HITS)
+Nick Pattengale   (Sandia)
+Wayne Pfeiffer    (SDSC)
+Akifumi S. Tanabe (NRIFS)
+
+Alignment has 690 distinct alignment patterns
+
+Proportion of gaps and completely undetermined characters in this alignment: 0.00%
+
+RAxML rapid hill-climbing mode
+
+Using 1 distinct models/data partitions with joint branch length optimization
+
+
+Executing 100 inferences on the original alignment using 100 distinct randomized MP trees
+
+All free model parameters will be estimated by RAxML
+GAMMA model of rate heteorgeneity, ML estimate of alpha-parameter
+
+GAMMA Model parameters will be estimated up to an accuracy of 0.1000000000 Log Likelihood units
+
+Partition: 0
+Alignment Patterns: 690
+Name: No Name Provided
+DataType: DNA
+Substitution Matrix: GTR
+
+
+
+
+RAxML was called as follows:
+
+/Users/joshuah/Binaries/raxmlHPC -T 6 -f d -m GTRGAMMA -s /var/folders/c+/c+EZCbkQHjqdDO-XYXwWy++++Tk/-Tmp-//RtmpSlu9ml/file743e1528ac25 -N 100 -n raxml_B -w /Users/joshuah/Desktop/paper/blind-dating/data/simulated -p 10000 -O 
+
+
+Partition: 0 with name: No Name Provided
+Base frequencies: 0.136 0.152 0.285 0.426 
+
+
+WARNING the alpha parameter with a value of 12.173330 estimated by RAxML for partition number 0 with the name "No Name Provided"
+is larger than 10.000000. You should do a model test and confirm that you actually need to incorporate a model of rate heterogeneity!
+You can run inferences with a plain substitution model (without rate heterogeneity) by specifyng the CAT model and the "-V" option!
+
+
+WARNING the alpha parameter with a value of 24.862396 estimated by RAxML for partition number 0 with the name "No Name Provided"
+is larger than 10.000000. You should do a model test and confirm that you actually need to incorporate a model of rate heterogeneity!
+You can run inferences with a plain substitution model (without rate heterogeneity) by specifyng the CAT model and the "-V" option!
+
+
+WARNING the alpha parameter with a value of 49.706419 estimated by RAxML for partition number 0 with the name "No Name Provided"
+is larger than 10.000000. You should do a model test and confirm that you actually need to incorporate a model of rate heterogeneity!
+You can run inferences with a plain substitution model (without rate heterogeneity) by specifyng the CAT model and the "-V" option!
+
+
+WARNING the alpha parameter with a value of 98.676967 estimated by RAxML for partition number 0 with the name "No Name Provided"
+is larger than 10.000000. You should do a model test and confirm that you actually need to incorporate a model of rate heterogeneity!
+You can run inferences with a plain substitution model (without rate heterogeneity) by specifyng the CAT model and the "-V" option!
+
+
+WARNING the alpha parameter with a value of 188.611249 estimated by RAxML for partition number 0 with the name "No Name Provided"
+is larger than 10.000000. You should do a model test and confirm that you actually need to incorporate a model of rate heterogeneity!
+You can run inferences with a plain substitution model (without rate heterogeneity) by specifyng the CAT model and the "-V" option!
+
