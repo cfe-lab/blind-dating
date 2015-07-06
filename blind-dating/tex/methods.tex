@@ -4,14 +4,14 @@ To validate our approach, we first simulated sequence data along a phylogeny wit
 \subsection{Simulated Data} \label{subsec:simdata}
 Sequences were generated in INDELible 1.03 \citep{Indelible09} along a seed phylogeny. This phylogeny was generated in TreeSim \citep{TreeSim}, and was given a clock from NESLI \citep{NELSI}. Sequences were generated using an HKY85 substitution model with parameters set from a maximum likelihood estimate from published datasets \citep{McCloskey14}. A maximum likelihood phylogeny was then reconstructed from these sequences with RAxML \citep{Raxml14}, which was then rooted using root-to-tip regression. 50 trees of 100 tips each. To test the effect of data on the clock calibration, we randomly censored the dates of 5, 10, 25 and 50 tips, then reconstructed those from the clock.
 
-Simulating latent trees. \citep{Immonen14}
+We also simulates latent behavior by randomly choosing a set number of branches, then shortening their lenghts \citep{Immonen14}.
 
 
 \subsection{Data Collection} \label{subsec:dcollection}
 For our second set of experiments we used a previously harvested set of data \citep{McCloskey14}. These data had been harvested from the HIV lanl database. Our third experiment also used data from Los Alamos Intra-Patient search interface \citep{LosAlamos}, except this time we used it to identify patients with both plasma and PBMC sequences from the ENV region of the HIV-1 genome. 
 
 \subsection{Patient Data} \label{subsec:patdata}
- For our second set of experiments, we looked at RNA sequences from untreated patients from longitudinal studies with two or more clonal or single-genome (SGS) sequences available at each time point, with a known time- line relative to one of several reference points: HIV infection, seroconversion, presentation of symptomatic seroconversion illness, or birth. The seamples also were collected within 6 months (186 days) of this reference point, and where at least one of the subsequent (“follow-up”) time points occurred a minimum of 6 months after baseline. Known cases of superinfection were also excluded. 
+ For our second set of experiments, we looked at RNA sequences from untreated patients from longitudinal studies with two or more clonal or single-genome (SGS) sequences available at each time point, with a known time-line relative to one of several reference points: HIV infection, seroconversion, presentation of symptomatic seroconversion illness, or birth. The seamples also were collected within 6 months (186 days) of this reference point, and where at least one of the subsequent (“follow-up”) time points occurred a minimum of 6 months after baseline. Known cases of superinfection were also excluded. 
  
 We selected published studies that had well-characterized partial env sequences generated via clonal sequencing methods or single-genome amplification from HIV RNA in blood plasma or integrated DNA from PBMC cells. There was no condition for the time between sample collections. Fifteen individuals were included with serial samples from at least 3 time points (\ref{tab:patients}) (remove 3 from table). A total of X partial env sequences blood plasma specimens and Y partial env sequences from PBMC cells were used in our analysis.
 
@@ -21,10 +21,10 @@ We selected published studies that had well-characterized partial env sequences 
 \hline
 \hline
 Patient ID & \# of plasma samples & \# of PBMC samples & Total \# of Seqeunces & \# Plasma Time points & \# PBMC time points & Total Time points   \\ \hline \hline
-820 &       50 &       87 &      137 &        5 &       10 &       15  \\
-821 &       76 &      192 &      268 &        7 &       17 &       17   \\ 
-822 &       32 &       98 &      130 &        3 &       10 &       10   \\ 
-824 &      100 &      107 &      207 &        7 &        9 &       13   \\ 
+820$^1$ &       50 &       87 &      137 &        5 &       10 &       15  \\
+821$^1$ &       76 &      192 &      268 &        7 &       17 &       17   \\ 
+822$^1$ &       32 &       98 &      130 &        3 &       10 &       10   \\ 
+824$^1$ &      100 &      107 &      207 &        7 &        9 &       13   \\ 
 10137 &       24 &      106 &      130 &        2 &       10 &       12  \\ 
 10138 &       82 &      119 &      201 &        6 &       13 &       16  \\
 10586 &       16 &      121 &      137 &        2 &       12 &       14  \\ 
@@ -35,7 +35,6 @@ Patient ID & \# of plasma samples & \# of PBMC samples & Total \# of Seqeunces &
 16617 &       16 &       89 &      105 &        2 &        5 &        5  \\ 
 16618 &       25 &       75 &      100 &        2 &        5 &        6  \\ 
 16619 &       13 &       60 &       73 &        2 &        6 &        6  \\ 
-34375 &       16 &       73 &       89 &        1 &        7 &        7  \\ 
 34382 &       37 &        5 &       42 &        3 &        1 &        4  \\ 
 34391 &       13 &       38 &       51 &        3 &        5 &        6  \\ 
 34393 &       25 &       74 &       99 &        2 &        6 &        7  \\ 
@@ -55,7 +54,7 @@ Patient ID & \# of plasma samples & \# of PBMC samples & Total \# of Seqeunces &
 \subsection{Sequence Aligment} \label{subsec:seqalign}
 All of our sequences were annotated in FASTA formats, each containing multiple time points. Our simulated sequences were not simulated with any insertions or deletions, and no alignment was necessary, additionally, the dataset we used for our second set of experiments was already cleaned and aligned \citep{McCloskey14}. For our third dataset, we used the built in MUSCLE \citep{Muscle04} interface within AliView \citep{AliView14} to align the sequences, which were then visually inspected and modified. 
 
-\subsection{Phylogeny Reconstruction} \label{subsec:phylo}
+\subsection{Phylogenetic Reconstruction} \label{subsec:phylo}
 In all experiments all of our reconstructed phylogenies were maximum likelihood phylogenies reconstructed in RAxML \citep{Raxml14} using the GTR+$\Gamma$ model. Synthetic data were solely rooted with root-to-tip regression. For all other patient data, both outgroup rooting (against the HIV-1 B ancestor consensus \citep{HIVBANC}) and root-to-tip regression \cite{Ape04} were used to root the tree. We did not attempt to use BEAST \citep{BEAST} to build any phylogenies, as leaving dates unspecified on the amount of tips we had drastically increases the dimensionality of the problem, and would need a prohibitively large amount of samples from the MCMC chain to converge.
 
 \subsection{Date Reconstruction} \label{subsec:daterecon}

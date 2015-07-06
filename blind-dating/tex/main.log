@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.1415926-2.4-0.9998 (TeX Live 2012) (format=xelatex 2012.6.30)  3 JUL 2015 15:18
+This is XeTeX, Version 3.1415926-2.4-0.9998 (TeX Live 2012) (format=xelatex 2012.6.30)  6 JUL 2015 10:55
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -349,11 +349,13 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
 ]
 (./figures/example.tex)
-Overfull \hbox (4.0pt too wide) in paragraph at lines 16--17
+Overfull \hbox (4.0pt too wide) in paragraph at lines 14--15
  [][] 
  []
 
 ) (./methods.tex
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 4.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
@@ -366,35 +368,40 @@ Package natbib Warning: Citation `TreeSim' on page 2 undefined on input line 5.
 
 Package natbib Warning: Citation `NELSI' on page 2 undefined on input line 5.
 
+
+Underfull \hbox (badness 1817) in paragraph at lines 7--8
+[]\OT1/ptm/m/n/10 We also sim-u-lates la-tent be-hav-ior by ran-domly
+ []
+
 Missing character: There is no “ in font ptmr7t!
 Missing character: There is no ” in font ptmr7t!
-
+[2]
 Underfull \hbox (badness 5403) in paragraph at lines 16--17
 []\OT1/ptm/m/n/10 We se-lected pub-lished stud-ies that had well-
  []
 
-[2]
-Underfull \hbox (badness 10000) in paragraph at lines 50--50
+
+Underfull \hbox (badness 10000) in paragraph at lines 49--49
 []|\OT1/ptm/m/n/10 Total # of
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 50--50
+Underfull \hbox (badness 10000) in paragraph at lines 49--49
 []|\OT1/ptm/m/n/10 # Plasma
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 50--50
+Underfull \hbox (badness 10000) in paragraph at lines 49--49
 []|\OT1/ptm/m/n/10 # PBMC
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 50--50
+Underfull \hbox (badness 10000) in paragraph at lines 49--49
 []|\OT1/ptm/m/n/10 Total Time
  []
 
 
-Package natbib Warning: Citation `HIVBANC' on page 3 undefined on input line 59
+Package natbib Warning: Citation `HIVBANC' on page 3 undefined on input line 58
 .
 
 ) (./results.tex
@@ -418,44 +425,28 @@ File: figures/lanl.pdf Graphic file (type QTm)
 
 Package xetex.def Warning: No clipping support in XeTeX yet on input line 9.
 
-
+) (./discussion.tex) (./conclusion.tex) [3]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [3]
-Underfull \vbox (badness 10000) has occurred while \output is active []
 
-)
-(./discussion.tex) (./conclusion.tex
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [4])
 (./main.bbl
+Underfull \vbox (badness 8038) has occurred while \output is active []
+
+ [4]
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <7> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 11.
 )
 
 Package natbib Warning: There were undefined citations.
 
-
-Underfull \vbox (badness 1199) has occurred while \output is active []
-
-Extra height:0.0pt when 386.8403pt
-
-Underfull \vbox (badness 1199) has occurred while \output is active []
-
-(2)Left:386.8403pt Right:401.38086pt Output:386.8403pt
-(2)Left:401.38086pt Right:364.03088pt Output:401.38086pt
+Extra height:0.0pt when 420.9012pt
+(2)Left:420.9012pt Right:400.85236pt Output:420.9012pt
 - LAST -
 Extra skip:0.0pt
-Left:401.38086pt
-Right:364.03088pt
-Output:401.38086pt
- [5]
-(./main.aux)
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
- ) 
+Left:420.9012pt
+Right:400.85236pt
+Output:420.9012pt
+[5] (./main.aux) ) 
 Here is how much of TeX's memory you used:
  4183 strings out of 494004
  53923 string characters out of 3150890
@@ -463,6 +454,6 @@ Here is how much of TeX's memory you used:
  7355 multiletter control sequences out of 15000+200000
  16717 words of font info for 53 fonts, out of 3000000 for 9000
  1144 hyphenation exceptions out of 8191
- 32i,10n,38p,874b,458s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 32i,11n,38p,965b,458s stack positions out of 5000i,500n,10000p,200000b,50000s
 
 Output written on main.pdf (5 pages).
