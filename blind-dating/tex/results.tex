@@ -3,6 +3,7 @@ Our first validation experiment on synthetic data was preformed as such: First w
 
 In all of our experiments, before any analysis is done, all times are re-scaled to lie between $0$ and $1$. This is calculated as $$ \text{new time} = \frac{\text{time} - \text{min time}}{\text{max time} - \text{min time}}$$ this gives normalized time. Errors are then calculated from this number, which we call normalized error. On the left figure \ref{fig:results1} shows a linear regression over either simulation time or time from a reference point (for patient data). On the right side of figure \ref{fig:results1}, is the superposition of an error density estimate for each data set within a category. 
 
+
 \begin{figure*}[!ht] \label{fig:results1}
 	\centering
 	\includegraphics[trim=0cm 0cm 0cm 6cm, clip=true, scale=0.425]{figures/simulated.pdf} \\
@@ -26,6 +27,6 @@ Figure \ref{fig:results1} C) shows the regression over the calibration dates and
 \subsection{Patient Reconstruction}
 Finally, we looked at patients who had both plasma and PBMC samples available. We used both RTT and outgroup rooting to root the phylogeny, then calibrated a clock to the known plasma sampling dates and reconstructed the expected age of the sequences for all patients who could reject the null model \ref{subsec:hypot}. 
 
-Figure \ref{fig:results1} D) shows the regression over the calibration dates and the simulated collection date. In this case, we do not know the actual date of archival.  The superposition of the difference density plots shows similar behavior to that of the latent simulated data, except \anote{need new plots for this}.
+Figure \ref{fig:results1} D) shows the regression over the calibration dates and the simulated collection date. In this case, we do not know the actual date of archival.  The superposition of the difference density plots shows similar behavior to that of the latent simulated data, except \anote{need new plots for this}.  
 
 The patients that had received treatment at some point generally failed the hypothesis testing -- there was only one patient that did not. This suggests that after a patient begins treatment, the assumption of a molecular clock over their phylogeny is too strong. 

@@ -1,6 +1,4 @@
 \section{Methods} \label{sec:methods}
-%To validate our approach, we first simulated sequence data along a phylogeny with a strict clock. We reconstructed phylogenies and randomly chose tips to censor, then reconstructed those dates from the clock. We then tested our method on patient data that was RNA only, and did the same thing, finally, we look at a homogenous dataset with both plasma and PBMC data. 
-
 \subsection{Simulated Data} \label{subsec:simdata}
 We used INDELible 1.03 \citep{Indelible09} to generate sequences along seed phylogenies with an HKY85 \citep{HKY85} substitution model with parameters set from a maximum likelihood estimate. The seed phylogenies were constructed via TreeSim \citep{TreeSim, Stradler13, Boskova14} through a birth death model (birth and death rate equal to $5e-3$ and with a 5\% chance of being sampled.) These trees then have a strict clock assigned to them (with rate=$3e-3$ and noise=$1e-5$). A maximum likelihood phylogeny was then reconstructed from these sequences with RAxML \citep{Raxml14}. When we root these trees, we use a modified version of root-to-tip regression that only considers a subset of calibration data \citep{APE}. In total, we generated 50 trees with 100 tips each. 
 
