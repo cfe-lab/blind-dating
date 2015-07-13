@@ -1,10 +1,7 @@
 \section{Results} \label{sec:results}
-For our experiments with synthetic data, 
+Our first validation experiment on synthetic data was preformed as such: First we choose 50\% of the tips of a phylogeny and censored those dates, we next used root-to-tip regression \citep{APE} on the remaining data to calibrate the molecular clock for the tree. Finally, for each censored date, we reconstructed the expected date using the expected number of substitutions.
 
-
-Once the trees had been rooted, a general linear model with the normal family was constructed with the with expected number of substitutions as the input, and sampling time as the response. For all experiments using patient data, this fit was only over the plasma data, and the PBMCs expected subs were used as input. From this, we collected the difference between the observed sampling date, and the predicted date. 
-
-In all of our experiments, before any analysis is done, all times are re-scaled to lie between $0$ and $1$. This is calculated as $ \text{new time} = \frac{\text{time} - \text{min_time}}{\text{max_time} - \text{min_time}}$, this gives normalized time. Errors are then calculated from this number.
+In all of our experiments, before any analysis is done, all times are re-scaled to lie between $0$ and $1$. This is calculated as $$ \text{new time} = \frac{\text{time} - \text{min time}}{\text{max time} - \text{min time}}$$ this gives normalized time. Errors are then calculated from this number, which we call normalized error. On the left figure \ref{fig:results1} shows a linear regression over either simulation time or time from a reference point (for patient data). On the right side of figure \ref{fig:results1}, is the superposition of an error density estimate for each data set within a category. 
 
 \begin{figure*}[!ht] \label{fig:results1}
 	\centering
@@ -17,12 +14,18 @@ In all of our experiments, before any analysis is done, all times are re-scaled 
 
 
 \subsection{Simulated Data} \label{sec:sim_results}
-For our simulated data, we evaluated two error metrics. We look at the mean square error for each individual, as well as the mean, and median error. Unsurprisingly the error for this is really low because the phylogeny is clocklike and very informative. Also, in figure whatever there’s a set of superimposed density estimates of the error. Each image in it represents one run (look at a tree and remove up to 50\% of the samples in that tree.) For the simulated latent data, the normalized error is higher in all cases, also the density estimates are shifted in towards the right, indicating that the latent behaviour has an effect on the reconstruction, also there’s more variation in the plots.
+For our simulated data, we evaluated three error metrics. We looked at the mean square error for each synthetic tree, as well as the mean and median difference between the predicted date and sampling date. Figure \ref{fig:results1} A) shows that the clock is a reliable source of information in this case. Quantitatively, the censored data points are close to the regression line, and the difference density is heavily peaked around 0. Averaged over all simulated data sets, the average mean square error was \anote{X}, and the average median and mean difference were \anote{Y} and \anote{Z} respectively.
 
+We evaluated the latent simulated data under similar metrics. Figure \ref{fig:results1} B) shows the regression over the calibration dates and the simulated collection dates. Note that these dates are not the actual. In this experiment, the density plot is shifted to the right, exemplifying latent behavior. Averaged over all simulated data sets, the average mean square error was \anote{X}, and the average median and mean difference were \anote{Y} and \anote{Z} respectively. However, when we utilized the known sample ages (as opposed to the collection dates) then measured the same metrics, averaged over all simulated data sets, the average mean square error was \anote{X}, and the average median and mean difference were \anote{Y} and \anote{Z} respectively.
 
 \subsection{RNA Only Data} \label{sec:rna_only}
-For our reconstruction of RNA only data, they pretty much mimicked the simulated data. Except we had a higher mean RMS. This is all not surprising because of natural variation.  
+To evaluate the possible effectiveness of this methodology on real data, we utilized the plasma only data set \citep{McCloskey14}. For every applicable patient, we censored 50\% of their known sampling dates then reconstructed the censored dates using the linear model calibrated over the uncensored dates. We also performed this experiment with RTT rooting and out group rooting \anote{we should have another figure like figure 2 for both RTT and out-group rooting}. The goal of this experiment was to parallel the type of results from \ref{sec:sim_results}.
+
+Figure \ref{fig:results1} C) shows the regression over the calibration dates and the collection date. Averaged over all simulated data sets, the average mean square error was \anote{X}, and the average median and mean difference were \anote{Y} and \anote{Z} respectively. The superposition of the difference density plots shows similar behavior to that of \ref{sec:sim_results}, except with a wider distribution, and more variation. Since there is inherently more noise in this data, this is expected. 
 
 \subsection{Patient Reconstruction}
-Qualitatively many plots show examples of latency, qantitavely it's difficult to say. 
+Finally, we looked at patients who had both plasma and PBMC samples available. We used both RTT and outgroup rooting to root the phylogeny, then calibrated a clock to the known plasma sampling dates and reconstructed the expected age of the sequences for all patients who could reject the null model \ref{subsec:hypot}. 
 
+Figure \ref{fig:results1} D) shows the regression over the calibration dates and the simulated collection date. In this case, we do not know the actual date of archival.  The superposition of the difference density plots shows similar behavior to that of the latent simulated data, except \anote{need new plots for this}.
+
+The patients that had received treatment at some point generally failed the hypothesis testing -- there was only one patient that did not. This suggests that after a patient begins treatment, the assumption of a molecular clock over their phylogeny is too strong. 
