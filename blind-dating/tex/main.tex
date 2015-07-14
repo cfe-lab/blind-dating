@@ -1,4 +1,6 @@
-\documentclass[10pt,a4paper,twocolumn]{article}
+\documentclass[12pt]{article}
+
+\usepackage{lineno}
 
 \usepackage[round]{natbib}
 \usepackage{crop}
@@ -28,14 +30,13 @@
 % 1 Simon Fraser University
 % 2 BC Centre for Excellence in HIV/AIDS
 % 3 University of British Columbia
-\twocolumn[
-  \begin{@twocolumnfalse}
-    \maketitle
-    \begin{abstract}
+\baselineskip 22pt
+\pagewiselinenumbers
+
+\maketitle
+\begin{abstract}
 \input{abstract.tex}
-    \end{abstract}
-  \end{@twocolumnfalse}
-]
+\end{abstract}
 
 \input{introduction.tex}
 \input{methods.tex}

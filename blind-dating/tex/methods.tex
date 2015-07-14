@@ -1,13 +1,22 @@
 \section{Methods} \label{sec:methods}
 \subsection{Simulated Data} \label{subsec:simdata}
-We used INDELible 1.03 \citep{Indelible09} to generate sequences along seed phylogenies with an HKY85 \citep{HKY85} substitution model with parameters set from a maximum likelihood estimate. The seed phylogenies were constructed via TreeSim \citep{TreeSim, Stradler13, Boskova14} through a birth death model (birth and death rate equal to $5e-3$ and with a 5\% chance of being sampled.) These trees then have a strict clock assigned to them (with rate=$3e-3$ and noise=$1e-5$). A maximum likelihood phylogeny was then reconstructed from these sequences with RAxML \citep{Raxml14}. When we root these trees, we use a modified version of root-to-tip regression that only considers a subset of calibration data \citep{APE}. In total, we generated 50 trees with 100 tips each. 
+We first used seed phylogenies generated via a birth death model (with birth and death rate equal to $5\times10^{-3}$ and with a 5\% chance of being sampled) in the R package TreeSim \citep{TreeSim, Stradler13, Boskova14}, and assign a clock to these trees (with rate$=3x10^{-3}$ substitutions per site/day, and with noise pulled from a normal distribution with $\sigma=5\times10^{-5}$.
+We then used INDELible 1.03 \citep{Indelible09} to simulated nucleotide sequences along these seed phylogenies with an HKY85 \citep{HKY85} substitution model, and  parameters set from a maximum likelihood estimate of published within host data \citep{McCloskey14}. 
+From these simulated sequences a maximum likelihood phylogeny was then reconstructed with RAxML \citep{Raxml14}. In total, we generated 50 trees without latency, each having 100 tips. 
 
-To generate the trees that simulated latency, we took a similar approach to \cite{Immonen14}. To simulate the latent behaviour -- collection dates drifting from their expected dates -- we randomly selected up to 5 branches within a phylogeny, and scaled them by a random value, chosen uniformly between $0.1$ and $0.9$. For these data, we generated an additional 50 trees with 100 tips, bringing the total amount of simulated data to 100 trees with 100 tips each. 
+To generate the trees that had observable latency, we took a similar approach to \cite{Immonen14}. 
+We randomly selected a branch within a seed phylogeny then scaled it by a random value between $0.1$ and $0.9$, to assure that the phylogeny had sufficiently many latent tips, we rejected all such trees that had less than 40 and more than 60 latent tips. 
+We then recorded both the simulated age and simulated collection time, then generated sequences along these latent seed trees with INDELible 1.03 \citep{Indelible09} and the same parameters above. 
+From these simulated sequences a maximum likelihood phylogeny was then reconstructed with RAxML \citep{Raxml14}.
+For these data, we generated an additional 50 trees with 100 tips, bringing the total amount of simulated data to 100 trees with 100 tips each. 
+
 
 \subsection{Data Collection} \label{subsec:dcollection}
-We use a previously collected and cleaned set of data \citep{McCloskey14} from the Los Alamos HIV Database (\anote{reference}). This data set contains 335 data sets from 232 patients, with a total of over 19,000 sequences \citep{McCloskey14} containing mostly samples collected from plasma. From this data set we use \anote{X} plasma samples from \anote{Y} specific patients. We also directly utilized the Los Alamos Advanced search interface \citep{LosAlamos} to identify subjects with both plasma and PBMC sequences.
+We use a previously collected and cleaned set of data \citep{McCloskey14} from the Los Alamos HIV Database (\anote{reference}). 
+This data set contains 335 data sets from 232 patients, with a total of over 19,000 sequences \citep{McCloskey14} containing mostly samples collected from plasma. 
+From this data set we use \anote{X} plasma samples from \anote{Y} specific patients. 
+We also directly utilized the Los Alamos Advanced search interface \citep{LosAlamos} to identify subjects with both plasma and PBMC sequences.
 
-\subsection{Patient Data} \label{subsec:patdata}
 The first set of data we utilized were RNA sequences from untreated patients from longitudinal studies with two or more clonal or single-genome (SGS) sequences available at each time point, with a known time-line relative to one of several reference points: HIV infection, seroconversion or presentation of symptomatic seroconversion illness. The samples were collected within 6 months (186 days) of this reference point, and at least one of the subsequent (“follow-up”) time points occurred a minimum of 6 months after baseline. Known cases of superinfection were also excluded, all patients were untreated, and the samples were taken from the env region of the HIV-1 genome \citep{McCloskey14}. We call these our plasma sequences. 
  
 For our second data set -- containing both plasma and PBMC samples -- we selected  individuals from published studies that had well-characterized partial env sequences longitudinally sampled from HIV RNA in blood plasma, or sampled from integrated viral DNA in host PBMC cells. There was no condition for the time between sample collections. \anote{X} individuals were included with 
@@ -58,6 +67,8 @@ All of our sequences were annotated in FASTA format, each containing multiple ti
 \subsection{Phylogenetic Reconstruction} \label{subsec:phylo}
 In all experiments, our reconstructed phylogenies were maximum likelihood phylogenies reconstructed in RAxML \citep{Raxml14} using the GTR+$\Gamma$ model. Synthetic data were solely rooted with root-to-tip regression \citep{APE}. For all other patient data, both outgroup rooting (against the HIV-1 B ancestor consensus  \anote{ref}) and root-to-tip regression were used to root the tree. We did not attempt to use BEAST \citep{BEAST} to reconstruct any phylogenies from our samples. Leaving dates unspecified on the number of tips we had would drastically increase the dimensionality of the problem, and we would therefore need a prohibitively large amount of samples from the MCMC chain to assure we found the desired tree.
 
+To root these trees 
+For tree rooting, we use a modified version of root-to-tip regression that only considers a subset of calibration data \citep{APE}. 
 \subsection{Date Reconstruction} \label{subsec:daterecon}
 Once the trees had been rooted, to reconstruct dates, a general linear model with the normal family was constructed. The expected amount of evolution was taken to be the response and the sampling dates of the data were taken as the input. These models were only trained over the uncensored/plasma data for the simulated and real data sets respectively.
 
