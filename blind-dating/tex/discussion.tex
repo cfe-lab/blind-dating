@@ -1,10 +1,12 @@
 \section{Discussion} \label{sec:discuss}
-The simulated data are unsurprising, the RNA data too. 
-Patient data trends and analysis. 
-Result about rooting, power of data.
-We noticed that . 
-When rooting a phylogeny with root-to-tip regession, if the root lies behind the known times, then RTT may fail. 
-Patient 820 shows an example of this.
+For the simulated data, the results are generally unsurprising. The more a phylogeny adheres to a molecular clock, the more accurate predictions made from it will be -- the simulated data is very well informed, and the phylogeny and its clock are resolved very well by the maximum likelihood estimate. Since latency is akin to pressing ``pause'' on the evolution of a sequence, the latent simulated data could also be reconstructed with low error as expected.
 
-Qualitatively, latency is very clearly visible in many of the patients. 
-There also seems to be some weird clock behaviour, exhibited in many of the patients but it's not clear if any of those patterns are statistically significant. 
+Results from the plasma data set are also unsurprising. Each patient from our data set showed evidence of a molecular clock, so the ability to reconstruct known dates came as no surprise. Albeit, since this is a biological process, the reconstruction error was higher than that of the simulated data.
+
+Quantitatively, it's difficult to assess the accuracy of the reconstructions within the PBMC and plasma data set. Many patients show evidence of latency in their regression plots (figure) but it's unclear what the general pattern is for the distribution of the error metrics, and it's not possible to know the error for this dataset, as that would require us to know the date at which a sequence became latent. There is also an interesting sigmoidal pattern in many of the patients in this case.
+
+\anote{talk about the robustness of rooting}
+
+Additionally, we identified a general case in which RTT rooting fails over outgroup rooting. If the root of a phylogeny is \anote{X}. Patient 820 (\anote{figure}) shows an example of this. 
+
+
