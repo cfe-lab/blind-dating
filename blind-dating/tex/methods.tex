@@ -99,6 +99,20 @@ We rejected any sequence data-sets whose phylogeny couldn't reject the null mode
 
 
 \subsection{Experiments} \label{subsec:experiments}
-Our first validation experiment on synthetic data was preformed as such: First we choose 50\% of the tips of a phylogeny and censored those dates, we next used root-to-tip regression \citep{APE} on the remaining data to calibrate the molecular clock for the tree. Finally, for each censored date, we reconstructed the expected date using the expected number of substitutions.
+For all experiments where it was possible, we used three error metrics to assess  our methodology: the mean square error for predicted date, as well as the mean and median difference between the predicted date and sampling date, where difference defined as simply the predicted date minus the observed date.
+To facilitate comparisons among longitudinal data sets, before any analysis was done all tip dates were re-scaled to lie between $0$ and $1$. 
+Explicitly, we take $$ \text{new time} = \frac{\text{time} - \text{min time}}{\text{max time} - \text{min time}}$$ which gives {\em normalized time}. Our error metrics are then calculated from this number. This gives normalized mean square error, normalized mean difference, and normalized median difference. 
 
-In all of our experiments, before any analysis is done, all times are re-scaled to lie between $0$ and $1$. This is calculated as $$ \text{new time} = \frac{\text{time} - \text{min time}}{\text{max time} - \text{min time}}$$ this gives normalized time. Errors are then calculated from this number, which we call normalized error. On the left figure \ref{fig:results1} shows a linear regression over either simulation time or time from a reference point (for patient data). On the right side of figure \ref{fig:results1}, is the superposition of an error density estimate for each data set within a category. 
+Our first validation experiment on synthetic data was preformed as such: first we choose 50\% of the tips of a phylogeny and censored those dates, we next used our  modified root-to-tip regression \citep{APE} on the remaining data to calibrate the phylogeny's molecular clock. 
+For each censored date we reconstructed the expected date using the expected number of substitutions, then collected the three error metrics above.
+For the simulated latent data, we collected the normalized mean square error, normalized mean difference, and normalized median difference, between both the simulated collection dates. We also collect these for the known ``archival'' date.
+
+To evaluate the possible effectiveness of this methodology on real data, we utilized our {\em plasma} data set \citep{McCloskey14}. 
+For every applicable patient, we censored 50\% of their known sampling dates then reconstructed the censored dates using a linear model calibrated over the uncensored dates. 
+We also performed this experiment with RTT regression rooting and out-group rooting. The goal of this experiment was to parallel the type of results of the first experiment on simulated data. 
+
+Finally, we looked at our {\em mixed} data-set comprised of both PBMC and plasma data. 
+We used both RTT regression and out-group rooting to root the phylogeny, then calibrated a clock to the known plasma sampling dates and reconstructed the expected age of the sequences for all patients who could reject the null model \ref{subsec:hypot}. 
+Here we only collected the normalized errors between the prediction and the collection.
+
+

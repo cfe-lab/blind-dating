@@ -1,12 +1,21 @@
 \section{Discussion} \label{sec:discuss}
-For the simulated data, the results are generally unsurprising. The more a phylogeny adheres to a molecular clock, the more accurate predictions made from it will be -- the simulated data is very well informed, and the phylogeny and its clock are resolved very well by the maximum likelihood estimate. Since latency is akin to pressing ``pause'' on the evolution of a sequence, the latent simulated data could also be reconstructed with low error as expected.
+For the simulated data, the results are generally unsurprising. 
+The more a phylogeny adheres to a molecular clock, the more accurate predictions made from it will be -- the simulated data is very well informed, and the phylogeny and its clock are very well resolved by the maximum likelihood tree estimate. 
+Since latency is akin to pressing ``pause'' on the evolution of a sequence, and evolution is assumed to be clock-like when sequences are not ``paused'', it's also not surprising that the latent simulated data could also be reconstructed with low error. 
 
-Results from the plasma data set are also unsurprising. Each patient from our data set showed evidence of a molecular clock, so the ability to reconstruct known dates came as no surprise. Albeit, since this is a biological process, the reconstruction error was higher than that of the simulated data.
+The results from the plasma data-set are also expected. 
+Each patient from our plasma data-set showed evidence of a molecular clock, so the ability to reconstruct known dates came as no surprise. 
+However, the reconstruction error was higher than that of the simulated data, which is expected for data that come from a biological process that is not fully understood.
 
-Quantitatively, it's difficult to assess the accuracy of the reconstructions within the PBMC and plasma data set. Many patients show evidence of latency in their regression plots (figure) but it's unclear what the general pattern is for the distribution of the error metrics, and it's not possible to know the error for this dataset, as that would require us to know the date at which a sequence became latent. There is also an interesting sigmoidal pattern in many of the patients in this case.
+Quantitatively, it's difficult to assess the accuracy of the reconstructions within the mixed data set. 
+Many patients show evidence of latency in their regression plots (Figure \ref{fig:results1}) but it's unclear what the general pattern is for the distribution of the error metrics. Moreover, it's not possible to know the actual error for this data set, as that would require us to know the date at which a sequence became latent. 
+We also observed an interesting sigmoidal pattern in many of the patients in this case.
 
-\anote{talk about the robustness of rooting}
-
-Additionally, we identified a general case in which RTT rooting fails over outgroup rooting. If the root of a phylogeny is \anote{X}. Patient 820 (\anote{figure}) shows an example of this. 
-
+Typically, we observed that the rooting method had very little effect on the errors. We did, however, identify a general case in which RTT rooting fails over outgroup rooting. If the root of a phylogeny is \anote{Explain this}. 
+Patient 820 (\anote{figure}) shows an example of this. 
+\begin{figure*}[!ht] \label{fig:degenerate_example}
+	\centering
+	\includegraphics[trim=0cm 4cm 0cm 6cm, clip=true, scale=0.425]{figures/simulated.pdf} \\
+	\caption[Example of bad root]{\anote{placeholder} Case in which root to tip rooting fails}
+\end{figure*}
 
