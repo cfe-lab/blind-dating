@@ -1,4 +1,0 @@
-datatype_add.js
-method_add.js
-resource_add.js
-pipeline_add.js

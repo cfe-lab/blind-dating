@@ -2,9 +2,10 @@ library(ape)
 library(parallel)
 
 #source('ape.patches.R')
-source('include/rtt.R')
-source('include/test.R')
-source('include/raxml.R')
+source('../common/rtt.R')
+source('../common/test.R')
+source('../common/raxml.R')
+source('../common/fasttree.R')
 
 trim <- function (x) gsub("^\\s+|\\s+$", "", x)
 extract_dates <- function(x) as.numeric(gsub("(.+)_([0-9\\.]+)$", "\\2", x, perl=T))
@@ -30,7 +31,8 @@ ml.tree <- function(i){
 	# and re-read it as a properly formatted DNA Bin
 	simenv.dna <- read.dna(dna.file)
 
-	tree <- raxml(simenv.dna, N=100, parsimony.seed=10000, bootstrap.seed=1000,threads=6)
+	tree <- fasttree(simenv.dna)
+	# tree <- raxml(simenv.dna, N=100, parsimony.seed=10000, bootstrap.seed=1000,threads=10)
 	write.tree(tree, sprintf("trees/HIV_ml_%d_out.nwk", i))
 
 	unlink(dna.file)
@@ -39,6 +41,7 @@ ml.tree <- function(i){
 
 trees.read <- function(base.path) {
 	ml.tree.read <- function(i, path){
+		print(sprintf("%s/HIV_ml_%d_out.nwk", path, i))
 		read.tree(sprintf("%s/HIV_ml_%d_out.nwk", path, i))
 	}
 	mclapply(1:n.simulated, ml.tree.read, base.path)
@@ -52,9 +55,10 @@ hiv.rna.read <- function(){
 	lapply(trs, ml.tree.read)
 }
 
-trees <- mclapply(1:n.simulated, ml.tree, mc.cores=1)
+# trees <- mclapply(1:n.simulated, ml.tree, mc.cores=1)
 #trees <- hiv.rna.read()
-#trees <- trees.read("simulated/tree/")
+trees <- trees.read("trees")
+print(trees)
 
 n.simulated <- length(trees)
 run_name <- "HIV RNA"
@@ -66,20 +70,21 @@ for(remove in c(1, 5, 10, 25)){
 
 	mse <- rep(0, n.simulated*n.runs)
 	for(i in 1:n.simulated){
-		if(length(trees[[i]]$tip.label) <= remove) {
-			next
-		}
+# 		if(length(trees[[i]]$tip.label) <= remove) {
+# 			next
+# 		}
+print(trees[[i]]$tip.label)
 		tip.dates <- extract_dates(trees[[i]]$tip.label)
 		r <- test.n.plot.rtt(trees[[i]], tip.dates, remove, name=sprintf("%s: %s-no.%d (Remove %d)", run_name, species, i, remove))
-		if(is.null(r)){
-			next
-		}
-		for(j in 1:n.runs) {
-			err  <- test.rtt(trees[[i]], tip.dates, remove)
-			if(!is.null(err)) {
-				mse[(j-1)*n.simulated + i] <- err
-			}
-		}
+# 		if(is.null(r)){
+# 			next
+# 		}
+# 		for(j in 1:n.runs) {
+# 			err  <- test.rtt(trees[[i]], tip.dates, remove)
+# 			if(!is.null(err)) {
+# 				mse[(j-1)*n.simulated + i] <- err
+# 			}
+# 		}
 	}
 
 	par(mfrow = c(1, 1))

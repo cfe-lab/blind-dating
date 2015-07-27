@@ -17,26 +17,29 @@ n.partitions <- 50
 n.replicates <- 1
 n.tips <- 100
 
-
-# These are somewhat abitrarily set
-lambda <- c(2)
-mu <- c(2)
-sampprob <-c(0.5)
-times<-c(0)
-
-sim.params <- list(rate = 0.001, noise = 0.1)
+sim.params <- list(rate = 0.0003, noise = 0.001)
 sim.clockmodel <- simulate.clock
 
-
 date.branches <- function(s.tree) {
-	tree <- s.tree[[1]]
-	subsr <- s.tree[[2]][, 6]
-	times <- node.depth.edgelength(tree) # s.tree[[2]][, 7] # 
+	tree <- s.tree$phylogram
+	subsr <- s.tree$tree.data.matrix[,6]
+	times <- s.tree$tree.data.matrix[,7]
+
+	# Calculate the cumulative times
+	tree$edge.length <- times
+	times <- node.depth.edgelength(tree)
+
+	tree$edge.length <- subsr
+
 	dates <- unlist(Map(toString,times))[1:n.tips]
 	tree$tip.label <- paste(tree$tip.label, dates, sep='_')
 	tree
 }
 
+sampprob <-c(.99)
+lambda <- c(.007)
+mu <- c(.007)
+times<-c(0)
 
 trees <- apply(matrix(rep(n.tips,n.trees)), 1, sim.bdsky.stt, lambdasky=lambda, deathsky=mu, timesky=times, sampprobsky=sampprob,rho=0,timestop=0)
 trees <- lapply(trees, function(x) {unroot(x[[1]])})
@@ -53,7 +56,7 @@ indel_control <-
   [randomseed]               1568746
 
 [MODEL]    HKY_HIV
-  [submodel] HKY 9.5               
+  [submodel] HKY 8.5               
   [statefreq] 0.42 0.15 0.15 0.28
 
 "

@@ -1,5 +1,5 @@
 library(Hmisc)
-
+source("../common/queue.R")
 
 tree.ed <- function(tree) {
 	l <- length(tree$tip.label)
@@ -12,7 +12,6 @@ tree.ed <- function(tree) {
 build.tree.lm <- function(tree, tip.dates, keep=NULL) {
 	
 	# Input is time
-	l <- length(tip.dates)
 	time <- tip.dates
 	response <- tree.ed(tree)
 
@@ -38,6 +37,64 @@ choose.tips.to.remove <- function(t, tip.dates, remove = 1, random = T) {
 	remove
 	else
 	sample(length(tip.dates), remove, replace = F)
+}
+
+
+# Predicts time from distance
+predict.time <- function(model, dists) {
+	a<-model$coefficients[[1]]
+	b<-model$coefficients[[2]]
+
+	(dists/b - a/b)
+}
+
+##
+
+get.affected.tips <- function(t, edge) {
+	to.remove <- queue(T)
+	tips <- queue(T)
+
+	is.tip <- function(t, i) {
+		if( i <= t$Nnode+1){
+			return(T);
+		}
+		return(F);
+	}
+
+	enqueue(to.remove, t$edge[edge, 2])
+	while(length(to.remove$q) > 0) {
+		node <- dequeue(to.remove)
+
+		if(is.tip(t, node)){
+			enqueue(tips, node)
+		} else {
+			for(next_edg in t$edge[t$edge[,1] == node,2]){
+				enqueue(to.remove, next_edg)
+			}
+		}
+	}
+	unlist(tips$q)
+}
+
+latentize.tree <- function(tr, scale, rename_funct=NULL) {
+	tips <- c()
+
+	for(s in scale){
+		# Choose a branch at random
+		br <- sample(1:(tr$Nnode*2), 1)
+		# print(br)
+
+		# Scale that branch
+		tr$edge.length[br] = tr$edge.length[br] * s
+		tips <- unique(c(tips, get.affected.tips(tr, br)))
+	}
+
+	if(!is.null(rename_funct)) {
+		for(tip in tips) {
+			tr$tip.label[tip] <- rename_funct(tr$tip.label[tip])
+		}
+	}
+	tr
 }
 
 #### 
