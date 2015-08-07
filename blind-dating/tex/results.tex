@@ -5,7 +5,7 @@
 	\centering
 	\includegraphics[trim=0cm 0cm 0cm 6cm, clip=true, scale=0.425]{figures/simulated.pdf} \\
 	\includegraphics[trim=0cm 0cm 0cm 7cm, clip=true,scale=0.425]{figures/simulated_latent.pdf}\\
-	\caption[Examples]{\anote{Add legend, change points, change shading, explain point colouring, explain mean and median lines.}}
+	\caption[Examples]{On the left of each plot is the. The right is a density estimate (with kernel bandwidth=$0.15$) of the distribution of normalized error over all runs,  }
 \end{sidewaysfigure}
 
 \begin{sidewaysfigure} \label{fig:res}
@@ -16,17 +16,29 @@
 \end{sidewaysfigure}
 
 
-\subsection{Simulated Data} \label{sec:sim_results}
-Figure \ref{fig:results1} A shows that the clock is a reliable source of information in this case. Quantitatively, the censored data points are close to the regression line, and the difference density is heavily peaked around 0. Averaged over all simulated data sets, the average mean square error was \anote{X}, and the average median and mean difference were \anote{Y} and \anote{Z} respectively.
+\subsection{Model Validation} \label{sec:sim_results}
+Figure \ref{fig:results1} shows our model validation results over our synthetic data -- here we censor 50\% of the dates, and attempt to reconstruct them. 
+Under the assumption of a strict molecular clock (that evolution is linearly related to time) the clock is a reliable source of information.
+Figure \ref{fig:results1} shows the result for the synthetic data with no latent behaviour.
+Averaged over all simulated data sets, the mean square error was $3\times 10^{-3}$, and the average median and mean difference were 0 and $5\times 10^{-5}$ respectively. 
+Quantitatively, the censored data points are close to the regression line, and the difference density is heavily peaked around 0. 
 
-Figure \ref{fig:results1} B shows the regression over the calibration dates and the simulated collection dates. Note that these dates are not the actual. In this experiment, the density plot is shifted to the right, exemplifying latent behavior. Averaged over all simulated data sets, the average mean square error was \anote{X}, and the average median and mean difference were \anote{Y} and \anote{Z} respectively. However, when we utilized the known sample ages (as opposed to the collection dates) then measured the same metrics, averaged over all simulated data sets, the average mean square error was \anote{X}, and the average median and mean difference were \anote{Y} and \anote{Z} respectively.
+Figure \ref{fig:results1} B shows similar results for the latent simulations -- here we censor 50\% of the dates, attempt to reconstruct them, then compare them to the simulated collection dates. 
+In this case, averaged over all simulated data sets, the mean square error was $7.1\times 10^{-3}$, and the average median and mean difference were $4\times 10^{-2}$ and $5.1\times 10^{-2}$ respectively. 
+This bias is expected, as the errors were calculated between the simulated collection times -- not the simulated archival times.
+More quantitatively, we expect the density plot to be shifted to the right (as it is in figure \ref{fig:results1} B) as this suggests that sequences are older than their sampling dates.
+When we performed the same analysis against the simulated archival times, the results were nearly identical to the results without any latent data, suggesting that we can recover the dates of latent sequences provided an accurate clock.
 
-\subsection{Plasma data-set} \label{sec:rna_only}
+For our final validation, we took the same strategy as the first validation on synthetic data, and applied it to our {\em plasma} data set -- we censored known sampling dates, then attempted to reconstruct them (figure \ref{fig:res} D). 
+Averaged over all simulated data sets, the mean square error was $a\times 10^{-3}$, and the average median and mean difference were $x$ and $c\times 10^{-5}$ respectively. 
+The density plot shows similar behavior to that of the synthetic data, except with a wider distribution, and more variation. 
 
-Figure \ref{fig:results1} C shows the regression over the calibration dates and the collection date. Averaged over all simulated data sets, the average mean square error was \anote{X}, and the average median and mean difference were \anote{Y} and \anote{Z} respectively. The superposition of the difference density plots shows similar behavior to that of \ref{sec:sim_results}, except with a wider distribution, and more variation. Since there is inherently more noise in this data, this is expected. 
+\subsection{Application} \label{sec:mixed_data}
 
-\subsection{Mixed data-set} \label{sec:mixed_data}
+Finally, we tested our methodology on the {\em mixed} data set.
+Figure \ref{fig:results1} D shows the regression over the plasma calibration dates the plasma collection dates. 
+In this case, we do not know the actual date of archival, however, the superposition of the difference density plots shows similar behavior to that of the latent simulated data, except \anote{need new plots for this}.  
 
-Figure \ref{fig:results1} D shows the regression over the calibration dates and the simulated collection date. In this case, we do not know the actual date of archival.  The superposition of the difference density plots shows similar behavior to that of the latent simulated data, except \anote{need new plots for this}.  
+Individuals that had received treatment at some point generally failed the hypothesis test -- there was only one patient that did not -- these individuals were not included in the above analysis. 
+This suggests that after a patient begins treatment, the assumption of a molecular clock over is not valid.
 
-The patients that had received treatment at some point generally failed the hypothesis testing -- there was only one patient that did not. This suggests that after a patient begins treatment, the assumption of a molecular clock over their phylogeny is too strong. 

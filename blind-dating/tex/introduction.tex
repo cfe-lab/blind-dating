@@ -5,12 +5,12 @@ Even though highly active antiretroviral therapy (HAART) can reduce a patient's 
 
 
 Due to selective pressures in the host's immune system and HIV's short generation time, HIV evolves very quickly throughout the course of infection \citep{Alizon13, Shankarappa99, Rambaut04}. 
-Once the virus has integrated itself into a cell, the rate at which it accumulates mutations becomes negligible compared to the rate at which the active population in plasma evolves. 
-If the branch lengths of a phylogeny represent time, then latency manifests as a difference between a sample's collection time and the expected amount of evolution for a sample of its age (Figure \ref{fig:latenttree}). 
-For sequences that are from the active population of virus, this assumption is reasonable because of the clock \citep{Leitner99, Kuhner95, Korber00}.
-However for sequences suspected to be latent, the predicted sampling time represents the time at which evolution effectively stops.
+However, once the virus has integrated itself into a cell, the rate at which it accumulates mutations becomes negligible compared to the rate at which the active population in plasma evolves -- integration effectively pauses the evolution of a particular quasi-species. 
+If the branch lengths of a phylogeny represent time, then latency manifests as a difference between a sample's collection time and it's age according to the clock of the tree (Figure \ref{fig:latenttree}). 
+For sequences that are from the active population of virus, it's not unreasonable to assume a molecular clock \citep{Leitner99, Kuhner95, Korber00} then one can trust, to some degree, the sampling time to be in accordance with the actual age of the sequence.
+However for sequences suspected to be latent, the sampling time may not be in accordance with the expected age of the sample -- yet, if the molecular clock holds true, one can reconstruct the expected age of a sample.
 
-Not much is known about the establishment of latent reservoirs over the course of an infection. 
+Not much is known when latent reservoirs are established over the course of an infection. 
 The chronology of their establishment is of interest because the distribution of ages of the stored virus(es) may provide information as to the types of adaptations that the virus may have accumulated. 
 Specifically, it may have an influence on how those infected cells react to immune-mediated and/or therapeutic treatments. 
 
@@ -24,7 +24,9 @@ We first construct a phylogeny of plasma and PBMC samples from a patient, then c
 Further, we assume that PBMC cells are latent, since they contain only integrated viral DNA, and therefore have ``stopped evolving''.
 
 To assess the sensitivity of our method, we first simulated sequence data with no latent behavior and evaluated the accuracy of the reconstruction. 
-We then simulated and evaluated sequences from a model that exhibits simplified latent behavior \citep{Immonen14}. To mimic the types of results we expected from our first test, we used a previously published set of data to evaluate the reconstruction of dates from only plasma sequences \citep{McCloskey14}. Finally, we tested our methodology on a data-set comprised of patients that had longitudinal samples of both PBMC and plasma sequences. 
+We then simulated and evaluated sequences from a model that exhibits simplified latent behavior. 
+To mimic the types of results we expected from our first test, we used an existing published set of data to evaluate the reconstruction of dates from only plasma sequences \citep{McCloskey14}. 
+Finally, we tested our methodology on a data-set comprised of patients that had longitudinal samples of both PBMC and plasma sequences. 
 If the molecular clock assumption holds for all sequences, and latency merely implies a ``pause'' in the evolution of a sequence, then the clock should be a reliable source of information for latent sequences.
 
 \begin{figure} \label{fig:latenttree}
@@ -32,5 +34,5 @@ If the molecular clock assumption holds for all sequences, and latency merely im
 	\scalebox{5}{\input{figures/example.tex}}
 	\caption[Example of latent behavior]{The dotted line in the above figure is an example of latency. 
 	Sequence A was archived at time $t$, yet was collected at the same time as sequence B, at time $t^\prime$, a drift of $t^\prime - t$ is expected. 
-	If the molecular clock assumption holds true, then the date at $t$ can be inferred from }
+	If the molecular clock assumption holds true, the MRCA is known, and B and C are reliable time-points, then the date at $t$ can be inferred from from the expected amount of evolution for B since the root.}
 \end{figure}
