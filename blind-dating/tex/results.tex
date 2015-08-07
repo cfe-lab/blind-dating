@@ -20,17 +20,17 @@
 Figure \ref{fig:results1} shows our model validation results over our synthetic data -- here we censor 50\% of the dates, and attempt to reconstruct them. 
 Under the assumption of a strict molecular clock (that evolution is linearly related to time) the clock is a reliable source of information.
 Figure \ref{fig:results1} shows the result for the synthetic data with no latent behaviour.
-Averaged over all simulated data sets, the mean square error was $3\times 10^{-3}$, and the average median and mean difference were 0 and $5\times 10^{-5}$ respectively. 
+Averaged over all simulated data sets, the mean square error was $3.0\times 10^{-3}$, and the average median and mean difference were 0 and $5.0\times 10^{-5}$ respectively. 
 Quantitatively, the censored data points are close to the regression line, and the difference density is heavily peaked around 0. 
 
 Figure \ref{fig:results1} B shows similar results for the latent simulations -- here we censor 50\% of the dates, attempt to reconstruct them, then compare them to the simulated collection dates. 
-In this case, averaged over all simulated data sets, the mean square error was $7.1\times 10^{-3}$, and the average median and mean difference were $4\times 10^{-2}$ and $5.1\times 10^{-2}$ respectively. 
+In this case, averaged over all simulated data sets, the mean square error was $7.1\times 10^{-3}$, and the average median and mean difference were $4.0\times 10^{-2}$ and $5.1\times 10^{-2}$ respectively. 
 This bias is expected, as the errors were calculated between the simulated collection times -- not the simulated archival times.
 More quantitatively, we expect the density plot to be shifted to the right (as it is in figure \ref{fig:results1} B) as this suggests that sequences are older than their sampling dates.
 When we performed the same analysis against the simulated archival times, the results were nearly identical to the results without any latent data, suggesting that we can recover the dates of latent sequences provided an accurate clock.
 
 For our final validation, we took the same strategy as the first validation on synthetic data, and applied it to our {\em plasma} data set -- we censored known sampling dates, then attempted to reconstruct them (figure \ref{fig:res} D). 
-Averaged over all simulated data sets, the mean square error was $a\times 10^{-3}$, and the average median and mean difference were $x$ and $c\times 10^{-5}$ respectively. 
+Averaged over all simulated data sets, the mean square error was $1.7\times 10^{-1}$, and the absolute value of average median and mean difference were $2.1\times 10^{-4}$ and $1.9\times 10^{-2}$ respectively. 
 The density plot shows similar behavior to that of the synthetic data, except with a wider distribution, and more variation. 
 
 \subsection{Application} \label{sec:mixed_data}
