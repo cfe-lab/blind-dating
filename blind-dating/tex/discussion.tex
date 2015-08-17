@@ -17,11 +17,15 @@ Typically, we also observed that the rooting method had very little effect on th
 We did, however, identify a case in which RTT rooting fails over outgroup rooting (Figure \ref{fig:degenerate_example} shows an example of this). 
 Specifically, it's possible for the calibration dates to provide insufficient data to resolve the root of the tree. 
 We theorize that this is, for patient 820, because their calibration samples are strongly localized in time, which allows too much freedom (temporally) over the possible roots of the tree. 
-This suggests that after a patient begins treatment, the assumption of a molecular clock over is not valid.
 
 \begin{figure*}[!ht] \label{fig:degenerate_example}
 	\centering
 	\includegraphics[scale=0.425]{figures/rtt.pdf} \\
 	\caption[Example of bad root]{\anote{placeholder} Case in which root to tip rooting fails}
 \end{figure*}
+
+We also noticed that the patients who had begun treatment (regardless of whether or not they regressed) typically failed the hypothesis testing. Upon analysing the clocks of these individuals, they showed two trends. 
+The first trend, in patients who had regressed after treatment, was the ``resetting'' of the molecular clock -- that is, after treatment started, the clock was set to a previous point in time, then continued as it had before after treatment failed. 
+For patients who had successfully been treated, there appeared to be an emergence of a clock with near zero slope after treatment.
+This suggests that after a patient begins treatment, the assumption of a molecular clock  is not valid over the whole temporal range of the phylogeny. 
 
