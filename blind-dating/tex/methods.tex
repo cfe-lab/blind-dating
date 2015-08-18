@@ -1,6 +1,6 @@
 \section{Methods} \label{sec:methods}
 \subsection{Simulated Data} \label{subsec:simdata}
-We first used seed phylogenies generated via a birth death model (with birth and death rate equal to $7\times 10^{-3}$ and with a 99\% chance of being sampled) in the R package TreeSim \citep{TreeSim, Stradler13, Boskova14}, and assign a clock to these trees (with rate$ \= \ 3\times 10^{-4}$ substitutions per site/day, and with noise pulled from a normal distribution with $\sigma \= \ 1\times 10^{-4}$.
+We first used seed phylogenies generated via a birth death model (with birth and death rate equal to $7\times 10^{-3}$ and with a 99\% chance of being sampled) in the R package TreeSim \citep{TreeSim, Stradler13, Boskova14}, and assign a clock to these trees (with rate$ = \ 3\times 10^{-4}$ substitutions per site/day, and with noise pulled from a normal distribution with $\sigma = \ 1\times 10^{-4}$.
 We then used INDELible 1.03 \citep{Indelible09} to simulated nucleotide sequences along these seed phylogenies with an HKY85 \citep{HKY85} substitution model, and  parameters set from a maximum likelihood estimate of published within host data \citep{McCloskey14}. 
 From these simulated sequences a maximum likelihood phylogeny was then reconstructed with FastTree2 \citep{FastTree10}.
 We attempted phylogenetic reconstruction with RAxML \citep{Raxml14}, but FastTree2 proved to be much faster with little (if any) effect on the results. 
