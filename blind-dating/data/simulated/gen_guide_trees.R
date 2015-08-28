@@ -8,16 +8,13 @@ library(ape)
 library(TreeSim)
 library(NELSI)
 
-#source('../rtt.R')
-#source('../test.R')
-
 # Number of guide trees to create
 n.trees <- 10
 n.partitions <- 50
 n.replicates <- 1
 n.tips <- 100
 
-sim.params <- list(rate = 0.0003, noise = 0.001)
+sim.params <- list(rate = 0.0003, noise = 0.0001)
 sim.clockmodel <- simulate.clock
 
 date.branches <- function(s.tree) {
@@ -43,7 +40,6 @@ times<-c(0)
 
 trees <- apply(matrix(rep(n.tips,n.trees)), 1, sim.bdsky.stt, lambdasky=lambda, deathsky=mu, timesky=times, sampprobsky=sampprob,rho=0,timestop=0)
 trees <- lapply(trees, function(x) {unroot(x[[1]])})
-#trees <- apply(matrix(rep(n.tips,n.trees)), 1, rtree)
 sim.trees <- lapply(trees, sim.clockmodel, params=sim.params)
 trees <- lapply(sim.trees, date.branches)
 

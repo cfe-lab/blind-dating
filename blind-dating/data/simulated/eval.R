@@ -55,43 +55,31 @@ hiv.rna.read <- function(){
 	lapply(trs, ml.tree.read)
 }
 
-# trees <- mclapply(1:n.simulated, ml.tree, mc.cores=1)
+ trees <- mclapply(1:n.simulated, ml.tree, mc.cores=1)
 #trees <- hiv.rna.read()
-trees <- trees.read("trees")
-print(trees)
+# trees <- trees.read("trees")
+# print(trees)
 
-n.simulated <- length(trees)
-run_name <- "HIV RNA"
-species <- "Simulated"
-n.runs <- 100
+# n.simulated <- length(trees)
+# run_name <- "HIV RNA"
+# species <- "Simulated"
+# n.runs <- 100
 
-for(remove in c(1, 5, 10, 25)){
-	pdf(sprintf('%s_%d.pdf', run_name, remove), width=11.5, height=8.5)
+# for(remove in c(1, 5, 10, 25)){
+# 	pdf(sprintf('%s_%d.pdf', run_name, remove), width=11.5, height=8.5)
 
-	mse <- rep(0, n.simulated*n.runs)
-	for(i in 1:n.simulated){
-# 		if(length(trees[[i]]$tip.label) <= remove) {
-# 			next
-# 		}
-print(trees[[i]]$tip.label)
-		tip.dates <- extract_dates(trees[[i]]$tip.label)
-		r <- test.n.plot.rtt(trees[[i]], tip.dates, remove, name=sprintf("%s: %s-no.%d (Remove %d)", run_name, species, i, remove))
-# 		if(is.null(r)){
-# 			next
-# 		}
-# 		for(j in 1:n.runs) {
-# 			err  <- test.rtt(trees[[i]], tip.dates, remove)
-# 			if(!is.null(err)) {
-# 				mse[(j-1)*n.simulated + i] <- err
-# 			}
-# 		}
-	}
+# 	mse <- rep(0, n.simulated*n.runs)
+# 	for(i in 1:n.simulated){
 
-	par(mfrow = c(1, 1))
-	mean_mse <- mean(mse)
-	hist(mse, breaks=100,  main="Histogram of MSE", sub=sprintf("(Average MSE [in red]: %s)", signif(mean_mse, digits=6)))
-	abline(v = mean_mse, col = "red", lwd = 2)
-	dev.off()
-}
+# 		tip.dates <- extract_dates(trees[[i]]$tip.label)
+# 		r <- test.n.plot.rtt(trees[[i]], tip.dates, remove, name=sprintf("%s: %s-no.%d (Remove %d)", run_name, species, i, remove))
+# 	}
+
+# 	par(mfrow = c(1, 1))
+# 	mean_mse <- mean(mse)
+# 	hist(mse, breaks=100,  main="Histogram of MSE", sub=sprintf("(Average MSE [in red]: %s)", signif(mean_mse, digits=6)))
+# 	abline(v = mean_mse, col = "red", lwd = 2)
+# 	dev.off()
+# }
 
 
