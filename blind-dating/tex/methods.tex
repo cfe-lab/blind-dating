@@ -1,36 +1,35 @@
-\section{Methods} \label{sec:methods}
-\subsection{Simulated Data} \label{subsec:simdata}
-We first used seed phylogenies generated via a birth death model (with birth and death rate equal to $7\times 10^{-3}$ and with a 99\% chance of being sampled) in the R package TreeSim \citep{TreeSim, Stradler13, Boskova14}, and assign a clock to these trees (with rate$ = \ 3\times 10^{-4}$ substitutions per site/day, and with noise pulled from a normal distribution with $\sigma = \ 1\times 10^{-4}$.
-We then used INDELible 1.03 \citep{Indelible09} to simulated nucleotide sequences along these seed phylogenies with an HKY85 \citep{HKY85} substitution model, and  parameters set from a maximum likelihood estimate of published within host data \citep{McCloskey14}. 
-From these simulated sequences a maximum likelihood phylogeny was then reconstructed with FastTree2 \citep{FastTree10}.
-We attempted phylogenetic reconstruction with RAxML \citep{Raxml14}, but FastTree2 proved to be much faster with little (if any) effect on the results. 
+\section * {Methods} \label{sec:methods}
+\subsection * {Simulated Data} \label{subsec:simdata}
+
+We first generated phylogenies via a birth-death model (with birth and death rates both arbitrarily chosen equal to $7\times 10^{-3}$ and with a 99\% chance of being sampled) in the R package TreeSim \citep{TreeSim, Stradler13, Boskova14}, and assigned a clock to these trees (with rate $ = \ 3\times 10^{-4}$ substitutions per generation, and with noise variation modeled from a normal distribution with $\sigma = \ 1\times 10^{-4}$, figure \ref{fig:seedtree} for an example).
+These trees were then used as {\em seed trees} within INDELible 1.03 \citep{Indelible09}, which simulated nucleotide sequence evolution along each lineage with an HKY85 \citep{HKY85} substitution model.
+Parameters for the substitution model had been set from a maximum likelihood estimate of published within host data \citep{McCloskey14}. 
+From these simulated sequences a maximum likelihood phylogeny was reconstructed with FastTree2 \citep{FastTree10}.
+Similar results were obtained with trees reconstructed using RAxML \citep{Raxml14}, which is expected to be more accurate, but requires orders of magnitudes more computations.
 In total, we generated 50 trees without latency, each having 100 tips. 
 
-There do exist approaches to simulate latent sequences \citep{Immonen14},yet our assumptions about latency are more simplified than those of \cite{Immonen14} so we take a slightly different approach.
-We assume at most one latency period per sample, and that once a cell becomes latent it remains latent. 
-Therefore, to simulate latency, we choose 50 tips uniformly at random, then shorten their expected number substitutions and their branch time (the time between the tip, and the tip's parent) by some scalar amount drawn from a beta distribution with parameters $\alpha=1, \beta=200$.
-We then recorded both the simulated age and simulated collection time and generated sequences along these latent seed trees with INDELible 1.03 \citep{Indelible09} and the same parameters above. 
-From these simulated sequences a maximum likelihood phylogeny was then reconstructed with FastTree2 \citep{FastTree10}.
-For these data, we generated an additional 50 trees with 100 tips, bringing the total amount of simulated data to 100 trees with 100 tips each. 
+To simulate sequences that display latent behaviour we take an approach similar to that of \cite{Immonen14}. We however make the simplifying assumption that there is only one latent period per lineage, and that once a cell becomes latent, it remains latent.
+Therefore, to simulate latency, we chose 50 tips uniformly at random, then shortened their expected number substitutions and their branch time (the time between the tip, and the tip's parent) by some scalar amount drawn from a beta distribution with parameters $\alpha=1, \beta=200$.
+We then recorded both the simulated age and simulated collection time and generated sequences along these latent seed trees with INDELible and the same parameters as above. 
+For these data, we generated an additional 50 trees with 100 tips each, bringing the total amount of simulated data to 100 trees.
 
 
-\subsection{Data Collection} \label{subsec:dcollection}
-We collected two distinct sets of data for our experiments, the first is the {\em plasma} data set, which contains data collected from studies in which only viral RNA had been collected from individuals. 
-The second data set, the {\em mixed} data set, contains sequences from studies in which both viral RNA in plasma and integrated viral DNA from PBMC cells had been collected.
-
+\subsection * {Data Collection} \label{subsec:dcollection}
+We collected two distinct sets of data for our experiments. The first we refer to as the {\em plasma} data set, which contains data collected from studies in which only viral RNA in plasma had been collected from individuals. 
+The second data set, the {\em mixed} data set, contains sequences from studies in which both viral RNA in plasma and integrated viral DNA from PBMC cells had been collected from the same individual.
 Specifically, the {\em plasma} data set \citep{McCloskey14} is a previously assembled and cleaned data set from the Los Alamos HIV Database (\href{http://www.hiv.lanl.gov/}{http://www.hiv.lanl.gov/}). 
-This data set contains 335 data sets from 232 patients, with a total of over 19,000 sequences \citep{McCloskey14} containing mostly longitudinal samples collected from plasma. 
-From this set, we selected treatment naive patients with two or more clonal or single-genome sequences available at each time point, with a known time-line relative to one of several reference points: HIV infection, seroconversion or presentation of symptomatic seroconversion illness. 
-The samples were collected within 186 days of this reference point, and at least one of the subsequent ``follow-up'' time points occurred a minimum of 6 months after baseline.
-Patients who had been classified as ``superinfected'' were also excluded, and the samples were taken from the {\em env} region of the HIV-1 genome \citep{McCloskey14}. 
-From this data set we use 550 plasma samples from 11 specific patients. 
+This data set contains 335 sets of samples from 232 patients, with over 19,000 sequences \citep{McCloskey14} containing longitudinal samples from the {\em env} region of the HIV-1 genome collected from plasma. 
+From this set, we selected treatment naive patients with two or more clonal or single-genome sequences available at each time point, and with a known time-line relative to one of several reference points: HIV infection, seroconversion or presentation of symptomatic seroconversion illness. 
+The baseline samples were collected within 186 days of this reference point, and at least one of the subsequent ``follow-up'' time points occurred a minimum of 6 months after baseline.
+Patients who had been classified as ``superinfected'' were also excluded \citep{McCloskey14}. 
+From this data set, 550 plasma samples from 11 specific patients remained after filtering.
 
 
-For the {\em mixed} data set, we used the Los Almos advanced search interface (\href{http://www.hiv.lanl.gov/}{http://www.hiv.lanl.gov/}) to identify subjects who have had both viral RNA and integrated DNA from PBMC cells collected over various time points -- we selected individuals from published studies that had well-characterized partial {\em env} sequences. 
-There was no condition for the time between sample collections. 
+For the {\em mixed} data set, we used the Los Alamos advanced search interface (\href{http://www.hiv.lanl.gov/}{http://www.hiv.lanl.gov/}) to identify subjects who have had both viral RNA from plasma and integrated DNA from PBMC cells collected over various time points. We manually selected individuals from published studies that had well-characterized partial {\em env} sequences. 
+There was no condition on the time between sample collection. 
 25 individuals were included with plasma samples from at least 2 time points (table \ref{tab:patients}).
 A total of 1249 partial {\em env} sequences from blood plasma, and 1914 partial {\em env} sequences from PBMC cells were used in our analysis. 
-We utilized samples from treatment naive individuals \citep{Shankarappa99, Novitsky09}, from individuals that had been treated via HAART \citep{Llewellyn06}, and individuals that had been on HAART, but ceased treatment \citep{Fischer04}. 
+We utilized samples from treatment naive individuals from \cite{Shankarappa99, Novitsky09}, samples from individuals that had been treated via HAART from \cite{Llewellyn06}, and samples from individuals that had been on HAART, but ceased treatment \cite{Fischer04}. 
  
 \begin{table*}[!ht]
 \def\arraystretch{1.3}%
@@ -71,49 +70,44 @@ Reference & Patient ID & \multicolumn{3}{c}{Sequences} & \multicolumn{3}{c}{Time
    }\label{tab:patients} 
 \end{table*}
 
-\subsection{Sequence Aligment} \label{subsec:seqalign}
-When applicable, we used the built in MUSCLE 3.8.31 \citep{Muscle04} interface within AliView \citep{AliView14} to align the sequences, which were then visually inspected and cleaned. 
-Alignments were trimmed to the interval in which at least  50\% of sequences within the data set had sequence coverage over each codon.
-Our simulated sequences contained no insertions or deletions, so no alignment was necessary. 
+\subsection * {Sequence Aligment} \label{subsec:seqalign}
+When applicable, we used MUSCLE 3.8.31 \citep{Muscle04} to align the patient-derived sequences, which were then visually inspected and cleaned within AliView \citep{AliView14}. 
+Alignments were manually trimmed to the interval in which at least  50\% of sequences within the data set had coverage over each base.
+Since the simulated sequence data contained no insertions or deletions, no alignment of these data was necessary. 
 Additionally, the plasma data set \citep{McCloskey14} had already been aligned and cleaned, so no further alignment was performed.
 
 
-\subsection{Phylogenetic Reconstruction} \label{subsec:phylo}
-In all experiments, our reconstructed phylogenies were maximum likelihood phylogenies reconstructed in FastTree2 \citep{FastTree10} using the GTR model.
-We did not attempt to use BEAST \citep{BEAST} to reconstruct any phylogenies from our data.
-Leaving dates unspecified on the number of tips would have drastically increased the dimensionality of the problem, and we would therefore need a prohibitively large amount of samples from the MCMC chain to assure convergence to the posterior distribution.
-
-To root these trees, either outgroup rooting against the HIV-1 B ancestor (\href{http://www.hiv.lanl.gov/}{http://www.hiv.lanl.gov/}) reconstruction, or a modified version of RTT regression \citep{APE}. 
-Classically, RTT regression considers all tips and chooses the root that minimizes some error metric between the maximum likelihood estimated clock and the tip dates. 
-For this application, we simply ignore the tips that are undetermined (either censored or otherwise unknown) in the optimization of the root. 
-Our synthetic data was only rooted using this modified RTT scheme, for all real data, both outgroup rooting and RTT regression were used to root the phylogeny. 
+\subsection * {Phylogenetic Reconstruction} \label{subsec:phylo}
+In all experiments, our reconstructed phylogenies were maximum likelihood phylogenies reconstructed in FastTree2 using the GTR model.
+We evaluated two different methods for rooting these trees. The first method is outgroup rooting, in which we chose a taxon that was related to the other taxon, but genetically different enough to resolve the root of the tree, specifically, we chose to root against the HIV-1 B ancestor (\href{http://www.hiv.lanl.gov/}{http://www.hiv.lanl.gov/}) reconstruction
+The second method we used to root our trees was a modified version root-to-tip regression (RTT), in which the tree is systematically re-rooted at every possible internal node, then the root that optimizes an error criterion is selected.
+In our experiments, we chose the maximum correlation between the known dates and the evolutionary distance.
+Typically, RTT regression uses dates from all tips in its optimization, for this application, we ignored the tips that were undetermined (either censored or otherwise unknown) in the optimization of the root. 
+Our synthetic data was only rooted using this modified RTT scheme; for all real data, both outgroup rooting and RTT regression were used to root the phylogeny. 
 
 
-
-\subsection{Date Reconstruction} \label{subsec:daterecon}
-Once the trees had been rooted, to reconstruct dates, a general linear model with the normal family was constructed. 
+\subsection * {Date Reconstruction} \label{subsec:daterecon}
+We used a general linear model with the normal family to infer the association between the tip dates and sequence divergence from the root. 
 The expected amount of evolution was taken to be the response and the sampling dates of the data were taken as the input. 
 These models were only calibrated over the uncensored/plasma data for the simulated and real data sets respectively.
-We then use that linear model to predict the dates of the latent/unknown sequences.
-
-
-\subsection{Hypothesis Testing} \label{subsec:hypot}
-To screen for data that are amenable to our analysis, we used the nested log ratio test \citep{Ho14}. 
+We then used the linear model to predict the dates of the latent/unknown sequences.
+To screen for data that were amenable to our analysis, we used the nested log ratio test \citep{Ho14}. 
 Our null model was a linear model with zero slope over the expected amount of evolution over time. 
-We rejected any sequence data sets whose phylogeny couldn't reject the null model with threshold $\alpha=0.01$.
+We rejected any sequence data sets whose phylogeny couldn't reject the null model with threshold $\alpha=0.01$, since this implied a lack of phylogenetic signal.
 
 
-\subsection{Experiments} \label{subsec:experiments}
-For all experiments where it was possible, we used three error metrics to assess  our methodology: the mean square error for predicted date, as well as the mean and median difference between the predicted date and sampling date, where difference defined as simply the predicted date minus the observed date.
-To facilitate comparisons among longitudinal data sets, before any analysis was done all tip dates were re-scaled to lie between $0$ and $1$. 
-Explicitly, we take $$ \text{new time} = \frac{\text{time} - \text{min time}}{\text{max time} - \text{min time}}$$ which gives {\em normalized time}. Our error metrics are then calculated from this number. This gives normalized mean square error, normalized mean difference, and normalized median difference. 
+\subsection * {Experiments} \label{subsec:experiments}
+We used three error metrics to assess our methodology: the mean square error for predicted date, as well as the mean and median difference between the predicted date and sampling date, where difference defined as simply the predicted date minus the observed date.
+Before any analysis was done, all tip dates were re-scaled to lie between $0$ and $1$ to facilitate comparisons among longitudinal data sets. 
+Using the formula  $$ t_{normalized} = \frac{t - \min(\bf{t}) }{ \max{(\bf{t})} - \min{(\bf{t}})}$$ where $t$ is the the unscaled time of any tip, and $\bf{t}$ is the vector of all tip dates for a given tree, we call this {\em normalized time}. Our error metrics were then calculated from these normalized times, giving normalized mean square error, normalized mean difference, and normalized median difference. 
 
-Our first validation experiment on synthetic data was preformed as such: first we choose 50\% of the tips of a simulated phylogeny and censored those dates, we next used our  modified RTT regression \citep{APE} on the remaining data to calibrate the phylogeny's molecular clock. 
-For each censored date we reconstructed the expected date using the expected number of substitutions, then collected the three error metrics above.
-For the simulated latent data, we collected the normalized mean square error, normalized mean difference, and normalized median difference, between both the simulated collection dates. We also collect these for the known ``archival'' date.
+Our first validation experiment on simulated data was preformed as such: first we choose 50\% of the tips of a simulated phylogeny and censored those dates, we next used our  modified RTT regression \citep{APE} on the remaining data to calibrate the phylogeny's molecular clock. 
+For each censored date we reconstructed the expected date using the regression model defined above, then collected the three error metrics above.
+For the simulated latent data, we collected the normalized mean square error, normalized mean difference, and normalized median difference. 
+We also collect these for the known ``archival'' date.
 
 To evaluate the effectiveness of this methodology on real data, we utilized our {\em plasma} data set \citep{McCloskey14} and performed similar experiments. 
-For every applicable patient, we censored 50\% of their known sampling dates then reconstructed the censored dates using a linear model calibrated over the uncensored dates. 
+As before, we censored 50\% of their known sampling dates then reconstructed the censored dates using a linear model calibrated over the uncensored dates. 
 We also performed this experiment with RTT regression rooting and out-group rooting. The goal of this experiment was to parallel the type of results of the first experiment on simulated data. 
 
 Finally, we looked at our {\em mixed} data set comprised of both PBMC and plasma data. 
