@@ -39,17 +39,7 @@ choose.tips.to.remove <- function(t, tip.dates, remove = 1, random = T) {
 	sample(length(tip.dates), remove, replace = F)
 }
 
-
-# Predicts time from distance
-predict.time <- function(model, dists) {
-	a<-model$coefficients[[1]]
-	b<-model$coefficients[[2]]
-
-	(dists/b - a/b)
-}
-
 ##
-
 get.affected.tips <- function(t, edge) {
 	to.remove <- queue(T)
 	tips <- queue(T)
@@ -114,13 +104,13 @@ test.rtt.err <- function(t, tip.dates, remove = 1, random = T) {
 		return(NULL)
 	}
 
-	t <- rtt(t, mdates)
+	t <- rtt(t, mdates, ncpu=8)
 
 	(t$tip.dates - tip.dates)
 }
 
 test.rtt <- function(t, tip.dates, remove = 1, random = T) {
-	sum(test.trr.err(t, tip.dates, remove, random)^2)/remove
+	sum(test.rtt.err(t, tip.dates, remove, random)^2)/remove
 }
 
 test.n.plot.rtt <- function(t, tip.dates, remove = 10, random = T, name="") {
@@ -148,18 +138,23 @@ plot.branchlen.date <- function(tr, tip.dates, tip.dates.recon=NULL, err=0, name
 
 	distances <- tip.lengths[valid.indices]
 	times <- tip.dates[valid.indices]
-	model <- lm(times ~ distances)
+	model <- lm(distances ~ times) # times ~ distances)
+
+	#  
+	a<-model$coefficients[[1]]
+  	b<-model$coefficients[[2]]
 
 	par(mfrow=c(1, 2), pin=c(5,4), mar=c(10, 8, 8, 2) + 0.1)
 	plot(distances, times, main="Time vs Distance", sub=sprintf("(Mean square error: %s)", signif(err, digits=6)),
 		xlab="Expected Substitutions", ylab="Time")
+
 	abline(model)
 
 	if(!is.null( tip.dates.recon)){
 		distancesm <- tip.lengths[missing.indices]
 		timesm <- tip.dates.recon[missing.indices]
 
-		ptimes <- predict(model, data.frame(distances=tip.lengths[missing.indices]))
+		ptimes <- (tip.lengths[missing.indices]/b - a/b)
 		delta <- timesm-ptimes
 
 		errbar(distancesm, timesm, timesm, ptimes,cap=0,col="red", add=T)

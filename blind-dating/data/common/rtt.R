@@ -66,7 +66,7 @@ rtt <- function (t, tip.dates, ncpu = 1, objective = "correlation",
   valid.indices <- which(!is.na(tip.dates))
   
   ut <- unroot(t)
-  dist <- dist.nodes(ut)[, 1:(ut$Nnode + 2)]
+  dist <- dist.nodes(ut) 
   
   # Save the tip labels, they might get reordered during the re-root
   # which would muss up th ordering of tip.dates
@@ -113,7 +113,7 @@ rtt <- function (t, tip.dates, ncpu = 1, objective = "correlation",
   permutation <- as.integer(rt$tip.label)
   tip.dates <- tip.dates[permutation]
   rt$tip.label <- saved.tips[permutation]
-  
+
   # Due to the potential reordering, we need to 
   # re-define these
   valid.indices <- which(!is.na(tip.dates))
