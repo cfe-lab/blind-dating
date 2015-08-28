@@ -7,7 +7,7 @@ library(MASS)
 library(RColorBrewer)
 library(BSDA)
 
-source('include/rtt.R')
+source('../common/rtt.R')
 
 rf <- colorRampPalette(rev(brewer.pal(11,'Spectral')))
 r <- rf(32)
