@@ -1,5 +1,6 @@
 library(ape)
-source('include/raxml.R')
+source('../common/raxml.R')
+source('../common/fasttree.R')
 
 patients <- c(
 	10137, 10138, 10586, 10769, 10770, 
@@ -12,6 +13,7 @@ patients <- c(
 
 for(p in patients) {
 	dna <- read.FASTA(sprintf('aligned/patient_%d.fasta', p))
-	tree <- raxml(dna, N=100, parsimony.seed=10000, bootstrap.seed=1000, outgrp="REFERENCE")
+	tree <- fasttree(dna)
+	# tree <- raxml(dna, N=100, parsimony.seed=10000, bootstrap.seed=1000, outgrp="REFERENCE")
 	write.tree(tree, sprintf('tree/patient_%d.tre', p))
 }

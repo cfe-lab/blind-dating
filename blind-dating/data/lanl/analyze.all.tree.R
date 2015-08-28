@@ -1,10 +1,8 @@
 library(ape)
 library(parallel)
 
-#source('ape.patches.R')
-source('include/rtt.R')
-# source('include/test.R')
-source('include/raxml.R')
+source('../common/rtt.R')
+source('../common/raxml.R')
 
 trim <- function (x) gsub("^\\s+|\\s+$", "", x)
 extract_dates <- function(x) as.numeric(gsub("(.+)_([0-9\\.]+)$", "\\2", x, perl=T))
@@ -12,7 +10,7 @@ extract_dates <- function(x) as.numeric(gsub("(.+)_([0-9\\.]+)$", "\\2", x, perl
 hiv.rna.read <- function(){
 	trs <- dir('./trees.good')[grep('.tre', dir('./trees.good'))]
 	ml.tree.read <- function(tr) {
-		drop.tip(read.tree(paste('./trees.good', tr, sep='/')), "REFERENCE")
+		drop.tip(root(read.tree(paste('./trees.good', tr, sep='/')), "REFERENCE"), "REFERENCE")
 	}
 	lapply(trs, ml.tree.read)
 }
@@ -66,15 +64,23 @@ b<-model$coefficients[[2]]
 # # (pbmc.dists/b - a/b)
 
 plot(
-	plasma.dates, plasma.dists, 
+	jitter(plasma.dates), plasma.dists, 
 	xlab="Time (days)", 
-	ylab="Expected Number of Subs.")
-mtext("D) DNA and RNA", side=3, adj=0, line=1.1, cex=1.5, font=2); 
-points(pbmc.s.dates, pbmc.dists, col="red")
+	ylab="Expected Number of Subs.", pch=20,  cex=1.2, tck=.01,  axes=F)
+mtext("D) Mixed Data-set", side=3, adj=0, line=1.1, cex=1.5, font=2); 
+points(jitter(pbmc.s.dates), pbmc.dists, col="red", pch=5,  cex=1.2)
 abline(model)
+
+legend(1900, 0.055, c("Plasma Sequence", "PBMC Sequence"), col = c("black", "red"),
+        lty = c(-1, -1), pch = c(20, 5),
+       merge = TRUE, bg = par("bg"), cex=1.2)
+
+axis(side=1, at=seq(0, 4000, by=250), tck=.01)
+axis(side=2, at=seq(0, 100, by=0.05), tck=.01)
+box()
 # ##
 
-plot(c(100,100), xlim=c(-1,1), ylim=c(0, 2.5), xlab="Normalized Error", ylab="Density")
+plot(c(-100,-100), xlim=c(-1,1), ylim=c(0, 2.5), xlab="Normalized Error", ylab="Density")
 # add <- F
 errs <- c()
 
@@ -123,6 +129,12 @@ for(i in 1:n.simulated) {
 abline(h = 0, col = "black", lwd = 1)
 abline(v = mean(errs), col = "black", lwd = 2) 
 abline(v = median(errs), col = "red", lwd = 2) 
+
+
+print(sum(errs*errs)/length(errs))
+print(median(errs))
+print(mean(errs))
+
 warnings()
 dev.off()
 
