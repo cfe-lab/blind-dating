@@ -9,7 +9,7 @@ source('../common/queue.R')
 trim <- function (x) gsub("^\\s+|\\s+$", "", x)
 extract_dates <- function(x) as.numeric(gsub("(.+)_([0-9\\.]+)$", "\\2", x, perl=T))
 extract_tag <- function(x) (gsub("(.+)_([0-9\\.]+)$", "\\1", x, perl=T))
-
+n.simulated <- 50
 trees.read <- function(base.path) {
 	ml.tree.read <- function(i, path){
 		read.tree(sprintf("%s/HIV_ml_%d_out.nwk", path, i))
@@ -19,7 +19,6 @@ trees.read <- function(base.path) {
 
 # Read al the trees
 trees <- trees.read("trees/")
-n.simulated <- length(trees)
 species <- "Simulated"
 n.runs <- 1
 
@@ -86,7 +85,6 @@ for(i in 1:n.simulated){
 		errs <- c(errs, err)
 	}
 
-	print(rerr)
 	d <- density(rerr, bw=0.15) #// adjust = 10)
 	enqueue(dens, d)
 
