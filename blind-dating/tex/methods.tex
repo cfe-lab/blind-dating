@@ -9,7 +9,7 @@ Similar results were obtained with trees reconstructed using RAxML \citep{Raxml1
 In total, we generated 50 trees without latency, each having 100 tips. 
 
 To simulate sequences that display latent behaviour we take an approach similar to that of \cite{Immonen14}. We however make the simplifying assumption that there is only one latent period per lineage, and that once a cell becomes latent, it remains latent.
-Therefore, to simulate latency, we chose 50 tips uniformly at random, then shortened their expected number substitutions and their branch time (the time between the tip, and the tip's parent) by some scalar amount drawn from a beta distribution with parameters $\alpha=1, \beta=200$.
+Therefore, to simulate latency, we chose 50 tips uniformly at random, then shortened their expected number of substitutions and their branch time (the time between the tip, and the tip's parent) by some scalar amount drawn from a beta distribution with parameters $\alpha=1, \beta=200$.
 We then recorded both the simulated age and simulated collection time and generated sequences along these latent seed trees with INDELible and the same parameters as above. 
 For these data, we generated an additional 50 trees with 100 tips each, bringing the total amount of simulated data to 100 trees.
 
@@ -28,7 +28,7 @@ From this data set, 550 plasma samples from 11 specific patients remained after 
 For the {\em mixed} data set, we used the Los Alamos advanced search interface (\href{http://www.hiv.lanl.gov/}{http://www.hiv.lanl.gov/}) to identify subjects who have had both viral RNA from plasma and integrated DNA from PBMC cells collected over various time points. We manually selected individuals from published studies that had well-characterized partial {\em env} sequences. 
 There was no condition on the time between sample collection. 
 25 individuals were included with plasma samples from at least 2 time points (table \ref{tab:patients}).
-A total of 1249 partial {\em env} sequences from blood plasma, and 1914 partial {\em env} sequences from PBMC cells were used in our analysis. 
+A total of 1,249 partial {\em env} sequences from blood plasma, and 1914 partial {\em env} sequences from PBMC cells were used in our analysis. 
 We utilized samples from treatment naive individuals from \cite{Shankarappa99, Novitsky09}, samples from individuals that had been treated via HAART from \cite{Llewellyn06}, and samples from individuals that had been on HAART, but ceased treatment \cite{Fischer04}. 
  
 \begin{table*}[!ht]
@@ -71,7 +71,7 @@ Reference & Patient ID & \multicolumn{3}{c}{Sequences} & \multicolumn{3}{c}{Time
 \end{table*}
 
 \subsection * {Sequence Aligment} \label{subsec:seqalign}
-When applicable, we used MUSCLE 3.8.31 \citep{Muscle04} to align the patient-derived sequences, which were then visually inspected and cleaned within AliView \citep{AliView14}. 
+When applicable, we used MUSCLE 3.8.31 \citep{Muscle04} to align the patient-derived sequences, which were then visually inspected and cleaned with AliView \citep{AliView14}. 
 Alignments were manually trimmed to the interval in which at least  50\% of sequences within the data set had coverage over each base.
 Since the simulated sequence data contained no insertions or deletions, no alignment of these data was necessary. 
 Additionally, the plasma data set \citep{McCloskey14} had already been aligned and cleaned, so no further alignment was performed.
@@ -80,7 +80,7 @@ Additionally, the plasma data set \citep{McCloskey14} had already been aligned a
 \subsection * {Phylogenetic Reconstruction} \label{subsec:phylo}
 In all experiments, our reconstructed phylogenies were maximum likelihood phylogenies reconstructed in FastTree2 using the GTR model.
 We evaluated two different methods for rooting these trees. The first method is outgroup rooting, in which we chose a taxon that was related to the other taxon, but genetically different enough to resolve the root of the tree, specifically, we chose to root against the HIV-1 B ancestor (\href{http://www.hiv.lanl.gov/}{http://www.hiv.lanl.gov/}) reconstruction
-The second method we used to root our trees was a modified version root-to-tip regression (RTT), in which the tree is systematically re-rooted at every possible internal node, then the root that optimizes an error criterion is selected.
+The second method we used to root our trees was a modified version of root-to-tip regression (RTT), in which the tree is systematically re-rooted at every possible internal node, then the root that optimizes an error criterion is selected.
 In our experiments, we chose the maximum correlation between the known dates and the evolutionary distance.
 Typically, RTT regression uses dates from all tips in its optimization, for this application, we ignored the tips that were undetermined (either censored or otherwise unknown) in the optimization of the root. 
 Our synthetic data was only rooted using this modified RTT scheme; for all real data, both outgroup rooting and RTT regression were used to root the phylogeny. 
