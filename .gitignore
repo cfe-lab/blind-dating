@@ -1,0 +1,8 @@
+*.pdf
+*.bbl
+*.log
+*.out
+*.pdf
+*.gz
+bin/
+
