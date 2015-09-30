@@ -2,6 +2,7 @@ library(ape)
 library(parallel)
 
 #source('ape.patches.R')
+setwd('~/git/blind-dating/data/latent_sim')
 source('../common/rtt.R')
 source('../common/test.R')
 source('../common/raxml.R')

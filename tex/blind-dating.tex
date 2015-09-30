@@ -123,8 +123,9 @@ Finally, we applied our method to characterize the integration dates of viral li
 % we may need to provide some justification for using BD
 To assess the sensitivity of our method, we first simulated HIV sequence data sets without viral latency and evaluated the accuracy of predicting sample collection times from a strict molecular clock model that was fit to a training subset of these data. 
 First, we generated phylogenies with 100 tips each under a birth-death model with serial sampling using the sim.bdsky.stt function in the \textit{R} package TreeSim \citep{Boskova14}.
-Birth-death models have been applied to studying speciation \citep{Nee:2006} and infectious disease epidemics \citep{Stradler13}, but only recently have been used to model the proliferation of virus lineages in cell populations \citep{Hartfield:2015}.
-Lineage birth and death rates were arbitrarily set to $7\times 10^{-3}$ and the sampling probability was set to 0.99.
+Birth-death models have been applied to studying speciation processes \citep{Nee:2006} and infectious disease epidemics \citep{Stradler13}, but have only recently been used to model the proliferation of virus lineages in cell populations \citep{Hartfield:2015}.
+% we may get some flak for these arbitrary settings
+Lineage birth and death rates were arbitrarily set to $7\times 10^{-3}$ and the sampling fraction of lineage deaths was set to 0.99. 
 We used the \textit{R} package NELSI to assign rates of evolution to these trees by drawing values from a Gaussian distribution with a mean rate $\mu = \ 3\times 10^{-4}$ substitutions per generation and standard deviation $\sigma = \ 1\times 10^{-4}$. %; Figure \ref{fig:seedtree} for an example).
 To model uncertainty in phylogenetic reconstruction from sequence variation, we simulated sequence evolution along each birth-death tree with INDELible version 1.03 \citep{Indelible09} under an HKY85 \citep{HKY85} model of nucleotide substitution.
 Parameters for the substitution model were set to empirical estimates derived from previously published HIV within-host data sets \citep{McCloskey14}. 
@@ -141,19 +142,17 @@ For these data, we generated an additional 50 trees with 100 tips each, bringing
 
 
 \subsection * {Data Collection} \label{subsec:dcollection}
-We collected two distinct sets of data for our experiments. The first we refer to as the {\em plasma} data set, which contains data collected from studies in which only viral RNA in plasma had been collected from individuals. 
-The second data set, the {\em mixed} data set, contains sequences from studies in which both viral RNA in plasma and integrated viral DNA from PBMC cells had been collected from the same individual.
-Specifically, the {\em plasma} data set \citep{McCloskey14} is a previously assembled and cleaned data set from the Los Alamos HIV Database (\url{http://www.hiv.lanl.gov/}{http://www.hiv.lanl.gov/}). 
-This data set contains 335 sets of samples from 232 patients, with over 19,000 sequences \citep{McCloskey14} containing longitudinal samples from the {\em env} region of the HIV-1 genome collected from plasma. 
-From this set, we selected treatment naive patients with two or more clonal or single-genome sequences available at each time point, and with a known time-line relative to one of several reference points: HIV infection, seroconversion or presentation of symptomatic seroconversion illness. 
+We collected two distinct sets of data for our experiments. The first we refer to as the {\em plasma} data set, which comprised over 19,000 published HIV \textit{env} sequences derived from viral RNA from longitudinal plasma samples ($n=335$) collected from 232 different individuals \citep{McCloskey14}. 
+From this data, we selected treatment naive individuals with two or more clonal or single-genome sequences available at each time point, and with a known time-line relative to one of several reference points: HIV infection, seroconversion or presentation of symptomatic seroconversion illness. 
 The baseline samples were collected within 186 days of this reference point, and at least one of the subsequent ``follow-up'' time points occurred a minimum of 6 months after baseline.
-Patients who had been classified as ``superinfected'' were also excluded \citep{McCloskey14}. 
-From this data set, 550 plasma samples from 11 specific patients remained after filtering.
+Individuals who had been classified as ``superinfected'' were also excluded \citep{McCloskey14}. 
+After applying these criteria, we retained 550 HIV RNA sequences from 11 individuals for phylogenetic analysis.
 
-
-For the {\em mixed} data set, we used the Los Alamos advanced search interface (\url{http://www.hiv.lanl.gov/}{http://www.hiv.lanl.gov/}) to identify subjects who have had both viral RNA from plasma and integrated DNA from PBMC cells collected over various time points. We manually selected individuals from published studies that had well-characterized partial {\em env} sequences. 
-There was no condition on the time between sample collection. 
-25 individuals were included with plasma samples from at least 2 time points (table \ref{tab:patients}).
+The second data set, referred to as the {\em mixed} data set, contained sequences from studies in which both plasma HIV RNA and cellular HIV DNA had been collected from the same individual.
+We used the Los Alamos advanced search interface (\url{http://www.hiv.lanl.gov/}{http://www.hiv.lanl.gov/}) to identify published data sets representing individuals with both HIV RNA and cellular DNA sequences.
+% what do you mean by "well-characterized"?
+From these results, we manually selected 25 individuals that had well-characterized partial {\em env} sequences and plasma samples from at least 2 time points (Table \ref{tab:patients}). 
+There were no selection criteria on the time between sample collection dates. 
 A total of 1,249 partial {\em env} sequences from blood plasma, and 1914 partial {\em env} sequences from PBMC cells were used in our analysis. 
 We utilized samples from treatment naive individuals from \cite{Shankarappa99, Novitsky09}, samples from individuals that had been treated via HAART from \cite{Llewellyn06}, and samples from individuals that had been on HAART, but ceased treatment \cite{Fischer04}. 
  
