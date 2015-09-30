@@ -1,17 +1,10 @@
 % !TEX TS-program = xelatex
 \documentclass[12pt]{article}
 
+\usepackage[margin=2cm]{geometry}
 
-\usepackage{mathptmx}
-
-\usepackage{amsmath}
-\usepackage{fullpage}
 \usepackage{times}
 \usepackage{lineno}
-\usepackage{algpseudocode}
-\usepackage{units} % for \nicefrac
-\usepackage{amsmath} % for labelled arrows
-
 \usepackage[round]{natbib}
 \makeatletter
 \renewcommand{\@biblabel}[1]{#1.}
@@ -130,6 +123,7 @@ Finally, we applied our method to characterize the integration dates of viral li
 % we may need to provide some justification for using BD
 To assess the sensitivity of our method, we first simulated HIV sequence data sets without viral latency and evaluated the accuracy of predicting sample collection times from a strict molecular clock model that was fit to a training subset of these data. 
 First, we generated phylogenies with 100 tips each under a birth-death model with serial sampling using the sim.bdsky.stt function in the \textit{R} package TreeSim \citep{Boskova14}.
+Birth-death models have been applied to studying speciation \citep{Nee:2006} and infectious disease epidemics \citep{Stradler13}, but only recently have been used to model the proliferation of virus lineages in cell populations \citep{Hartfield:2015}.
 Lineage birth and death rates were arbitrarily set to $7\times 10^{-3}$ and the sampling probability was set to 0.99.
 We used the \textit{R} package NELSI to assign rates of evolution to these trees by drawing values from a Gaussian distribution with a mean rate $\mu = \ 3\times 10^{-4}$ substitutions per generation and standard deviation $\sigma = \ 1\times 10^{-4}$. %; Figure \ref{fig:seedtree} for an example).
 To model uncertainty in phylogenetic reconstruction from sequence variation, we simulated sequence evolution along each birth-death tree with INDELible version 1.03 \citep{Indelible09} under an HKY85 \citep{HKY85} model of nucleotide substitution.
@@ -141,7 +135,7 @@ Using this approach, we generated a total of 50 replicate phylogenies without vi
 
 To simulate phylogenies with latent viral lineages, we used an approach similar to  \citet{Immonen14}. 
 However, we used the simplifying assumptions that any sampled virus lineage could undergo no more than one latent period, and that once a lineage entered a latent state, it remained latent until becoming sampled.
-For each simulated `latency-free' phylogeny, we chose 50 tips uniformly at random, then shortened their expected number of substitutions and their branch time (the time between the tip, and the tip's parent) by a scalar factor drawn at random from a beta distribution with parameters $\alpha=1$ and $\beta=200$.
+For each simulated `latency-free' phylogeny, we chose 50 tips uniformly at random, then shortened their expected number of substitutions and their branch time (the time between the tip, and the tip's parent) by a scalar factor drawn at random from a beta distribution with parameters $\alpha=1$ and $\beta=100$.
 We then recorded both the simulated age and simulated collection time and generated sequences along these latent seed trees with INDELible and the same parameters as above. 
 For these data, we generated an additional 50 trees with 100 tips each, bringing the total amount of simulated data to 100 trees.
 
