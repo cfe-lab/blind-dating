@@ -40,18 +40,18 @@
 \section * {Abstract}
 
 Background: The ability of HIV to persist within latent cellular reservoirs represents a major barrier to cure. 
-The timing of establishment of individual viral reservoirs over the infection course could influence their susceptibility to elimination by immune-mediated or therapeutic approaches. 
-However, `dating'Äù methods to accurately estimate the age of reservoir sequences remain scarce. We propose a simple method to date suspected reservoir sequences using phylogenetic approaches. 
+The timing of establishment of individual viral reservoirs over the infection course may influence their susceptibility to elimination by immune-mediated or therapeutic approaches. 
+However, `dating'Äù methods to accurately estimate the age of reservoir sequences remain scarce. We propose a simple method to date suspected reservoir sequences using phylogenetically informed regression. 
 
 Method: Simulated sequence data for model validation were generated using INDELible version 1.03. 
 Published longitudinal clonal sequences from untreated HIV-infected individuals with estimated dates of infection were obtained from the Los Alamos National Laboratory database. 
 Maximum-likelihood phylogenies were reconstructed with RaxML. 
 Phylogenies were rooted by determining the location of the root that minimized the root-mean-square error between root-to-tip distances and known dates of sampling. 
-The root-to-tip distances of latent sequences were mapped to the optimal regression line to estimate their establishment date, which was assumed to precede their sample dates by an unknown amount.
+The root-to-tip distances of latent sequences were mapped to the optimal regression line to estimate establishment date, which was assumed to precede their sample dates by an unknown amount.
  
 Results: We validated the root-to-tip method using simulated data and published longitudinal clonal sequence datasets from untreated HIV-1 infected individuals with known infection dates. 
 For each dataset, arbitrary selections of up to 50\% of sequences were handled as latent by censoring their respective sample dates. 
-The method accurately recovered these missing sample dates when the phylogeny conformed to a strict molecular clock, as was the case for simulated data %\anote{SOME KIND OF PERFORMANCE METRIC HERE?  MEAN RMSE?}. 
+The method accurately recovered these missing sample dates when the phylogeny conformed to a strict molecular clock, as was the case for simulated data. %\anote{SOME KIND OF PERFORMANCE METRIC HERE?  MEAN RMSE?}. 
 A strict clock model could not be rejected in the majority of empirical within-host data sets. 
 When applied to HIV DNA sequences in phylogenies containing dated HIV RNA sequences, we observed that the predicted dates tended to precede dates of sampling, which was consistent with latency %\anote{(MAYBE SOME METRIC HERE LIKE MEAN DISCORDANCE).}
 
@@ -72,9 +72,9 @@ Latently infected cells contain integrated HIV DNA and have entered a dormant st
 Although a patient's viral load can be reduced below detectable levels when that patient is subjected to highly active antiretroviral therapy (HAART), latent reservoirs will eventually reseed an infection if a patient halts treatment \citep{Joos08, Pomerantz03, Richman09}. 
 Not much is known about when specific latent reservoirs are established over the course of an infection. 
 The chronology of their establishment is of interest as the distribution of ages of the latent virus lineages may provide information concerning the types of adaptations that those lineages may have accumulated. 
-Specifically, it may have an influence on how virions produced by those reservoirs will react to immune-mediated and/or therapeutic treatments. 
+Specifically, the timing of reservoir establishment may influence how virions produced by those reservoirs will react to immune-mediated and/or therapeutic treatments. 
 Previous studies have developed techniques to detect latent lineages by reduced rates of viral evolution \citep{Immonen14} and modelled the population dynamics of different classes of the virus within host \citep{Althaus14}. 
-However, there has limited work on estimating when viral lineages suspected of being latent became integrated into the host genome, or qualitatively assessing the distribution of collection-age differences for suspected latent samples.
+However, there has been limited work on estimating when viral lineages suspected of being latent became integrated into the host genome, or qualitatively assessing the distribution of collection-age differences for suspected latent samples.
 
 An HIV-1 population rapidly accumulates genetic diversity over the course of an infection, due to its high mutation rate and short generation time %, and intense selective pressure by the host's immune system 
 \citep{Alizon13, Shankarappa99, Rambaut04}. 
