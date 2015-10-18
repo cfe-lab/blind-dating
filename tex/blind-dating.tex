@@ -136,7 +136,7 @@ Using this approach, we generated a total of 50 replicate phylogenies without vi
 
 To simulate phylogenies with latent viral lineages, we used an approach similar to  \citet{Immonen14}. 
 However, we used the simplifying assumptions that any sampled virus lineage could undergo no more than one latent period, and that once a lineage entered a latent state, it remained latent until becoming sampled.
-For each simulated `latency-free' phylogeny, we chose 50 tips uniformly at random, then shortened their expected number of substitutions and their branch time (the time between the tip, and the tip's parent) by a scalar factor drawn at random from a beta distribution with parameters $\alpha=1$ and $\beta=100$.
+For each simulated `latency-free' phylogeny, we chose 50 tips uniformly at random, then shortened their expected number of substitutions and their branch time (the time between the tip, and the tip's parent) by a scaling factor drawn at random from a beta distribution with parameters $\alpha=1$ and $\beta=100$.
 We then recorded both the simulated age and simulated collection time and generated sequences along these latent seed trees with INDELible and the same parameters as above. 
 For these data, we generated an additional 50 trees with 100 tips each, bringing the total amount of simulated data to 100 trees.
 
@@ -162,20 +162,25 @@ We utilized samples from treatment naive individuals from \cite{Shankarappa99, N
 When applicable, we used MUSCLE 3.8.31 \citep{Muscle04} to align the patient-derived sequences, which were then visually inspected and cleaned with AliView \citep{AliView14}. 
 Alignments were manually trimmed to the interval in which at least  50\% of sequences within the data set had coverage over each base.
 Since the simulated sequence data contained no insertions or deletions, no alignment of these data was necessary. 
-Additionally, the plasma data set \citep{McCloskey14} had already been aligned and cleaned, so no further alignment was performed.
+Additionally, the plasma data set had already been aligned and cleaned \citep{McCloskey14}, so no further alignment was performed.
 
 
 \subsection * {Phylogenetic Reconstruction} \label{subsec:phylo}
 In all experiments, our reconstructed phylogenies were maximum likelihood phylogenies reconstructed in FastTree2 using the GTR model.
-We evaluated two different methods for rooting these trees. The first method is outgroup rooting, in which we chose a taxon that was related to the other taxon, but genetically different enough to resolve the root of the tree, specifically, we chose to root against the HIV-1 B ancestor (\url{http://www.hiv.lanl.gov/}{http://www.hiv.lanl.gov/}) reconstruction
-The second method we used to root our trees was a modified version of root-to-tip regression (RTT), in which the tree is systematically re-rooted at every possible internal node, then the root that optimizes an error criterion is selected.
-In our experiments, we chose the maximum correlation between the known dates and the evolutionary distance.
-Typically, RTT regression uses dates from all tips in its optimization, for this application, we ignored the tips that were undetermined (either censored or otherwise unknown) in the optimization of the root. 
-Our synthetic data was only rooted using this modified RTT scheme; for all real data, both outgroup rooting and RTT regression were used to root the phylogeny. 
+We evaluated two different methods for rooting these trees. 
+The first method was outgroup rooting, in which one or more sequences from taxa outside but sufficiently related to the group of interest are added to the phylogenetic reconstruction.
+The point at which the branch leading to the outgroup intersects the rest of the tree provides an estimate of the root for the latter.
+We used the HIV-1 B ancestral sequence reconstruction curated by the LANL database (\url{http://www.hiv.lanl.gov/}{http://www.hiv.lanl.gov/}) as the outgroup sequence.
+% unless we refer to a specific implementation of RTT, there is no reason to claim that our method is "modified"
+Second, we used root-to-tip regression \citep[RTT;][]{Korber00}, which performs an exhaustive search by re-rooting the tree at every branch to find the root that minimizes or maximizes an objective function between the sample collection dates and the evolutionary distance of tips from the candidate root.
+In our experiments, we used the maximum correlation coefficient as our objective function.
+RTT regression typically uses dates from all tips.
+For this application, we ignored the tips that were undetermined (either censored or otherwise unknown). 
+Our simulated data were only rooted using this modified RTT scheme; for all real data, both outgroup rooting and RTT regression were used to root the phylogeny. 
 
 
 \subsection * {Date Reconstruction} \label{subsec:daterecon}
-We used a general linear model with the normal family to infer the association between the tip dates and sequence divergence from the root. 
+Irrespective of the method used to root the phylogeny, we used a general linear model with the normal family to infer the association between the tip dates and sequence divergence from the root. 
 The expected amount of evolution was taken to be the response and the sampling dates of the data were taken as the input. 
 These models were only calibrated over the uncensored/plasma data for the simulated and real data sets respectively.
 We then used the linear model to predict the dates of the latent/unknown sequences.
