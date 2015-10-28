@@ -2,6 +2,7 @@ library(ape)
 library(parallel)
 
 #source('ape.patches.R')
+setwd('~/git/blind-dating/data/ancre/')
 source('../common/rtt.R')
 source('../common/test.R')
 source('../common/raxml.R')
@@ -29,9 +30,9 @@ trees <- hiv.rna.read()
 n.simulated <- length(trees)
 n.runs <- 10
 
-pdf(sprintf('hist.pdf'), width=11.5, height=8.5)
-par(mfrow=c(1, 2), pty="s")
-par(mar=c(5.1, 4.1, 4.1, 4.1))
+#pdf(sprintf('hist.pdf'), width=11.5, height=8.5)
+#par(mfrow=c(1, 2), pty="s")
+par(mar=c(5,4,2,2)+0.1)
 
 ## Show an example of one of these simulated trees
 tree <- trees[[1]]
@@ -69,18 +70,18 @@ plot(
 	jitter(plasma.dates), plasma.dists, 
 	xlab="Time (days)", 
 	ylab="Expected Number of Subs.", pch=20,  cex=1.2, tck=.01,  axes=F)
-mtext("C) RNA Only", side=3, adj=0, line=1.1, cex=1.5, font=2)
+#mtext("C) RNA Only", side=3, adj=0, line=1.1, cex=1.5, font=2)
 points(jitter(pbmc.s.dates), pbmc.dists, col="red", pch=5,  cex=1.2)
 abline(model)
 ##
 
-legend(650, 0.045, c("Plasma collection dates", "DNA collection dates"), col = c("black", "red"),
-        lty = c(-1, -1), pch = c(20, 5),
-       merge = TRUE, bg = par("bg"), cex=1.2)
+legend(0, 0.28, c("Calibration dates", "Censored dates"), col = c("black", "red"), lty = c(-1, -1), pch = c(20, 5), merge = TRUE, bg = par("bg"))#, cex=1.2)
 
 axis(side=1, at=seq(0, 3000, by=100), tck=.01)
 axis(side=2, at=seq(0, 100, by=0.05), tck=.01)
 box()
+
+
 
 par(mar=c(5.1, 6.1, 4.1, 2.1))
 plot(c(-1001,-1100), xlim=c(-1.0,1.0), ylim=c(0, 3), xlab="Normalized Error", ylab="Density", axes=F)

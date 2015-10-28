@@ -33,7 +33,14 @@ extract_plasm_tag <- function(x) (gsub("(.+)_PLASMA_([0-9\\.]+)$", "\\1", x, per
 types <- function(x) gsub("(.+)_((PLASMA)|(PBMC))_([0-9\\.]+)'?$", "\\2", x, perl=T)
 extract_dates_pp <- function(x) as.numeric(gsub("(.+)_([0-9\\.]+)'?$", "\\2", x, perl=T))
 
-make.latent <- function(tr, percent=0.5, rate=0.0003, noise=0.0001) {
+make.latent <- function(
+	tr, 
+	percent=0.5, 
+	rate=0.0003,  # substitution rate
+	noise=0.0001,
+	sampling.rate=0.0003,
+	latency.rate=0.001
+) {
   # #
   n.tips <- length(tr$tip.label)
   n.mod <- as.integer(n.tips*percent)  # number of tips to modify
@@ -42,25 +49,35 @@ make.latent <- function(tr, percent=0.5, rate=0.0003, noise=0.0001) {
   
   # #
   tips <- sort(sample(1:n.tips, n.mod))  # indices of tips to modify
-  scale <- rbeta(n.mod, 1, 100)
+  scale <- rbeta(n.mod, 1, 100)  # left-skew (median about 0.006)
+  
+  # I think it is more realistic to use a conditional exponential
+  # distribution:
+  # let Y be the waiting time to lineage sampling
+  # let t be the waiting time to the lineage going latent
+  # then the probability distribution of (t) is
+  #   m exp(-mt) / (1-exp(-L y))
+  # where L is the sampling rate
+  # and m is the latency rate
+  #v <- rexpo()
+  
   types[tips] <- "PBMC"
   
   # #
-  edges <- which(tr$edge[,2] %in% tips)
-  edge.length <- tr$edge.length 
+  edges <- which(tr$edge[,2] %in% tips)  # post-traversal indices of edges to modify
+  edge.length <- tr$edge.length  # branch lengths in unit time
   
   edge.mod <- edge.length 
   edge.mod[edges] <- edge.mod[edges]*scale
   delta <- edge.length - edge.mod
   
-  
   # # 
-  latent <- edge.length - delta
+  latent <- edge.length - delta  # = edge.mod
   actual <- edge.length 
 
   # # 
   err <- rnorm(length(tr$edge.length), mean = 0, sd = noise)
-  latent.evo <- abs(latent * rate + err)
+  latent.evo <- abs(latent * rate + err)  # convert time to exp. sub'ns
   actual.evo <- abs(actual * rate + err)
   
   # # #

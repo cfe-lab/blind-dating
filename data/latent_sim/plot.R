@@ -30,7 +30,7 @@ run_name <- "HIV RNA"
 species <- "Simulated"
 n.runs <- 1
 
-pdf('hist.pdf', width=11.5, height=8.5)
+#pdf('hist.pdf', width=11.5, height=8.5)
 par(mfrow=c(1, 2), pty="s")
 par(mar=c(5.1, 4.1, 4.1, 4.1))
 
@@ -52,8 +52,8 @@ plasma.dates[tip.pbmc] <- NA
 tree <- rtt(tree, plasma.dates)
 
 plasma.dates <- tip.dates[tip.plasma]
-pbmc.s.dates <- tip.dates[tip.pbmc] #sampled dates
-pbmc.r.dates <- tip.real.dates[tip.pbmc]
+pbmc.s.dates <- tip.dates[tip.pbmc]  # sampled dates
+pbmc.r.dates <- tip.real.dates[tip.pbmc]  # dates of entering latent state (truth)
 
 distances <- node.depth.edgelength(tree)[1:length(tip.dates)]
 plasma.dists <- distances[tip.plasma]
@@ -65,21 +65,28 @@ a<-model$coefficients[[1]]
 b<-model$coefficients[[2]]
 
 
+par(cex=1, mar=c(5,5,2,2)+0.1)
 plot(
 	plasma.dates, plasma.dists, 
 	xlab="Simulation Time", 
-	ylab="Expected Number of Subs.",  pch=20,  cex=1.2, tck=.01,  axes=F)
-mtext("B) Latent Simulated Data", side=3, adj=0, line=1.1, cex=1.5, font=2); 
-points(pbmc.r.dates, pbmc.dists, col="red", pch=5,  cex=1.2)
-abline(model)
+	ylab="Expected Number of Subs.",  pch=20,  cex=1.2, tck=.01,  axes=F, col='grey')
+#mtext("B) Latent Simulated Data", side=3, adj=0, line=1.1, cex=1.5, font=2); 
 
-legend(560, 0.125, c("Calibration dates", "Censored dates"), col = c("black", "red"),
-        lty = c(-1, -1), pch = c(20, 5),
-       merge = TRUE, bg = par("bg"), cex=1.2)
+points(pbmc.s.dates, pbmc.dists, col=rgb(1,0,0,0.5), pch=5, lty=2)
+points(pbmc.r.dates, pbmc.dists, col="red", pch=18,  cex=1)
+abline(model, lty=2)
+
+for (i in 1:length(pbmc.dists)) {
+	lines(x=c(pbmc.s.dates[i], pbmc.r.dates[i]), y=rep(pbmc.dists[i], 2), col='red')
+}
+
+legend(175, 0.36, c("Sample dates (RNA)", "Latency dates (DNA)", "Sample dates (DNA)"), col = c("grey", "red", rgb(1,0,0,0.5)), pch = c(20, 18, 5), cex=0.9)
 
 axis(side=1, at=seq(0, 3000, by=100), tck=.01)
 axis(side=2, at=seq(0, 100, by=0.05), tck=.01)
 box()
+
+
 
 par(mar=c(5.1, 6.1, 4.1, 2.1))
 plot(c(-1001,-1100), xlim=c(-1.0,1.0), ylim=c(0, 3), xlab="Normalized Error", ylab="Density", axes=F)

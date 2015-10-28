@@ -40,18 +40,18 @@
 \section * {Abstract}
 
 Background: The ability of HIV to persist within latent cellular reservoirs represents a major barrier to cure. 
-The timing of establishment of individual viral reservoirs over the infection course could influence their susceptibility to elimination by immune-mediated or therapeutic approaches. 
-However, `dating'Äù methods to accurately estimate the age of reservoir sequences remain scarce. We propose a simple method to date suspected reservoir sequences using phylogenetic approaches. 
+The timing of establishment of individual viral reservoirs over the infection course may influence their susceptibility to elimination by immune-mediated or therapeutic approaches. 
+However, `dating'Äù methods to accurately estimate the age of reservoir sequences remain scarce. We propose a simple method to date suspected reservoir sequences using phylogenetically informed regression. 
 
 Method: Simulated sequence data for model validation were generated using INDELible version 1.03. 
 Published longitudinal clonal sequences from untreated HIV-infected individuals with estimated dates of infection were obtained from the Los Alamos National Laboratory database. 
 Maximum-likelihood phylogenies were reconstructed with RaxML. 
 Phylogenies were rooted by determining the location of the root that minimized the root-mean-square error between root-to-tip distances and known dates of sampling. 
-The root-to-tip distances of latent sequences were mapped to the optimal regression line to estimate their establishment date, which was assumed to precede their sample dates by an unknown amount.
+The root-to-tip distances of latent sequences were mapped to the optimal regression line to estimate establishment date, which was assumed to precede their sample dates by an unknown amount.
  
 Results: We validated the root-to-tip method using simulated data and published longitudinal clonal sequence datasets from untreated HIV-1 infected individuals with known infection dates. 
 For each dataset, arbitrary selections of up to 50\% of sequences were handled as latent by censoring their respective sample dates. 
-The method accurately recovered these missing sample dates when the phylogeny conformed to a strict molecular clock, as was the case for simulated data %\anote{SOME KIND OF PERFORMANCE METRIC HERE?  MEAN RMSE?}. 
+The method accurately recovered these missing sample dates when the phylogeny conformed to a strict molecular clock, as was the case for simulated data. %\anote{SOME KIND OF PERFORMANCE METRIC HERE?  MEAN RMSE?}. 
 A strict clock model could not be rejected in the majority of empirical within-host data sets. 
 When applied to HIV DNA sequences in phylogenies containing dated HIV RNA sequences, we observed that the predicted dates tended to precede dates of sampling, which was consistent with latency %\anote{(MAYBE SOME METRIC HERE LIKE MEAN DISCORDANCE).}
 
@@ -73,9 +73,9 @@ Latently infected cells contain integrated HIV DNA and have entered a dormant st
 Although a patient's viral load can be reduced below detectable levels when that patient is subjected to highly active antiretroviral therapy (HAART), latent reservoirs will eventually reseed an infection if a patient halts treatment \citep{Joos08, Pomerantz03, Richman09}. 
 Not much is known about when specific latent reservoirs are established over the course of an infection. 
 The chronology of their establishment is of interest as the distribution of ages of the latent virus lineages may provide information concerning the types of adaptations that those lineages may have accumulated. 
-Specifically, it may have an influence on how virions produced by those reservoirs will react to immune-mediated and/or therapeutic treatments. 
+Specifically, the timing of reservoir establishment may influence how virions produced by those reservoirs will react to immune-mediated and/or therapeutic treatments. 
 Previous studies have developed techniques to detect latent lineages by reduced rates of viral evolution \citep{Immonen14} and modelled the population dynamics of different classes of the virus within host \citep{Althaus14}. 
-However, there has limited work on estimating when viral lineages suspected of being latent became integrated into the host genome, or qualitatively assessing the distribution of collection-age differences for suspected latent samples.
+However, there has been limited work on estimating when viral lineages suspected of being latent became integrated into the host genome, or qualitatively assessing the distribution of collection-age differences for suspected latent samples.
 
 An HIV-1 population rapidly accumulates genetic diversity over the course of an infection, due to its high mutation rate and short generation time %, and intense selective pressure by the host's immune system 
 \citep{Alizon13, Shankarappa99, Rambaut04}. 
@@ -137,7 +137,7 @@ Using this approach, we generated a total of 50 replicate phylogenies without vi
 
 To simulate phylogenies with latent viral lineages, we used an approach similar to  \citet{Immonen14}. 
 However, we used the simplifying assumptions that any sampled virus lineage could undergo no more than one latent period, and that once a lineage entered a latent state, it remained latent until becoming sampled.
-For each simulated `latency-free' phylogeny, we chose 50 tips uniformly at random, then shortened their expected number of substitutions and their branch time (the time between the tip, and the tip's parent) by a scalar factor drawn at random from a beta distribution with parameters $\alpha=1$ and $\beta=100$.
+For each simulated `latency-free' phylogeny, we chose 50 tips uniformly at random, then shortened their expected number of substitutions and their branch time (the time between the tip, and the tip's parent) by a scaling factor drawn at random from a beta distribution with parameters $\alpha=1$ and $\beta=100$.
 We then recorded both the simulated age and simulated collection time and generated sequences along these latent seed trees with INDELible and the same parameters as above. 
 For these data, we generated an additional 50 trees with 100 tips each, bringing the total amount of simulated data to 100 trees.
 
@@ -163,20 +163,25 @@ We utilized samples from treatment naive individuals from \cite{Shankarappa99, N
 When applicable, we used MUSCLE 3.8.31 \citep{Muscle04} to align the patient-derived sequences, which were then visually inspected and cleaned with AliView \citep{AliView14}. 
 Alignments were manually trimmed to the interval in which at least  50\% of sequences within the data set had coverage over each base.
 Since the simulated sequence data contained no insertions or deletions, no alignment of these data was necessary. 
-Additionally, the plasma data set \citep{McCloskey14} had already been aligned and cleaned, so no further alignment was performed.
+Additionally, the plasma data set had already been aligned and cleaned \citep{McCloskey14}, so no further alignment was performed.
 
 
 \subsection * {Phylogenetic Reconstruction} \label{subsec:phylo}
 In all experiments, our reconstructed phylogenies were maximum likelihood phylogenies reconstructed in FastTree2 using the GTR model.
-We evaluated two different methods for rooting these trees. The first method is outgroup rooting, in which we chose a taxon that was related to the other taxon, but genetically different enough to resolve the root of the tree, specifically, we chose to root against the HIV-1 B ancestor (\url{http://www.hiv.lanl.gov/}{http://www.hiv.lanl.gov/}) reconstruction
-The second method we used to root our trees was a modified version of root-to-tip regression (RTT), in which the tree is systematically re-rooted at every possible internal node, then the root that optimizes an error criterion is selected.
-In our experiments, we chose the maximum correlation between the known dates and the evolutionary distance.
-Typically, RTT regression uses dates from all tips in its optimization, for this application, we ignored the tips that were undetermined (either censored or otherwise unknown) in the optimization of the root. 
-Our synthetic data was only rooted using this modified RTT scheme; for all real data, both outgroup rooting and RTT regression were used to root the phylogeny. 
+We evaluated two different methods for rooting these trees. 
+The first method was outgroup rooting, in which one or more sequences from taxa outside but sufficiently related to the group of interest are added to the phylogenetic reconstruction.
+The point at which the branch leading to the outgroup intersects the rest of the tree provides an estimate of the root for the latter.
+We used the HIV-1 B ancestral sequence reconstruction curated by the LANL database (\url{http://www.hiv.lanl.gov/}{http://www.hiv.lanl.gov/}) as the outgroup sequence.
+% unless we refer to a specific implementation of RTT, there is no reason to claim that our method is "modified"
+Second, we used root-to-tip regression \citep[RTT;][]{Korber00}, which performs an exhaustive search by re-rooting the tree at every branch to find the root that minimizes or maximizes an objective function between the sample collection dates and the evolutionary distance of tips from the candidate root.
+In our experiments, we used the maximum correlation coefficient as our objective function.
+RTT regression typically uses dates from all tips.
+For this application, we ignored the tips that were undetermined (either censored or otherwise unknown). 
+Our simulated data were only rooted using this modified RTT scheme; for all real data, both outgroup rooting and RTT regression were used to root the phylogeny. 
 
 
 \subsection * {Date Reconstruction} \label{subsec:daterecon}
-We used a general linear model with the normal family to infer the association between the tip dates and sequence divergence from the root. 
+Irrespective of the method used to root the phylogeny, we used a general linear model with the normal family to infer the association between the tip dates and sequence divergence from the root. 
 The expected amount of evolution was taken to be the response and the sampling dates of the data were taken as the input. 
 These models were only calibrated over the uncensored/plasma data for the simulated and real data sets respectively.
 We then used the linear model to predict the dates of the latent/unknown sequences.
@@ -313,7 +318,7 @@ Additionally, we would like to apply the methodology to next gen sequence data -
 	%Above is a time calibrated phylogeny with three taxa, the dotted line in is an example of latency. 
 	One of these lineages had become latent at an earlier point in time (red hexagon).
 	This lineage subsequently underwent negligible molecular evolution until it was sampled as integrated viral DNA (dashed circle).
-	If the relationship between sequence divergence and time is sufficiently linear, then the time that the lineage became latent can be inferred from its sequence.
+	If the relationship between sequence divergence and time is sufficiently linear, then the time that the lineage became latent can be inferred from its sequence, here represented by the thick red dashed line.
 	%Sequence A was archived at time $t$, and was collected at the same time as sequence B, at time $t^\prime$ (a drift of $t^\prime - t$ is expected).
 	%If the molecular clock assumption holds true, the MRCA is known, and B and C are reliable time-points, then the date at $t$ can be inferred from from the expected amount of evolution for B from the root.
 	}
@@ -323,14 +328,14 @@ Additionally, we would like to apply the methodology to next gen sequence data -
 	\centering
 	\includegraphics[width=\textwidth]{figures/simulated.pdf} 
 	\includegraphics[width=\textwidth]{figures/simulated_latent.pdf}\\
-	\caption[Simulated Data]{On the left of each case is a plot of evolutionary distance vs time, the right is a the super position of density estimates (of normalized error) for each phylogeny (with kernel bandwidth = $0.15$). The red line on the density plot is the mean error, and the black line is the median error. }
+	\caption[Simulated Data]{On the left of each case is a plot of evolutionary distance vs time, the right is the super position of density estimates (of normalized error) for each phylogeny (with kernel bandwidth = $0.15$). The red line on the density plot is the mean error, and the black line is the median error. }
 \end{figure}
 
 \begin{figure}[ht] \label{fig:results2}
 	\centering
 	\includegraphics[width=\textwidth]{figures/ancre.pdf}
 	\includegraphics[width=\textwidth]{figures/lanl.pdf}
-	\caption[Examples]{This figure is as the previous, except for the real data.
+	\caption[Examples]{As Figure 2, except for the real data.
 The phylogenies in these cases have been rooted with outgroup rooting}
 \end{figure}
 
