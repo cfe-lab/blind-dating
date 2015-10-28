@@ -57,7 +57,8 @@ When applied to HIV DNA sequences in phylogenies containing dated HIV RNA sequen
 
 Conclusions:
 Given a known phylogeny comprised of longitudinal plasma HIV-1 RNA sequences, the establishment dates of ``Äúunknown''Äù (reservoir) sequences can be reliably estimated when within-host HIV sequence evolution conforms to a molecular clock. 
-Future studies will test this method on empirically derived longitudinal within-host HIV deep sequence data and extend the method to work under alternative clock models.
+Future studies will test this method on empirically derived longitudinal within-host HIV deep sequence data and extend the method to work under al
+ternative clock models.
 
 Keywords: 
 HIV, Latency, Cellular Reservoirs, Phylogenetics, Linear Regression\\
@@ -186,20 +187,23 @@ We rejected any sequence data sets whose phylogeny couldn't reject the null mode
 
 \subsection * {Experiments} \label{subsec:experiments}
 We used three error metrics to assess our methodology: the mean square error for predicted date, as well as the mean and median difference between the predicted date and sampling date, where difference defined as simply the predicted date minus the observed date.
-Before any analysis was done, all tip dates were re-scaled to lie between $0$ and $1$ to facilitate comparisons among longitudinal data sets. 
-Using the formula  $$ t_{normalized} = \frac{t - \min(\bf{t}) }{ \max{(\bf{t})} - \min{(\bf{t}})}$$ where $t$ is the the unscaled time of any tip, and $\bf{t}$ is the vector of all tip dates for a given tree, we call this {\em normalized time}. Our error metrics were then calculated from these normalized times, giving normalized mean square error, normalized mean difference, and normalized median difference. 
+Before any analysis was done, all tip dates were re-scaled to lie between $0$ and $1$ to facilitate comparisons among longitudinal data sets using the formula $ \hat{t} = \frac{t - \min(\bf{t}) }{ \max{(\bf{t})} - \min{(\bf{t}})}$ where $t$ is the the unscaled time of any tip, and $\bf{t}$ is the vector of all tip dates for a given tree. 
+We refer to $\hat{t}$ as the `normalized time' of a tip. 
+Our error metrics were then calculated from these normalized times.%, giving normalized mean square error, normalized mean difference, and normalized median difference. 
 
-Our first validation experiment on simulated data was preformed as such: first we choose 50\% of the tips of a simulated phylogeny and censored those dates, we next used our  modified RTT regression \citep{APE} on the remaining data to calibrate the phylogeny's molecular clock. 
-For each censored date we reconstructed the expected date using the regression model defined above, then collected the three error metrics above.
+Our first validation experiment on simulated data was performed as follows.
+First, we chose 50\% of the tips of a simulated phylogeny and censored those dates.
+We next used RTT regression \citep{APE} on the remaining data to calibrate the phylogeny's molecular clock. 
+For each censored date, we used the regression model to predict the expected date and then calculated the three error metrics described above.
 For the simulated latent data, we collected the normalized mean square error, normalized mean difference, and normalized median difference. 
-We also collect these for the known ``archival'' date.
+We also collect these for the known `archival' date.
 
 To evaluate the effectiveness of this methodology on real data, we utilized our {\em plasma} data set \citep{McCloskey14} and performed similar experiments. 
 As before, we censored 50\% of their known sampling dates then reconstructed the censored dates using a linear model calibrated over the uncensored dates. 
 We also performed this experiment with RTT regression rooting and out-group rooting. The goal of this experiment was to parallel the type of results of the first experiment on simulated data. 
 
 Finally, we looked at our {\em mixed} data set comprised of both PBMC and plasma data. 
-We used both RTT regression and out-group rooting to root the phylogeny, then calibrated a clock to the known plasma sampling dates and reconstructed the expected age of the sequences for all patients who could reject the null model (Section \ref{subsec:hypot}). 
+We used both RTT regression and out-group rooting to root the phylogeny, then calibrated a clock to the known plasma sampling dates and reconstructed the expected age of the sequences for all patients who could reject the null model. 
 Here we only collected the normalized errors between the prediction and the collection.
 
 

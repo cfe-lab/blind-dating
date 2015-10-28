@@ -1,6 +1,8 @@
 library(ape)
 library(parallel)
 
+setwd('~/git/blind-dating/data/simulated/')
+
 source('../common/rtt.R')
 source('../common/test.R')
 source('../common/queue.R')
@@ -23,9 +25,9 @@ species <- "Simulated"
 n.runs <- 1
 
 #
-pdf(sprintf('hist.pdf'), width=11.5, height=8.5)
+#pdf(sprintf('hist.pdf'), width=11.5, height=8.5)
 par(mfrow=c(1, 2), pty="s")
-par(mar=c(5.1, 4.1, 4.1, 4.1))
+par(mar=c(5.1, 5.1, 2.1, 2.1))
 
 # Show an example of one of these simulated trees
 tr <- trees[[1]]
@@ -48,22 +50,20 @@ model <- build.tree.lm(tr, tip.dates, valid.indices)
 plot(
 	tip.dates[valid.indices], sub.lengths[valid.indices], 
 	xlab="Simulation Time", 
-	ylab="Expected Number of Subs.", pch=20,  cex=1.2, tck=.01,  axes=F)
-mtext("A) Simulated Data", side=3, adj=0, line=1.1, cex=1.5, font=2); 
+	ylab="Expected Number of Subs.", pch=20, cex.lab=1.4, cex.axis=1.2, tck=.01,  axes=F)
+#mtext("A) Simulated Data", side=3, adj=0, line=1.1, cex.lab=1.5, font=2); 
 points(real, subs, col="red", pch=5,  cex=1.2)
 abline(model)
-legend(590, 0.140, c("Calibration dates", "Censored dates"), col = c("black", "red"),
-        lty = c(-1, -1), pch = c(20, 5),
-       merge = TRUE, bg = par("bg"), cex=1.2)
+legend(590, 0.160, c("Calibration dates", "Censored dates"), col = c("black", "red"), lty = c(-1, -1), pch = c(20, 5), bg = par("bg"), cex=1.2)#, merge=TRUE)
 
-axis(side=1, at=seq(0, 3000, by=100), tck=.01)
-axis(side=2, at=seq(0, 100, by=0.1), tck=.01)
+axis(side=1, at=seq(0, 3000, by=100), tck=.01, cex.axis=1.2)
+axis(side=2, at=seq(0, 100, by=0.1), tck=.01, cex.axis=1.2)
 box()
 
-par(mar=c(5.1, 6.1, 4.1, 2.1))
-plot(c(-1001,-1100), xlim=c(-1.0,1.0), ylim=c(0, 3), xlab="Normalized Error", ylab="Density", axes=F)
-axis(side=1, at=seq(-3, 3, by=0.5), tck=.01)
-axis(side=2, at=seq(0, 3, by=0.5), tck=.01)
+par(mar=c(5.1, 5.1, 2.1, 2.1))
+plot(c(-1001,-1100), xlim=c(-1.0,1.0), ylim=c(0, 3), xlab="Normalized Error", ylab="Density", axes=F, cex.lab=1.4, cex.axis=1.2)
+axis(side=1, at=seq(-3, 3, by=0.5), tck=.01, cex.axis=1.2)
+axis(side=2, at=seq(0, 3, by=0.5), tck=.01, cex.axis=1.2)
 box()
 
 add <- F
@@ -89,7 +89,7 @@ for(i in 1:n.simulated){
 	enqueue(dens, d)
 
 	polygon(d, 
-		col=rgb(0.5,0.0,0.9,1/(n.simulated)), xlim=c(-0.2,0.2),  border=rgb(1,1,1,0), add=T)
+		col=rgb(0.5,0.0,0.9,1/(n.simulated)), xlim=c(-0.2,0.2),  border=rgb(1,1,1,0))#, add=T)
 		# add <- T
 }
 
@@ -101,6 +101,6 @@ print(sum(errs*errs)/length(errs))
 print(median(errs))
 print(mean(errs))
 
-dev.off()
+#dev.off()
 
 
