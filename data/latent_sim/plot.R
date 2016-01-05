@@ -65,26 +65,21 @@ a<-model$coefficients[[1]]
 b<-model$coefficients[[2]]
 
 
+# make plot showing example of latency date estimation
 par(cex=1, mar=c(5,5,2,2)+0.1)
-plot(
-	plasma.dates, plasma.dists, 
-	xlab="Simulation Time", 
-	ylab="Expected Number of Subs.",  pch=20,  cex=1.2, tck=.01,  axes=F, col='grey')
+plot(plasma.dates, plasma.dists, xlab="Simulation Time", ylab="Divergence from root",  pch=20, cex.lab=1.3, cex.axis=1.1, col='grey')
 #mtext("B) Latent Simulated Data", side=3, adj=0, line=1.1, cex=1.5, font=2); 
-
-points(pbmc.s.dates, pbmc.dists, col=rgb(1,0,0,0.5), pch=5, lty=2)
+points(pbmc.s.dates, pbmc.dists, col='red', pch=5, lty=2)
 points(pbmc.r.dates, pbmc.dists, col="red", pch=18,  cex=1)
 abline(model, lty=2)
-
 for (i in 1:length(pbmc.dists)) {
 	lines(x=c(pbmc.s.dates[i], pbmc.r.dates[i]), y=rep(pbmc.dists[i], 2), col='red')
 }
+legend(175, 0.36, c("Sample dates (RNA)", "Latency dates (DNA)", "Sample dates (DNA)"), col = c("grey", "red", rgb(1,0,0,0.5)), pch = c(20, 18, 5), cex=1)
 
-legend(175, 0.36, c("Sample dates (RNA)", "Latency dates (DNA)", "Sample dates (DNA)"), col = c("grey", "red", rgb(1,0,0,0.5)), pch = c(20, 18, 5), cex=0.9)
-
-axis(side=1, at=seq(0, 3000, by=100), tck=.01)
-axis(side=2, at=seq(0, 100, by=0.05), tck=.01)
-box()
+#axis(side=1, at=seq(0, 3000, by=100), tck=.01)
+#axis(side=2, at=seq(0, 100, by=0.05), tck=.01)
+#box()
 
 
 
