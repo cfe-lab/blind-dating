@@ -1,6 +1,6 @@
 library(ape)
 
-raxml <- function(seq, parsimony.seed=NULL, bootstrap.seed=NULL, executable='~/Binaries/raxmlHPC', threads=12, N=10, name='raxml', clear=TRUE, model="GTRGAMMA") {
+raxml <- function(seq, parsimony.seed=NULL, bootstrap.seed=NULL, executable='raxmlHPC8-pthreads', threads=12, N=10, name='raxml', clear=TRUE, model="GTRGAMMA") {
 	if(class(seq) != "DNAbin") stop('seq should be of class \'DNAbin\'')
 	if(is.null(parsimony.seed)) {
 		parsimony.seed <- as.integer(sample(2**31,1))

@@ -1,6 +1,6 @@
 library(ape)
 
-fasttree <- function(seq, model='GTR', executable='~/Binaries/FastTreeMP') {
+fasttree <- function(seq, model='GTR', executable='fasttreeMP_2.1.7') {
 	if(class(seq) != "DNAbin") stop('seq should be of class \'DNAbin\'')
 
 	if(model == 'GTR') {
