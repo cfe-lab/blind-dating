@@ -2,8 +2,6 @@
 
 # creates simulated reads for the current working directory
 
-echo $0
-
 src_folder=${0%/1_simulate_sequences.sh}
 latent=$1
 r_seed=$2

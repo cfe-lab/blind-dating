@@ -65,7 +65,7 @@ date.branches <- function(s.tree) {
 make.latent <- function(
 	tr, 
 	percent=0.5,
-	latency.rate=0.001
+	latency.rate=0.0001
 ) {
   rate = clock.rate
   noise = noise.rate
@@ -84,7 +84,10 @@ make.latent <- function(
   # #
   edges <- which(tr$edge[,2] %in% tips)  # post-traversal indices of edges to modify
   edge.length <- tr$edge.length  # branch lengths in unit time
-
+  
+  # this gives a conditional distribution whose latency periods have a mean 
+  # of 1/latency.rate when the edge length goes to infinity
+#  scale <- lapply(edge.length, rbeta(n.mod, edge.length, 1/latency.rate)) 
   
   # I think it is more realistic to use a conditional exponential
   # distribution:
@@ -95,7 +98,7 @@ make.latent <- function(
   # where L is the sampling rate
   # and m is the latency rate
   #v <- rexpo()
- # v <- lapply(edge.length[edges], function(x) {rexp(1, latency.rate/(1-exp(-clock.rate*x))}
+  
   
   types[tips] <- "PBMC"
  

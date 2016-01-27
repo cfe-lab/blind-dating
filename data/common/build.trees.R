@@ -10,6 +10,8 @@ use.raxml <- as.integer(args[2])
 patients <- read.table('patients_list.txt', col.names = c("A", "B"))
 
 apply(patients, 1, function (p) {
+	print(p["A"])
+
 	dna <- read.FASTA(p["B"])
 	if (use.raxml)
 		tree <- raxml(dna, N=100, parsimony.seed=10000, bootstrap.seed=1000)
