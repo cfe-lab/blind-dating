@@ -27,7 +27,7 @@
 
 \title{Blind dating: A phylogenetic approach to dating HIV reservoir sequences}
 
-\author{Joshua Horacsek$^{1,2}$, Jeffrey B. Joy$^2$, \\ Zabrina L. Brumme$^{1,2}$, and Art F.Y. Poon$^{1,2,3}$}
+\author{Joshua Horacsek$^{1,2}$, Bradley R. Jones$^{1,2}$, Jeffrey B. Joy$^2$, \\ Zabrina L. Brumme$^{1,2}$, and Art F.Y. Poon$^{1,2,3}$}
 % 1 Simon Fraser University
 % 2 BC Centre for Excellence in HIV/AIDS
 % 3 University of British Columbia
@@ -39,26 +39,17 @@
 
 \section * {Abstract}
 
-Background: The ability of HIV to persist within latent cellular reservoirs represents a major barrier to cure. 
-The timing of establishment of individual viral reservoirs over the infection course may influence their susceptibility to elimination by immune-mediated or therapeutic approaches. 
-However, `dating'Äù methods to accurately estimate the age of reservoir sequences remain scarce. We propose a simple method to date suspected reservoir sequences using phylogenetically informed regression. 
+Background: 
+The ability of HIV to persist within latent cellular reservoirs represents a major barrier to cure. The timing of establishment of individual viral reservoirs over the infection course may influence their susceptibility to elimination by immune-mediated or therapeutic approaches. However, methods to accurately estimate the age of reservoir sequences remain scarce. We propose a simple method to date suspected reservoir sequences using phylogenetically informed regression.
 
-Method: Simulated sequence data for model validation were generated using INDELible version 1.03. 
-Published longitudinal clonal sequences from untreated HIV-infected individuals with estimated dates of infection were obtained from the Los Alamos National Laboratory database. 
-Maximum-likelihood phylogenies were reconstructed with RaxML. 
-Phylogenies were rooted by determining the location of the root that minimized the root-mean-square error between root-to-tip distances and known dates of sampling. 
-The root-to-tip distances of latent sequences were mapped to the optimal regression line to estimate establishment date, which was assumed to precede their sample dates by an unknown amount.
- 
-Results: We validated the root-to-tip method using simulated data and published longitudinal clonal sequence datasets from untreated HIV-1 infected individuals with known infection dates. 
-For each dataset, arbitrary selections of up to 50\% of sequences were handled as latent by censoring their respective sample dates. 
-The method accurately recovered these missing sample dates when the phylogeny conformed to a strict molecular clock, as was the case for simulated data. %\anote{SOME KIND OF PERFORMANCE METRIC HERE?  MEAN RMSE?}. 
-A strict clock model could not be rejected in the majority of empirical within-host data sets. 
-When applied to HIV DNA sequences in phylogenies containing dated HIV RNA sequences, we observed that the predicted dates tended to precede dates of sampling, which was consistent with latency %\anote{(MAYBE SOME METRIC HERE LIKE MEAN DISCORDANCE).}
+Method: 
+Simulated sequence data were generated using INDELible version 1.03. A total of 550 HIV RNA sequences sampled longitudinally from 11 untreated HIV-infected individuals with estimated dates of infection and a total of 3163 HIV DNA and RNA sequences from 25 individuals were obtained from the Los Alamos National Laboratory HIV Sequence Database. The simulated and HIV RNA data were used for method validation. Maximum-likelihood phylogenies were reconstructed with RaxML. Phylogenies were rooted by determining the location of the root that minimized the root-mean-square error between root-to-tip distances and known dates of sampling. The root-to-tip distances of latent sequences were mapped to the optimal regression line to estimate reservoir establishment dates.
 
-Conclusions:
-Given a known phylogeny comprised of longitudinal plasma HIV-1 RNA sequences, the establishment dates of ``Äúunknown''Äù (reservoir) sequences can be reliably estimated when within-host HIV sequence evolution conforms to a molecular clock. 
-Future studies will test this method on empirically derived longitudinal within-host HIV deep sequence data and extend the method to work under al
-ternative clock models.
+Results: 
+To validate the method, we synthesized latent lineages by censoring the smaple dates for random selections of up to 50\% of sequences in the simulated or HIV RNA datasets. In either case, root-to-tip estimation accurately recovered these missing sample dates when the phylogeny conformed to a strict molecular clock. When this method was applied to HIV DNA sequences in phylogenies containing dated HIV RNA sequences, we observed that the predicted dates tended to precede dates of sampling, which was consistent with latency.
+
+Conclusions: 
+Our results indicate that the dates that HIV DNA lineages entered a latent state can be reconstructed from a phylogenetic analysis of HIV RNA sequence variation from the same patient. This can provide important insights into the dynamics of HIV reservoirs within hosts.
 
 Keywords: 
 HIV, Latency, Cellular Reservoirs, Phylogenetics, Linear Regression\\
@@ -329,7 +320,7 @@ Additionally, we would like to apply the methodology to next gen sequence data -
 
 \section * {Figures}
 
-\begin{figure}[ht] \label{fig:latenttree}
+\begin{figure}[ht]
 	\centering
 	%\scalebox{5}{\input{figures/example.tex}}
 	\includegraphics{figures/latency-scheme}
@@ -345,27 +336,31 @@ Additionally, we would like to apply the methodology to next gen sequence data -
 	%Sequence A was archived at time $t$, and was collected at the same time as sequence B, at time $t^\prime$ (a drift of $t^\prime - t$ is expected).
 	%If the molecular clock assumption holds true, the MRCA is known, and B and C are reliable time-points, then the date at $t$ can be inferred from from the expected amount of evolution for B from the root.
 	}
+	\label{fig:latenttree}
 \end{figure}
 
-\begin{figure}[p] \label{fig:results1}
+\begin{figure}[p]
 	\centering
 	\includegraphics[width=\textwidth]{figures/simulated.pdf} 
 	\includegraphics[width=\textwidth]{figures/simulated_latent.pdf}\\
 	\caption[Simulated Data]{On the left of each case is a plot of evolutionary distance vs time, the right is the super position of density estimates (of normalized error) for each phylogeny (with kernel bandwidth = $0.15$). The red line on the density plot is the mean error, and the black line is the median error. }
+	 \label{fig:results1}
 \end{figure}
 
-\begin{figure}[ht] \label{fig:results2}
+\begin{figure}[ht]
 	\centering
 	\includegraphics[width=\textwidth]{figures/ancre.pdf}
 	\includegraphics[width=\textwidth]{figures/lanl.pdf}
-	\caption[Examples]{As Figure 2, except for the real data.
+	\caption[Examples]{As Figure \ref{fig:results1}, except for the real data.
 The phylogenies in these cases have been rooted with outgroup rooting}
+	\label{fig:results2}
 \end{figure}
 
-\begin{figure*}[ht] \label{fig:degenerate_example}
+\begin{figure*}[ht]
 	\centering
 	\includegraphics[scale=0.425]{figures/rtt.pdf} \\
 	\caption[Example of bad root]{Root to tip rooting fails due to insufficient temporal resolution at the root}
+	\label{fig:degenerate_example}
 \end{figure*}
 
 
