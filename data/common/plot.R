@@ -11,10 +11,10 @@ args <- commandArgs(trailing = T)
 
 tree.dir <- args[1]
 data.type <- as.integer(args[2])	# 0 = no dna, 1 = mixed (latency unknown), 2 = mixed (latency known)
-use.rtt <- as.integer(args[3])
+use.rtt <- as.integer(args[3])		# 0 = no, 1 = yes (only plasma), 2 = yes (all)
 
 trim <- function (x) gsub("^\\s+|\\s+$", "", x)
-types <- function(x) gsub("(.+)_((PLASMA)|(PBMC))_([0-9\\.]+)'?$", "\\2", x, perl=T)
+types <- function(x) gsub("(.+)_((PLASMA)|(PBMC))_([0-9\\.]+)?$", "\\2", x, perl=T)
 extract_dates <- function(x) as.numeric(gsub("(.+)_([0-9\\.]+)$", "\\2", x, perl=T))
 extract_tag <- function(x) (gsub("(.+)_([0-9\\.]+)$", "\\1", x, perl=T))
 extract_plasm_tag <- function(x) (gsub("(.+)_PLASMA_([0-9\\.]+)$", "\\1", x, perl=T))
@@ -24,9 +24,9 @@ extract_dates_pp <- function(x) as.numeric(gsub("(.+)_([0-9\\.]+)'?$", "\\2", x,
 trees.read <- function(base.path){
 	trs <- dir(base.path)[grep('.tre', dir(base.path))]
 	
-	ml.tree.read <- function(tr) {
-		print(tr)
+	print(trs)
 	
+	ml.tree.read <- function(tr) {	
 		tree = read.tree(paste(base.path, tr, sep='/'))
 	
 		if (sum("REFERENCE"==tree$tip.label) > 0) {
@@ -38,12 +38,14 @@ trees.read <- function(base.path){
 		else
 			tree
 			
-	}	
+	}
+	
 	lapply(trs, ml.tree.read)
 }
 
 plot.hist <- function(err, colour, pos) {
 		par(mfg=c(1, pos))
+		
 		d <- density(err, bw=0.15)
 		polygon(d, col=colour, xlim=c(-0.1,0.2),  border=rgb(1,1,1,0))
 }
@@ -86,13 +88,23 @@ if (data.type == 2) {
 
 add <- F
 errs <- c()
+serrs <- c()
 rerrs <- c()
+srerrs <- c()
 dens <- queue(TRUE)
 
+# for data
+patients = c()
+seq.ids = c()
+times <- c()
+dists <- c()
+r.times <- c()
+
+# for stats
 rmses <- c()
 medians <- c()
 scales <- c()
-slows <- c()
+#slows <- c()
 
 count <- 1
 
@@ -103,8 +115,6 @@ count <- 1
 for(tree in trees){
 	print(count)
 	
-	count <- count + 1
-
 #	for(k in 1:n.runs) {
 		#####
 		#
@@ -120,7 +130,7 @@ for(tree in trees){
 		} else {	
 			tip.types <- types(tree$tip.label)
 		}
-				
+		
 		# Mark the PBMC and PLASMA cells
 		tip.pbmc <- tip.types == "PBMC"
 		tip.plasma <- tip.types == "PLASMA"
@@ -135,10 +145,30 @@ for(tree in trees){
 		
 		# Setup plasma dates and re-root tree
 		plasma.dates <- tip.dates
-		plasma.dates[tip.pbmc] <- NA
 		
-		if (use.rtt)
+		if (use.rtt == 1)
+			plasma.dates[tip.pbmc] <- NA
+		
+		if (use.rtt) {
 			tree <- rtt(tree, plasma.dates)
+			
+			# reset values after rerooting
+			tip.dates <- extract_dates_pp(tree$tip.label)
+			tip.types <- types(tree$tip.label)
+		
+			if (data.type == 0) {
+				n.tips = length(tree$tip.label)
+				tips <- sort(sample(1:n.tips, n.tips*.5))
+				tip.types = rep("PLASMA", n.tips)	
+				tip.types[tips] = "PBMC"
+			} else {	
+				tip.types <- types(tree$tip.label)
+			}
+			
+			# Mark the PBMC and PLASMA cells
+			tip.pbmc <- tip.types == "PBMC"
+			tip.plasma <- tip.types == "PLASMA"	
+		}	
 
 		plasma.dates <- tip.dates[tip.plasma]
 		pbmc.s.dates <- tip.dates[tip.pbmc] #sampled dates
@@ -148,28 +178,41 @@ for(tree in trees){
 		pbmc.dists <- distances[tip.pbmc]
 	
 		model <- glm(plasma.dists ~ plasma.dates)
-
+				
 		a<-model$coefficients[[1]]
 		b<-model$coefficients[[2]]
-
+		
 		err <- (pbmc.s.dates - (pbmc.dists/b - a/b)) / scale_val
-
+		 		
 		dev.set(dev.hist)
 		
 		plot.hist(err, rgb(0.5, 0.0, 0.9, 1/(length(trees))), 1)
 		
-		errs <- c(err, errs)
+		errs <- c(errs, err)
+		
+		# fill data data.frame information
+		patients <- c(patients, rep(count, sum(tip.pbmc)))
+		seq.ids <- c(seq.ids, gsub("^(.+)_([0-9\\.]+)_PBMC_([0-9\\.]+)$", "\\1", tree$tip.label[tip.pbmc], perl=T))
+		times <- c(times, pbmc.s.dates)
+		dists <- c(dists, pbmc.dists)
+		serrs <- c(serrs, pbmc.s.dates - (pbmc.dists/b - a/b))
+		
 
 		if (data.type == 2) {
 			tip.real.dates <- extract_real_pbmc_dates(tree$tip.label)
+						
 			pbmc.r.dates <- tip.real.dates[tip.pbmc] #real dates
 			rerr <- (pbmc.r.dates - (pbmc.dists/b - a/b)) / scale_val
 			
 			plot.hist(rerr, rgb(0.5, 0.0, 0.9, 1/(length(trees))), 2)
 			
 			rerrs <- c(rerr, rerrs)
+			
+			r.times = c(r.times, pbmc.r.dates)
+			srerrs <- c(serrs, (pbmc.r.dates - (pbmc.dists/b - a/b)))
 		}		
 		dev.set(dev.plot)
+		
 		
 		if (data.type == 2) {
 			par(mfrow=c(1, 3), pty="s")
@@ -235,12 +278,12 @@ for(tree in trees){
 		
 		rmse_val <- sqrt(sum(err*err)/length(err))
 		median_val <- median(err)
-		slow_val <- sum(err > 0)/length(err)
+#		slow_val <- sum(err > 0)/length(err)
 		
 		rmses <- c(rmses, rmse_val)
 		medians <- c(medians, median_val)
 		scales <- c(scales, scale_val)
-		slows <- c(slows, slow_val)
+#		slows <- c(slows, slow_val)
 		
 		plot.hist(err, rgb(0.5, 0.0, 0.9, 1), 2)
 		
@@ -253,12 +296,12 @@ for(tree in trees){
 		if (data.type == 2) {
 			mse_val <- sqrt(sum(rerr*rerr)/length(rerr))
 			median_val <- median(rerr)
-			slow_val <- sum(rerr > 0)/length(rerr)
+#			slow_val <- sum(rerr > 0)/length(rerr)
 		
 			rmses <- c(rmses, rmse_val)
 			medians <- c(medians, median_val)
 			scales <- c(scales, scale_val)
-			slows <- c(slows, slow_val)
+#			slows <- c(slows, slow_val)
 		
 			plot.hist(rerr, rgb(0.5, 0.0, 0.9, 1), 3)
 			
@@ -268,20 +311,30 @@ for(tree in trees){
 #			abline(v = median_val + rmse_val, col = "black", lty = 2) 
 		}
 #	}
+
+	count <- count + 1
 }
 
+# write data data.frame
+if (data.type == 2) {
+	df2 <- data.frame(Patient=patients, Seq.ID=seq.ids, Time=times, Distance=dists, Error=serrs, Normal.Error=errs, Real.Time=r.times, Real.Error=srerrs, Real.Normal.Error=rerrs)
+} else {
+	df2 <- data.frame(Patient=patients, Seq.ID=seq.ids, Time=times, Distance=dists, Error=serrs, Normal.Error=errs)
+}
+
+write.csv(df2, file="data.csv", row.names=FALSE)
 
 
 dev.set(dev.hist)
 
 rmse_val <- sqrt(sum(errs*errs)/length(errs))
 median_val <- median(errs)
-slow_val <- sum(errs > 0) / length(errs)
+#slow_val <- sum(errs > 0) / length(errs)
 
 rmses <- c(rmses, rmse_val)
 medians <- c(medians, median_val)
 scales <- c(scales, 1)
-slows <- c(slows, slow_val)
+#slows <- c(slows, slow_val)
 				
 print(sprintf("Test: median %f, RMSE %f",
 	median_val, rmse_val))
@@ -296,12 +349,12 @@ abline(v = median_val, col = "red", lwd = 2)
 if (data.type == 2) {
 	rmse_val <- sqrt(sum(rerrs*rerrs)/length(rerrs))
 	median_val <- median(rerrs)
-	slow_val <- sum(rerrs > 0) / length(rerrs)
+#	slow_val <- sum(rerrs > 0) / length(rerrs)
 	
 	rmses <- c(rmses, rmse_val)
 	medians <- c(medians, median_val)
 	scales <- c(scales, 1)
-	slows <- c(slows, slow_val)
+#	slows <- c(slows, slow_val)
 	
 	print(sprintf("Overall (real): median %f, rmse %f",
 		median_val, rmse_val))
@@ -314,9 +367,11 @@ if (data.type == 2) {
 }
 
 
-df <- data.frame(Median=medians, RMSE=rmses, Scale=scales, Percent.Slow=slows)
+#df <- data.frame(Median=medians, RMSE=rmses, Scale=scales, Percent.Slow=slows)
+df <- data.frame(Median=medians, RMSE=rmses, Scale=scales)
 
-write.csv(df, file="stats.csv", row.names=FALSE, col.names=TRUE, sep='\t')
+write.csv(df, file="stats.csv", row.names=FALSE)
+
 
 #df2 <- data.frame(TipsPerTime=tpertime, GLMSlope=glmslope, PlasmaRMSE=plasmarmse)
 

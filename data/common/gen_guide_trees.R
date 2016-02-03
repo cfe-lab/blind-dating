@@ -7,6 +7,7 @@
 library(ape)
 library(TreeSim)
 library(NELSI)
+#library(phangorn)
 
 source('../common/rtt.R')
 source('../common/test.R', chdir = T)
@@ -16,8 +17,9 @@ source('../common/queue.R')
 args <- commandArgs(trailingOnly = T)
 
 latent <- as.integer(args[1])
-r.seed <- as.integer(args[2])
-indelible.seed <- args[3]
+latency.rate <- as.double(args[2])
+r.seed <- as.integer(args[3])
+indelible.seed <- args[4]
 
 if (r.seed != 0) {
 	set.seed(r.seed)
@@ -26,14 +28,12 @@ if (r.seed != 0) {
 # Number of guide trees to create
 # TO DO: quantify variance
 n.trees <- 50
-n.partitions <- 100
+n.partitions <- n.trees
 n.replicates <- 1
 n.tips <- 100
 
-# env evolution rate from  Alizon and Fraser, "Within-host and between-host evolutionary rates across the HIV-1 genomes" (2013) and
-# Perelson et al., "HIV-1 Dynamics in Vivo: Virion Clearance Rate, Infected Cell Life-Span, and Viral Generation Time" (1996)
-clock.rate <- 0.0003 # 0.00010296
-noise.rate <- 0.0001 # 0.00009050
+clock.rate <- 0.0003216
+noise.rate <- 0.00004577
 
 sim.params <- list(rate = clock.rate, noise = noise.rate)
 sim.clockmodel <- simulate.clock
@@ -63,12 +63,13 @@ date.branches <- function(s.tree) {
 
 # TO DO: probably do a range of values here
 make.latent <- function(
-	tr, 
-	percent=0.5,
-	latency.rate=0.0001
+	s.tree,
+	percent=0.5
+#	latency.rate=0.0001
 ) {
-  rate = clock.rate
-  noise = noise.rate
+#  rate = clock.rate
+#  noise = noise.rate
+  tr <- s.tree$phylogram
 
   # #  
   n.tips <- length(tr$tip.label)
@@ -79,16 +80,23 @@ make.latent <- function(
  
   # #
   tips <- sort(sample(1:n.tips, n.mod))  # indices of tips to modify
-  scale <- rbeta(n.mod, 1, 100)  # left-skew (median about 0.006)
+#  scale <- rbeta(n.mod, 1, 100)  # left-skew (median about 0.006)
 
   # #
+  edge.length <- s.tree$tree.data.matrix[,7]
   edges <- which(tr$edge[,2] %in% tips)  # post-traversal indices of edges to modify
-  edge.length <- tr$edge.length  # branch lengths in unit time
+#  edge.length <- tr$edge.length  # branch lengths in unit time
   
-  # this gives a conditional distribution whose latency periods have a mean 
-  # of 1/latency.rate when the edge length goes to infinity
-#  scale <- lapply(edge.length, rbeta(n.mod, edge.length, 1/latency.rate)) 
-  
+  # this gives a conditional distribution that converges to poisson(latency.rate) when 
+  # edge.length -> infinity
+  # However, this looks like a coin flip
+  rfun <- function(sc) {
+    r <- 1-exp(-latency.rate*sc)
+    x <- runif(length(sc))
+    
+    -log(1-r*x) / latency.rate
+  }
+    
   # I think it is more realistic to use a conditional exponential
   # distribution:
   # let Y be the waiting time to lineage sampling
@@ -102,18 +110,23 @@ make.latent <- function(
   
   types[tips] <- "PBMC"
  
-  edge.mod <- edge.length 
-  edge.mod[edges] <- edge.mod[edges]*scale
+  edge.mod <- edge.length
+#  edge.mod[edges] <- edge.mod[edges]*scale
+  edge.mod[edges] <- rfun(edge.mod[edges]) 
+    
   delta <- edge.length - edge.mod
   
   # # 
-  latent <- edge.length - delta  # = edge.mod
+  latent <- edge.mod
   actual <- edge.length 
 
   # # .
-  err <- rnorm(length(tr$edge.length), mean = 0, sd = noise)
-  latent.evo <- abs(latent * rate + err)  # convert time to exp. sub'ns
-  actual.evo <- abs(actual * rate + err)
+  # Assume evolution rate is constant along the last edge
+  latent.evo <- s.tree$tree.data.matrix[,6]*latent/actual
+  actual.evo <- s.tree$tree.data.matrix[,6]
+#  err <- rnorm(length(tr$edge.length), mean = 0, sd = noise)
+#  latent.evo <- abs(latent * rate + err)  # convert time to exp. sub'ns
+#  actual.evo <- abs(actual * rate + err)
   
   # # #
   tr$edge.length <- latent
@@ -134,21 +147,26 @@ make.latent <- function(
 }
 
 
-# TO DO: need to fit
-# Values from Perelson et al., "HIV-1 Dynamics in Vivo: Virion Clearance Rate, Infected Cell Life-Span, and Viral Generation Time" (1996)
-sampprob <-c(.99)
-lambda <- c(.007) # c(0.761843113)
-mu <- c(.007) # c(0.0333333)
+# birth-death model parameters
+sampprob <-c(0.06094)
+lambda <- c(0.09344)
+mu <- c(0.08917)
 times<-c(0)
 
 trees <- apply(matrix(rep(n.tips,n.trees)), 1, sim.bdsky.stt, lambdasky=lambda, deathsky=mu, timesky=times, sampprobsky=sampprob,rho=0,timestop=0)
 trees <- lapply(trees, function(x) {unroot(x[[1]])})
 sim.trees <- lapply(trees, sim.clockmodel, params=sim.params)
 
-if (latent)
-	trees <- lapply(trees, make.latent)
-else
+print(length(trees))
+print(length(sim.trees))
+
+if (latent) {
+	trees <- lapply(sim.trees, make.latent)
+} else {
 	trees <- lapply(sim.trees, date.branches)
+}
+
+print(length(trees))
 
 indel_control <- sprintf(
 "
@@ -171,7 +189,8 @@ for(i in 1:n.trees) {
 	indel_control <- paste0(indel_control, sprintf("[TREE] tree_%d %s \n", i, tree_dat))
 }
 
-index <- sample(1:n.trees, n.partitions, replace = (n.partitions > n.trees))
+#index <- sample(1:n.trees, n.partitions, replace = (n.partitions > n.trees))
+index <- 1:n.trees
 for(i in 1:n.partitions) {
 	indel_control <- paste0(indel_control, sprintf("[PARTITIONS] pHKY_%d [tree_%d HKY_HIV 700] \n", i, index[i]))
 }
