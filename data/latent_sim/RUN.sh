@@ -6,3 +6,4 @@ sh ../common/3_analysis.sh trees 2 2
 mv plot\.pdf plot\.${1}\.pdf
 mv hist\.pdf hist\.${1}\.pdf
 mv stats\.csv stats\.${1}\.csv
+mv data\.csv data\.${1}\.csv

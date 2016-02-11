@@ -32,8 +32,9 @@ n.partitions <- n.trees
 n.replicates <- 1
 n.tips <- 100
 
-clock.rate <- 0.0003216
-noise.rate <- 0.00004577
+# From BEAST
+clock.rate <- 0.0001979
+noise.rate <- 0.00001488
 
 sim.params <- list(rate = clock.rate, noise = noise.rate)
 sim.clockmodel <- simulate.clock
@@ -64,7 +65,8 @@ date.branches <- function(s.tree) {
 # TO DO: probably do a range of values here
 make.latent <- function(
 	s.tree,
-	percent=0.5
+	percent=0.5,
+	unlatency.rate=1/14
 #	latency.rate=0.0001
 ) {
 #  rate = clock.rate
@@ -76,7 +78,6 @@ make.latent <- function(
   n.mod <- as.integer(n.tips*percent)  # number of tips to modify
   delta <- rep(0, n.tips)
   types <- rep("PLASMA", n.tips)
-
  
   # #
   tips <- sort(sample(1:n.tips, n.mod))  # indices of tips to modify
@@ -89,12 +90,17 @@ make.latent <- function(
   
   # this gives a conditional distribution that converges to poisson(latency.rate) when 
   # edge.length -> infinity
-  # However, this looks like a coin flip
   rfun <- function(sc) {
-    r <- 1-exp(-latency.rate*sc)
+    u <- rexp(length(sc), unlatency.rate)
+    print(u)
+    t.0 <- (sc - u) * (sc - u > 0)
+    print(t.0)
+    r <- exp(-latency.rate * t.0)-exp(-latency.rate*sc)
+    print(r)
     x <- runif(length(sc))
+    print(x)
     
-    -log(1-r*x) / latency.rate
+    -log(exp(-latency.rate * t.0)-r*x) / latency.rate
   }
     
   # I think it is more realistic to use a conditional exponential
@@ -106,15 +112,16 @@ make.latent <- function(
   # where L is the sampling rate
   # and m is the latency rate
   #v <- rexpo()
-  
-  
+    
   types[tips] <- "PBMC"
  
   edge.mod <- edge.length
 #  edge.mod[edges] <- edge.mod[edges]*scale
+  print(edge.mod[edges])
   edge.mod[edges] <- rfun(edge.mod[edges]) 
+  print(edge.mod[edges])
     
-  delta <- edge.length - edge.mod
+#  delta <- edge.length - edge.mod
   
   # # 
   latent <- edge.mod
@@ -147,10 +154,10 @@ make.latent <- function(
 }
 
 
-# birth-death model parameters
-sampprob <-c(0.06094)
-lambda <- c(0.09344)
-mu <- c(0.08917)
+# birth-death model parameters, from BEAST
+sampprob <-c(0.04613)
+lambda <- c(0.09701)
+mu <- c(0.09181)
 times<-c(0)
 
 trees <- apply(matrix(rep(n.tips,n.trees)), 1, sim.bdsky.stt, lambdasky=lambda, deathsky=mu, timesky=times, sampprobsky=sampprob,rho=0,timestop=0)

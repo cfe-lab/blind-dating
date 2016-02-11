@@ -196,7 +196,6 @@ for(tree in trees){
 		times <- c(times, pbmc.s.dates)
 		dists <- c(dists, pbmc.dists)
 		serrs <- c(serrs, pbmc.s.dates - (pbmc.dists/b - a/b))
-		
 
 		if (data.type == 2) {
 			tip.real.dates <- extract_real_pbmc_dates(tree$tip.label)
@@ -208,8 +207,8 @@ for(tree in trees){
 			
 			rerrs <- c(rerr, rerrs)
 			
-			r.times = c(r.times, pbmc.r.dates)
-			srerrs <- c(serrs, (pbmc.r.dates - (pbmc.dists/b - a/b)))
+			r.times <- c(r.times, pbmc.r.dates)
+			srerrs <- c(srerrs, pbmc.r.dates - (pbmc.dists/b - a/b))
 		}		
 		dev.set(dev.plot)
 		
