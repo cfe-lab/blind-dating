@@ -46,7 +46,7 @@ Method:
 Simulated sequence data were generated using INDELible version 1.03. A total of 550 HIV RNA sequences sampled longitudinally from 11 untreated HIV-infected individuals with estimated dates of infection and a total of 3163 HIV DNA and RNA sequences from 25 individuals were obtained from the Los Alamos National Laboratory HIV Sequence Database. The simulated and HIV RNA data were used for method validation. Maximum-likelihood phylogenies were reconstructed with RaxML. Phylogenies were rooted by determining the location of the root that minimized the root-mean-square error between root-to-tip distances and known dates of sampling. The root-to-tip distances of latent sequences were mapped to the optimal regression line to estimate reservoir establishment dates.
 
 Results: 
-To validate the method, we synthesized latent lineages by censoring the smaple dates for random selections of up to 50\% of sequences in the simulated or HIV RNA datasets. In either case, root-to-tip estimation accurately recovered these missing sample dates when the phylogeny conformed to a strict molecular clock. When this method was applied to HIV DNA sequences in phylogenies containing dated HIV RNA sequences, we observed that the predicted dates tended to precede dates of sampling, which was consistent with latency.
+To validate the method, we synthesized latent lineages by censoring the sample dates for random selections of up to 50\% of sequences in the simulated or HIV RNA datasets. In either case, root-to-tip estimation accurately recovered these missing sample dates when the phylogeny conformed to a strict molecular clock. When this method was applied to HIV DNA sequences in phylogenies containing dated HIV RNA sequences, we observed that the predicted dates tended to precede dates of sampling, which was consistent with latency.
 
 Conclusions: 
 Our results indicate that the dates that HIV DNA lineages entered a latent state can be reconstructed from a phylogenetic analysis of HIV RNA sequence variation from the same patient. This can provide important insights into the dynamics of HIV reservoirs within hosts.
@@ -183,9 +183,9 @@ We used the HIV-1 B ancestral sequence reconstruction curated by the LANL databa
 % unless we refer to a specific implementation of RTT, there is no reason to claim that our method is "modified"
 Second, we used root-to-tip regression \citep[RTT;][]{Korber00}, which performs an exhaustive search by re-rooting the tree at every branch to find the root that minimizes or maximizes an objective function between the sample collection dates and the evolutionary distance of tips from the candidate root.
 In our experiments, we used the maximum correlation coefficient as our objective function.
-RTT regression typically uses dates from all tips.
-For this application, we ignored the tips that were undetermined (either censored or otherwise unknown). 
-Our simulated data were only rooted using this modified RTT scheme; for all real data, both outgroup rooting and RTT regression were used to root the phylogeny. 
+%RTT regression typically uses dates from all tips.
+%For this application, we ignored the tips that were undetermined (either censored or otherwise unknown). 
+Our simulated data were only rooted using RTT regression; for all real data, both outgroup rooting and RTT regression were used to root the phylogeny. 
 
 
 \subsection * {Date Reconstruction} \label{subsec:daterecon}
@@ -278,10 +278,10 @@ Moreover, it's not possible to know the actual error for this data set, as that 
 We also observed an interesting sigmoidal pattern in many of the patients in this case.
 However, we do note that most treated patients failed the hypothesis testing, implying that samples after treatment should be ignored in any analysis with this methodology.
 
-Typically, we also observed that the rooting method had very little effect on the errors (the supplemental material has Figure \ref{fig:results2} replicated for RTT rooting). 
-We did, however, identify a case in which RTT rooting fails over outgroup rooting (Figure \ref{fig:degenerate_example} shows an example of this). 
-Specifically, it's possible for the calibration dates to provide insufficient data to resolve the root of the tree. 
-We theorize that this is, for patient 820, because their calibration samples are strongly localized in time, which allows too much freedom (temporally) over the possible roots of the tree. 
+%Typically, we also observed that the rooting method had very little effect on the errors (the supplemental material has Figure \ref{fig:results2} replicated for RTT rooting). 
+%We did, however, identify a case in which RTT rooting fails over outgroup rooting (Figure \ref{fig:degenerate_example} shows an example of this). 
+%Specifically, it's possible for the calibration dates to provide insufficient data to resolve the root of the tree. 
+%We theorize that this is, for patient 820, because their calibration samples are strongly localized in time, which allows too much freedom (temporally) over the possible roots of the tree. 
 
 %We did not attempt to use BEAST \citep{BEAST} to reconstruct any phylogenies from our data.
 %Leaving dates unspecified on the number of tips would have drastically increased the dimensionality of the problem, and we would therefore need a prohibitively large amount of samples from the MCMC chain to assure convergence to the posterior distribution.
