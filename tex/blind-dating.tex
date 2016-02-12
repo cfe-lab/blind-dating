@@ -139,30 +139,31 @@ We utilized samples from treatment naive individuals from \cite{Shankarappa99, N
 To characterize sources of error in reconstructing dates on tips of a phylogeny, we generated phylogenetic trees by direct simulation and from the plasma data sets.
 First, we generated phylogenies with 100 tips each under a birth-death model with serial sampling using the `sim.bdsky.stt' function in the \textit{R} package \textit{TreeSim} \citep{Boskova14}.
 Birth-death models have been applied to studying speciation processes \citep{Nee:2006} and infectious disease epidemics \citep{Stradler13}, but have only recently been used to model the proliferation of virus lineages in cell populations \citep{Hartfield:2015}.
+
 The birth-death model was parameterized by fitting this model to 
 % we may get some flak for these arbitrary settings
 % we may need to provide some justification for using BD
 To assess the sensitivity of our method, we first simulated HIV sequence data sets without viral latency.
-We used BEAST version 1.8.1 to sample trees from the posterior distribution defined by the serial coalescent model with a 5-class Bayesian skyline, an uncorrelated lognormal molecular clock, and the Tamura-Nei model of nucleotide substitution.
+We used BEAST version 2.3.2 to sample trees from the posterior distribution defined by the serial coalescent model with a 5-class Bayesian skyline, an uncorrelated lognormal molecular clock, and the Tamura-Nei model of nucleotide substitution.
 Using this approach, we generated samples of trees for each sequence alignment in the plasma dataset.
+%From these simulations, we evaluated the accuracy of predicting sample collection times from a strict molecular clock model that was fit to a training subset of these data.
+The lineage birth, death and sampling rates were set to $0.09701, 0.09181, 0.04613$ respectively.
 
+We used the \textit{R} package NELSI to assign rates of evolution to these trees by drawing values from a Gaussian distribution with a mean rate $\mu = \ 1.979\times 10^{-4}$ substitutions per generation and standard deviation $\sigma = \ 1.488\times 10^{-5}$. %; Figure \ref{fig:seedtree} for an example).
 
-From these simulations, we evaluated the accuracy of predicting sample collection times from a strict molecular clock model that was fit to a training subset of these data. 
-
-
-Lineage birth and death rates were arbitrarily set to $7\times 10^{-3}$ and the sampling fraction of lineage deaths was set to 0.99. 
-We used the \textit{R} package NELSI to assign rates of evolution to these trees by drawing values from a Gaussian distribution with a mean rate $\mu = \ 3\times 10^{-4}$ substitutions per generation and standard deviation $\sigma = \ 1\times 10^{-4}$. %; Figure \ref{fig:seedtree} for an example).
 To model uncertainty in phylogenetic reconstruction from sequence variation, we simulated sequence evolution along each birth-death tree with INDELible version 1.03 \citep{Indelible09} under an HKY85 \citep{HKY85} model of nucleotide substitution.
 Parameters for the substitution model were set to empirical estimates derived from previously published HIV within-host data sets \citep{McCloskey14}. 
 Specifically, the stationary distribution was set to 0.42, 0.15, 0.15, 0.28 for the nucleotides A, C, G and T, respectively, and the transition bias parameter was set to 8.5.
+
 A phylogeny was reconstructed from the simulated sequence alignments using the approximate maximum likelihood heuristic implemented in FastTree2 \citep{FastTree10}.
 Similar results were obtained with trees reconstructed using RAxML \citep{Raxml14}, which is expected to be more accurate, but can consume orders of magnitude more computational time.
 Using this approach, we generated a total of 50 replicate phylogenies without viral latency. 
 
 To simulate phylogenies with latent viral lineages, we used an approach similar to  \citet{Immonen14}. 
 However, we used the simplifying assumptions that any sampled virus lineage could undergo no more than one latent period, and that once a lineage entered a latent state, it remained latent until becoming sampled.
-For each simulated `latency-free' phylogeny, we chose 50 tips uniformly at random, then shortened their expected number of substitutions and their branch time (the time between the tip, and the tip's parent) by a scaling factor drawn at random from a beta distribution with parameters $\alpha=1$ and $\beta=100$.
-We then recorded both the simulated age and simulated collection time and generated sequences along these latent seed trees with INDELible and the same parameters as above. 
+For each simulated `latency-free' phylogeny, we chose 50 tips uniformly at random, then shortened their expected number of substitutions and their branch time (the time between the tip, and the tip's parent)
+% by a scaling factor drawn at random from a beta distribution with parameters $\alpha=1$ and $\beta=100$.
+We then recorded both the simulated age and simulated collection time and generated sequences along these latent seed trees with INDELible using the same parameters as above. 
 For these data, we generated an additional 50 trees with 100 tips each, bringing the total amount of simulated data to 100 trees.
 
 
@@ -194,16 +195,16 @@ These models were only calibrated over the uncensored/plasma data for the simula
 We then used the linear model to predict the dates of the latent/unknown sequences.
 To screen for data that were amenable to our analysis, we used the nested log ratio test \citep{Ho14}. 
 Our null model was a linear model with zero slope over the expected amount of evolution over time. 
-We rejected any sequence data sets whose phylogeny couldn't reject the null model with threshold $\alpha=0.01$, since this implied a lack of phylogenetic signal.
+% We rejected any sequence data sets whose phylogeny couldn't reject the null model with threshold $\alpha=0.01$, since this implied a lack of phylogenetic signal.
 
 
 \subsection * {Experiments} \label{subsec:experiments}
 %We calculated three error measures to quantify the difference between the predicted and known dates of sampling: the mean and median differences, and the root mean square error (RMSE). 
-We used the root mean square error to quantify the difference between the predicted and known dates of sampling.
+%We used the root mean square error to quantify the difference between the predicted and known dates of sampling.
 %the mean square error for predicted date, as well as the mean and median difference between the predicted and known sampling dates.
 %and sampling date, where difference defined as simply the predicted date minus the observed date.
-All tip dates were re-scaled to lie between $0$ and $1$ to facilitate comparisons among longitudinal data sets using the formula $ \hat{t} = \frac{t - \min(\bf{t}) }{ \max{(\bf{t})} - \min{(\bf{t}})}$ where $t$ is the the unscaled time of any tip, and $\bf{t}$ is the vector of all tip dates for a given tree. 
-We refer to $\hat{t}$ as the `normalized time' of a tip. 
+%All tip dates were re-scaled to lie between $0$ and $1$ to facilitate comparisons among longitudinal data sets using the formula $ \hat{t} = \frac{t - \min(\bf{t}) }{ \max{(\bf{t})} - \min{(\bf{t}})}$ where $t$ is the the unscaled time of any tip, and $\bf{t}$ is the vector of all tip dates for a given tree. 
+%We refer to $\hat{t}$ as the `normalized time' of a tip. 
 %Our error metrics were then calculated from these normalized times.%, giving normalized mean square error, normalized mean difference, and normalized median difference. 
 
 %Our first validation experiment on simulated data was performed as follows.
@@ -222,6 +223,7 @@ We refer to $\hat{t}$ as the `normalized time' of a tip.
 %Here we only collected the normalized errors between the prediction and the collection.
 %
 
+Use Mixed Effects Models
 
 \section * {Results} \label{sec:results}
 
