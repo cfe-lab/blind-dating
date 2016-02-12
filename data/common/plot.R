@@ -104,6 +104,8 @@ r.times <- c()
 rmses <- c()
 medians <- c()
 scales <- c()
+aics <- c()
+null.aics <- c()
 #slows <- c()
 
 count <- 1
@@ -139,7 +141,7 @@ for(tree in trees){
 		min_date <- min(tip.dates)
 		max_date <- max(tip.dates)
 		
-		scale_val <- max_date - min_date
+		scale.val <- max_date - min_date
 
 #		tip.dates <- (tip.dates - min_date)/(max_date - min_date)
 		
@@ -182,7 +184,7 @@ for(tree in trees){
 		a<-model$coefficients[[1]]
 		b<-model$coefficients[[2]]
 		
-		err <- (pbmc.s.dates - (pbmc.dists/b - a/b)) / scale_val
+		err <- (pbmc.s.dates - (pbmc.dists/b - a/b)) / scale.val
 		 		
 		dev.set(dev.hist)
 		
@@ -201,7 +203,7 @@ for(tree in trees){
 			tip.real.dates <- extract_real_pbmc_dates(tree$tip.label)
 						
 			pbmc.r.dates <- tip.real.dates[tip.pbmc] #real dates
-			rerr <- (pbmc.r.dates - (pbmc.dists/b - a/b)) / scale_val
+			rerr <- (pbmc.r.dates - (pbmc.dists/b - a/b)) / scale.val
 			
 			plot.hist(rerr, rgb(0.5, 0.0, 0.9, 1/(length(trees))), 2)
 			
@@ -275,39 +277,44 @@ for(tree in trees){
 			box()
 		}
 		
-		rmse_val <- sqrt(sum(err*err)/length(err))
-		median_val <- median(err)
-#		slow_val <- sum(err > 0)/length(err)
+		rmse.val <- sqrt(sum(err*err)/length(err))
+		median.val <- median(err)
+		null.aic.val <- AIC(glm(plasma.dists ~ 1))
+#		slow.val <- sum(err > 0)/length(err)
 		
-		rmses <- c(rmses, rmse_val)
-		medians <- c(medians, median_val)
-		scales <- c(scales, scale_val)
-#		slows <- c(slows, slow_val)
+		rmses <- c(rmses, rmse.val)
+		medians <- c(medians, median.val)
+		scales <- c(scales, scale.val)
+		aics <- c(aics, AIC(model))
+		null.aics <- c(null.aics, null.aic.val)
+#		slows <- c(slows, slow.val)
 		
 		plot.hist(err, rgb(0.5, 0.0, 0.9, 1), 2)
 		
 		abline(h = 0, col = "black", lwd = 1)
-		abline(v = median_val, col = "red", lwd = 2)
-#		abline(v = median_val - rmse_val, col = "black", lty = 2) 
-#		abline(v = median_val + rmse_val, col = "black", lty = 2) 
+		abline(v = median.val, col = "red", lwd = 2)
+#		abline(v = median.val - rmse.val, col = "black", lty = 2) 
+#		abline(v = median.val + rmse.val, col = "black", lty = 2) 
 
 		
 		if (data.type == 2) {
-			mse_val <- sqrt(sum(rerr*rerr)/length(rerr))
-			median_val <- median(rerr)
-#			slow_val <- sum(rerr > 0)/length(rerr)
+			mse.val <- sqrt(sum(rerr*rerr)/length(rerr))
+			median.val <- median(rerr)
+#			slow.val <- sum(rerr > 0)/length(rerr)
 		
-			rmses <- c(rmses, rmse_val)
-			medians <- c(medians, median_val)
-			scales <- c(scales, scale_val)
-#			slows <- c(slows, slow_val)
+			rmses <- c(rmses, rmse.val)
+			medians <- c(medians, median.val)
+			scales <- c(scales, scale.val)
+			aics <- c(aics, AIC(model))
+			null.aics <- c(null.aics, null.aic.val)
+#			slows <- c(slows, slow.val)
 		
 			plot.hist(rerr, rgb(0.5, 0.0, 0.9, 1), 3)
 			
 			abline(h = 0, col = "black", lwd = 1)
-			abline(v = median_val, col = "red", lwd = 2)
-#			abline(v = median_val - rmse_val, col = "black", lty = 2) 
-#			abline(v = median_val + rmse_val, col = "black", lty = 2) 
+			abline(v = median.val, col = "red", lwd = 2)
+#			abline(v = median.val - rmse.val, col = "black", lty = 2) 
+#			abline(v = median.val + rmse.val, col = "black", lty = 2) 
 		}
 #	}
 
@@ -326,48 +333,52 @@ write.csv(df2, file="data.csv", row.names=FALSE)
 
 dev.set(dev.hist)
 
-rmse_val <- sqrt(sum(errs*errs)/length(errs))
-median_val <- median(errs)
-#slow_val <- sum(errs > 0) / length(errs)
+rmse.val <- sqrt(sum(errs*errs)/length(errs))
+median.val <- median(errs)
+#slow.val <- sum(errs > 0) / length(errs)
 
-rmses <- c(rmses, rmse_val)
-medians <- c(medians, median_val)
+rmses <- c(rmses, rmse.val)
+medians <- c(medians, median.val)
 scales <- c(scales, 1)
-#slows <- c(slows, slow_val)
+aics <- c(aics, 0)
+null.aics <- c(null.aics, 0)
+#slows <- c(slows, slow.val)
 				
 print(sprintf("Test: median %f, RMSE %f",
-	median_val, rmse_val))
+	median.val, rmse.val))
 
 par(mfg=c(1, 1))
 abline(h = 0, col = "black", lwd = 1)
-abline(v = median_val, col = "red", lwd = 2) 
-#abline(v = median_val - rmse_val, col = "black", lty = 2) 
-#abline(v = median_val + rmse_val, col = "black", lty = 2) 
+abline(v = median.val, col = "red", lwd = 2) 
+#abline(v = median.val - rmse.val, col = "black", lty = 2) 
+#abline(v = median.val + rmse.val, col = "black", lty = 2) 
 
 
 if (data.type == 2) {
-	rmse_val <- sqrt(sum(rerrs*rerrs)/length(rerrs))
-	median_val <- median(rerrs)
-#	slow_val <- sum(rerrs > 0) / length(rerrs)
+	rmse.val <- sqrt(sum(rerrs*rerrs)/length(rerrs))
+	median.val <- median(rerrs)
+#	slow.val <- sum(rerrs > 0) / length(rerrs)
 	
-	rmses <- c(rmses, rmse_val)
-	medians <- c(medians, median_val)
+	rmses <- c(rmses, rmse.val)
+	medians <- c(medians, median.val)
 	scales <- c(scales, 1)
-#	slows <- c(slows, slow_val)
+	aics <- c(aics, 0)
+	null.aics <- c(null.aics, 0)
+#	slows <- c(slows, slow.val)
 	
 	print(sprintf("Overall (real): median %f, rmse %f",
-		median_val, rmse_val))
+		median.val, rmse.val))
 
 	par(mfg=c(1, 2))
 	abline(h = 0, col = "black", lwd = 1)
-	abline(v = median_val, col = "red", lwd = 2)
-#	abline(v = median_val - rmse_val, col = "black", lty = 2) 
-#	abline(v = median_val + rmse_val, col = "black", lty = 2) 
+	abline(v = median.val, col = "red", lwd = 2)
+#	abline(v = median.val - rmse.val, col = "black", lty = 2) 
+#	abline(v = median.val + rmse.val, col = "black", lty = 2) 
 }
 
 
 #df <- data.frame(Median=medians, RMSE=rmses, Scale=scales, Percent.Slow=slows)
-df <- data.frame(Median=medians, RMSE=rmses, Scale=scales)
+df <- data.frame(Median=medians, RMSE=rmses, Scale=scales, AIC=aics, NULL.AIC=null.aics)
 
 write.csv(df, file="stats.csv", row.names=FALSE)
 

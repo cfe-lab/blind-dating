@@ -6,7 +6,9 @@ sh ../common/3_analysis.sh trees.good 1 0
 mv stats.csv stats.ogr.csv
 mv plot.pdf plot.ogr.pdf
 mv hist.pdf hist.ogr.pdf
+mv data.csv data.ogr.csv
 sh ../common/3_analysis.sh trees.good 1 2
 mv stats.csv stats.rttall.csv
 mv plot.pdf plot.rttall.pdf
 mv hist.pdf hist.rttall.pdf
+mv data.csv data.rttall.csv
