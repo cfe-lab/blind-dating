@@ -27,7 +27,7 @@
 
 \title{Blind dating: A phylogenetic approach to dating HIV reservoir sequences}
 
-\author{Joshua Horacsek$^{1,2}$, Jeffrey B. Joy$^2$, \\ Zabrina L. Brumme$^{1,2}$, and Art F.Y. Poon$^{1,2,3}$}
+\author{Joshua Horacsek$^{1,2}$, Bradley R. Jones$^{1,2}$, Jeffrey B. Joy$^2$, \\ Zabrina L. Brumme$^{1,2}$, and Art F.Y. Poon$^{1,2,3}$}
 % 1 Simon Fraser University
 % 2 BC Centre for Excellence in HIV/AIDS
 % 3 University of British Columbia
@@ -39,26 +39,17 @@
 
 \section * {Abstract}
 
-Background: The ability of HIV to persist within latent cellular reservoirs represents a major barrier to cure. 
-The timing of establishment of individual viral reservoirs over the infection course may influence their susceptibility to elimination by immune-mediated or therapeutic approaches. 
-However, `dating'Äù methods to accurately estimate the age of reservoir sequences remain scarce. We propose a simple method to date suspected reservoir sequences using phylogenetically informed regression. 
+Background: 
+The ability of HIV to persist within latent cellular reservoirs represents a major barrier to cure. The timing of establishment of individual viral reservoirs over the infection course may influence their susceptibility to elimination by immune-mediated or therapeutic approaches. However, methods to accurately estimate the age of reservoir sequences remain scarce. We propose a simple method to date suspected reservoir sequences using phylogenetically informed regression.
 
-Method: Simulated sequence data for model validation were generated using INDELible version 1.03. 
-Published longitudinal clonal sequences from untreated HIV-infected individuals with estimated dates of infection were obtained from the Los Alamos National Laboratory database. 
-Maximum-likelihood phylogenies were reconstructed with RaxML. 
-Phylogenies were rooted by determining the location of the root that minimized the root-mean-square error between root-to-tip distances and known dates of sampling. 
-The root-to-tip distances of latent sequences were mapped to the optimal regression line to estimate establishment date, which was assumed to precede their sample dates by an unknown amount.
- 
-Results: We validated the root-to-tip method using simulated data and published longitudinal clonal sequence datasets from untreated HIV-1 infected individuals with known infection dates. 
-For each dataset, arbitrary selections of up to 50\% of sequences were handled as latent by censoring their respective sample dates. 
-The method accurately recovered these missing sample dates when the phylogeny conformed to a strict molecular clock, as was the case for simulated data. %\anote{SOME KIND OF PERFORMANCE METRIC HERE?  MEAN RMSE?}. 
-A strict clock model could not be rejected in the majority of empirical within-host data sets. 
-When applied to HIV DNA sequences in phylogenies containing dated HIV RNA sequences, we observed that the predicted dates tended to precede dates of sampling, which was consistent with latency %\anote{(MAYBE SOME METRIC HERE LIKE MEAN DISCORDANCE).}
+Method: 
+Simulated sequence data were generated using INDELible version 1.03. A total of 550 HIV RNA sequences sampled longitudinally from 11 untreated HIV-infected individuals with estimated dates of infection and a total of 3163 HIV DNA and RNA sequences from 25 individuals were obtained from the Los Alamos National Laboratory HIV Sequence Database. The simulated and HIV RNA data were used for method validation. Maximum-likelihood phylogenies were reconstructed with RaxML. Phylogenies were rooted by determining the location of the root that minimized the root-mean-square error between root-to-tip distances and known dates of sampling. The root-to-tip distances of latent sequences were mapped to the optimal regression line to estimate reservoir establishment dates.
 
-Conclusions:
-Given a known phylogeny comprised of longitudinal plasma HIV-1 RNA sequences, the establishment dates of ``Äúunknown''Äù (reservoir) sequences can be reliably estimated when within-host HIV sequence evolution conforms to a molecular clock. 
-Future studies will test this method on empirically derived longitudinal within-host HIV deep sequence data and extend the method to work under al
-ternative clock models.
+Results: 
+To validate the method, we synthesized latent lineages by censoring the sample dates for random selections of up to 50\% of sequences in the simulated or HIV RNA datasets. In either case, root-to-tip estimation accurately recovered these missing sample dates when the phylogeny conformed to a strict molecular clock. When this method was applied to HIV DNA sequences in phylogenies containing dated HIV RNA sequences, we observed that the predicted dates tended to precede dates of sampling, which was consistent with latency.
+
+Conclusions: 
+Our results indicate that the dates that HIV DNA lineages entered a latent state can be reconstructed from a phylogenetic analysis of HIV RNA sequence variation from the same patient. This can provide important insights into the dynamics of HIV reservoirs within hosts.
 
 Keywords: 
 HIV, Latency, Cellular Reservoirs, Phylogenetics, Linear Regression\\
@@ -148,30 +139,31 @@ We utilized samples from treatment naive individuals from \cite{Shankarappa99, N
 To characterize sources of error in reconstructing dates on tips of a phylogeny, we generated phylogenetic trees by direct simulation and from the plasma data sets.
 First, we generated phylogenies with 100 tips each under a birth-death model with serial sampling using the `sim.bdsky.stt' function in the \textit{R} package \textit{TreeSim} \citep{Boskova14}.
 Birth-death models have been applied to studying speciation processes \citep{Nee:2006} and infectious disease epidemics \citep{Stradler13}, but have only recently been used to model the proliferation of virus lineages in cell populations \citep{Hartfield:2015}.
+
 The birth-death model was parameterized by fitting this model to 
 % we may get some flak for these arbitrary settings
 % we may need to provide some justification for using BD
 To assess the sensitivity of our method, we first simulated HIV sequence data sets without viral latency.
-We used BEAST version 1.8.1 to sample trees from the posterior distribution defined by the serial coalescent model with a 5-class Bayesian skyline, an uncorrelated lognormal molecular clock, and the Tamura-Nei model of nucleotide substitution.
+We used BEAST version 2.3.2 to sample trees from the posterior distribution defined by the serial coalescent model with a 5-class Bayesian skyline, an uncorrelated lognormal molecular clock, and the Tamura-Nei model of nucleotide substitution.
 Using this approach, we generated samples of trees for each sequence alignment in the plasma dataset.
+%From these simulations, we evaluated the accuracy of predicting sample collection times from a strict molecular clock model that was fit to a training subset of these data.
+The lineage birth, death and sampling rates were set to $0.09701, 0.09181, 0.04613$ respectively.
 
+We used the \textit{R} package NELSI to assign rates of evolution to these trees by drawing values from a Gaussian distribution with a mean rate $\mu = \ 1.979\times 10^{-4}$ substitutions per generation and standard deviation $\sigma = \ 1.488\times 10^{-5}$. %; Figure \ref{fig:seedtree} for an example).
 
-From these simulations, we evaluated the accuracy of predicting sample collection times from a strict molecular clock model that was fit to a training subset of these data. 
-
-
-Lineage birth and death rates were arbitrarily set to $7\times 10^{-3}$ and the sampling fraction of lineage deaths was set to 0.99. 
-We used the \textit{R} package NELSI to assign rates of evolution to these trees by drawing values from a Gaussian distribution with a mean rate $\mu = \ 3\times 10^{-4}$ substitutions per generation and standard deviation $\sigma = \ 1\times 10^{-4}$. %; Figure \ref{fig:seedtree} for an example).
 To model uncertainty in phylogenetic reconstruction from sequence variation, we simulated sequence evolution along each birth-death tree with INDELible version 1.03 \citep{Indelible09} under an HKY85 \citep{HKY85} model of nucleotide substitution.
 Parameters for the substitution model were set to empirical estimates derived from previously published HIV within-host data sets \citep{McCloskey14}. 
 Specifically, the stationary distribution was set to 0.42, 0.15, 0.15, 0.28 for the nucleotides A, C, G and T, respectively, and the transition bias parameter was set to 8.5.
+
 A phylogeny was reconstructed from the simulated sequence alignments using the approximate maximum likelihood heuristic implemented in FastTree2 \citep{FastTree10}.
 Similar results were obtained with trees reconstructed using RAxML \citep{Raxml14}, which is expected to be more accurate, but can consume orders of magnitude more computational time.
 Using this approach, we generated a total of 50 replicate phylogenies without viral latency. 
 
 To simulate phylogenies with latent viral lineages, we used an approach similar to  \citet{Immonen14}. 
 However, we used the simplifying assumptions that any sampled virus lineage could undergo no more than one latent period, and that once a lineage entered a latent state, it remained latent until becoming sampled.
-For each simulated `latency-free' phylogeny, we chose 50 tips uniformly at random, then shortened their expected number of substitutions and their branch time (the time between the tip, and the tip's parent) by a scaling factor drawn at random from a beta distribution with parameters $\alpha=1$ and $\beta=100$.
-We then recorded both the simulated age and simulated collection time and generated sequences along these latent seed trees with INDELible and the same parameters as above. 
+For each simulated `latency-free' phylogeny, we chose 50 tips uniformly at random, then shortened their expected number of substitutions and their branch time (the time between the tip, and the tip's parent)
+% by a scaling factor drawn at random from a beta distribution with parameters $\alpha=1$ and $\beta=100$.
+We then recorded both the simulated age and simulated collection time and generated sequences along these latent seed trees with INDELible using the same parameters as above. 
 For these data, we generated an additional 50 trees with 100 tips each, bringing the total amount of simulated data to 100 trees.
 
 
@@ -191,9 +183,9 @@ We used the HIV-1 B ancestral sequence reconstruction curated by the LANL databa
 % unless we refer to a specific implementation of RTT, there is no reason to claim that our method is "modified"
 Second, we used root-to-tip regression \citep[RTT;][]{Korber00}, which performs an exhaustive search by re-rooting the tree at every branch to find the root that minimizes or maximizes an objective function between the sample collection dates and the evolutionary distance of tips from the candidate root.
 In our experiments, we used the maximum correlation coefficient as our objective function.
-RTT regression typically uses dates from all tips.
-For this application, we ignored the tips that were undetermined (either censored or otherwise unknown). 
-Our simulated data were only rooted using this modified RTT scheme; for all real data, both outgroup rooting and RTT regression were used to root the phylogeny. 
+%RTT regression typically uses dates from all tips.
+%For this application, we ignored the tips that were undetermined (either censored or otherwise unknown). 
+Our simulated data were only rooted using RTT regression; for all real data, both outgroup rooting and RTT regression were used to root the phylogeny. 
 
 
 \subsection * {Date Reconstruction} \label{subsec:daterecon}
@@ -203,16 +195,16 @@ These models were only calibrated over the uncensored/plasma data for the simula
 We then used the linear model to predict the dates of the latent/unknown sequences.
 To screen for data that were amenable to our analysis, we used the nested log ratio test \citep{Ho14}. 
 Our null model was a linear model with zero slope over the expected amount of evolution over time. 
-We rejected any sequence data sets whose phylogeny couldn't reject the null model with threshold $\alpha=0.01$, since this implied a lack of phylogenetic signal.
+% We rejected any sequence data sets whose phylogeny couldn't reject the null model with threshold $\alpha=0.01$, since this implied a lack of phylogenetic signal.
 
 
 \subsection * {Experiments} \label{subsec:experiments}
 %We calculated three error measures to quantify the difference between the predicted and known dates of sampling: the mean and median differences, and the root mean square error (RMSE). 
-We used the root mean square error to quantify the difference between the predicted and known dates of sampling.
+%We used the root mean square error to quantify the difference between the predicted and known dates of sampling.
 %the mean square error for predicted date, as well as the mean and median difference between the predicted and known sampling dates.
 %and sampling date, where difference defined as simply the predicted date minus the observed date.
-All tip dates were re-scaled to lie between $0$ and $1$ to facilitate comparisons among longitudinal data sets using the formula $ \hat{t} = \frac{t - \min(\bf{t}) }{ \max{(\bf{t})} - \min{(\bf{t}})}$ where $t$ is the the unscaled time of any tip, and $\bf{t}$ is the vector of all tip dates for a given tree. 
-We refer to $\hat{t}$ as the `normalized time' of a tip. 
+%All tip dates were re-scaled to lie between $0$ and $1$ to facilitate comparisons among longitudinal data sets using the formula $ \hat{t} = \frac{t - \min(\bf{t}) }{ \max{(\bf{t})} - \min{(\bf{t}})}$ where $t$ is the the unscaled time of any tip, and $\bf{t}$ is the vector of all tip dates for a given tree. 
+%We refer to $\hat{t}$ as the `normalized time' of a tip. 
 %Our error metrics were then calculated from these normalized times.%, giving normalized mean square error, normalized mean difference, and normalized median difference. 
 
 %Our first validation experiment on simulated data was performed as follows.
@@ -231,6 +223,7 @@ We refer to $\hat{t}$ as the `normalized time' of a tip.
 %Here we only collected the normalized errors between the prediction and the collection.
 %
 
+Use Mixed Effects Models
 
 \section * {Results} \label{sec:results}
 
@@ -285,10 +278,10 @@ Moreover, it's not possible to know the actual error for this data set, as that 
 We also observed an interesting sigmoidal pattern in many of the patients in this case.
 However, we do note that most treated patients failed the hypothesis testing, implying that samples after treatment should be ignored in any analysis with this methodology.
 
-Typically, we also observed that the rooting method had very little effect on the errors (the supplemental material has Figure \ref{fig:results2} replicated for RTT rooting). 
-We did, however, identify a case in which RTT rooting fails over outgroup rooting (Figure \ref{fig:degenerate_example} shows an example of this). 
-Specifically, it's possible for the calibration dates to provide insufficient data to resolve the root of the tree. 
-We theorize that this is, for patient 820, because their calibration samples are strongly localized in time, which allows too much freedom (temporally) over the possible roots of the tree. 
+%Typically, we also observed that the rooting method had very little effect on the errors (the supplemental material has Figure \ref{fig:results2} replicated for RTT rooting). 
+%We did, however, identify a case in which RTT rooting fails over outgroup rooting (Figure \ref{fig:degenerate_example} shows an example of this). 
+%Specifically, it's possible for the calibration dates to provide insufficient data to resolve the root of the tree. 
+%We theorize that this is, for patient 820, because their calibration samples are strongly localized in time, which allows too much freedom (temporally) over the possible roots of the tree. 
 
 %We did not attempt to use BEAST \citep{BEAST} to reconstruct any phylogenies from our data.
 %Leaving dates unspecified on the number of tips would have drastically increased the dimensionality of the problem, and we would therefore need a prohibitively large amount of samples from the MCMC chain to assure convergence to the posterior distribution.
@@ -329,7 +322,7 @@ Additionally, we would like to apply the methodology to next gen sequence data -
 
 \section * {Figures}
 
-\begin{figure}[ht] \label{fig:latenttree}
+\begin{figure}[ht]
 	\centering
 	%\scalebox{5}{\input{figures/example.tex}}
 	\includegraphics{figures/latency-scheme}
@@ -345,27 +338,31 @@ Additionally, we would like to apply the methodology to next gen sequence data -
 	%Sequence A was archived at time $t$, and was collected at the same time as sequence B, at time $t^\prime$ (a drift of $t^\prime - t$ is expected).
 	%If the molecular clock assumption holds true, the MRCA is known, and B and C are reliable time-points, then the date at $t$ can be inferred from from the expected amount of evolution for B from the root.
 	}
+	\label{fig:latenttree}
 \end{figure}
 
-\begin{figure}[p] \label{fig:results1}
+\begin{figure}[p]
 	\centering
 	\includegraphics[width=\textwidth]{figures/simulated.pdf} 
 	\includegraphics[width=\textwidth]{figures/simulated_latent.pdf}\\
 	\caption[Simulated Data]{On the left of each case is a plot of evolutionary distance vs time, the right is the super position of density estimates (of normalized error) for each phylogeny (with kernel bandwidth = $0.15$). The red line on the density plot is the mean error, and the black line is the median error. }
+	 \label{fig:results1}
 \end{figure}
 
-\begin{figure}[ht] \label{fig:results2}
+\begin{figure}[ht]
 	\centering
 	\includegraphics[width=\textwidth]{figures/ancre.pdf}
 	\includegraphics[width=\textwidth]{figures/lanl.pdf}
-	\caption[Examples]{As Figure 2, except for the real data.
+	\caption[Examples]{As Figure \ref{fig:results1}, except for the real data.
 The phylogenies in these cases have been rooted with outgroup rooting}
+	\label{fig:results2}
 \end{figure}
 
-\begin{figure*}[ht] \label{fig:degenerate_example}
+\begin{figure*}[ht]
 	\centering
 	\includegraphics[scale=0.425]{figures/rtt.pdf} \\
 	\caption[Example of bad root]{Root to tip rooting fails due to insufficient temporal resolution at the root}
+	\label{fig:degenerate_example}
 \end{figure*}
 
 
