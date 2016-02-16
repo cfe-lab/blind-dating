@@ -28,9 +28,9 @@
 \title{Blind dating: A phylogenetic approach to dating HIV reservoir sequences}
 
 \author{Joshua Horacsek$^{1,2}$, Bradley R. Jones$^{1,2}$, Jeffrey B. Joy$^2$, \\ Zabrina L. Brumme$^{1,2}$, and Art F.Y. Poon$^{1,2,3}$}
-% 1 Simon Fraser University
-% 2 BC Centre for Excellence in HIV/AIDS
-% 3 University of British Columbia
+%%% 1 Simon Fraser University
+%%% 2 BC Centre for Excellence in HIV/AIDS
+%%% 3 University of British Columbia
 \baselineskip 22pt
 \pagewiselinenumbers
 
@@ -122,7 +122,7 @@ The purpose of the plasma data set was to provide representative samples of with
 
 The second data set, referred to as the {\em mixed} data set, contained sequences from studies in which both plasma HIV RNA and cellular HIV DNA had been collected from the same individual.
 We used the Los Alamos advanced search interface (\url{http://www.hiv.lanl.gov/}{http://www.hiv.lanl.gov/}) to identify published data sets representing individuals with both HIV RNA and cellular DNA sequences.
-% what do you mean by "well-characterized"?
+%% what do you mean by "well-characterized"?
 From these results, we manually selected 25 individuals that had well-characterized partial {\em env} sequences and plasma samples from at least 2 time points (Table \ref{tab:patients}). 
 There were no selection criteria on the time between sample collection dates. 
 A total of 1,249 partial {\em env} sequences from blood plasma, and 1914 partial {\em env} sequences from PBMC cells were used in our analysis. 
@@ -132,24 +132,24 @@ We utilized samples from treatment naive individuals from \cite{Shankarappa99, N
 
 \subsection * {Simulated Data} \label{subsec:simdata}
 
-% 1. simulate trees with strict clock - baseline
-% 2. directly manipulate plasma trees
-% 3. simulate sequence evolution on trees - additional error
+%%% 1. simulate trees with strict clock - baseline
+%%% 2. directly manipulate plasma trees
+%%% 3. simulate sequence evolution on trees - additional error
 
 To characterize sources of error in reconstructing dates on tips of a phylogeny, we generated phylogenetic trees by direct simulation and from the plasma data sets.
 First, we generated phylogenies with 100 tips each under a birth-death model with serial sampling using the `sim.bdsky.stt' function in the \textit{R} package \textit{TreeSim} \citep{Boskova14}.
 Birth-death models have been applied to studying speciation processes \citep{Nee:2006} and infectious disease epidemics \citep{Stradler13}, but have only recently been used to model the proliferation of virus lineages in cell populations \citep{Hartfield:2015}.
 
 The birth-death model was parameterized by fitting this model to 
-% we may get some flak for these arbitrary settings
-% we may need to provide some justification for using BD
+%% we may get some flak for these arbitrary settings
+%% we may need to provide some justification for using BD
 To assess the sensitivity of our method, we first simulated HIV sequence data sets without viral latency.
 We used BEAST version 2.3.2 to sample trees from the posterior distribution defined by the serial coalescent model with a 5-class Bayesian skyline, an uncorrelated lognormal molecular clock, and the Tamura-Nei model of nucleotide substitution.
 Using this approach, we generated samples of trees for each sequence alignment in the plasma dataset.
 %From these simulations, we evaluated the accuracy of predicting sample collection times from a strict molecular clock model that was fit to a training subset of these data.
 The lineage birth, death and sampling rates were set to $0.09701, 0.09181, 0.04613$ respectively.
 
-We used the \textit{R} package NELSI to assign rates of evolution to these trees by drawing values from a Gaussian distribution with a mean rate $\mu = \ 1.979\times 10^{-4}$ substitutions per generation and standard deviation $\sigma = \ 1.488\times 10^{-5}$. %; Figure \ref{fig:seedtree} for an example).
+We used the \textit{R} package, NELSI, to assign rates of evolution to these trees by drawing values from a Gaussian distribution with a mean rate $\mu = \ 1.979\times 10^{-4}$ substitutions per generation and standard deviation $\sigma = \ 1.488\times 10^{-5}$. %; Figure \ref{fig:seedtree} for an example).
 
 To model uncertainty in phylogenetic reconstruction from sequence variation, we simulated sequence evolution along each birth-death tree with INDELible version 1.03 \citep{Indelible09} under an HKY85 \citep{HKY85} model of nucleotide substitution.
 Parameters for the substitution model were set to empirical estimates derived from previously published HIV within-host data sets \citep{McCloskey14}. 
@@ -161,12 +161,22 @@ Using this approach, we generated a total of 50 replicate phylogenies without vi
 
 To simulate phylogenies with latent viral lineages, we used an approach similar to  \citet{Immonen14}. 
 However, we used the simplifying assumptions that any sampled virus lineage could undergo no more than one latent period, and that once a lineage entered a latent state, it remained latent until becoming sampled.
-For each simulated `latency-free' phylogeny, we chose 50 tips uniformly at random, then shortened their expected number of substitutions and their branch time (the time between the tip, and the tip's parent)
+For each simulated `latency-free' phylogeny, we chose 50 tips uniformly at random, then shortened their expected number of substitutions and their branch time (the time between the tip, and the tip's parent).
+
+To do this we applied the following procedure:
+\begin{enumerate}
+\item Draw a random period for becoming unlatent, $u$, from an exponential distribution with rate, $\mu = $.
+\item Draw a random become latent time from a restricted exponential distribution with rate, $\lambda = $, and bounds $\max\{s-u, 0\}$ and $s$, where $s$ is the branch time of the tip.
+\item Shorten the branch time to equal the become latent time.
+\item Scale the expected number of substitutions.
+\end{enumerate}
+
 % by a scaling factor drawn at random from a beta distribution with parameters $\alpha=1$ and $\beta=100$.
-We then recorded both the simulated age and simulated collection time and generated sequences along these latent seed trees with INDELible using the same parameters as above. 
+We then recorded both the simulated ?age? and simulated collection time and generated sequences along these latent seed trees with INDELible using the same parameters as above. 
 For these data, we generated an additional 50 trees with 100 tips each, bringing the total amount of simulated data to 100 trees.
 
 
+%% maybe move this above simulated data
 \subsection * {Sequence Alignment} \label{subsec:seqalign}
 When applicable, we used MUSCLE 3.8.31 \citep{Muscle04} to align the patient-derived sequences, which were then visually inspected and cleaned with AliView \citep{AliView14}. 
 Alignments were manually trimmed to the interval in which at least  50\% of sequences within the data set had coverage over each base.
@@ -180,10 +190,10 @@ We evaluated two different methods for rooting these trees.
 The first method was outgroup rooting, in which one or more sequences from taxa outside but sufficiently related to the group of interest are added to the phylogenetic reconstruction.
 The point at which the branch leading to the outgroup intersects the rest of the tree provides an estimate of the root for the latter.
 We used the HIV-1 B ancestral sequence reconstruction curated by the LANL database (\url{http://www.hiv.lanl.gov/}{http://www.hiv.lanl.gov/}) as the outgroup sequence.
-% unless we refer to a specific implementation of RTT, there is no reason to claim that our method is "modified"
+%% unless we refer to a specific implementation of RTT, there is no reason to claim that our method is "modified"
 Second, we used root-to-tip regression \citep[RTT;][]{Korber00}, which performs an exhaustive search by re-rooting the tree at every branch to find the root that minimizes or maximizes an objective function between the sample collection dates and the evolutionary distance of tips from the candidate root.
 In our experiments, we used the maximum correlation coefficient as our objective function.
-%RTT regression typically uses dates from all tips.
+%%RTT regression typically uses dates from all tips.
 %For this application, we ignored the tips that were undetermined (either censored or otherwise unknown). 
 Our simulated data were only rooted using RTT regression; for all real data, both outgroup rooting and RTT regression were used to root the phylogeny. 
 
@@ -193,8 +203,11 @@ Irrespective of the method used to root the phylogeny, we used a general linear 
 The expected amount of evolution was taken to be the response and the sampling dates of the data were taken as the input. 
 These models were only calibrated over the uncensored/plasma data for the simulated and real data sets respectively.
 We then used the linear model to predict the dates of the latent/unknown sequences.
-To screen for data that were amenable to our analysis, we used the nested log ratio test \citep{Ho14}. 
-Our null model was a linear model with zero slope over the expected amount of evolution over time. 
+%To screen for data that were amenable to our analysis, we used the nested log ratio test \citep{Ho14}. 
+To screen for data that were amenable to our analysis, we used Akaike Information Criteria \cite[AIC;][]{Akaike74}.
+Our null model was a linear model with zero slope over the expected amount of evolution over time.
+%% I'm not sure about keeping data with only 2 time points for plasma data
+We rejected any sequence data sets whose phylogeny could reject the null model with a relative AIC of ${-5}$.
 % We rejected any sequence data sets whose phylogeny couldn't reject the null model with threshold $\alpha=0.01$, since this implied a lack of phylogenetic signal.
 
 
@@ -223,43 +236,46 @@ Our null model was a linear model with zero slope over the expected amount of ev
 %Here we only collected the normalized errors between the prediction and the collection.
 %
 
-Use Mixed Effects Models
+Compute difference between sampled date and predicted date. Transform difference.
+
+Apply GLME.
+
+%% Maybe this should go in results
+Quantify latency.
 
 \section * {Results} \label{sec:results}
 
-
+%% Rewrite this whole section
 
 \subsection * {Model Validation} \label{sec:sim_results}
 
-% Quantify the expected error profile from simulation
 
+%Figure \ref{fig:results1} shows our model validation results over our synthetic data -- here we censor 50\% of the dates, and attempt to reconstruct them. 
+%Under the assumption of a strict molecular clock (that evolution is linearly related to time) the clock is a reliable source of information for these simulations.
+%Figure \ref{fig:results1} A shows this result for the synthetic data with no latent behaviour.
+%Averaged over all simulated data sets, the mean square error was $3.0\times 10^{-3}$, and the average median and mean difference were 0 and $5.0\times 10^{-5}$ respectively. 
+%Quantitatively, the censored data points are close to the regression line, and the difference density is heavily peaked around 0.
 
-Figure \ref{fig:results1} shows our model validation results over our synthetic data -- here we censor 50\% of the dates, and attempt to reconstruct them. 
-Under the assumption of a strict molecular clock (that evolution is linearly related to time) the clock is a reliable source of information for these simulations.
-Figure \ref{fig:results1} A shows this result for the synthetic data with no latent behaviour.
-Averaged over all simulated data sets, the mean square error was $3.0\times 10^{-3}$, and the average median and mean difference were 0 and $5.0\times 10^{-5}$ respectively. 
-Quantitatively, the censored data points are close to the regression line, and the difference density is heavily peaked around 0. 
+%Figure \ref{fig:results1} B shows different results for the latent simulations -- here we censor 50\% of the dates, attempt to reconstruct them, then compare them to the simulated collection dates. 
+%In this case, averaged over all simulated data sets, the mean square error was $7.1\times 10^{-3}$, and the average median and mean difference were $4.0\times 10^{-2}$ and $5.1\times 10^{-2}$ respectively. 
+%This bias is expected, as the errors were calculated between the simulated collection times -- not the simulated archival times.
+%More quantitatively, we expect the density plot to be shifted to the right (as it is in figure \ref{fig:results1} B) as this suggests that sequences are older than their sampling dates.
+%When we performed the same analysis against the simulated archival times, the results were nearly identical to the results without any latent data, suggesting that we can recover the dates of latent sequences provided an accurate clock.
 
-Figure \ref{fig:results1} B shows different results for the latent simulations -- here we censor 50\% of the dates, attempt to reconstruct them, then compare them to the simulated collection dates. 
-In this case, averaged over all simulated data sets, the mean square error was $7.1\times 10^{-3}$, and the average median and mean difference were $4.0\times 10^{-2}$ and $5.1\times 10^{-2}$ respectively. 
-This bias is expected, as the errors were calculated between the simulated collection times -- not the simulated archival times.
-More quantitatively, we expect the density plot to be shifted to the right (as it is in figure \ref{fig:results1} B) as this suggests that sequences are older than their sampling dates.
-When we performed the same analysis against the simulated archival times, the results were nearly identical to the results without any latent data, suggesting that we can recover the dates of latent sequences provided an accurate clock.
-
-For our final validation, we took the same strategy as the first validation on synthetic data, and applied it to our {\em plasma} data set -- we censored known sampling dates, then attempted to reconstruct them (Figure \ref{fig:results2} C shows this when the phylogenies have been rooted with outgroup rooting). 
-Averaged over all simulated data sets, the mean square error was $1.7\times 10^{-1}$, and the absolute value of average median and mean difference were $2.1\times 10^{-4}$ and $1.9\times 10^{-2}$ respectively. 
-The density plot shows similar behavior to that of the synthetic data, except with a wider distribution, and more variation. 
+%For our final validation, we took the same strategy as the first validation on synthetic data, and applied it to our {\em plasma} data set -- we censored known sampling dates, then attempted to reconstruct them (Figure \ref{fig:results2} C shows this when the phylogenies have been rooted with outgroup rooting). 
+%Averaged over all simulated data sets, the mean square error was $1.7\times 10^{-1}$, and the absolute value of average median and mean difference were $2.1\times 10^{-4}$ and $1.9\times 10^{-2}$ respectively. 
+%The density plot shows similar behavior to that of the synthetic data, except with a wider distribution, and more variation. 
 
 
 \subsection * {Application} \label{sec:mixed_data}
 
-Finally, we tested our methodology on the {\em mixed} data set.
-Figure \ref{fig:results2} D shows the regression over the plasma calibration dates the plasma collection dates. 
-In this case, we do not know the actual date of archival, however, the superposition of the difference density plots shows similar behavior to that of the latent simulated data.
+%Finally, we tested our methodology on the {\em mixed} data set.
+%Figure \ref{fig:results2} D shows the regression over the plasma calibration dates the plasma collection dates. 
+%In this case, we do not know the actual date of archival, however, the superposition of the difference density plots shows similar behavior to that of the latent simulated data.
 
-With respect to the sampling time, over all individuals, the mean square error was $4.9\times 10^{-2}$, and the absolute value of average median and mean difference were $2.4\times 10^{-2}$ and $4.7\times 10^{-3}$.
+%With respect to the sampling time, over all individuals, the mean square error was $4.9\times 10^{-2}$, and the absolute value of average median and mean difference were $2.4\times 10^{-2}$ and $4.7\times 10^{-3}$.
 
-Individuals that had received treatment at some point generally failed the hypothesis test -- there was only one patient that did not -- these individuals were not included in the above analysis. 
+%Individuals that had received treatment at some point generally failed the hypothesis test -- there was only one patient that did not -- these individuals were not included in the above analysis. 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
