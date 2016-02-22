@@ -33,8 +33,12 @@ n.replicates <- 1
 n.tips <- 100
 
 # From BEAST
-clock.rate <- 0.0001979
-noise.rate <- 0.00001488
+clock.rate <- 0.0001946
+noise.rate <- 0.00001375
+sampprob <-c(0.6085, 0.6085, 0.6085)
+lambda <- c(0.01099, 0.005120, 0.004118)
+mu <- c(0.002154, 0.002154, 0.002154)
+times<-c(0, 1085, 2170)
 
 sim.params <- list(rate = clock.rate, noise = noise.rate)
 sim.clockmodel <- simulate.clock
@@ -153,19 +157,9 @@ make.latent <- function(
   tr
 }
 
-
-# birth-death model parameters, from BEAST
-sampprob <-c(0.04613)
-lambda <- c(0.09701)
-mu <- c(0.09181)
-times<-c(0)
-
 trees <- apply(matrix(rep(n.tips,n.trees)), 1, sim.bdsky.stt, lambdasky=lambda, deathsky=mu, timesky=times, sampprobsky=sampprob,rho=0,timestop=0)
 trees <- lapply(trees, function(x) {unroot(x[[1]])})
 sim.trees <- lapply(trees, sim.clockmodel, params=sim.params)
-
-print(length(trees))
-print(length(sim.trees))
 
 if (latent) {
 	trees <- lapply(sim.trees, make.latent)
