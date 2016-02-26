@@ -11,6 +11,7 @@
 \makeatother
 
 \usepackage{graphicx}
+\usepackage{amsmath}
 
 \usepackage{url}
 \urlstyle{same}
@@ -27,7 +28,7 @@
 
 \title{Blind dating: A phylogenetic approach to dating HIV reservoir sequences}
 
-\author{Joshua Horacsek$^{1,2}$, Bradley R. Jones$^{1,2}$, Jeffrey B. Joy$^2$, \\ Zabrina L. Brumme$^{1,2}$, and Art F.Y. Poon$^{1,2,3}$}
+\author{Bradley R. Jones$^{1,2}$, Joshua Horacsek$^{1,2}$, Jeffrey B. Joy$^2$, \\ Zabrina L. Brumme$^{1,2}$, and Art F.Y. Poon$^{1,2,3}$}
 %%% 1 Simon Fraser University
 %%% 2 BC Centre for Excellence in HIV/AIDS
 %%% 3 University of British Columbia
@@ -78,7 +79,7 @@ This additional information enables one to rescale a phylogeny in chronological 
 %With an appropriate method of relating evolutionary distance to time (a {\em clock model}), the phylogeny can be re-scaled chronologically, then by fixing the tips to their respective sampling dates, clock ``rates'' can be estimated .
 Among the actively replicating HIV lineages within a host, the rate of molecular evolution is fairly consistent over time \citep{Leitner99, Kuhner95, Korber00}.
 Consequently, the divergence of these lineages can be adequately approximated by a `strict' molecular clock model in which a single rate of evolution is sustained throughout.
-%For sequences originating from the active population of virus, it is not unreasonable to assume that the rate of molecular evolution is relatively constant -- in other words, it adheres to a `molecular clock' model . 
+%For sequences originating from the active population of virus, it is not unreasonable to assume that the rate of molecular evolution is relatively constant --- in other words, it adheres to a `molecular clock' model . 
 Once a virus lineage becomes integrated into a host genome, however, its rate of evolution becomes negligible relative to the baseline rate in the actively replicating population.
 Thus, viral latency effectively halts the molecular evolution of that particular virus lineage until reactivation. 
 
@@ -142,16 +143,16 @@ To characterize sources of error in reconstructing dates on tips of a phylogeny,
 First, we generated phylogenies with 100 tips each under a birth-death model with serial sampling using the `sim.bdsky.stt' function in the \textit{R} package \textit{TreeSim} \citep{Boskova14}.
 Birth-death models have been applied to studying speciation processes \citep{Nee:2006} and infectious disease epidemics \citep{Stradler13}, but have only recently been used to model the proliferation of virus lineages in cell populations \citep{Hartfield:2015}.
 
-The birth-death model was parameterized by fitting this model to 
-%% we may get some flak for these arbitrary settings
+%% This paragraph needs to be rewritten
+The birth-death model was parameterized by fitting this model to samples from the {\em plasma} dataset.
 %% we may need to provide some justification for using BD
-To assess the sensitivity of our method, we first simulated HIV sequence data sets without viral latency.
-We used BEAST version 2.3.2 to sample trees from the posterior distribution defined by the serial coalescent model with a 5-class Bayesian skyline, an uncorrelated lognormal molecular clock, and the Tamura-Nei model of nucleotide substitution.
-Using this approach, we generated samples of trees for each sequence alignment in the plasma dataset.
+%To assess the sensitivity of our method, we first simulated HIV sequence data sets without viral latency.
+We used BEAST version 2.3.2 to estimate the posterior distribution defined by the serial model with a Bayesian skyline, a strict molecular clock, and the HKY85 \citep{HKY85} model of nucleotide substitution.
+%Using this approach, we generated samples of trees for each sequence alignment in the plasma dataset.
 %From these simulations, we evaluated the accuracy of predicting sample collection times from a strict molecular clock model that was fit to a training subset of these data.
-The lineage birth, death and sampling rates were set to $0.09701, 0.09181, 0.04613$ respectively.
+The lineage birth rate, death rate and sampling probability were estimated to be: $0.05116, 0.05006, 0.005237$ respectively.
 
-We used the \textit{R} package, NELSI, to assign rates of evolution to these trees by drawing values from a Gaussian distribution with a mean rate $\mu = \ 1.979\times 10^{-4}$ substitutions per generation and standard deviation $\sigma = \ 1.488\times 10^{-5}$. %; Figure \ref{fig:seedtree} for an example).
+We used the \textit{R} package, NELSI \citep{NELSI}, to assign rates of evolution to these trees by drawing values from a Gaussian distribution with a mean rate $\mu = \ 1.964\times 10^{-4}$ substitutions per generation and standard deviation $\sigma = \ 1.417\times 10^{-5}$. %; Figure \ref{fig:seedtree} for an example).
 
 To model uncertainty in phylogenetic reconstruction from sequence variation, we simulated sequence evolution along each birth-death tree with INDELible version 1.03 \citep{Indelible09} under an HKY85 \citep{HKY85} model of nucleotide substitution.
 Parameters for the substitution model were set to empirical estimates derived from previously published HIV within-host data sets \citep{McCloskey14}. 
@@ -167,15 +168,16 @@ For each simulated `latency-free' phylogeny, we chose 50 tips uniformly at rando
 
 To do this we applied the following procedure:
 \begin{enumerate}
-\item Draw a random period for becoming unlatent, $u$, from an exponential distribution with rate, $\mu = $.
-\item Draw a random become latent time from a restricted exponential distribution with rate, $\lambda = $, and bounds $\max\{s-u, 0\}$ and $s$, where $s$ is the branch time of the tip.
+\item Draw a random period for becoming unlatent, $U$, from an exponential distribution with rate, $u$.
+\item Draw a random become latent time from a restricted exponential distribution with rate, $l$, and bounds $\max\{S-U, 0\}$ and $S$, where $S$ is the branch time of the tip.
 \item Shorten the branch time to equal the become latent time.
 \item Scale the expected number of substitutions.
 \end{enumerate}
+See Figure \ref{fig:latencymodel} for an illustration of this model. We took $u$ and $l$ from the range of values: $1, 0.01, 0.0001$.
 
 % by a scaling factor drawn at random from a beta distribution with parameters $\alpha=1$ and $\beta=100$.
-We then recorded both the simulated ?age? and simulated collection time and generated sequences along these latent seed trees with INDELible using the same parameters as above. 
-For these data, we generated an additional 50 trees with 100 tips each, bringing the total amount of simulated data to 100 trees.
+We then recorded both the simulated become latent time and simulated collection time and generated sequences along these latent seed trees with INDELible using the same parameters as above. 
+For these data, we generated an additional 450 trees with 100 tips each, bringing the total amount of simulated data to 500 trees.
 
 
 %% maybe move this above simulated data
@@ -204,7 +206,7 @@ Our simulated data were only rooted using RTT regression; for all real data, bot
 Irrespective of the method used to root the phylogeny, we used a general linear model with the normal family to infer the association between the tip dates and sequence divergence from the root. 
 The expected amount of evolution was taken to be the response and the sampling dates of the data were taken as the input. 
 These models were only calibrated over the uncensored/plasma data for the simulated and real data sets respectively.
-We then used the linear model to predict the dates of the latent/unknown sequences.
+%We then used the linear model to predict the dates of the latent/unknown sequences.
 %To screen for data that were amenable to our analysis, we used the nested log ratio test \citep{Ho14}. 
 To screen for data that were amenable to our analysis, we used Akaike Information Criteria \cite[AIC;][]{Akaike74}.
 Our null model was a linear model with zero slope over the expected amount of evolution over time.
@@ -212,6 +214,7 @@ Our null model was a linear model with zero slope over the expected amount of ev
 We rejected any sequence data sets whose phylogeny could reject the null model with a relative AIC of ${-5}$.
 % We rejected any sequence data sets whose phylogeny couldn't reject the null model with threshold $\alpha=0.01$, since this implied a lack of phylogenetic signal.
 
+We then used the linear model to predict the date of the censored sequences.
 
 \subsection * {Experiments} \label{subsec:experiments}
 %We calculated three error measures to quantify the difference between the predicted and known dates of sampling: the mean and median differences, and the root mean square error (RMSE). 
@@ -238,9 +241,11 @@ We rejected any sequence data sets whose phylogeny could reject the null model w
 %Here we only collected the normalized errors between the prediction and the collection.
 %
 
-Compute difference between sampled date and predicted date. Transform difference.
+To evaluate the latency of a censored sequence, $s$, we computed the difference, $d_s$, between the sampled date and the predicted date of the linear model. For each data set we used a general linear mixed effects model with the normal family to infer an association between the genetic distance of $s$ from the root of its phylogenetic tree and $d_s$.
 
-Apply GLME.
+We then transformed the difference, $d_s$, by
+\[\hat{d}_s = \operatorname{sign}(d_s)\sqrt{|d_s|}\]
+and applied the general linear mixed effects model above with $\hat{d}_s$ as the response variable.
 
 %% Maybe this should go in results
 Quantify latency.
@@ -252,19 +257,19 @@ Quantify latency.
 \subsection * {Model Validation} \label{sec:sim_results}
 
 
-%Figure \ref{fig:results1} shows our model validation results over our synthetic data -- here we censor 50\% of the dates, and attempt to reconstruct them. 
+%Figure \ref{fig:results1} shows our model validation results over our synthetic data --- here we censor 50\% of the dates, and attempt to reconstruct them. 
 %Under the assumption of a strict molecular clock (that evolution is linearly related to time) the clock is a reliable source of information for these simulations.
 %Figure \ref{fig:results1} A shows this result for the synthetic data with no latent behaviour.
 %Averaged over all simulated data sets, the mean square error was $3.0\times 10^{-3}$, and the average median and mean difference were 0 and $5.0\times 10^{-5}$ respectively. 
 %Quantitatively, the censored data points are close to the regression line, and the difference density is heavily peaked around 0.
 
-%Figure \ref{fig:results1} B shows different results for the latent simulations -- here we censor 50\% of the dates, attempt to reconstruct them, then compare them to the simulated collection dates. 
+%Figure \ref{fig:results1} B shows different results for the latent simulations --- here we censor 50\% of the dates, attempt to reconstruct them, then compare them to the simulated collection dates. 
 %In this case, averaged over all simulated data sets, the mean square error was $7.1\times 10^{-3}$, and the average median and mean difference were $4.0\times 10^{-2}$ and $5.1\times 10^{-2}$ respectively. 
-%This bias is expected, as the errors were calculated between the simulated collection times -- not the simulated archival times.
+%This bias is expected, as the errors were calculated between the simulated collection times --- not the simulated archival times.
 %More quantitatively, we expect the density plot to be shifted to the right (as it is in figure \ref{fig:results1} B) as this suggests that sequences are older than their sampling dates.
 %When we performed the same analysis against the simulated archival times, the results were nearly identical to the results without any latent data, suggesting that we can recover the dates of latent sequences provided an accurate clock.
 
-%For our final validation, we took the same strategy as the first validation on synthetic data, and applied it to our {\em plasma} data set -- we censored known sampling dates, then attempted to reconstruct them (Figure \ref{fig:results2} C shows this when the phylogenies have been rooted with outgroup rooting). 
+%For our final validation, we took the same strategy as the first validation on synthetic data, and applied it to our {\em plasma} data set --- we censored known sampling dates, then attempted to reconstruct them (Figure \ref{fig:results2} C shows this when the phylogenies have been rooted with outgroup rooting). 
 %Averaged over all simulated data sets, the mean square error was $1.7\times 10^{-1}$, and the absolute value of average median and mean difference were $2.1\times 10^{-4}$ and $1.9\times 10^{-2}$ respectively. 
 %The density plot shows similar behavior to that of the synthetic data, except with a wider distribution, and more variation. 
 
@@ -277,13 +282,13 @@ Quantify latency.
 
 %With respect to the sampling time, over all individuals, the mean square error was $4.9\times 10^{-2}$, and the absolute value of average median and mean difference were $2.4\times 10^{-2}$ and $4.7\times 10^{-3}$.
 
-%Individuals that had received treatment at some point generally failed the hypothesis test -- there was only one patient that did not -- these individuals were not included in the above analysis. 
+%Individuals that had received treatment at some point generally failed the hypothesis test --- there was only one patient that did not --- these individuals were not included in the above analysis. 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section * {Discussion} \label{sec:discuss}
 The results concerning the simulated data were highly consistent with expectations. 
-The more a phylogeny adheres to a molecular clock, the more accurate predictions made from it will be -- the simulated data is very well informed, and the phylogenies and their clocks are well resolved by the maximum likelihood tree estimate. 
+The more a phylogeny adheres to a molecular clock, the more accurate predictions made from it will be --- the simulated data is very well informed, and the phylogenies and their clocks are well resolved by the maximum likelihood tree estimate. 
 Since latency is akin to ``pausing'' the evolution of a sequence, and evolution is assumed to be clock-like when sequences are not ``paused'', it's also not surprising that the latent simulated data could be reconstructed with low error. 
 
 The results from the {\em plasma} data-set are also expected. 
@@ -307,7 +312,7 @@ However, we do note that most treated patients failed the hypothesis testing, im
 
 
 We also noticed that the patients who had begun treatment (regardless of whether or not they regressed) typically failed the hypothesis testing. Upon analysing the clocks of these individuals, they showed two trends. 
-The first trend, in patients who had regressed after treatment, was the ``resetting'' of the molecular clock -- that is, after treatment started, the clock was set to a previous point in time, then continued as it had before after treatment failed. 
+The first trend, in patients who had regressed after treatment, was the ``resetting'' of the molecular clock --- that is, after treatment started, the clock was set to a previous point in time, then continued as it had before after treatment failed. 
 For patients who had successfully been treated, there appeared to be an emergence of a clock with near zero slope after treatment.
 This suggests that after a patient begins treatment, the assumption of a molecular clock  is not valid over the whole temporal range of the phylogeny. 
 
@@ -322,7 +327,7 @@ Then, using real data, we performed analogous reconstructions, using both root-t
 However, there are ways in which this method could be improved. 
 These results hinge on the strong assumption of a molecular clock over the data, which is not always true. 
 It may be possible to adapt a maximum likelihood relaxed clock methodology with this approach, giving more flexibility over noisy or unreliable data. 
-Additionally, we would like to apply the methodology to next gen sequence data -- we would like to see if mass amounts of short read data contain sufficient information to calibrate the clock.
+Additionally, we would like to apply the methodology to next gen sequence data --- we would like to see if mass amounts of short read data contain sufficient information to calibrate the clock.
 
 
 %\section{Acknowledgments} \label{sec:ackn}
@@ -357,6 +362,12 @@ Additionally, we would like to apply the methodology to next gen sequence data -
 	%If the molecular clock assumption holds true, the MRCA is known, and B and C are reliable time-points, then the date at $t$ can be inferred from from the expected amount of evolution for B from the root.
 	}
 	\label{fig:latenttree}
+\end{figure}
+
+\begin{figure}[ht]
+%%	\includegraphics{figures/latency-model}
+	\caption[]{An illustration of the latency model.}
+	\label{fig:latencymodel}
 \end{figure}
 
 \begin{figure}[p]
@@ -425,7 +436,7 @@ Reference & Patient ID & \multicolumn{3}{c}{Sequences} & \multicolumn{3}{c}{Time
 & 34411 &      25 &       43 &       68 &        3 &        3 &        6   \\ \hline
 \end{tabular}
 \end{center}
-  \caption{Summary of all the patient data collected from the HIV LANL database -- Patient ID corresponds to the Los Alamos database's Patient ID \citep{LosAlamos}.
+  \caption{Summary of all the patient data collected from the HIV LANL database --- Patient ID corresponds to the Los Alamos database's Patient ID \citep{LosAlamos}.
    }\label{tab:patients} 
 \end{table*}
 

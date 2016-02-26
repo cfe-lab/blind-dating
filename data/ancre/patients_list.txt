@@ -1,12 +1,9 @@
-1 aligned_marked/patient_1.fasta
-19 aligned_marked/patient_19.fasta
-58 aligned_marked/patient_58.fasta
-128 aligned_marked/patient_128.fasta
-129 aligned_marked/patient_129.fasta
-130 aligned_marked/patient_130.fasta
-131 aligned_marked/patient_131.fasta
-132 aligned_marked/patient_132.fasta
-133 aligned_marked/patient_133.fasta
-427 aligned_marked/patient_427.fasta
-600 aligned_marked/patient_600.fasta
-
+1	aligned_tweak/patient_1.fasta
+128	aligned_tweak/patient_128.fasta
+129	aligned_tweak/patient_129.fasta
+130	aligned_tweak/patient_130.fasta
+131	aligned_tweak/patient_131.fasta
+132	aligned_tweak/patient_132.fasta
+133	aligned_tweak/patient_133.fasta
+427	aligned_tweak/patient_427.fasta
+58	aligned_tweak/patient_58.fasta

@@ -33,16 +33,17 @@ n.replicates <- 1
 n.tips <- 100
 
 # From BEAST
-clock.rate <- 0.0001946
-noise.rate <- 0.00001375
-sampprob <-c(0.6085, 0.6085, 0.6085)
-lambda <- c(0.01099, 0.005120, 0.004118)
-mu <- c(0.002154, 0.002154, 0.002154)
-times<-c(0, 1085, 2170)
+clock.rate <- 0.0001964
+noise.rate <- 0.00001417
+
+# birth-death model parameters, from BEAST
+sampprob <-c(0.005237)
+lambda <- c(0.05116)
+mu <- c(0.05006)
+times<-c(0)
 
 sim.params <- list(rate = clock.rate, noise = noise.rate)
 sim.clockmodel <- simulate.clock
-
 
 trim <- function (x) gsub("^\\s+|\\s+$", "", x)
 extract_dates <- function(x) as.numeric(gsub("(.+)_([0-9\\.]+)$", "\\2", x, perl=T))
@@ -92,9 +93,8 @@ make.latent <- function(
   edges <- which(tr$edge[,2] %in% tips)  # post-traversal indices of edges to modify
 #  edge.length <- tr$edge.length  # branch lengths in unit time
   
-  # this gives a conditional distribution that converges to poisson(latency.rate) when 
-  # edge.length -> infinity
-  rfun <- function(sc) {
+  # latency distribution
+  rlatent <- function(sc) {
     u <- rexp(length(sc), unlatency.rate)
     print(u)
     t.0 <- (sc - u) * (sc - u > 0)
@@ -122,10 +122,14 @@ make.latent <- function(
   edge.mod <- edge.length
 #  edge.mod[edges] <- edge.mod[edges]*scale
   print(edge.mod[edges])
-  edge.mod[edges] <- rfun(edge.mod[edges]) 
+  if (latent)
+    edge.mod[edges] <- rlatent(edge.mod[edges]) 
+  else
+    edge.mod[edges] <- edge.mod[edges]
   print(edge.mod[edges])
     
 #  delta <- edge.length - edge.mod
+  write.csv(data.frame(id=tr$lib.label[edges], length=edge.length[edges], latency=(edge.length[edges]-edge.mod[edges])), "latency.csv")
   
   # # 
   latent <- edge.mod
@@ -157,15 +161,15 @@ make.latent <- function(
   tr
 }
 
-trees <- apply(matrix(rep(n.tips,n.trees)), 1, sim.bdsky.stt, lambdasky=lambda, deathsky=mu, timesky=times, sampprobsky=sampprob,rho=0,timestop=0)
+trees <- apply(matrix(rep(n.tips,n.trees)), 1, sim.bdsky.stt, lambdasky=lambda, deathsky=mu, timesky=times, sampprobsky=sampprob, rho=0, timestop=0)
 trees <- lapply(trees, function(x) {unroot(x[[1]])})
 sim.trees <- lapply(trees, sim.clockmodel, params=sim.params)
 
-if (latent) {
-	trees <- lapply(sim.trees, make.latent)
-} else {
-	trees <- lapply(sim.trees, date.branches)
-}
+#if (latent) {
+trees <- lapply(sim.trees, make.latent)
+#} else {
+#	trees <- lapply(sim.trees, date.branches)
+#}
 
 print(length(trees))
 
