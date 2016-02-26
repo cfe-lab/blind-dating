@@ -21,9 +21,13 @@ latency.rate <- as.double(args[2])
 r.seed <- as.integer(args[3])
 indelible.seed <- args[4]
 
+unlatency.rate=1/14
+
 if (r.seed != 0) {
 	set.seed(r.seed)
 }
+
+file.remove("latency.csv")
 
 # Number of guide trees to create
 # TO DO: quantify variance
@@ -70,8 +74,7 @@ date.branches <- function(s.tree) {
 # TO DO: probably do a range of values here
 make.latent <- function(
 	s.tree,
-	percent=0.5,
-	unlatency.rate=1/14
+	percent=0.5
 #	latency.rate=0.0001
 ) {
 #  rate = clock.rate
@@ -90,7 +93,8 @@ make.latent <- function(
 
   # #
   edge.length <- s.tree$tree.data.matrix[,7]
-  edges <- which(tr$edge[,2] %in% tips)  # post-traversal indices of edges to modify
+#  edges <- which(tr$edge[,2] %in% tips)  # post-traversal indices of edges to modify
+  edges <- unlist(lapply(tips, function(x) {which(tr$edge[,2] == x)}))  # post-traversal indices of edges to modify (preserves order of tips)
 #  edge.length <- tr$edge.length  # branch lengths in unit time
   
   # latency distribution
@@ -98,11 +102,11 @@ make.latent <- function(
     u <- rexp(length(sc), unlatency.rate)
     print(u)
     t.0 <- (sc - u) * (sc - u > 0)
-    print(t.0)
+#    print(t.0)
     r <- exp(-latency.rate * t.0)-exp(-latency.rate*sc)
-    print(r)
+#    print(r)
     x <- runif(length(sc))
-    print(x)
+#    print(x)
     
     -log(exp(-latency.rate * t.0)-r*x) / latency.rate
   }
@@ -121,15 +125,15 @@ make.latent <- function(
  
   edge.mod <- edge.length
 #  edge.mod[edges] <- edge.mod[edges]*scale
-  print(edge.mod[edges])
+#  print(edge.mod[edges])
   if (latent)
     edge.mod[edges] <- rlatent(edge.mod[edges]) 
   else
     edge.mod[edges] <- edge.mod[edges]
-  print(edge.mod[edges])
-    
+#  print(edge.mod[edges])
+        
 #  delta <- edge.length - edge.mod
-  write.csv(data.frame(id=tr$lib.label[edges], length=edge.length[edges], latency=(edge.length[edges]-edge.mod[edges])), "latency.csv")
+  write.csv(data.frame(id=tr$tip.label[tips], length=edge.length[edges], latency=(edge.length[edges]-edge.mod[edges])), "latency.csv", append=T, row.names=F)
   
   # # 
   latent <- edge.mod
