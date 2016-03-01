@@ -115,12 +115,10 @@ Finally, we applied our method to characterize the integration dates of viral li
 \subsection * {Data Collection} \label{subsec:dcollection}
 We collected two distinct sets of data for our experiments. 
 The first we refer to as the {\em plasma} data set, which comprised over 19,000 published HIV \textit{env} sequences derived from viral RNA from longitudinal plasma samples ($n=335$) collected from 232 different individuals \citep{McCloskey14}. 
-From these data, we selected treatment naive individuals with two cd git
-r more clonal or single-genome sequences available at each time point, and with a known time-line relative to one of several reference points: HIV infection, seroconversion or presentation of symptomatic seroconversion illness. 
+From these data, we selected treatment naive individuals with two or more clonal or single-genome sequences available at each time point, and with a known time-line relative to one of several reference points: HIV infection, seroconversion or presentation of symptomatic seroconversion illness. 
 The baseline samples were collected within 186 days of this reference point, and at least one of the subsequent ``follow-up'' time points occurred a minimum of 6 months after baseline.
 Individuals who had been classified as ``superinfected'' were also excluded \citep{McCloskey14}.
-%% recalculate
-After applying these criteria, we retained 550 HIV RNA sequences from 9 or 5 individuals for phylogenetic analysis.
+After applying these criteria, we retained 410 HIV RNA sequences from 9 individuals for phylogenetic analysis.
 The purpose of the plasma data set was to provide representative samples of within-host HIV diversity for evaluating and calibrating the model.
 
 The second data set, referred to as the {\em mixed} data set, contained sequences from studies in which both plasma HIV RNA and cellular HIV DNA had been collected from the same individual.
@@ -130,8 +128,6 @@ From these results, we manually selected 17 individuals that had well-characteri
 We also required that at least 1 DNA time point fell between 2 RNA time points in each indiviudal, other than this there were no selection criteria on the time between sample collection dates. 
 A total of 926 partial {\em env} sequences from blood plasma, and 1548 partial {\em env} sequences from PBMC cells were used in our analysis. 
 We utilized samples from treatment naive individuals from \cite{Shankarappa99, Novitsky09}, samples from individuals that had been treated via HAART from \cite{Llewellyn06}, and samples from individuals that had been on HAART, but ceased treatment \cite{Fischer04}. 
- 
-
 
 \subsection * {Simulated Data} \label{subsec:simdata}
 
@@ -139,7 +135,7 @@ We utilized samples from treatment naive individuals from \cite{Shankarappa99, N
 %%% 2. directly manipulate plasma trees
 %%% 3. simulate sequence evolution on trees - additional error
 
-To characterize sources of error in reconstructing dates on tips of a phylogeny, we generated phylogenetic trees by direct simulation and from the plasma data sets.
+To characterize sources of error in reconstructing dates on tips of a phylogeny, we generated phylogenetic trees by direct simulation. % and from the plasma data sets.
 First, we generated phylogenies with 100 tips each under a birth-death model with serial sampling using the `sim.bdsky.stt' function in the \textit{R} package \textit{TreeSim} \citep{Boskova14}.
 Birth-death models have been applied to studying speciation processes \citep{Nee:2006} and infectious disease epidemics \citep{Stradler13}, but have only recently been used to model the proliferation of virus lineages in cell populations \citep{Hartfield:2015}.
 %% This paragraph needs to be rewritten
@@ -198,7 +194,7 @@ Second, we used root-to-tip regression \citep[RTT;][]{Korber00}, which performs 
 In our experiments, we used the maximum correlation coefficient as our objective function.
 %%RTT regression typically uses dates from all tips.
 %For this application, we ignored the tips that were undetermined (either censored or otherwise unknown). 
-Our simulated data were only rooted using RTT regression; for all real data, both outgroup rooting and RTT regression were used to root the phylogeny. 
+Our simulated data were only rooted using RTT regression; for all real data, both outgroup rooting and RTT regression were used to root the phylogeny.
 
 
 \subsection * {Date Reconstruction} \label{subsec:daterecon}
@@ -241,21 +237,23 @@ We then used the linear model to predict the date of the censored sequences.
 %Here we only collected the normalized errors between the prediction and the collection.
 %
 
-To evaluate the latency of a censored sequence, $s$, we computed the difference, $d_s$, between the sampled date and the predicted date of the linear model. For each data set we used a general linear mixed effects model with the normal family to infer an association between the genetic distance of $s$ from the root of its phylogenetic tree and $d_s$.
+To evaluate the latency of a censored sequence, $s$, we computed the difference, $d_s$, between the sampled date and the predicted date of the linear model. For each data set we used a general linear mixed effects model with the normal family to infer an association between the genetic distance of $s$ from the root of its phylogenetic tree and $d_s$. We specified random intercept and slope for each subject.
 
 We then transformed the difference, $d_s$, by
 \[\hat{d}_s = \operatorname{sign}(d_s)\sqrt{|d_s|}\]
 and applied the general linear mixed effects model above with $\hat{d}_s$ as the response variable.
 
 %% Maybe this should go in results
-Quantify latency.
+Quantify latency?
 
 \section * {Results} \label{sec:results}
 
 %% Rewrite this whole section
 
 \subsection * {Model Validation} \label{sec:sim_results}
-All of the simulated data was able to reject the null hypothesis of the date reconstruction regression.
+For the simulated data, we will only show the results using RAxML to construct the simulated sequences, since it is more accurate.
+
+For all of the simulated subjects, we able to reject the null hypothesis of the date reconstruction regression.
 
 %Figure \ref{fig:results1} shows our model validation results over our synthetic data --- here we censor 50\% of the dates, and attempt to reconstruct them. 
 %Under the assumption of a strict molecular clock (that evolution is linearly related to time) the clock is a reliable source of information for these simulations.
@@ -270,6 +268,7 @@ All of the simulated data was able to reject the null hypothesis of the date rec
 %When we performed the same analysis against the simulated archival times, the results were nearly identical to the results without any latent data, suggesting that we can recover the dates of latent sequences provided an accurate clock.
 
 For our final validation, we took the same strategy as the first validation on synthetic data, and applied it to our {\em plasma} data set --- we censored 50\% of the known sampling dates, then attempted to reconstruct them.
+We were only unable to reject the null hypothesis in 1 subject of the {\em plasma} data set.
 %(Figure \ref{fig:results2} C shows this when the phylogenies have been rooted with outgroup rooting). 
 %Averaged over all simulated data sets, the mean square error was $1.7\times 10^{-1}$, and the absolute value of average median and mean difference were $2.1\times 10^{-4}$ and $1.9\times 10^{-2}$ respectively. 
 %The density plot shows similar behavior to that of the synthetic data, except with a wider distribution, and more variation. 
@@ -285,11 +284,18 @@ For our final validation, we took the same strategy as the first validation on s
 
 %Individuals that had received treatment at some point generally failed the hypothesis test --- there was only one patient that did not --- these individuals were not included in the above analysis. 
 
-Finally, we tested our methodology on the {\em mixed} data set. Of the 17 \emph{mixed} individuals, 5 failed to reject the null hypothesis of the date reconstruction regression.
+Finally, we tested our methodology on the {\em mixed} data set. Overall, we found that the RTT perfomed better or just as well as the outgroup rooting. Hence from now on, we only consider the results using RTT.
+
+Of the 17 \emph{mixed} subjects 5 failed to reject the null hypothesis of the date reconstruction regression.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section * {Discussion} \label{sec:discuss}
+%% move to the correct place
+Interestingly for the date reconstruction, all of the regressions which produced a negative slope could not reject the null hypothesis. A negative slope for the regession implies that the sequences are becoming less diveregent from the root over time, which is not expected. This suggests that there is a lack of signal in these subjects.
+
+%% Rewrite this section
+
 The results concerning the simulated data were highly consistent with expectations. 
 The more a phylogeny adheres to a molecular clock, the more accurate predictions made from it will be --- the simulated data is very well informed, and the phylogenies and their clocks are well resolved by the maximum likelihood tree estimate. 
 Since latency is akin to ``pausing'' the evolution of a sequence, and evolution is assumed to be clock-like when sequences are not ``paused'', it is also not surprising that the latent simulated data could be reconstructed with low error. 
@@ -369,7 +375,7 @@ Additionally, we would like to apply the methodology to next gen sequence data -
 
 \begin{figure}[ht]
 %%	\includegraphics{figures/latency-model}
-	\caption[]{An illustration of the latency model.}
+	\caption[Latency Model]{An illustration of the latency model.}
 	\label{fig:latencymodel}
 \end{figure}
 
@@ -390,12 +396,19 @@ The phylogenies in these cases have been rooted with outgroup rooting}
 	\label{fig:results2}
 \end{figure}
 
-\begin{figure*}[ht]
+\begin{figure}[ht]
 	\centering
-	\includegraphics[scale=0.425]{figures/rtt.pdf} \\
-	\caption[Example of bad root]{Root to tip rooting fails due to insufficient temporal resolution at the root}
-	\label{fig:degenerate_example}
-\end{figure*}
+	\includegraphics[width=\textwidth]{figures/GLM_plot.pdf}
+	\caption[Regression]{A plot of the genetic distance from the root versus the difference from the estimate of the date reconstruction. The coloured circles respresent the values for each DNA sequence for each subject (each csubject has their own colour]. The solid black line is the quadratric regression with the mean of the parameters from the mixed effects model.  The dotted lines are the quadratric regression with one standard deviation in both parameters.}
+	\label{fig:glm}
+\end{figure}
+
+%\begin{figure*}[ht]
+%	\centering
+%	\includegraphics[scale=0.425]{figures/rtt.pdf} \\
+%	\caption[Example of bad root]{Root to tip rooting fails due to insufficient temporal resolution at the root}
+%	\label{fig:degenerate_example}
+%\end{figure*}
 
 
 \clearpage
