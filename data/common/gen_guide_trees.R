@@ -16,12 +16,10 @@ source('../common/queue.R')
 
 args <- commandArgs(trailingOnly = T)
 
-latent <- as.integer(args[1])
+unlatency.rate <- as.double(args[1])
 latency.rate <- as.double(args[2])
 r.seed <- as.integer(args[3])
 indelible.seed <- args[4]
-
-unlatency.rate=1/14
 
 if (r.seed != 0) {
 	set.seed(r.seed)
@@ -126,7 +124,8 @@ make.latent <- function(
   edge.mod <- edge.length
 #  edge.mod[edges] <- edge.mod[edges]*scale
 #  print(edge.mod[edges])
-  if (latent)
+  # UNTESTED if false will be seen when latency.rate and unlatency.rate both equal 0
+  if (latency.rate > 1E-7 && unlatency.rate > 1E-7)
     edge.mod[edges] <- rlatent(edge.mod[edges]) 
   else
     edge.mod[edges] <- edge.mod[edges]

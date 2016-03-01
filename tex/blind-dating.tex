@@ -57,7 +57,7 @@ HIV, Latency, Cellular Reservoirs, Phylogenetics, Linear Regression\\
 
 
 
-
+\underline{}
 \section * {Introduction} \label{sec:intro}
 
 A major obstacle along the path of developing HIV cure strategies is the persistence of the virus within latently infected cellular reservoirs \citep{Pace11}. 
@@ -115,20 +115,20 @@ Finally, we applied our method to characterize the integration dates of viral li
 \subsection * {Data Collection} \label{subsec:dcollection}
 We collected two distinct sets of data for our experiments. 
 The first we refer to as the {\em plasma} data set, which comprised over 19,000 published HIV \textit{env} sequences derived from viral RNA from longitudinal plasma samples ($n=335$) collected from 232 different individuals \citep{McCloskey14}. 
-From these data, we selected treatment naive individuals with two or more clonal or single-genome sequences available at each time point, and with a known time-line relative to one of several reference points: HIV infection, seroconversion or presentation of symptomatic seroconversion illness. 
+From these data, we selected treatment naive individuals with two cd git
+r more clonal or single-genome sequences available at each time point, and with a known time-line relative to one of several reference points: HIV infection, seroconversion or presentation of symptomatic seroconversion illness. 
 The baseline samples were collected within 186 days of this reference point, and at least one of the subsequent ``follow-up'' time points occurred a minimum of 6 months after baseline.
-Individuals who had been classified as ``superinfected'' were also excluded \citep{McCloskey14}. 
-After applying these criteria, we retained 550 HIV RNA sequences from 11 individuals for phylogenetic analysis.
+Individuals who had been classified as ``superinfected'' were also excluded \citep{McCloskey14}.
+%% recalculate
+After applying these criteria, we retained 550 HIV RNA sequences from 9 or 5 individuals for phylogenetic analysis.
 The purpose of the plasma data set was to provide representative samples of within-host HIV diversity for evaluating and calibrating the model.
 
 The second data set, referred to as the {\em mixed} data set, contained sequences from studies in which both plasma HIV RNA and cellular HIV DNA had been collected from the same individual.
 We used the Los Alamos advanced search interface (\url{http://www.hiv.lanl.gov/}{http://www.hiv.lanl.gov/}) to identify published data sets representing individuals with both HIV RNA and cellular DNA sequences.
 %% what do you mean by "well-characterized"?
-%% recalculate
-From these results, we manually selected 25 individuals that had well-characterized partial {\em env} sequences and plasma samples from at least 2 RNA time points and 4 DNA time points (Table \ref{tab:patients}). 
+From these results, we manually selected 17 individuals that had well-characterized partial {\em env} sequences and plasma samples from at least 2 RNA time points and 4 DNA time points. (Table \ref{tab:patients}). 
 We also required that at least 1 DNA time point fell between 2 RNA time points in each indiviudal, other than this there were no selection criteria on the time between sample collection dates. 
-%% recalculate
-A total of 1,249 partial {\em env} sequences from blood plasma, and 1914 partial {\em env} sequences from PBMC cells were used in our analysis. 
+A total of 926 partial {\em env} sequences from blood plasma, and 1548 partial {\em env} sequences from PBMC cells were used in our analysis. 
 We utilized samples from treatment naive individuals from \cite{Shankarappa99, Novitsky09}, samples from individuals that had been treated via HAART from \cite{Llewellyn06}, and samples from individuals that had been on HAART, but ceased treatment \cite{Fischer04}. 
  
 
@@ -142,7 +142,6 @@ We utilized samples from treatment naive individuals from \cite{Shankarappa99, N
 To characterize sources of error in reconstructing dates on tips of a phylogeny, we generated phylogenetic trees by direct simulation and from the plasma data sets.
 First, we generated phylogenies with 100 tips each under a birth-death model with serial sampling using the `sim.bdsky.stt' function in the \textit{R} package \textit{TreeSim} \citep{Boskova14}.
 Birth-death models have been applied to studying speciation processes \citep{Nee:2006} and infectious disease epidemics \citep{Stradler13}, but have only recently been used to model the proliferation of virus lineages in cell populations \citep{Hartfield:2015}.
-
 %% This paragraph needs to be rewritten
 The birth-death model was parameterized by fitting this model to samples from the {\em plasma} dataset.
 %% we may need to provide some justification for using BD
@@ -203,6 +202,8 @@ Our simulated data were only rooted using RTT regression; for all real data, bot
 
 
 \subsection * {Date Reconstruction} \label{subsec:daterecon}
+%% Find a way to distinguish this GLM with the one in the next section
+
 Irrespective of the method used to root the phylogeny, we used a general linear model with the normal family to infer the association between the tip dates and sequence divergence from the root. 
 The expected amount of evolution was taken to be the response and the sampling dates of the data were taken as the input. 
 These models were only calibrated over the uncensored/plasma data for the simulated and real data sets respectively.
@@ -210,8 +211,7 @@ These models were only calibrated over the uncensored/plasma data for the simula
 %To screen for data that were amenable to our analysis, we used the nested log ratio test \citep{Ho14}. 
 To screen for data that were amenable to our analysis, we used Akaike Information Criteria \cite[AIC;][]{Akaike74}.
 Our null model was a linear model with zero slope over the expected amount of evolution over time.
-%% I'm not sure about keeping data with only 2 time points for plasma data
-We rejected any sequence data sets whose phylogeny could reject the null model with a relative AIC of ${-5}$.
+We rejected any sequence data sets whose phylogeny could not reject the null model with a relative AIC of ${-5}$.
 % We rejected any sequence data sets whose phylogeny couldn't reject the null model with threshold $\alpha=0.01$, since this implied a lack of phylogenetic signal.
 
 We then used the linear model to predict the date of the censored sequences.
@@ -255,7 +255,7 @@ Quantify latency.
 %% Rewrite this whole section
 
 \subsection * {Model Validation} \label{sec:sim_results}
-
+All of the simulated data was able to reject the null hypothesis of the date reconstruction regression.
 
 %Figure \ref{fig:results1} shows our model validation results over our synthetic data --- here we censor 50\% of the dates, and attempt to reconstruct them. 
 %Under the assumption of a strict molecular clock (that evolution is linearly related to time) the clock is a reliable source of information for these simulations.
@@ -269,7 +269,8 @@ Quantify latency.
 %More quantitatively, we expect the density plot to be shifted to the right (as it is in figure \ref{fig:results1} B) as this suggests that sequences are older than their sampling dates.
 %When we performed the same analysis against the simulated archival times, the results were nearly identical to the results without any latent data, suggesting that we can recover the dates of latent sequences provided an accurate clock.
 
-%For our final validation, we took the same strategy as the first validation on synthetic data, and applied it to our {\em plasma} data set --- we censored known sampling dates, then attempted to reconstruct them (Figure \ref{fig:results2} C shows this when the phylogenies have been rooted with outgroup rooting). 
+For our final validation, we took the same strategy as the first validation on synthetic data, and applied it to our {\em plasma} data set --- we censored 50\% of the known sampling dates, then attempted to reconstruct them.
+%(Figure \ref{fig:results2} C shows this when the phylogenies have been rooted with outgroup rooting). 
 %Averaged over all simulated data sets, the mean square error was $1.7\times 10^{-1}$, and the absolute value of average median and mean difference were $2.1\times 10^{-4}$ and $1.9\times 10^{-2}$ respectively. 
 %The density plot shows similar behavior to that of the synthetic data, except with a wider distribution, and more variation. 
 
@@ -284,26 +285,28 @@ Quantify latency.
 
 %Individuals that had received treatment at some point generally failed the hypothesis test --- there was only one patient that did not --- these individuals were not included in the above analysis. 
 
+Finally, we tested our methodology on the {\em mixed} data set. Of the 17 \emph{mixed} individuals, 5 failed to reject the null hypothesis of the date reconstruction regression.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section * {Discussion} \label{sec:discuss}
 The results concerning the simulated data were highly consistent with expectations. 
 The more a phylogeny adheres to a molecular clock, the more accurate predictions made from it will be --- the simulated data is very well informed, and the phylogenies and their clocks are well resolved by the maximum likelihood tree estimate. 
-Since latency is akin to ``pausing'' the evolution of a sequence, and evolution is assumed to be clock-like when sequences are not ``paused'', it's also not surprising that the latent simulated data could be reconstructed with low error. 
+Since latency is akin to ``pausing'' the evolution of a sequence, and evolution is assumed to be clock-like when sequences are not ``paused'', it is also not surprising that the latent simulated data could be reconstructed with low error. 
 
 The results from the {\em plasma} data-set are also expected. 
 Each patient from our plasma data-set showed evidence of a molecular clock, so the ability to reconstruct known dates came as no surprise. 
 However, the reconstruction error was higher than that of the simulated data, which is expected for data that come from a real biological process.
 
-Quantitatively, it's difficult to assess the accuracy of the reconstructions within the {\em mixed} data set. 
-Many patients show evidence of latency in their regression plots (see the regression plot in Figure \ref{fig:results2} D) but it's unclear what the general pattern is (if any) for the distribution of the error metrics. 
-Moreover, it's not possible to know the actual error for this data set, as that would require us to know the date at which a sequence became latent. 
+Quantitatively, it is difficult to assess the accuracy of the reconstructions within the {\em mixed} data set. 
+Many patients show evidence of latency in their regression plots (see the regression plot in Figure \ref{fig:results2} D) but it is unclear what the general pattern is (if any) for the distribution of the error metrics. 
+Moreover, it is not possible to know the actual error for this data set, as that would require us to know the date at which a sequence became latent. 
 We also observed an interesting sigmoidal pattern in many of the patients in this case.
 However, we do note that most treated patients failed the hypothesis testing, implying that samples after treatment should be ignored in any analysis with this methodology.
 
 %Typically, we also observed that the rooting method had very little effect on the errors (the supplemental material has Figure \ref{fig:results2} replicated for RTT rooting). 
 %We did, however, identify a case in which RTT rooting fails over outgroup rooting (Figure \ref{fig:degenerate_example} shows an example of this). 
-%Specifically, it's possible for the calibration dates to provide insufficient data to resolve the root of the tree. 
+%Specifically, it is possible for the calibration dates to provide insufficient data to resolve the root of the tree. 
 %We theorize that this is, for patient 820, because their calibration samples are strongly localized in time, which allows too much freedom (temporally) over the possible roots of the tree. 
 
 %We did not attempt to use BEAST \citep{BEAST} to reconstruct any phylogenies from our data.
@@ -404,36 +407,36 @@ The phylogenies in these cases have been rooted with outgroup rooting}
 \begin{table*}[!ht]
 \def\arraystretch{1.3}%
 \begin{center}
-\begin{tabular}{llrrrrrr} 
+\begin{tabular}{llrrrrrrr} 
 
-Reference & Patient ID & \multicolumn{3}{c}{Sequences} & \multicolumn{3}{c}{Time points}\\ 
+Reference & Patient ID & \multicolumn{3}{c}{Sequences} & \multicolumn{3}{c}{Time points} & Reject Null \\ 
  &  & Plasma & PBMC & Total & Plasma & PBMC & Total\\
 \hline
-\cite{Shankarappa99} & 820 &       50 &       87 &      137 &        5 &       10 &       15  \\
-& 821 &      76 &      192 &      268 &        7 &       17 &       17   \\ 
-& 822 &      32 &       98 &      130 &        3 &       10 &       10   \\ 
-& 824 &     100 &      107 &      207 &        7 &        9 &       13   \\ 
-& 10137 &     24 &      106 &      130 &        2 &       10 &       12  \\ 
-& 10138 &     82 &      119 &      201 &        6 &       13 &       16  \\
-& 10586 &     16 &      121 &      137 &        2 &       12 &       14  \\ 
-& 13889 &    151 &      132 &      283 &       13 &       14 &       18  \\ 
- \cite{Fischer04} & 10769 &    229 &       96 &      325 &       10 &        4 &       11  \\ 
-& 10770 &    190 &       31 &      221 &       11 &        2 &       11  \\ 
-\cite{Llewellyn06} & 16616 &     16 &       95 &      111 &        2 &        5 &        5  \\ 
-& 16617 &     16 &       89 &      105 &        2 &        5 &        5  \\ 
-& 16618 &     25 &       75 &      100 &        2 &        5 &        6  \\ 
-& 16619 &     13 &       60 &       73 &        2 &        6 &        6  \\ 
-\cite{Novitsky09} & 34382 &     37 &        5 &       42 &        3 &        1 &        4  \\ 
-& 34391 &     13 &       38 &       51 &        3 &        5 &        6  \\ 
-& 34393 &     25 &       74 &       99 &        2 &        6 &        7  \\ 
-& 34396 &      23 &       46 &       69 &        2 &        5 &        5 \\ 
-& 34397 &      26 &       25 &       51 &        2 &        2 &        4  \\ 
-& 34399 &      61 &       88 &      149 &        5 &        9 &       12  \\ 
-& 34400 &      54 &       23 &       77 &        4 &        1 &        5  \\ 
-& 34405 &      27 &       29 &       56 &        3 &        2 &        4  \\ 
-& 34408 &       5 &       73 &       78 &        2 &        8 &        8 \\ 
-& 34410 &      35 &       60 &       95 &        2 &        6 &        6 \\ 
-& 34411 &      25 &       43 &       68 &        3 &        3 &        6   \\ \hline
+\cite{Shankarappa99}% & 820 &       50 &       87 &      137 &        5 &       10 &       15  \\
+& 821 &      76 &      192 &      268 &        7 &       17 &       17 &   Yes \\ 
+& 822 &      32 &       98 &      130 &        3 &       10 &       10 &   Yes \\ 
+& 824 &     100 &      107 &      207 &        7 &        9 &       13 &   Yes \\ 
+& 10137 &     24 &      106 &      130 &        2 &       10 &       12 &   No \\ 
+& 10138 &     82 &      119 &      201 &        6 &       13 &       16 &   Yes \\
+%& 10586 &     16 &      121 &      137 &        2 &       12 &       14  \\ 
+& 13889 &    151 &      132 &      283 &       13 &       14 &       18 &   Yes \\ 
+ \cite{Fischer04} & 10769 &    229 &       96 &      325 &       10 &        4 &       11 &   No \\ 
+%& 10770 &    190 &       31 &      221 &       11 &        2 &       11  \\ 
+\cite{Llewellyn06} & 16616 &     16 &       95 &      111 &        2 &        5 &        5 &    Yes  \\ 
+& 16617 &     16 &       89 &      105 &        2 &        5 &        5 &   Yes \\ 
+& 16618 &     25 &       75 &      100 &        2 &        5 &        6 &   Yes \\ 
+& 16619 &     13 &       60 &       73 &        2 &        6 &        6 &   Yes \\ 
+\cite{Novitsky09}% & 34382 &     37 &        5 &       42 &        3 &        1 &        4  \\ 
+& 34391 &     13 &       38 &       51 &        3 &        5 &        6 &   No \\ 
+& 34393 &     25 &       74 &       99 &        2 &        6 &        7 &   Yes  \\ 
+& 34396 &      23 &       46 &       69 &        2 &        5 &        5 &   No \\ 
+%& 34397 &      26 &       25 &       51 &        2 &        2 &        4  \\ 
+& 34399 &      61 &       88 &      149 &        5 &        9 &       12 &   Yes \\ 
+%& 34400 &      54 &       23 &       77 &        4 &        1 &        5  \\ 
+%& 34405 &      27 &       29 &       56 &        3 &        2 &        4  \\ 
+& 34408 &       5 &       73 &       78 &        2 &        8 &        8 &    No \\ 
+& 34410 &      35 &       60 &       95 &        2 &        6 &        6 &    Yes \\ 
+%& 34411 &      25 &       43 &       68 &        3 &        3 &        6   \\ \hline
 \end{tabular}
 \end{center}
   \caption{Summary of all the patient data collected from the HIV LANL database --- Patient ID corresponds to the Los Alamos database's Patient ID \citep{LosAlamos}.
