@@ -44,7 +44,7 @@ Background:
 The ability of HIV to persist within latent cellular reservoirs represents a major barrier to cure. The timing of establishment of individual viral reservoirs over the infection course may influence their susceptibility to elimination by immune-mediated or therapeutic approaches. However, methods to accurately estimate the age of reservoir sequences remain scarce. We propose a simple method to date suspected reservoir sequences using phylogenetically informed regression.
 
 Method: 
-Simulated sequence data were generated using INDELible version 1.03. A total of 550 HIV RNA sequences sampled longitudinally from 11 untreated HIV-infected individuals with estimated dates of infection and a total of 3163 HIV DNA and RNA sequences from 25 individuals were obtained from the Los Alamos National Laboratory HIV Sequence Database. The simulated and HIV RNA data were used for method validation. Maximum-likelihood phylogenies were reconstructed with RaxML. Phylogenies were rooted by determining the location of the root that minimized the root-mean-square error between root-to-tip distances and known dates of sampling. The root-to-tip distances of latent sequences were mapped to the optimal regression line to estimate reservoir establishment dates.
+Simulated sequence data were generated using INDELible version 1.03. A total of 410 HIV RNA sequences sampled longitudinally from 9 untreated HIV-infected individuals with estimated dates of infection and a total of 2474 HIV DNA and RNA sequences from 17 individuals were obtained from the Los Alamos National Laboratory HIV Sequence Database. The simulated and HIV RNA data were used for method validation. Maximum-likelihood phylogenies were reconstructed with RaxML. Phylogenies were rooted by determining the location of the root that minimized the root-mean-square error between root-to-tip distances and known dates of sampling. The root-to-tip distances of latent sequences were mapped to the optimal regression line to estimate reservoir establishment dates.
 
 Results: 
 To validate the method, we synthesized latent lineages by censoring the sample dates for random selections of up to 50\% of sequences in the simulated or HIV RNA datasets. In either case, root-to-tip estimation accurately recovered these missing sample dates when the phylogeny conformed to a strict molecular clock. When this method was applied to HIV DNA sequences in phylogenies containing dated HIV RNA sequences, we observed that the predicted dates tended to precede dates of sampling, which was consistent with latency.
@@ -153,9 +153,10 @@ To model uncertainty in phylogenetic reconstruction from sequence variation, we 
 Parameters for the substitution model were set to empirical estimates derived from previously published HIV within-host data sets \citep{McCloskey14}. 
 Specifically, the stationary distribution was set to 0.42, 0.15, 0.15, 0.28 for the nucleotides A, C, G and T, respectively, and the transition bias parameter was set to 8.5.
 
-A phylogeny was reconstructed from the simulated sequence alignments using the approximate maximum likelihood heuristic implemented in FastTree2 \citep{FastTree10}.
-Similar results were obtained with trees reconstructed using RAxML \citep{Raxml14}, which is expected to be more accurate, but can consume orders of magnitude more computational time.
-Using this approach, we generated a total of 50 replicate phylogenies without viral latency. 
+Using this approach, we generated a total of 50 replicate subjects without viral latency. 
+
+%A phylogeny was reconstructed from the simulated sequence alignments using the approximate maximum likelihood heuristic implemented in FastTree2.
+%Similar results were obtained with trees reconstructed using RAxML \citep{Raxml14}, which is expected to be more accurate, but can consume orders of magnitude more computational time.
 
 To simulate phylogenies with latent viral lineages, we used an approach similar to  \citet{Immonen14}. 
 However, we used the simplifying assumptions that any sampled virus lineage could undergo no more than one latent period, and that once a lineage entered a latent state, it remained latent until becoming sampled.
@@ -172,7 +173,7 @@ See Figure \ref{fig:latencymodel} for an illustration of this model. We took $u$
 
 % by a scaling factor drawn at random from a beta distribution with parameters $\alpha=1$ and $\beta=100$.
 We then recorded both the simulated become latent time and simulated collection time and generated sequences along these latent seed trees with INDELible using the same parameters as above. 
-For these data, we generated an additional 450 trees with 100 tips each, bringing the total amount of simulated data to 500 trees.
+For these data, we generated an additional 450 subjects with 100 sequences each, bringing the total amount of simulated data to 500 subjects.
 
 
 %% maybe move this above simulated data
@@ -184,7 +185,10 @@ Additionally, the plasma data set had already been aligned and cleaned \citep{Mc
 
 
 \subsection * {Phylogenetic Reconstruction} \label{subsec:phylo}
-In all experiments, our reconstructed phylogenies were maximum likelihood phylogenies reconstructed in FastTree2 using the GTR model.
+In our experiments, our reconstructed phylogenies were maximum likelihood phylogenies reconstructed in FastTree2 \citep{FastTree10} using the GTR model.
+Similar results were obtained with trees reconstructed using RAxML \citep{Raxml14}, which is expected to be more accurate, but can consume orders of magnitude more computational time.
+We will only show the results using RAxML.
+
 We evaluated two different methods for rooting these trees. 
 The first method was outgroup rooting, in which one or more sequences from taxa outside but sufficiently related to the group of interest are added to the phylogenetic reconstruction.
 The point at which the branch leading to the outgroup intersects the rest of the tree provides an estimate of the root for the latter.
@@ -251,9 +255,7 @@ Quantify latency?
 %% Rewrite this whole section
 
 \subsection * {Model Validation} \label{sec:sim_results}
-For the simulated data, we will only show the results using RAxML to construct the simulated sequences, since it is more accurate.
-
-For all of the simulated subjects, we able to reject the null hypothesis of the date reconstruction regression.
+For all of the simulated subjects, we were able to reject the null hypothesis of the date reconstruction regression.
 
 %Figure \ref{fig:results1} shows our model validation results over our synthetic data --- here we censor 50\% of the dates, and attempt to reconstruct them. 
 %Under the assumption of a strict molecular clock (that evolution is linearly related to time) the clock is a reliable source of information for these simulations.
