@@ -164,8 +164,8 @@ For each simulated `latency-free' phylogeny, we chose 50 tips uniformly at rando
 To do this we applied the following procedure:
 \begin{enumerate}
 \item Draw a random period for becoming unlatent, $U$, from an exponential distribution with rate, $u$.
-\item Draw a random become latent time from a restricted exponential distribution with rate, $l$, and bounds $\max\{S-U, 0\}$ and $S$, where $S$ is the branch time of the tip.
-\item Shorten the branch time to equal the become latent time.
+\item Draw a random become latent time, $L$, from a restricted exponential distribution with rate, $l$, and bounds $\max\{S-U, 0\}$ and $S$, where $S$ is the branch time of the tip.
+\item Shorten the branch time to equal $L$.
 \item Scale the expected number of substitutions.
 \end{enumerate}
 See Figure \ref{fig:latencymodel} for an illustration of this model. We took $u$ and $l$ from the range of values: $1, 0.01, 0.0001$.
@@ -374,7 +374,8 @@ Additionally, we would like to apply the methodology to next gen sequence data -
 \end{figure}
 
 \begin{figure}[ht]
-%%	\includegraphics{figures/latency-model}
+	\centering{}
+	\includegraphics{figures/latency-model}
 	\caption[Latency Model]{An illustration of the latency model.}
 	\label{fig:latencymodel}
 \end{figure}
