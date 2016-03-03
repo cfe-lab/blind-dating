@@ -124,10 +124,17 @@ The purpose of the plasma data set was to provide representative samples of with
 The second data set, referred to as the {\em mixed} data set, contained sequences from studies in which both plasma HIV RNA and cellular HIV DNA had been collected from the same individual.
 We used the Los Alamos advanced search interface (\url{http://www.hiv.lanl.gov/}{http://www.hiv.lanl.gov/}) to identify published data sets representing individuals with both HIV RNA and cellular DNA sequences.
 %% what do you mean by "well-characterized"?
-From these results, we manually selected 17 individuals that had well-characterized partial {\em env} sequences and plasma samples from at least 2 RNA time points and 4 DNA time points. (Table \ref{tab:patients}). 
+From these results, we manually selected 16 individuals that had well-characterized partial {\em env} sequences and plasma samples from at least 2 RNA time points and 5 DNA time points. (Table \ref{tab:patients}). 
 We also required that at least 1 DNA time point fell between 2 RNA time points in each indiviudal, other than this there were no selection criteria on the time between sample collection dates. 
 A total of 926 partial {\em env} sequences from blood plasma, and 1548 partial {\em env} sequences from PBMC cells were used in our analysis. 
-We utilized samples from treatment naive individuals from \cite{Shankarappa99, Novitsky09}, samples from individuals that had been treated via HAART from \cite{Llewellyn06}, and samples from individuals that had been on HAART, but ceased treatment \cite{Fischer04}. 
+We utilized samples from treatment naive individuals from \cite{Shankarappa99, Novitsky09}, samples from individuals that had been treated via HAART from \cite{Llewellyn06}.
+%, and samples from individuals that had been on HAART, but ceased treatment \cite{Fischer04}. 
+
+\subsection * {Sequence Alignment} \label{subsec:seqalign}
+When applicable, we used MUSCLE 3.8.31 \citep{Muscle04} to align the patient-derived sequences, which were then visually inspected and cleaned with AliView \citep{AliView14}. 
+Alignments were manually trimmed to the interval in which at least  50\% of sequences within the data set had coverage over each base.
+%Since the simulated sequence data contained no insertions or deletions, no alignment of these data was necessary. 
+The plasma data set had already been aligned and cleaned \citep{McCloskey14}, so no further alignment was performed.
 
 \subsection * {Simulated Data} \label{subsec:simdata}
 
@@ -175,15 +182,6 @@ See Figure \ref{fig:latencymodel} for an illustration of this model. We took $u$
 We then recorded both the simulated become latent time and simulated collection time and generated sequences along these latent seed trees with INDELible using the same parameters as above. 
 For these data, we generated an additional 450 subjects with 100 sequences each, bringing the total amount of simulated data to 500 subjects.
 
-
-%% maybe move this above simulated data
-\subsection * {Sequence Alignment} \label{subsec:seqalign}
-When applicable, we used MUSCLE 3.8.31 \citep{Muscle04} to align the patient-derived sequences, which were then visually inspected and cleaned with AliView \citep{AliView14}. 
-Alignments were manually trimmed to the interval in which at least  50\% of sequences within the data set had coverage over each base.
-Since the simulated sequence data contained no insertions or deletions, no alignment of these data was necessary. 
-Additionally, the plasma data set had already been aligned and cleaned \citep{McCloskey14}, so no further alignment was performed.
-
-
 \subsection * {Phylogenetic Reconstruction} \label{subsec:phylo}
 In our experiments, our reconstructed phylogenies were maximum likelihood phylogenies reconstructed in FastTree2 \citep{FastTree10} using the GTR model.
 Similar results were obtained with trees reconstructed using RAxML \citep{Raxml14}, which is expected to be more accurate, but can consume orders of magnitude more computational time.
@@ -208,11 +206,11 @@ Irrespective of the method used to root the phylogeny, we used a general linear 
 The expected amount of evolution was taken to be the response and the sampling dates of the data were taken as the input. 
 These models were only calibrated over the uncensored/plasma data for the simulated and real data sets respectively.
 %We then used the linear model to predict the dates of the latent/unknown sequences.
-%To screen for data that were amenable to our analysis, we used the nested log ratio test \citep{Ho14}. 
-To screen for data that were amenable to our analysis, we used Akaike Information Criteria \cite[AIC;][]{Akaike74}.
+To screen for data that were amenable to our analysis, we used the nested log ratio test \citep{Ho14}. 
+%To screen for data that were amenable to our analysis, we used Akaike Information Criteria \cite[AIC;][]{Akaike74}.
 Our null model was a linear model with zero slope over the expected amount of evolution over time.
-We rejected any sequence data sets whose phylogeny could not reject the null model with a relative AIC of ${-5}$.
-% We rejected any sequence data sets whose phylogeny couldn't reject the null model with threshold $\alpha=0.01$, since this implied a lack of phylogenetic signal.
+%We rejected any sequence data sets whose phylogeny could not reject the null model with a relative AIC of ${-5}$.
+We rejected any sequence data sets whose phylogeny couldn't reject the null model with threshold $\alpha=0.01$, since this implied a lack of phylogenetic signal.
 
 We then used the linear model to predict the date of the censored sequences.
 
@@ -241,7 +239,11 @@ We then used the linear model to predict the date of the censored sequences.
 %Here we only collected the normalized errors between the prediction and the collection.
 %
 
-To evaluate the latency of a censored sequence, $s$, we computed the difference, $d_s$, between the sampled date and the predicted date of the linear model. For each data set we used a general linear mixed effects model with the normal family to infer an association between the genetic distance of $s$ from the root of its phylogenetic tree and $d_s$. We specified random intercept and slope for each subject.
+We evaluated the latency of the censored sequences using two methods. The first was a {binomial model} and the second was a {GLME model}.
+
+For the {binomial model}, we used R's binom.test function fit the ocurrence of sequences with positive difference (i.e. latency) to a binomial model. We used $p=0.5$ as the null model.
+
+For the {GLME model}, $s$, we computed the difference, $d_s$, between the sampled date and the predicted date of the linear model. For each data set we used a general linear mixed effects model with the normal family to infer an association between the genetic distance of $s$ from the root of its phylogenetic tree and $d_s$. We specified random intercept and slope for each subject.
 
 We then transformed the difference, $d_s$, by
 \[\hat{d}_s = \operatorname{sign}(d_s)\sqrt{|d_s|}\]
@@ -270,7 +272,9 @@ For all of the simulated subjects, we were able to reject the null hypothesis of
 %When we performed the same analysis against the simulated archival times, the results were nearly identical to the results without any latent data, suggesting that we can recover the dates of latent sequences provided an accurate clock.
 
 For our final validation, we took the same strategy as the first validation on synthetic data, and applied it to our {\em plasma} data set --- we censored 50\% of the known sampling dates, then attempted to reconstruct them.
-We were only unable to reject the null hypothesis in 1 subject of the {\em plasma} data set.
+We were able to reject the null hypothesis in every {\em plasma} subject.
+
+The {binomial model} for the \emph{plasma} data gave $p$-value of $0.1468$ and a predicted success probability of $0.5392$ with a confidence interval of $(0.4792, 1)$.
 %(Figure \ref{fig:results2} C shows this when the phylogenies have been rooted with outgroup rooting). 
 %Averaged over all simulated data sets, the mean square error was $1.7\times 10^{-1}$, and the absolute value of average median and mean difference were $2.1\times 10^{-4}$ and $1.9\times 10^{-2}$ respectively. 
 %The density plot shows similar behavior to that of the synthetic data, except with a wider distribution, and more variation. 
@@ -286,9 +290,11 @@ We were only unable to reject the null hypothesis in 1 subject of the {\em plasm
 
 %Individuals that had received treatment at some point generally failed the hypothesis test --- there was only one patient that did not --- these individuals were not included in the above analysis. 
 
-Finally, we tested our methodology on the {\em mixed} data set. Overall, we found that the RTT perfomed better or just as well as the outgroup rooting. Hence from now on, we only consider the results using RTT.
+Finally, we tested our methodology on the {\em mixed} data set. Overall, we found that the RTT regression performed better or just as well as the outgroup rooting. Hence from now on, we only consider the results using RTT regression.
 
-Of the 17 \emph{mixed} subjects 5 failed to reject the null hypothesis of the date reconstruction regression.
+Of the 16 \emph{mixed} subjects, 4 failed to reject the null hypothesis of the date reconstruction regression.
+
+The {binomial model} for the \emph{mixed} data gave $p$-value of $0.02263$ and a predicted success probability of $0.5294$ with a confidence interval of $(0.5052, 1)$.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -377,8 +383,8 @@ Additionally, we would like to apply the methodology to next gen sequence data -
 
 \begin{figure}[ht]
 	\centering{}
-	\includegraphics{figures/latency-model}
-	\caption[Latency Model]{An illustration of the latency model.}
+	\includegraphics[width=10cm]{figures/latency-model}
+	\caption[Latency Model]{An illustration of the latency model. On a tip with branch length $S$, we randomly select a become unlatent period, $U$, and then random select a become latent period, $L$, between the interval $S-U$ and $S$.}
 	\label{fig:latencymodel}
 \end{figure}
 
@@ -402,7 +408,7 @@ The phylogenies in these cases have been rooted with outgroup rooting}
 \begin{figure}[ht]
 	\centering
 	\includegraphics[width=\textwidth]{figures/GLM_plot.pdf}
-	\caption[Regression]{A plot of the genetic distance from the root versus the difference from the estimate of the date reconstruction. The coloured circles respresent the values for each DNA sequence for each subject (each csubject has their own colour]. The solid black line is the quadratric regression with the mean of the parameters from the mixed effects model.  The dotted lines are the quadratric regression with one standard deviation in both parameters.}
+	\caption[Regression]{A plot of the genetic distance from the root versus the difference from the estimate of the date reconstruction. The coloured circles respresent the values for each DNA sequence for each subject (each subject has their own colour]. The solid black line is the quadratric regression with the mean of the parameters from the mixed effects model.  The dotted lines are the quadratric regression with one standard deviation in both parameters.}
 	\label{fig:glm}
 \end{figure}
 
@@ -436,7 +442,7 @@ Reference & Patient ID & \multicolumn{3}{c}{Sequences} & \multicolumn{3}{c}{Time
 & 10138 &     82 &      119 &      201 &        6 &       13 &       16 &   Yes \\
 %& 10586 &     16 &      121 &      137 &        2 &       12 &       14  \\ 
 & 13889 &    151 &      132 &      283 &       13 &       14 &       18 &   Yes \\ 
- \cite{Fischer04} & 10769 &    229 &       96 &      325 &       10 &        4 &       11 &   No \\ 
+% \cite{Fischer04} & 10769 &    229 &       96 &      325 &       10 &        4 &       11 &   Yes \\ 
 %& 10770 &    190 &       31 &      221 &       11 &        2 &       11  \\ 
 \cite{Llewellyn06} & 16616 &     16 &       95 &      111 &        2 &        5 &        5 &    Yes  \\ 
 & 16617 &     16 &       89 &      105 &        2 &        5 &        5 &   Yes \\ 

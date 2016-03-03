@@ -69,14 +69,11 @@ date.branches <- function(s.tree) {
 	tree
 }
 
-# TO DO: probably do a range of values here
-make.latent <- function(
+# move choosing tips outside of making tips latent to sync RNG of latent and unlatent methods
+choose.tips <- function(
 	s.tree,
-	percent=0.5
-#	latency.rate=0.0001
+	percent = 0.5
 ) {
-#  rate = clock.rate
-#  noise = noise.rate
   tr <- s.tree$phylogram
 
   # #  
@@ -87,6 +84,33 @@ make.latent <- function(
  
   # #
   tips <- sort(sample(1:n.tips, n.mod))  # indices of tips to modify
+  
+  # #
+  s.tree.new <- s.tree
+  s.tree.new$latent.tips <- tips
+  
+  s.tree.new
+}
+
+# TO DO: probably do a range of values here
+make.latent <- function(
+	s.tree
+#	percent=0.5
+#	latency.rate=0.0001
+) {
+#  rate = clock.rate
+#  noise = noise.rate
+  tr <- s.tree$phylogram
+
+  # #  
+  n.tips <- length(tr$tip.label)
+#  n.mod <- as.integer(n.tips*percent)  # number of tips to modify
+#  delta <- rep(0, n.tips)
+  types <- rep("PLASMA", n.tips)
+ 
+  # #
+  tips <- s.tree$latent.tips
+#  tips <- sort(sample(1:n.tips, n.mod))  # indices of tips to modify
 #  scale <- rbeta(n.mod, 1, 100)  # left-skew (median about 0.006)
 
   # #
@@ -130,9 +154,10 @@ make.latent <- function(
   else
     edge.mod[edges] <- edge.mod[edges]
 #  print(edge.mod[edges])
+  
         
 #  delta <- edge.length - edge.mod
-  write.csv(data.frame(id=tr$tip.label[tips], length=edge.length[edges], latency=(edge.length[edges]-edge.mod[edges])), "latency.csv", append=T, row.names=F)
+  write.table(data.frame(id=tr$tip.label[tips], length=edge.length[edges], latency=edge.length[edges]-edge.mod[edges]), "latency.csv", append=T, row.names=F)
   
   # # 
   latent <- edge.mod
@@ -169,6 +194,7 @@ trees <- lapply(trees, function(x) {unroot(x[[1]])})
 sim.trees <- lapply(trees, sim.clockmodel, params=sim.params)
 
 #if (latent) {
+sim.trees <- lapply(sim.trees, choose.tips)
 trees <- lapply(sim.trees, make.latent)
 #} else {
 #	trees <- lapply(sim.trees, date.branches)
