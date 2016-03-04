@@ -157,7 +157,7 @@ make.latent <- function(
   
         
 #  delta <- edge.length - edge.mod
-  write.table(data.frame(id=tr$tip.label[tips], length=edge.length[edges], latency=edge.length[edges]-edge.mod[edges]), "latency.csv", append=T, row.names=F)
+  write.table(data.frame(id=tr$tip.label[tips], length=edge.length[edges], latency=edge.length[edges]-edge.mod[edges]), "latency.csv", append=T, row.names=F, sep=",")
   
   # # 
   latent <- edge.mod
