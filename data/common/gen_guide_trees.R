@@ -7,6 +7,7 @@
 library(ape)
 library(TreeSim)
 library(NELSI)
+library(Rmpfr)
 #library(phangorn)
 
 source('../common/rtt.R')
@@ -121,35 +122,25 @@ make.latent <- function(
   
   # latency distribution
   rlatent <- function(sc) {
-    u <- rexp(length(sc), unlatency.rate)
+    u <- mpfr(rexp(length(sc), unlatency.rate), 20)
     print(u)
-    t.0 <- (sc - u) * (sc - u > 0)
-#    print(t.0)
-    r <- exp(-latency.rate * t.0)-exp(-latency.rate*sc)
+    t.0 <- (sc - u) * ((sc - u) > 0)
+#   print(t.0)
+    r <- exp(-latency.rate * t.0)-exp(-latency.rate * mpfr(sc, 20))
 #    print(r)
-    x <- runif(length(sc))
+    x <- mpfr(runif(length(sc)), 20)
 #    print(x)
     
-    -log(exp(-latency.rate * t.0)-r*x) / latency.rate
+    as.double(-log(exp(-latency.rate * t.0) - r * x) / latency.rate)
   }
-    
-  # I think it is more realistic to use a conditional exponential
-  # distribution:
-  # let Y be the waiting time to lineage sampling
-  # let t be the waiting time to the lineage going latent
-  # then the probability distribution of (t) is
-  #   m exp(-mt) / (1-exp(-L y))
-  # where L is the sampling rate
-  # and m is the latency rate
-  #v <- rexpo()
     
   types[tips] <- "PBMC"
  
   edge.mod <- edge.length
 #  edge.mod[edges] <- edge.mod[edges]*scale
 #  print(edge.mod[edges])
-  # UNTESTED if false will be seen when latency.rate and unlatency.rate both equal 0
-  if (latency.rate > 1E-7 && unlatency.rate > 1E-7)
+  
+  if (latency.rate > 1E-100 && unlatency.rate > 1E-100)
     edge.mod[edges] <- rlatent(edge.mod[edges]) 
   else
     edge.mod[edges] <- edge.mod[edges]
@@ -162,10 +153,13 @@ make.latent <- function(
   # # 
   latent <- edge.mod
   actual <- edge.length 
+  
+  actual.nozero <- actual
+  actual.nozero[actual.nozero == 0] <- 1
 
   # # .
   # Assume evolution rate is constant along the last edge
-  latent.evo <- s.tree$tree.data.matrix[,6]*latent/actual
+  latent.evo <- s.tree$tree.data.matrix[,6]*latent/actual.nozero
   actual.evo <- s.tree$tree.data.matrix[,6]
 #  err <- rnorm(length(tr$edge.length), mean = 0, sd = noise)
 #  latent.evo <- abs(latent * rate + err)  # convert time to exp. sub'ns

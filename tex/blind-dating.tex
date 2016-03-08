@@ -122,7 +122,7 @@ After applying these criteria, we retained 410 HIV RNA sequences from 9 individu
 The purpose of the plasma data set was to provide representative samples of within-host HIV diversity for evaluating and calibrating the model.
 
 The second data set, referred to as the {\em mixed} data set, contained sequences from studies in which both plasma HIV RNA and cellular HIV DNA had been collected from the same individual.
-We used the Los Alamos advanced search interface (\url{http://www.hiv.lanl.gov/}{http://www.hiv.lanl.gov/}) to identify published data sets representing individuals with both HIV RNA and cellular DNA sequences.
+We used the Los Alamos advanced search interface \citep{LosAlamos} to identify published data sets representing individuals with both HIV RNA and cellular DNA sequences.
 %% what do you mean by "well-characterized"?
 From these results, we manually selected 16 individuals that had well-characterized partial {\em env} sequences and plasma samples from at least 2 RNA time points and 5 DNA time points. (Table \ref{tab:patients}). 
 We also required that at least 1 DNA time point fell between 2 RNA time points in each indiviudal, other than this there were no selection criteria on the time between sample collection dates. 
@@ -176,11 +176,11 @@ To do this we applied the following procedure:
 \item Shorten the branch time to equal $L$.
 \item Scale the expected number of substitutions.
 \end{enumerate}
-See Figure \ref{fig:latencymodel} for an illustration of this model. We took $u$ and $l$ from the range of values: $1, 0.01, 0.0001$.
+See Figure \ref{fig:latencymodel} for an illustration of this model. We computed $u$ from the mean half life estimated by \cite{Crooks15} ($3.6$ years). Using this estimate we computed $u = 0.00053$.
 
 % by a scaling factor drawn at random from a beta distribution with parameters $\alpha=1$ and $\beta=100$.
 We then recorded both the simulated become latent time and simulated collection time and generated sequences along these latent seed trees with INDELible using the same parameters as above. 
-For these data, we generated an additional 450 subjects with 100 sequences each, bringing the total amount of simulated data to 500 subjects.
+For these data, we generated an additional x subjects with 100 sequences each, bringing the total amount of simulated data to x+50 subjects.
 
 \subsection * {Phylogenetic Reconstruction} \label{subsec:phylo}
 In our experiments, our reconstructed phylogenies were maximum likelihood phylogenies reconstructed in FastTree2 \citep{FastTree10} using the GTR model.
@@ -280,7 +280,6 @@ The {binomial test} for the \emph{plasma} data gave a $p$-value of $0.1468$ and 
 %Averaged over all simulated data sets, the mean square error was $1.7\times 10^{-1}$, and the absolute value of average median and mean difference were $2.1\times 10^{-4}$ and $1.9\times 10^{-2}$ respectively. 
 %The density plot shows similar behavior to that of the synthetic data, except with a wider distribution, and more variation. 
 
-
 \subsection * {Application} \label{sec:mixed_data}
 
 %Finally, we tested our methodology on the {\em mixed} data set.
@@ -297,7 +296,7 @@ Of the 16 \emph{mixed} subjects, 4 failed to reject the null hypothesis of the d
 
 The {binomial test} gave a $p$-value of $0.02263$ and a predicted success probability of $0.5294$ with a confidence interval of $(0.5052, 1)$.
 
-The residuals of the {GLME model} without using the transformation were not normally distributed, so we will only consider the GLME model using the transformed differences, $\hat{d}_s$.
+The residuals of the {GLME model} without using the transformation were not normally distributed and thus we will only consider the GLME model using the transformed differences, $\hat{d}_s$.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -411,7 +410,7 @@ The phylogenies in these cases have been rooted with outgroup rooting}
 \begin{figure}[ht]
 	\centering
 	\includegraphics[width=\textwidth]{figures/GLM_plot.pdf}
-	\caption[Regression]{A plot of the genetic distance from the root versus the difference from the estimate of the date reconstruction. The coloured circles respresent the values for each DNA sequence for each subject (each subject has their own colour]. The solid black line is the quadratric regression with the mean of the parameters from the mixed effects model.  The dotted lines are the quadratric regression with one standard deviation in both parameters.}
+	\caption[Regression]{A plot of the genetic distance from the root versus the difference from the estimate of the date reconstruction. The coloured circles respresent the values for each DNA sequence for each subject (each subject has their own colour). The solid black line is the quadratric regression with the mean of the parameters from the mixed effects model.  The dotted lines are the quadratric regression with one standard deviation in both parameters.}
 	\label{fig:glm}
 \end{figure}
 
