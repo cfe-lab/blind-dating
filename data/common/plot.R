@@ -1,10 +1,29 @@
 library(ape)
 library(parallel)
 
-source('../common/rtt.R')
-source('../common/test.R')
-source('../common/raxml.R')
-source('../common/queue.R')
+
+args.all <- commandArgs(trailingOnly = F)
+
+if (any(grep("--file=", args.all))) {
+	source.dir <- dirname(sub("--file=", "", args.all[grep("--file=", args.all)]))
+} else {
+	file.arg <- F
+
+	for (i in 1:length(args.all)) {
+		if (file.arg) {
+			source.dir <- dirname(args.all[i])
+		
+			break
+		}
+		
+		file.arg <- args.all[i] == '-f'
+	}
+}
+
+source(file.path(source.dir, 'rtt.R'), chdir=T)
+source(file.path(source.dir, 'test.R'), chdir=T)
+#source('../common/raxml.R', chdir=T)
+#source('../common/queue.R', chdir=T)
 
 args <- commandArgs(trailing = T)
 

@@ -1,6 +1,25 @@
 library(ape)
-source('../common/raxml.R')
-source('../common/fasttree.R')
+
+args.all <- commandArgs(trailingOnly = F)
+
+if (any(grep("--file=", args.all))) {
+	source.dir <- dirname(sub("--file=", "", args.all[grep("--file=", args.all)]))
+} else {
+	file.arg <- F
+
+	for (i in 1:length(args.all)) {
+		if (file.arg) {
+			source.dir <- dirname(args.all[i])
+		
+			break
+		}
+		
+		file.arg <- args.all[i] == '-f'
+	}
+}
+
+source(file.path(source.dir, 'raxml.R'), chdir=T)
+source(file.path(source.dir, 'fasttree.R'), chdir=T)
 
 args <- commandArgs(trailingOnly = T)
 
