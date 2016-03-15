@@ -152,7 +152,7 @@ The birth-death model was parameterized by fitting this model to samples from th
 We used BEAST version 2.3.2 to estimate the posterior distribution defined by the serial model with a Bayesian skyline, a strict molecular clock, and the HKY85 \citep{HKY85} model of nucleotide substitution.
 %Using this approach, we generated samples of trees for each sequence alignment in the plasma dataset.
 %From these simulations, we evaluated the accuracy of predicting sample collection times from a strict molecular clock model that was fit to a training subset of these data.
-The lineage birth rate, death rate and sampling probability were estimated to be: $0.05116, 0.05006, 0.005237$ respectively.
+The lineage birth rate, death rate and sampling probability were estimated to be: $\lambda = 0.05116$, $\delta = 0.05006$, $s = 0.005237$ respectively.
 
 We used the \textit{R} package, NELSI \citep{NELSI}, to assign rates of evolution to these trees by drawing values from a Gaussian distribution with a mean rate $\mu = \ 1.964\times 10^{-4}$ substitutions per generation and standard deviation $\sigma = \ 1.417\times 10^{-5}$. %; Figure \ref{fig:seedtree} for an example).
 
@@ -176,10 +176,20 @@ To do this we applied the following procedure:
 \item Shorten the branch time to equal $L$.
 \item Scale the expected number of substitutions.
 \end{enumerate}
-See Figure \ref{fig:latencymodel} for an illustration of this model. We computed $u$ from the mean half life estimated by \cite{Crooks15} ($3.6$ years). Using this estimate we computed $u = 0.00053$.
-% by a scaling factor drawn at random from a beta distribution with parameters $\alpha=1$ and $\beta=100$.
+See Figure \ref{fig:latencymodel} for an illustration of this model.
+
+We used two sets of values for $u$ and $l$.
+For the first set, we computed $u$ from the mean half life estimated by \cite{Crooks15} ($3.6$ years).
+Using this estimate we computed $u = 0.00053$.
+We estimated $l$ from the frequency of latent cells found by \cite{Ho13} ($l=0.0003$).
+For the the second set we calculated $u$ and $l$ based on the model of \cite{Kim06}.
+We took $u$ to equal their $a_0 = c\frac{V_0}{NL_0}-(1-f)(1-\epsilon)kT_0\frac{V_0}{L_0}$ with $c = \delta$, $N = \lambda$,  $\frac{V_0}{L_0} = f$, $\epsilon = 0$, $k = \lambda$, $T_0 = 1$ and $f = 0.003$.
+This gives $u = 0.00028$.
+We took $l = f(1-\epsilon_{RT})k$ with $epsilon_{RT} = 0$ and $f$ and $k$ as above.
+Using this, we get $l = 0.00015$.
+
 We then recorded both the simulated become latent time and simulated collection time and generated sequences along these latent seed trees with INDELible using the same parameters as above. 
-For these data, we generated an additional x subjects with 100 sequences each, bringing the total amount of simulated data to x+50 subjects.
+For these data, we generated an additional 150 subjects with 100 sequences each, bringing the total amount of simulated data to 200 subjects.
 
 \subsection * {Phylogenetic Reconstruction} \label{subsec:phylo}
 In our experiments, our reconstructed phylogenies were maximum likelihood phylogenies reconstructed in FastTree2 \citep{FastTree10} using the GTR model.
@@ -246,7 +256,7 @@ For the {GLME model}, $s$, we computed the difference, $d_s$, between the sample
 
 We then transformed the difference, $d_s$, by
 \[\hat{d}_s = \operatorname{sign}(d_s)\sqrt{|d_s|}\]
-and applied the general linear mixed effects model above with $\hat{d}_s$ as the response variable.
+and applied the general linear mixed effects model above with $\hat{d}_s$ as the response variable. We used the \textit{R} package, nlme \citep{NLME}, to solve the mixed effects model. We scaled the response variable by its standard deviation as per nlme's manual.
 
 \section * {Results} \label{sec:results}
 
@@ -255,7 +265,7 @@ and applied the general linear mixed effects model above with $\hat{d}_s$ as the
 \subsection * {Model Validation} \label{sec:sim_results}
 For all of the simulated subjects, we were able to reject the null hypothesis of the date reconstruction regression.
 
-The {binomial test} for the simulated data without viral latency gave a $p$-value of $0.3085$ and a predicted success probability of $0.5052$ with a confidence interval of $(0.4886, 1)$.
+The {binomial test} for the simulated data without viral latency gave a $p$-value of $0.7454$ and a predicted success probability of $0.4936$ with a 95\%-confidence interval of $(0.4770, 1)$.
 
 %Figure \ref{fig:results1} shows our model validation results over our synthetic data --- here we censor 50\% of the dates, and attempt to reconstruct them. 
 %Under the assumption of a strict molecular clock (that evolution is linearly related to time) the clock is a reliable source of information for these simulations.
@@ -264,6 +274,8 @@ The {binomial test} for the simulated data without viral latency gave a $p$-valu
 %Quantitatively, the censored data points are close to the regression line, and the difference density is heavily peaked around 0.
 
 For the simulated data with viral latency, we computed the difference between the reconstructed date and the sampled date and the difference between the reconstructed date and the become latent date.
+
+The {binomial test} for the first set of simulated with viral latency gave a $p$-value less than $2.2\times 10^{16}$ and a predicted success probability of $0.7136$ with a 95\%-confidence interval of $(0.6983, 1.000)$. The {binomial test} for the second set of simulated with viral latency gave a $p$-value less than $2.2\times 10^{16}$ and a predicted success probability of $0.7120$ with a 95\%-confidence interval of $(0.6967, 1.000)$.
 
 %Figure \ref{fig:results1} B shows different results for the latent simulations --- here we censor 50\% of the dates, attempt to reconstruct them, then compare them to the simulated collection dates. 
 %In this case, averaged over all simulated data sets, the mean square error was $7.1\times 10^{-3}$, and the average median and mean difference were $4.0\times 10^{-2}$ and $5.1\times 10^{-2}$ respectively. 
@@ -274,7 +286,7 @@ For the simulated data with viral latency, we computed the difference between th
 For our final validation, we took the same strategy as the first validation on synthetic data, and applied it to our {\em plasma} data set --- we censored 50\% of the known sampling dates, then attempted to reconstruct them.
 We were able to reject the null hypothesis in every {\em plasma} subject.
 
-The {binomial test} for the \emph{plasma} data gave a $p$-value of $0.1468$ and a predicted success probability of $0.5392$ with a confidence interval of $(0.4792, 1)$.
+The {binomial test} for the \emph{plasma} data gave a $p$-value of $0.1468$ and a predicted success probability of $0.5392$ with a 95\%-confidence interval of $(0.4792, 1)$.
 %(Figure \ref{fig:results2} C shows this when the phylogenies have been rooted with outgroup rooting). 
 %Averaged over all simulated data sets, the mean square error was $1.7\times 10^{-1}$, and the absolute value of average median and mean difference were $2.1\times 10^{-4}$ and $1.9\times 10^{-2}$ respectively. 
 %The density plot shows similar behavior to that of the synthetic data, except with a wider distribution, and more variation. 
@@ -295,8 +307,7 @@ Of the 16 \emph{mixed} subjects, 4 failed to reject the null hypothesis of the d
 
 The {binomial test} gave a $p$-value of $0.02263$ and a predicted success probability of $0.5294$ with a confidence interval of $(0.5052, 1)$.
 
-The residuals of the {GLME model} without using the transformation were not normally distributed and thus we will only consider the GLME model using the transformed differences, $\hat{d}_s$.
-
+The residuals of the {GLME model} without using the transformation were not normally distributed and thus we will only consider the GLME model using the transformed differences, $\hat{d}_s$. The mean interecept of the GLME was $13.06$ and the mean coefficient of $d_s$ was $-308.1$. The deviation due to the random effects on the intercept was $15.24$ and the deviation on the coefficient of $d_s$ was $172.1$. A plot of the regression is given in Figure \ref{fig:glm}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section * {Discussion} \label{sec:discuss}
@@ -409,7 +420,10 @@ The phylogenies in these cases have been rooted with outgroup rooting}
 \begin{figure}[ht]
 	\centering
 	\includegraphics[width=\textwidth]{figures/GLM_plot.pdf}
-	\caption[Regression]{A plot of the genetic distance from the root versus the difference from the estimate of the date reconstruction. The coloured circles respresent the values for each DNA sequence for each subject (each subject has their own colour). The solid black line is the quadratric regression with the mean of the parameters from the mixed effects model.  The dotted lines are the quadratric regression with one standard deviation in both parameters.}
+	\caption[Regression]{A scatterplot of the genetic distance from the root versus the difference from the estimate of the date reconstruction.
+	The coloured circles respresent the values for each DNA sequence for each subject. 
+	The solid black line is the quadratric regression with the mean of the parameters from the mixed effects model.  %The dotted lines are the 95\% confidence interval of the parameters of the quadratric regression.
+	}
 	\label{fig:glm}
 \end{figure}
 
