@@ -23,7 +23,7 @@ df.good <- df[df$Patient %in% good$id,]
 df.good$Is.Latent <- df.good$Error > 0
 df.good$Trans.Error <- sign(df.good$Error)*sqrt(abs(df.good$Error))
 
-# graphing function
+# graphing
 n <- length(good$id)
 colors <- unlist(lapply(seq(1, n), function(x) {
 	if (x < n / 3) {
@@ -47,7 +47,9 @@ plot.graph <- function(y) {
 		legend(legend.posx, legend.posy, good$name, col=colors[as.character(good$id)], pch=16, ncol=legend.ncols)
 }
 
-do.analysis <- function(model, y) {
+do.analysis <- function(y, glm.function, ...) {
+	model <- glm.function(..., data=df.good)
+
 	plot.new()
 	summary.output <- capture.output(print(summary(model)))
 	for (i in 1:(length(summary.output))) {
@@ -60,7 +62,9 @@ do.analysis <- function(model, y) {
 	plot.graph(y)
 }
 
-do.analysis.trans <- function(model, y) {
+do.analysis.trans <- function(y, glm.function, ...) {
+	model <- glm.function(..., data=df.good)
+	
 	plot.new()
 	summary.output <- capture.output(print(summary(model)))
 	for (i in 1:(length(summary.output))) {
@@ -83,53 +87,42 @@ sd(df.good$Trans.Error)
 
 # GLM fitting
 pdf(paste("lme.fixed.null", args[1], ".pdf", sep=""))
-lme.fixed.null <- glm(Error/sd(Error) ~ 1, data=df.good)
-do.analysis(lme.fixed.null, function(x){c[[1]]})
+try(do.analysis(function(x){c[[1]]}, glm, formula=Error/sd(Error) ~ 1))
 dev.off()
 
 pdf(paste("lme.fixed.dist", args[1], ".pdf", sep=""))
-lme.fixed.dist <- glm(Error/sd(Error) ~ Distance, data=df.good)
-do.analysis(lme.fixed.dist, function(x){c[[1]]+c[[2]]*x})
+try(do.analysis(function(x){c[[1]]+c[[2]]*x}, glm, formula=Error/sd(Error) ~ Distance))
 dev.off()
 
 pdf(paste("lme.mixed.null", args[1], ".pdf", sep=""))
-lme.mixed.null <- lme(Error/sd(Error) ~ 1, random=~1 | Patient, data=df.good)
-do.analysis(lme.mixed.null, function(x){c[[1]]})
+try(do.analysis(function(x){c[[1]]}, lme, fixed=Error/sd(Error) ~ 1, random=~1 | Patient))
 dev.off()
 
 pdf(paste("lme.mixed.dist", args[1], ".pdf", sep=""))
-lme.mixed.dist <- lme(Error/sd(Error) ~ Distance, random=~1 | Patient, data=df.good)
-do.analysis(lme.mixed.dist, function(x){c[[1]]+c[[2]]*x})
+try(do.analysis(function(x){c[[1]]+c[[2]]*x}, lme, fixed=Error/sd(Error) ~ Distance, random=~1 | Patient))
 dev.off()
 
 pdf(paste("lme.mixed.rand.dist", args[1], ".pdf", sep=""))
-lme.mixed.rand.dist <- lme(Error/sd(Error) ~ Distance, random=~Distance | Patient, data=df.good)
-do.analysis(lme.mixed.rand.dist, function(x){c[[1]]+c[[2]]*x})
+try(do.analysis(function(x){c[[1]]+c[[2]]*x}, lme, fixed=Error/sd(Error) ~ Distance, random=~Distance | Patient))
 dev.off()
-
 
 # GLM fitting (with transform)
 pdf(paste("lme.fixed.null.sqrt", args[1], ".pdf", sep=""))
-lme.fixed.null.sqrt <- glm(Trans.Error/sd(Trans.Error) ~ 1, data=df.good)
-do.analysis.trans(lme.fixed.null.sqrt, function(x){sign(c[[1]])*(c[[1]])^2})
+try(do.analysis.trans(function(x){sign(c[[1]])*(c[[1]])^2}, glm, formula=Trans.Error/sd(Trans.Error) ~ 1))
 dev.off()
 
 pdf(paste("lme.fixed.dist.sqrt", args[1], ".pdf", sep=""))
-lme.fixed.dist.sqrt <- glm(Trans.Error/sd(Trans.Error) ~ Distance, data=df.good)
-do.analysis.trans(lme.fixed.dist.sqrt, function(x){sign(c[[1]]+c[[2]]*x)*(c[[1]]+c[[2]]*x)^2})
+try(do.analysis.trans(function(x){sign(c[[1]]+c[[2]]*x)*(c[[1]]+c[[2]]*x)^2}, glm, formula=Trans.Error/sd(Trans.Error) ~ Distance))
 dev.off()
 
 pdf(paste("lme.mixed.null.sqrt", args[1], ".pdf", sep=""))
-lme.mixed.null.sqrt <- lme(Trans.Error/sd(Trans.Error) ~ 1, random=~1 | Patient, data=df.good)
-do.analysis.trans(lme.mixed.null.sqrt, function(x){sign(c[[1]])*(c[[1]])^2})
+try(do.analysis.trans(function(x){sign(c[[1]])*(c[[1]])^2}, lme, fixed=Trans.Error/sd(Trans.Error) ~ 1, random=~1 | Patient))
 dev.off()
 
 pdf(paste("lme.mixed.dist.sqrt", args[1], ".pdf", sep=""))
-lme.mixed.dist.sqrt <- lme(Trans.Error/sd(Trans.Error) ~ Distance, random=~1 | Patient, data=df.good)
-do.analysis.trans(lme.mixed.dist.sqrt, function(x){sign(c[[1]]+c[[2]]*x)*(c[[1]]+c[[2]]*x)^2})
+try(do.analysis.trans(function(x){sign(c[[1]]+c[[2]]*x)*(c[[1]]+c[[2]]*x)^2}, lme, fixed=Trans.Error/sd(Trans.Error) ~ Distance, random=~1 | Patient))
 dev.off()
 
 pdf(paste("lme.mixed.rand.dist.sqrt", args[1], ".pdf", sep=""))
-lme.mixed.rand.dist.sqrt <- lme(Trans.Error/sd(Trans.Error) ~ Distance, random=~Distance | Patient, data=df.good)
-do.analysis.trans(lme.mixed.rand.dist.sqrt, function(x){sign(c[[1]]+c[[2]]*x)*(c[[1]]+c[[2]]*x)^2})
+try(do.analysis.trans(function(x){sign(c[[1]]+c[[2]]*x)*(c[[1]]+c[[2]]*x)^2}, lme, fixed=Trans.Error/sd(Trans.Error) ~ Distance, random=~Distance | Patient))
 dev.off()
