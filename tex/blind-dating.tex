@@ -2,6 +2,8 @@
 \documentclass[12pt]{article}
 
 \usepackage[margin=2cm]{geometry}
+\usepackage{colortbl}
+\usepackage{comment}
 
 \usepackage{times}
 \usepackage{lineno}
@@ -24,6 +26,8 @@
 \titleformat{\subsubsection} [runin] {\bf}{\thesubsubsection} {12pt} {}
 
  
+ \newcommand{\badpat}[1]{\rowcolor{red}#1}
+ 
 \begin{document}
 
 \title{Blind dating: A phylogenetic approach to dating HIV reservoir sequences}
@@ -41,16 +45,25 @@
 \section * {Abstract}
 
 Background: 
-The ability of HIV to persist within latent cellular reservoirs represents a major barrier to cure. The timing of establishment of individual viral reservoirs over the infection course may influence their susceptibility to elimination by immune-mediated or therapeutic approaches. However, methods to accurately estimate the age of reservoir sequences remain scarce. We propose a simple method to date suspected reservoir sequences using phylogenetically informed regression.
+The ability of HIV to persist within latent cellular reservoirs represents a major barrier to cure.
+The timing of establishment of individual viral reservoirs over the infection course may influence their susceptibility to elimination by immune-mediated or therapeutic approaches.
+However, methods to accurately estimate the age of reservoir sequences remain scarce.
+We propose a simple method to date suspected reservoir sequences using phylogenetically informed regression.
 
 Method: 
-Simulated sequence data were generated using INDELible version 1.03. A total of 410 HIV RNA sequences sampled longitudinally from 9 untreated HIV-infected individuals with estimated dates of infection and a total of 2474 HIV DNA and RNA sequences from 17 individuals were obtained from the Los Alamos National Laboratory HIV Sequence Database. The simulated and HIV RNA data were used for method validation. Maximum-likelihood phylogenies were reconstructed with RaxML. Phylogenies were rooted by determining the location of the root that minimized the root-mean-square error between root-to-tip distances and known dates of sampling. The root-to-tip distances of latent sequences were mapped to the optimal regression line to estimate reservoir establishment dates.
+Simulated sequence data were generated using INDELible version 1.03.
+A total of 410 HIV RNA sequences sampled longitudinally from 9 untreated HIV-infected individuals with estimated dates of infection and a total of 2474 HIV DNA and RNA sequences from 17 individuals were obtained from the Los Alamos National Laboratory HIV Sequence Database.
+The simulated and HIV RNA data were used for method validation. Maximum-likelihood phylogenies were reconstructed with RaxML.
+Phylogenies were rooted by determining the location of the root that minimized the root-mean-square error between root-to-tip distances and known dates of sampling. The root-to-tip distances of latent sequences were mapped to the optimal regression line to estimate reservoir establishment dates.
 
 Results: 
-To validate the method, we synthesized latent lineages by censoring the sample dates for random selections of up to 50\% of sequences in the simulated or HIV RNA datasets. In either case, root-to-tip estimation accurately recovered these missing sample dates when the phylogeny conformed to a strict molecular clock. When this method was applied to HIV DNA sequences in phylogenies containing dated HIV RNA sequences, we observed that the predicted dates tended to precede dates of sampling, which was consistent with latency.
+To validate the method, we synthesized latent lineages by censoring the sample dates for random selections of up to 50\% of sequences in the simulated or HIV RNA datasets.
+In either case, root-to-tip estimation accurately recovered these missing sample dates when the phylogeny conformed to a strict molecular clock.
+When this method was applied to HIV DNA sequences in phylogenies containing dated HIV RNA sequences, we observed that the predicted dates tended to precede dates of sampling, which was consistent with latency.
 
 Conclusions: 
-Our results indicate that the dates that HIV DNA lineages entered a latent state can be reconstructed from a phylogenetic analysis of HIV RNA sequence variation from the same patient. This can provide important insights into the dynamics of HIV reservoirs within hosts.
+Our results indicate that the dates that HIV DNA lineages entered a latent state can be reconstructed from a phylogenetic analysis of HIV RNA sequence variation from the same patient.
+This can provide important insights into the dynamics of HIV reservoirs within hosts.
 
 Keywords: 
 HIV, Latency, Cellular Reservoirs, Phylogenetics, Linear Regression\\
@@ -120,15 +133,17 @@ The baseline samples were collected within 186 days of this reference point, and
 Individuals who had been classified as ``superinfected'' were also excluded \citep{McCloskey14}.
 After applying these criteria, we retained 410 HIV RNA sequences from 9 individuals for phylogenetic analysis.
 The purpose of the plasma data set was to provide representative samples of within-host HIV diversity for evaluating and calibrating the model.
+See Table \ref{tab:patientsplasma} for details on the patients from this data set.
 
 The second data set, referred to as the {\em mixed} data set, contained sequences from studies in which both plasma HIV RNA and cellular HIV DNA had been collected from the same individual.
 We used the Los Alamos advanced search interface \citep{LosAlamos} to identify published data sets representing individuals with both HIV RNA and cellular DNA sequences.
 %% what do you mean by "well-characterized"?
-From these results, we manually selected 16 individuals that had well-characterized partial {\em env} sequences and plasma samples from at least 2 RNA time points and 5 DNA time points. (Table \ref{tab:patients}). 
+From these results, we manually selected 16 individuals that had well-characterized partial {\em env} sequences and plasma samples from at least 2 RNA time points and 5 DNA time points. 
 We also required that at least 1 DNA time point fell between 2 RNA time points in each indiviudal, other than this there were no selection criteria on the time between sample collection dates. 
 A total of 926 partial {\em env} sequences from blood plasma, and 1548 partial {\em env} sequences from PBMC cells were used in our analysis. 
 We utilized samples from treatment naive individuals from \cite{Shankarappa99, Novitsky09}, samples from individuals that had been treated via HAART from \cite{Llewellyn06}.
 %, and samples from individuals that had been on HAART, but ceased treatment \cite{Fischer04}. 
+See Table \ref{tab:patients} for details on the patients from this data set.
 
 \subsection * {Sequence Alignment} \label{subsec:seqalign}
 When applicable, we used MUSCLE 3.8.31 \citep{Muscle04} to align the patient-derived sequences, which were then visually inspected and cleaned with AliView \citep{AliView14}. 
@@ -185,7 +200,7 @@ We estimated $l$ from the frequency of latent cells found by \cite{Ho13} ($l=0.0
 For the the second set we calculated $u$ and $l$ based on the model of \cite{Kim06}.
 We took $u$ to equal their $a_0 = c\frac{V_0}{NL_0}-(1-f)(1-\epsilon)kT_0\frac{V_0}{L_0}$ with $c = \delta$, $N = \lambda$,  $\frac{V_0}{L_0} = f$, $\epsilon = 0$, $k = \lambda$, $T_0 = 1$ and $f = 0.003$.
 This gives $u = 0.00028$.
-We took $l = f(1-\epsilon_{RT})k$ with $epsilon_{RT} = 0$ and $f$ and $k$ as above.
+We took $l = f(1-\epsilon_{RT})k$ with $\epsilon_{RT} = 0$ and $f$ and $k$ as above.
 Using this, we get $l = 0.00015$.
 
 We then recorded both the simulated become latent time and simulated collection time and generated sequences along these latent seed trees with INDELible using the same parameters as above. 
@@ -211,7 +226,8 @@ Our simulated data were only rooted using RTT regression; for all real data, bot
 \subsection * {Date Reconstruction} \label{subsec:daterecon}
 %% Find a way to distinguish this GLM with the one in the next section
 
-Irrespective of the method used to root the phylogeny, we used a general linear model with the normal family to infer the association between the tip dates and sequence divergence from the root. 
+%Irrespective of the method used to root the phylogeny, we used a general linear model with the normal family to infer the association between the tip dates and sequence divergence from the root. 
+Irrespective of the method used to root the phylogeny, we used a linear model to infer the association between the tip dates and sequence divergence from the root. 
 The expected amount of evolution was taken to be the response and the sampling dates of the data were taken as the input. 
 These models were only calibrated over the uncensored/plasma data for the simulated and real data sets respectively.
 %We then used the linear model to predict the dates of the latent/unknown sequences.
@@ -219,18 +235,17 @@ To screen for data that were amenable to our analysis, we used the nested log ra
 %To screen for data that were amenable to our analysis, we used Akaike Information Criteria \cite[AIC;][]{Akaike74}.
 Our null model was a linear model with zero slope over the expected amount of evolution over time.
 %We rejected any sequence data sets whose phylogeny could not reject the null model with a relative AIC of ${-5}$.
-We rejected any sequence data sets whose phylogeny couldn't reject the null model with threshold $\alpha=0.01$, since this implied a lack of phylogenetic signal.
+We rejected any sequence data sets whose phylogeny couldn't reject the null model with threshold $\alpha=0.01$, since this implied a lack of phylogenetic signal. We then used the linear model to predict the date of the censored sequences.
 
-We then used the linear model to predict the date of the censored sequences.
-
-\subsection * {Experiments} \label{subsec:experiments}
-%We calculated three error measures to quantify the difference between the predicted and known dates of sampling: the mean and median differences, and the root mean square error (RMSE). 
+We calculated the root mean square deviation (RMSD) and the the median difference to quantify the error of the difference between the predicted and known sampling dates.
 %We used the root mean square error to quantify the difference between the predicted and known dates of sampling.
 %the mean square error for predicted date, as well as the mean and median difference between the predicted and known sampling dates.
 %and sampling date, where difference defined as simply the predicted date minus the observed date.
-%All tip dates were re-scaled to lie between $0$ and $1$ to facilitate comparisons among longitudinal data sets using the formula $ \hat{t} = \frac{t - \min(\bf{t}) }{ \max{(\bf{t})} - \min{(\bf{t}})}$ where $t$ is the the unscaled time of any tip, and $\bf{t}$ is the vector of all tip dates for a given tree. 
+All tip dates were re-scaled to lie between $0$ and $1$ to facilitate comparisons among longitudinal data sets using the formula $ \hat{t} = \frac{t - \min(\bf{t}) }{ \max{(\bf{t})} - \min{(\bf{t}})}$ where $t$ is the the unscaled time of any tip, and $\bf{t}$ is the vector of all tip dates for a given tree. 
 %We refer to $\hat{t}$ as the `normalized time' of a tip. 
-%Our error metrics were then calculated from these normalized times.%, giving normalized mean square error, normalized mean difference, and normalized median difference. 
+Our error metrics were then calculated from these normalized times.%, giving normalized mean square error, normalized mean difference, and normalized median difference.
+
+\subsection * {Experiments} \label{subsec:experiments}
 
 %Our first validation experiment on simulated data was performed as follows.
 %First, we chose 50\% of the tips of a simulated phylogeny and censored those dates.
@@ -248,22 +263,29 @@ We then used the linear model to predict the date of the censored sequences.
 %Here we only collected the normalized errors between the prediction and the collection.
 %
 
-We evaluated the latency of the censored sequences using two methods. The first was a {binomial test} and the second was a {GLME model}.
+%We evaluated the latency of the censored sequences using two methods. The first was a {binomial test} and the second was a {GLME model}.
 
-For the {binomial test}, we used R's binom.test function to apply a right-tailed binomial test on the ocurrence of sequences with positive difference (i.e.~latency). We used $p=0.5$ as the null model.
+We evaluated the latency of the censored sequences using a {binomial test}.
+We used R's binom.test function to apply a right-tailed binomial test on the ocurrence of sequences with positive difference (i.e.~latency). We used $p=0.5$ as the null model.
 
-For the {GLME model}, $s$, we computed the difference, $d_s$, between the sampled date and the predicted date of the linear model. For each data set we used a general linear mixed effects model with the normal family to infer an association between the genetic distance of $s$ from the root of its phylogenetic tree and $d_s$. We specified random intercept and slope for each subject.
+We also evaulated the latency by fitting the differences to an exponentially modified Gaussian distribution \citep[EMG;][]{Golubev10}. The pdf of the EMG is given by
+\[\operatorname{pdf}(t; \lambda, \mu, \sigma) = \frac{\lambda}{2}e^{\frac{\lambda}{2}(2\mu+\lambda\sigma^2-2t)}\operatorname{erfc}\left(\frac{\mu + \lambda\sigma^2-t}{\sqrt{2}\sigma}\right).\]
+We found the maximum likelihood fit of the differences assuming that the $\mu$ parameter, representing the mean of the Gaussian part of the distribution, was equal to 0.
 
-We then transformed the difference, $d_s$, by
-\[\hat{d}_s = \operatorname{sign}(d_s)\sqrt{|d_s|}\]
-and applied the general linear mixed effects model above with $\hat{d}_s$ as the response variable. We used the \textit{R} package, nlme \citep{NLME}, to solve the mixed effects model. We scaled the response variable by its standard deviation as per nlme's manual.
+%For the {GLME model}, $s$, we computed the difference, $d_s$, between the sampled date and the predicted date of the linear model. For each data set we used a general linear mixed effects model with the normal family to infer an association between the genetic distance of $s$ from the root of its phylogenetic tree and $d_s$. We specified random intercept and slope for each subject.
+
+%We then transformed the difference, $d_s$, by
+%\[\hat{d}_s = \operatorname{sign}(d_s)\sqrt{|d_s|}\]
+%and applied the general linear mixed effects model above with $\hat{d}_s$ as the response variable. We used the \textit{R} package, nlme \citep{NLME}, to solve the mixed effects model. We scaled the response variable by its standard deviation as per nlme's manual.
 
 \section * {Results} \label{sec:results}
 
 %% Rewrite this whole section
 
 \subsection * {Model Validation} \label{sec:sim_results}
-For all of the simulated subjects, we were able to reject the null hypothesis of the date reconstruction regression.
+For all of the simulated subjects, we were able to reject the null hypothesis of the date reconstruction regression. 
+
+The total scaled RMSD of the simulated models without viral latency was $0.04479$ and the scaled median difference was $-6.709 \times{} 10^{-4}$.
 
 The {binomial test} for the simulated data without viral latency gave a $p$-value of $0.7454$ and a predicted success probability of $0.4936$ with a 95\%-confidence interval of $(0.4770, 1)$.
 
@@ -275,7 +297,10 @@ The {binomial test} for the simulated data without viral latency gave a $p$-valu
 
 For the simulated data with viral latency, we computed the difference between the reconstructed date and the sampled date and the difference between the reconstructed date and the become latent date.
 
-The {binomial test} for the first set of simulated data with viral latency gave a $p$-value less than $2.2\times 10^{16}$ and a predicted success probability of $0.7136$ with a 95\%-confidence interval of $(0.6983, 1.000)$. The {binomial test} for the second set of simulated with viral latency gave a $p$-value less than $2.2\times 10^{16}$ and a predicted success probability of $0.7120$ with a 95\%-confidence interval of $(0.6967, 1.000)$.
+The total scaled RMSD of the simulated models with viral latency from the first set was $0.04059$ and the scaled median difference was $-9.448 \times{} 10^{-4}$. The total scaled RMSD of the simulated models with viral latency from the second set was $0.04273$ and the scaled median difference was $-1.024 \times{} 10^{-4}$. See 
+
+The {binomial test} for the first set of simulated data with viral latency gave a $p$-value less than $2.2\times 10^{-15}$ and a predicted success probability of $0.7136$ with a 95\%-confidence interval of $(0.6983, 1.000)$.
+The {binomial test} for the second set of simulated data with viral latency gave a $p$-value less than $2.2\times 10^{-15}$ and a predicted success probability of $0.7120$ with a 95\%-confidence interval of $(0.6967, 1.000)$.
 
 %Figure \ref{fig:results1} B shows different results for the latent simulations --- here we censor 50\% of the dates, attempt to reconstruct them, then compare them to the simulated collection dates. 
 %In this case, averaged over all simulated data sets, the mean square error was $7.1\times 10^{-3}$, and the average median and mean difference were $4.0\times 10^{-2}$ and $5.1\times 10^{-2}$ respectively. 
@@ -284,9 +309,12 @@ The {binomial test} for the first set of simulated data with viral latency gave 
 %When we performed the same analysis against the simulated archival times, the results were nearly identical to the results without any latent data, suggesting that we can recover the dates of latent sequences provided an accurate clock.
 
 For our final validation, we took the same strategy as the first validation on synthetic data, and applied it to our {\em plasma} data set --- we censored 50\% of the known sampling dates, then attempted to reconstruct them.
-We were able to reject the null hypothesis in every {\em plasma} subject.
+We were able to reject the null hypothesis in all but 1 {\em plasma} subject.
+%% REDO
+The total scaled RMSD the data was $0.5542$ and the scaled median difference was $0.04327$.
+For the details of the linear model see Table \ref{tab:patientsplasmaerror}.
 
-The {binomial test} for the \emph{plasma} data gave a $p$-value of $0.1468$ and a predicted success probability of $0.5392$ with a 95\%-confidence interval of $(0.4792, 1)$.
+The {binomial test} for the \emph{plasma} data gave a $p$-value of $0.1087$ and a predicted success probability of $0.5474$ with a 95\%-confidence interval of $(0.4851, 1)$.
 %(Figure \ref{fig:results2} C shows this when the phylogenies have been rooted with outgroup rooting). 
 %Averaged over all simulated data sets, the mean square error was $1.7\times 10^{-1}$, and the absolute value of average median and mean difference were $2.1\times 10^{-4}$ and $1.9\times 10^{-2}$ respectively. 
 %The density plot shows similar behavior to that of the synthetic data, except with a wider distribution, and more variation. 
@@ -301,19 +329,20 @@ The {binomial test} for the \emph{plasma} data gave a $p$-value of $0.1468$ and 
 
 %Individuals that had received treatment at some point generally failed the hypothesis test --- there was only one patient that did not --- these individuals were not included in the above analysis. 
 
-Finally, we tested our methodology on the {\em mixed} data set. Overall, we found that the RTT regression performed better or just as well as the outgroup rooting. Hence from now on, we only consider the results using RTT regression.
+Finally, we tested our methodology on the {\em mixed} data set.
+Overall, we found that the RTT regression performed better or just as well as the outgroup rooting.
+Hence from now on, we only consider the results using RTT regression.
 
 Of the 16 \emph{mixed} subjects, 4 failed to reject the null hypothesis of the date reconstruction regression.
+The total scaled RMSD of the models was $0.7604$ and the scaled median difference was $0.01439$.
+For the details of the linear model see Table \ref{tab:patientserror}.
 
-The {binomial test} gave a $p$-value of $0.02263$ and a predicted success probability of $0.5294$ with a confidence interval of $(0.5052, 1)$.
+The {binomial test} gave a $p$-value of $0.02263$ and a predicted success probability of $0.5294$ with a 95\%-confidence interval of $(0.5052, 1)$.
 
-The residuals of the {GLME model} without using the transformation were not normally distributed and thus we will only consider the GLME using the transformed differences, $\hat{d}_s$. The $p$-value of the log ratio test between the null model and the GLME was less than $2 \times 10^{-16}$. The mean interecept of the GLME was $13.06$ and the mean coefficient of $d_s$ was $-308.1$. The deviation due to the random effects on the intercept was $15.24$ and the deviation on the coefficient of $d_s$ was $172.1$. A plot of the regression is given in Figure \ref{fig:glm}.
+%The residuals of the {GLME model} without using the transformation were not normally distributed and thus we will only consider the GLME using the transformed differences, $\hat{d}_s$. The $p$-value of the log ratio test between the null model and the GLME was less than $2 \times 10^{-16}$. The mean interecept of the GLME was $13.06$ and the mean coefficient of $d_s$ was $-308.1$. The deviation due to the random effects on the intercept was $15.24$ and the deviation on the coefficient of $d_s$ was $172.1$. A plot of the regression is given in Figure \ref{fig:glm}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section * {Discussion} \label{sec:discuss}
-%% move to the correct place
-Interestingly for the date reconstruction, all of the regressions which produced a negative slope could not reject the null hypothesis. A negative slope for the regession implies that the sequences are becoming less diveregent from the root over time, which is not expected. This suggests that there is a lack of signal in these subjects.
-
 %% Rewrite this section
 
 The results concerning the simulated data were highly consistent with expectations. 
@@ -340,10 +369,10 @@ However, we do note that most treated patients failed the hypothesis testing, im
 
 
 
-We also noticed that the patients who had begun treatment (regardless of whether or not they regressed) typically failed the hypothesis testing. Upon analysing the clocks of these individuals, they showed two trends. 
-The first trend, in patients who had regressed after treatment, was the ``resetting'' of the molecular clock --- that is, after treatment started, the clock was set to a previous point in time, then continued as it had before after treatment failed. 
-For patients who had successfully been treated, there appeared to be an emergence of a clock with near zero slope after treatment.
-This suggests that after a patient begins treatment, the assumption of a molecular clock  is not valid over the whole temporal range of the phylogeny. 
+%We also noticed that the patients who had begun treatment (regardless of whether or not they regressed) typically failed the hypothesis testing. Upon analysing the clocks of these individuals, they showed two trends. 
+%The first trend, in patients who had regressed after treatment, was the ``resetting'' of the molecular clock --- that is, after treatment started, the clock was set to a previous point in time, then continued as it had before after treatment failed. 
+%For patients who had successfully been treated, there appeared to be an emergence of a clock with near zero slope after treatment.
+%This suggests that after a patient begins treatment, the assumption of a molecular clock  is not valid over the whole temporal range of the phylogeny. 
 
 
 
@@ -400,6 +429,8 @@ Additionally, we would like to apply the methodology to next gen sequence data -
 	\label{fig:latencymodel}
 \end{figure}
 
+
+%% REDO
 \begin{figure}[p]
 	\centering
 	\includegraphics[width=\textwidth]{figures/simulated.pdf} 
@@ -408,6 +439,7 @@ Additionally, we would like to apply the methodology to next gen sequence data -
 	 \label{fig:results1}
 \end{figure}
 
+%% REDO
 \begin{figure}[ht]
 	\centering
 	\includegraphics[width=\textwidth]{figures/ancre.pdf}
@@ -417,6 +449,7 @@ The phylogenies in these cases have been rooted with outgroup rooting}
 	\label{fig:results2}
 \end{figure}
 
+\begin{comment}
 \begin{figure}[ht]
 	\centering
 	\includegraphics[width=\textwidth]{figures/GLM_plot.pdf}
@@ -426,6 +459,7 @@ The phylogenies in these cases have been rooted with outgroup rooting}
 	}
 	\label{fig:glm}
 \end{figure}
+\end{comment}
 
 %\begin{figure*}[ht]
 %	\centering
@@ -444,44 +478,116 @@ The phylogenies in these cases have been rooted with outgroup rooting}
 \begin{table*}[!ht]
 \def\arraystretch{1.3}%
 \begin{center}
+\begin{tabular}{lrr} 
+Patient ID & Sequences & Time points \\
+\hline
+263 & 15 & 3 \\
+825 & 53 & 6 \\
+2658 & 85 & 5 \\
+7259 & 29 & 4 \\
+7265 & 22 & 3 \\
+13333 & 40 & 4 \\
+13334 & 39 & 5 \\
+13336 & 43 & 4 \\
+35566 & 93 & 2 \\
+\hline
+\end{tabular}
+\end{center}
+  \caption{Summary of all the patient data in the \emph{plasma} data set --- Patient ID corresponds to the Los Alamos database's Patient ID \citep{LosAlamos}.
+   }\label{tab:patientsplasma} 
+\end{table*}
+
+\begin{table*}[!ht]
+\def\arraystretch{1.3}%
+\begin{center}
 \begin{tabular}{llrrrrrrr} 
 
-Reference & Patient ID & \multicolumn{3}{c}{Sequences} & \multicolumn{3}{c}{Time points} & Reject Null \\ 
+Reference & Patient ID & \multicolumn{3}{c}{Sequences} & \multicolumn{3}{c}{Time points} \\
  &  & Plasma & PBMC & Total & Plasma & PBMC & Total\\
 \hline
 \cite{Shankarappa99}% & 820 &       50 &       87 &      137 &        5 &       10 &       15  \\
-& 821 &      76 &      192 &      268 &        7 &       17 &       17 &   Yes \\ 
-& 822 &      32 &       98 &      130 &        3 &       10 &       10 &   Yes \\ 
-& 824 &     100 &      107 &      207 &        7 &        9 &       13 &   Yes \\ 
-& 10137 &     24 &      106 &      130 &        2 &       10 &       12 &   No \\ 
-& 10138 &     82 &      119 &      201 &        6 &       13 &       16 &   Yes \\
+& 821 &      76 &      192 &      268 &        7 &       17 &       17 \\ 
+& 822 &      32 &       98 &      130 &        3 &       10 &       10 \\ 
+& 824 &     100 &      107 &      207 &        7 &        9 &       13 \\
+& 10137 &     24 &      106 &      130 &        2 &       10 &       12 \\
+& 10138 &     82 &      119 &      201 &        6 &       13 &       16 \\
 %& 10586 &     16 &      121 &      137 &        2 &       12 &       14  \\ 
-& 13889 &    151 &      132 &      283 &       13 &       14 &       18 &   Yes \\ 
+& 13889 &    151 &      132 &      283 &       13 &       14 &       18 \\
 % \cite{Fischer04} & 10769 &    229 &       96 &      325 &       10 &        4 &       11 &   Yes \\ 
 %& 10770 &    190 &       31 &      221 &       11 &        2 &       11  \\ 
-\cite{Llewellyn06} & 16616 &     16 &       95 &      111 &        2 &        5 &        5 &    Yes  \\ 
-& 16617 &     16 &       89 &      105 &        2 &        5 &        5 &   Yes \\ 
-& 16618 &     25 &       75 &      100 &        2 &        5 &        6 &   Yes \\ 
-& 16619 &     13 &       60 &       73 &        2 &        6 &        6 &   Yes \\ 
+\cite{Llewellyn06} & 16616 &     16 &       95 &      111 &        2 &        5 &        5 \\
+& 16617 &     16 &       89 &      105 &        2 &        5 &        5 \\
+& 16618 &     25 &       75 &      100 &        2 &        5 &        6 \\
+& 16619 &     13 &       60 &       73 &        2 &        6 &        6 \\
 \cite{Novitsky09}% & 34382 &     37 &        5 &       42 &        3 &        1 &        4  \\ 
-& 34391 &     13 &       38 &       51 &        3 &        5 &        6 &   No \\ 
-& 34393 &     25 &       74 &       99 &        2 &        6 &        7 &   Yes  \\ 
-& 34396 &      23 &       46 &       69 &        2 &        5 &        5 &   No \\ 
+& 34391 &     13 &       38 &       51 &        3 &        5 &        6 \\
+& 34393 &     25 &       74 &       99 &        2 &        6 &        7 \\
+& 34396 &      23 &       46 &       69 &        2 &        5 &        5 \\
 %& 34397 &      26 &       25 &       51 &        2 &        2 &        4  \\ 
-& 34399 &      61 &       88 &      149 &        5 &        9 &       12 &   Yes \\ 
+& 34399 &      61 &       88 &      149 &        5 &        9 &       12 \\
 %& 34400 &      54 &       23 &       77 &        4 &        1 &        5  \\ 
 %& 34405 &      27 &       29 &       56 &        3 &        2 &        4  \\ 
-& 34408 &       5 &       73 &       78 &        2 &        8 &        8 &    No \\ 
-& 34410 &      35 &       60 &       95 &        2 &        6 &        6 &    Yes \\ 
-%& 34411 &      25 &       43 &       68 &        3 &        3 &        6   \\ \hline
+& 34408 &       5 &       73 &       78 &        2 &        8 &        8 \\
+& 34410 &      35 &       60 &       95 &        2 &        6 &        6 \\
+%& 34411 &      25 &       43 &       68 &        3 &        3 &        6   \\
+\hline
 \end{tabular}
 \end{center}
-  \caption{Summary of all the patient data collected from the HIV LANL database --- Patient ID corresponds to the Los Alamos database's Patient ID \citep{LosAlamos}.
+  \caption{Summary of all the patient data collected from the HIV LANL database in the \emph{mixed} data set --- Patient ID corresponds to the Los Alamos database's Patient ID \citep{LosAlamos}.
    }\label{tab:patients} 
+\end{table*}
+
+\begin{table*}[!ht]
+\def\arraystretch{1.3}%
+\begin{center}
+\begin{tabular}{lrrrr} 
+Patient ID & $p$-value & Median Difference & RMSD & scaled RMSD \\ 
+\hline
+825 & $2.339 \times 10^{-14}$ & 31.68 & 369.5 & 0.1229 \\
+2658 & $< 2.2 \times 10^{-15}$  & -11.17 & 234.3 & 0.1242 \\
+\badpat{7259 & 0.01551 & -5.942 & 571.4 & 0.6442} \\
+7263 & 0.002449 & 164.8 & 194.3 & 0.7711 \\
+7265 & 0.006982 & 20.10 & 190.9 & 0.6966 \\
+13333 & $5.551 \times 10^{-7}$ & 8.415 & 115.6 & 0.2284 \\
+13334 & $5.265 \times 10^{-7}$ & -56.10& 277.4 & 0.3780 \\
+13336 & $5.729 \times 10^{-14}$ & -13.46 & 133.4 & 0.1797 \\
+35566 & $1.965 \times 10^{-5}$ & 73.92 & 249.7 & 0.9602 \\
+\hline
+\end{tabular}
+\end{center}
+  \caption{Details of linear models applied to the \emph{plasma} data. RMSD is the root mean squared deviance. Patients where we were unable to reject the null hypothesis are marked in red.
+   }\label{tab:patientsplasmaerror} 
 \end{table*}
 
 
 
+\begin{table*}[!ht]
+\def\arraystretch{1.3}%
+\begin{center}
+\begin{tabular}{lrrrr} 
+Patient ID & $p$-value & Median Difference & RMSD & scaled RMSD \\ 
+\hline
+820 & $4.842 \times 10^{-4}$ & 3929 & 3712 & 1.196 \\
+822 & $< 2.2 \times 10^{-15}$ & -45.85 & 262.1 & 0.1231 \\
+824 & $< 2.2 \times 10^{-15}$ & -45.20 & 498.7 & 0.1592 \\
+\badpat{10137 & 0.03119 & -806.1 & 894.2 & 0.3196} \\
+10138 & $< 2.2 \times 10^{-15}$ & 19.00 & 595.4 & 0.1779 \\
+13889 & $< 2.2 \times 10^{-15}$ & 179.3 & 628.9 & 0.1300 \\
+16616 & $3.101 \times 10^{-5}$ & 545.8 & 1187 & 0.4538 \\
+16617 & $1.042 \times 10^{-7}$ & -75.41 & 440.8 & 0.1732 \\
+16618 & $7.662 \times 10^{-12}$ & -111.4 & 310.5 & 0.1364 \\
+16619 & $5.474 \times 10^{-4}$ & -300.2 & 540.6 & 0.2670 \\
+\badpat{34391 & 0.01778 & 65.06 & 216.0 & 0.5934} \\
+34393 & $2.364 \times 10^{-4}$ & 5.209 & 103.6 & 0.2863 \\
+\badpat{34396 & 0.1544 & 714.7 & 632.8 & 1.856} \\
+34399 & $< 2.2 \times 10^{-15}$ & 106.5 & 247.6 & 0.1686 \\
+\badpat{34408 & 0.4955 & 76.73 & 1021 & 1.864} \\
+34410 & $2.073 \times 10^{-6}$ & -15.95 & 169.4 & 0.3842 \\
+\hline
+\end{tabular}
+\end{center}
+  \caption{Details of linear models applied to the \emph{mixed} data. RMSD is the root mean squared deviance. Patients where we were unable to reject the null hypothesis are marked in red.
+   }\label{tab:patientserror} 
+\end{table*}
+
 \end{document}
-
-

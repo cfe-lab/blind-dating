@@ -1,15 +1,38 @@
 #!/usr/bin/Rscript
 
-library(nlme)
-library(BSDA)
+#library(nlme)
+#library(BSDA)
+library(Rmpfr)
+
+# bug fix
+dnorm <- function (x, mean = 0, sd = 1, log = FALSE) 
+{
+    if (is.numeric(x) && is.numeric(mean) && is.numeric(sd)) 
+        stats__dnorm(x, mean, sd, log = log)
+    else if ((x.mp <- is(x, "mpfr")) || is(mean, "mpfr") || (s.mp <- is(sd, 
+        "mpfr"))) {
+        s.mp <- is(sd, "mpfr")
+        prec <- pmax(53, getPrec(x), getPrec(mean), getPrec(sd))
+        if (!x.mp) 
+            x <- mpfr(x, prec)
+        x <- (x - mean)/sd
+        twopi <- 2 * Const("pi", prec)
+        if (!s.mp) 
+            sd <- mpfr(sd, prec)
+        if (log) 
+            -(log(sd) + (log(twopi) + x * x)/2)
+        else exp(-x^2/2)/(sd * sqrt(twopi))
+    }
+    else stop("invalid arguments (x,mean,sd)")
+}
 
 # get args
 args <- commandArgs(trailing=T)
 
 suffix <- args[1]
-legend.posx <- as.double(args[2])
-legend.posy <- as.double(args[3])
-legend.ncols <- as.integer(args[4])
+#legend.posx <- as.double(args[2])
+#legend.posy <- as.double(args[3])
+#legend.ncols <- as.integer(args[4])
 
 # read files
 df <- read.csv(paste("data", args[1], ".csv", sep=""), header=T)
@@ -21,7 +44,7 @@ names(good) <- c("id", "name")
 df.good <- df[df$Patient %in% good$id,]
 
 df.good$Is.Latent <- df.good$Error > 0
-df.good$Trans.Error <- sign(df.good$Error)*sqrt(abs(df.good$Error))
+#df.good$Trans.Error <- sign(df.good$Error)*sqrt(abs(df.good$Error))
 
 # graphing
 n <- length(good$id)
@@ -35,8 +58,6 @@ colors <- unlist(lapply(seq(1, n), function(x) {
 	}
 }))
 names(colors) <- good$id
-
-c <- NA
 
 plot.graph <- function(y) {
 	with(df.good, plot(Distance, Error, pch=16, col=colors[as.character(Patient)], ylab="Difference from Date Reconstruction (days)", xlab="Genetic Distance from Root (no. substitutions)"))
@@ -77,10 +98,94 @@ do.analysis.trans <- function(y, glm.function, ...) {
 	plot.graph(y)
 }
 
+
+# set up podf printing
+pdf(paste("analysis", suffix, ".pdf", sep=""))
+
+print.to.plot <- function(x) {
+	plot.new()
+	output <- capture.output(print(x))
+	for (i in 1:(length(output))) {
+		text(.5, 1 - i/length(output), output[i])
+	}
+}
+
+print.lines.to.plot <- function(x) {
+	plot.new()
+	for (i in 1:(length(x))) {
+		output <- capture.output(cat(x[i]))
+		if (length(output) > 0)
+			text(.5, 1 - i/length(x), output)
+	}
+}
+
+paste.0 <- function(...) {paste(..., sep='')}
+
 # binomial test
 bin.test <- binom.test(sum(df.good$Is.Latent), length(df.good$Is.Latent), alternative="greater")
-print(bin.test)
+print.to.plot(bin.test)
 
+# norm exp fit
+logdnormexp <- function(x, lambda, sigma) {log(abs(lambda))+abs(lambda)/2*(abs(lambda)*sigma^2-2*sign(lambda)*x)+pnorm(-(abs(lambda)*sigma^2-sign(lambda)*x)/sigma, log=T)}
+
+analysis.frame <- data.frame(Patient=c(good$name, "Overall"), lambda=NA, sigma=NA, lik=NA, norm.mu=NA, norm.sigma=NA, norm.lik=NA)
+
+suppress <- apply(good, 1, function (x) {
+		pat.error <- mpfr(unlist(df.good[df.good$Patient == x[1], "Error"]), 20)
+		i <- which(x[1] == good[,1])
+				
+		lambda <- 1/mean(pat.error)
+		analysis.frame[i,"lambda"] <<- as.double(lambda)
+		sigma <- sqrt(sd(pat.error)^2-mean(pat.error)^2)
+		analysis.frame[i,"sigma"] <<- as.double(sigma)
+		lik <- if (is.na(sigma) || sigma == 0) {
+				-Inf
+			} else {
+				sum(logdnormexp(pat.error, lambda, sigma))
+			}
+		analysis.frame[i,"lik"] <<- as.double(lik)
+				
+		norm.mu <- mean(pat.error)
+		analysis.frame[i,"norm.mu"] <<- as.double(norm.mu)
+		norm.sigma <- sd(pat.error)
+		analysis.frame[i,"norm.sigma"] <<- as.double(norm.sigma)
+		norm.lik <- sum(dnorm(pat.error, norm.mu, norm.sigma, log=T))
+		analysis.frame[i,"norm.lik"] <<- as.double(norm.lik)
+				
+#		print.lines.to.plot(c(paste.0("Patient ", x[2]), "", "Normal Fit: ", paste.0("mu: ", as.double(norm.mu)), paste.0("sigma: ", as.double(norm.sigma)), paste.0("likelihood: ", as.double(norm.lik)), "", "Normexp Fit: ", paste.0("lambda: ", as.double(lambda)), paste.0("sigma: ", as.double(sigma)), paste.0("likelihood: ", as.double(lik))))
+	})
+
+pat.error <- mpfr(unlist(df.good$Error), 20)
+i <- length(good$id) + 1
+
+lambda <- 1/mean(pat.error)
+analysis.frame[i,"lambda"] <- as.double(lambda)
+sigma <- sqrt(sd(pat.error)^2-mean(pat.error)^2)
+analysis.frame[i,"sigma"] <- as.double(sigma)
+lik <- if (is.na(sigma) || sigma == 0) {
+		-Inf
+	} else {
+		sum(logdnormexp(pat.error, lambda, sigma))
+	}
+analysis.frame[i,"lik"] <- as.double(lik)
+				
+norm.mu <- mean(pat.error)
+analysis.frame[i,"norm.mu"] <- as.double(norm.mu)
+norm.sigma <- sd(pat.error)
+analysis.frame[i,"norm.sigma"] <- as.double(norm.sigma)
+norm.lik <- sum(dnorm(pat.error, norm.mu, norm.sigma, log=T))
+analysis.frame[i,"norm.lik"] <- as.double(norm.lik)
+
+analysis.frame
+
+write.csv(analysis.frame, paste("analysis", suffix, ".csv", sep=""))
+		
+#print.lines.to.plot(c("Overall", "", "Normal Fit: ", paste.0("mu: ", as.double(norm.mu)), paste.0("sigma: ", as.double(norm.sigma)), paste.0("likelihood: ", as.double(norm.lik)), "", "Normexp Fit: ", paste.0("lambda: ", as.double(lambda)), paste.0("sigma: ", as.double(sigma)), paste.0("likelihood: ", as.double(lik))))
+
+
+dev.off()
+
+if (0) {
 # scale factors
 sd(df.good$Error)
 sd(df.good$Trans.Error)
@@ -126,3 +231,4 @@ dev.off()
 pdf(paste("lme.mixed.rand.dist.sqrt", args[1], ".pdf", sep=""))
 try(do.analysis.trans(function(x){sign(c[[1]]+c[[2]]*x)*(c[[1]]+c[[2]]*x)^2}, lme, fixed=Trans.Error/sd(Trans.Error) ~ Distance, random=~Distance | Patient))
 dev.off()
+}
