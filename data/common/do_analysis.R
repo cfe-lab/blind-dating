@@ -3,6 +3,8 @@
 #library(nlme)
 #library(BSDA)
 library(Rmpfr)
+library(lme4)
+library(BSDA)
 
 # bug fix
 dnorm <- function (x, mean = 0, sd = 1, log = FALSE) 
@@ -24,6 +26,50 @@ dnorm <- function (x, mean = 0, sd = 1, log = FALSE)
         else exp(-x^2/2)/(sd * sqrt(twopi))
     }
     else stop("invalid arguments (x,mean,sd)")
+}
+
+pnorm <- function (q, mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE) 
+{
+    if (is.numeric(q) && is.numeric(mean) && is.numeric(sd)) 
+        stats__pnorm(q, mean, sd, lower.tail = lower.tail, log.p = log.p)
+    else if ((q.mp <- is(q, "mpfr")) || is(mean, "mpfr") || is(sd, 
+        "mpfr")) {
+        stopifnot(length(lower.tail) == 1, length(log.p) == 1)
+        rr <- q <- ((if (q.mp) 
+            q
+        else as(q, "mpfr")) - mean)/sd
+        if (any(neg <- (q < 0)))
+            rr[neg] <- pnorm(-q[neg], lower.tail = !lower.tail, 
+                log.p = log.p)
+        if (any(pos <- !neg)) {
+            q <- q[pos]
+            prec.q <- max(.getPrec(q))
+            rt2 <- sqrt(mpfr(2, prec.q))
+            rr[pos] <- if (lower.tail) {
+                eq2 <- erf(q/rt2)
+                if (log.p && any(sml <- abs(eq2) < 0.5)) {
+                  r <- q
+                  r[sml] <- log1p(eq2[sml]) - log(2)
+                  r[!sml] <- log((1 + eq2[!sml])/2)
+                  r
+                }
+                else {
+                  r <- (1 + eq2)/2
+                  if (log.p) 
+                    log(r)
+                  else r
+                }
+            }
+            else {
+                r <- erfc(q/rt2)/2
+                if (log.p) 
+                  log(r)
+                else r
+            }
+        }
+        rr
+    }
+    else stop("(q,mean,sd) must be numeric or \"mpfr\"")
 }
 
 # get args
@@ -98,8 +144,30 @@ do.analysis.trans <- function(y, glm.function, ...) {
 	plot.graph(y)
 }
 
+plot.hist <- function(err, colour, main) {
+	d <- density(err)
+	
+	xlim <- c(min(err) * 1.1, max(err) * 1.1)
+	ylim <- c(0, max(d$y) * 1.1)
+	
+	plot(c(-1001,-1100), xlim=xlim, ylim=ylim, xlab="Difference", ylab="Density", axes=T, main=main)
+	
+	polygon(d, col=colour, border=rgb(1,1,1,0))
+	
+	xlim
+}
 
-# set up podf printing
+qqplotdist <- function(x, dist) {
+	xu <- unique(sort(x))
+	xq <- unlist(lapply(xu, function(i) sum(x == i))) / (length(x) + 1)
+	for (i in 1:(length(xu)-1)) {
+		xq[i + 1] <- xq[i + 1] + xq[i]
+	}
+	
+	plot(xu, dist(xq))
+}
+
+# set up pdf printing
 pdf(paste("analysis", suffix, ".pdf", sep=""))
 
 print.to.plot <- function(x) {
@@ -125,6 +193,13 @@ paste.0 <- function(...) {paste(..., sep='')}
 bin.test <- binom.test(sum(df.good$Is.Latent), length(df.good$Is.Latent), alternative="greater")
 print.to.plot(bin.test)
 
+bin.glme.test <- glmer(Is.Latent ~ (1 | Patient), data=df.good, family=binomial)
+s <- summary(bin.glme.test)
+print.to.plot(s)
+print(coef(s))
+print.to.plot(c(paste0("AIC: ", AIC(bin.glme.test), " null AIC: ", AIC(glm(Is.Latent ~ 1, data=df.good, family=binomial))),  paste0("p-value: ", 1-pchisq(AIC(glm(Is.Latent ~ 1, data=df.good, family=binomial))- AIC(bin.glme.test) + 2, df=2)), paste0("mean: ", 1/(1 + exp(-coef(s)[, "Estimate"])), " ( ", 1/(1 + exp(-coef(s)[, "Estimate"]+1.96*coef(s)[, "Std. Error"])), ", ", 1/(1 + exp(-coef(s)[, "Estimate"]-1.96*coef(s)[, "Std. Error"])), " )")))
+EDA(resid(bin.glme.test))
+
 # norm exp fit
 logdnormexp <- function(x, lambda, sigma) {log(abs(lambda))+abs(lambda)/2*(abs(lambda)*sigma^2-2*sign(lambda)*x)+pnorm(-(abs(lambda)*sigma^2-sign(lambda)*x)/sigma, log=T)}
 
@@ -138,7 +213,7 @@ suppress <- apply(good, 1, function (x) {
 		analysis.frame[i,"lambda"] <<- as.double(lambda)
 		sigma <- sqrt(sd(pat.error)^2-mean(pat.error)^2)
 		analysis.frame[i,"sigma"] <<- as.double(sigma)
-		lik <- if (is.na(sigma) || sigma == 0) {
+		lik <- if (is.na(sigma) || sigma <= 0) {
 				-Inf
 			} else {
 				sum(logdnormexp(pat.error, lambda, sigma))
@@ -151,6 +226,12 @@ suppress <- apply(good, 1, function (x) {
 		analysis.frame[i,"norm.sigma"] <<- as.double(norm.sigma)
 		norm.lik <- sum(dnorm(pat.error, norm.mu, norm.sigma, log=T))
 		analysis.frame[i,"norm.lik"] <<- as.double(norm.lik)
+		
+		lims <- plot.hist(as.double(pat.error), "green", x[2])
+		b <- seq(lims[1], lims[2], length.out=100)
+		if (!is.infinite(lik))
+			lines(b, exp(logdnormexp(b, lambda, sigma)), col="#FF000080")
+		lines(b, dnorm(b, norm.mu, norm.sigma), col="#0000FF80")
 				
 #		print.lines.to.plot(c(paste.0("Patient ", x[2]), "", "Normal Fit: ", paste.0("mu: ", as.double(norm.mu)), paste.0("sigma: ", as.double(norm.sigma)), paste.0("likelihood: ", as.double(norm.lik)), "", "Normexp Fit: ", paste.0("lambda: ", as.double(lambda)), paste.0("sigma: ", as.double(sigma)), paste.0("likelihood: ", as.double(lik))))
 	})
@@ -176,7 +257,11 @@ analysis.frame[i,"norm.sigma"] <- as.double(norm.sigma)
 norm.lik <- sum(dnorm(pat.error, norm.mu, norm.sigma, log=T))
 analysis.frame[i,"norm.lik"] <- as.double(norm.lik)
 
-analysis.frame
+lims <- plot.hist(as.double(pat.error), "green", "Overall")
+b <- seq(lims[1], lims[2], length.out=100)
+if (!is.infinite(lik))
+	lines(b, exp(logdnormexp(b, lambda, sigma)), col="#FF000080")
+lines(b, dnorm(b, norm.mu, norm.sigma), col="#0000FF80")
 
 write.csv(analysis.frame, paste("analysis", suffix, ".csv", sep=""))
 		

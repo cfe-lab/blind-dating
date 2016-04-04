@@ -31,6 +31,10 @@ args <- commandArgs(trailing = T)
 tree.dir <- args[1]
 data.type <- as.integer(args[2])	# 0 = no dna, 1 = mixed (latency unknown), 2 = mixed (latency known)
 use.rtt <- as.integer(args[3])		# 0 = no, 1 = yes (only plasma), 2 = yes (all)
+r.seed <- as.integer(args[4])
+
+if (r.seed != 0)
+	set.seed(r.seed)
 
 trim <- function (x) gsub("^\\s+|\\s+$", "", x)
 types <- function(x) gsub("(.+)_((PLASMA)|(PBMC))_([0-9\\.]+)?$", "\\2", x, perl=T)
@@ -234,11 +238,11 @@ for(tree in trees){
 		dev.set(dev.plot)
 		
 		
-		if (data.type == 2) {
-			par(mfrow=c(1, 3), pty="s")
-		} else {
-			par(mfrow=c(1, 2), pty="s")
-		}
+#		if (data.type == 2) {
+#			par(mfrow=c(1, 3), pty="s")
+#		} else {
+#			par(mfrow=c(1, 2), pty="s")
+#		}
 		
 		# make plot showing latency date estimation
 		par(cex=1, mar=c(5,5,2,2)+0.1)
@@ -282,6 +286,12 @@ for(tree in trees){
 #			legend(1200, 0.36, c("Sample dates (RNA)", "Sample dates (DNA)"), col = c("grey", rgb(1,0,0,0.5)), pch = c(20, 5), cex=1)
 		}
 		
+		if (data.type == 2) {
+			par(mfrow=c(1, 2), pty="s")
+		} else {
+			par(mfrow=c(1, 1), pty="s")
+		}
+		
 		par(mar=c(5.1, 6.1, 4.1, 2.1))
 		plot(c(-1001,-1100), xlim=c(-1.0,1.0), ylim=c(0, 3), xlab="Normalized Error", ylab="Density", axes=F)
 		axis(side=1, at=seq(-3, 3, by=0.5), tck=.01)
@@ -308,7 +318,7 @@ for(tree in trees){
 		null.aics <- c(null.aics, null.aic.val)
 #		slows <- c(slows, slow.val)
 		
-		plot.hist(err, rgb(0.5, 0.0, 0.9, 1), 2)
+		plot.hist(err, rgb(0.5, 0.0, 0.9, 1), 1)
 		
 		abline(h = 0, col = "black", lwd = 1)
 		abline(v = median.val, col = "red", lwd = 2)
@@ -328,7 +338,7 @@ for(tree in trees){
 			null.aics <- c(null.aics, null.aic.val)
 #			slows <- c(slows, slow.val)
 		
-			plot.hist(rerr, rgb(0.5, 0.0, 0.9, 1), 3)
+			plot.hist(rerr, rgb(0.5, 0.0, 0.9, 1), 2)
 			
 			abline(h = 0, col = "black", lwd = 1)
 			abline(v = median.val, col = "red", lwd = 2)

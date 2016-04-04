@@ -52,9 +52,10 @@ We propose a simple method to date suspected reservoir sequences using phylogene
 
 Method: 
 Simulated sequence data were generated using INDELible version 1.03.
-A total of 410 HIV RNA sequences sampled longitudinally from 9 untreated HIV-infected individuals with estimated dates of infection and a total of 2474 HIV DNA and RNA sequences from 17 individuals were obtained from the Los Alamos National Laboratory HIV Sequence Database.
+A total of 410 HIV RNA sequences sampled longitudinally from 9 untreated HIV-infected individuals with estimated dates of infection and a total of 2816 HIV DNA and RNA sequences from 20 individuals were obtained from the Los Alamos National Laboratory HIV Sequence Database.
 The simulated and HIV RNA data were used for method validation. Maximum-likelihood phylogenies were reconstructed with RaxML.
 Phylogenies were rooted by determining the location of the root that minimized the root-mean-square error between root-to-tip distances and known dates of sampling. The root-to-tip distances of latent sequences were mapped to the optimal regression line to estimate reservoir establishment dates.
+%% Add models
 
 Results: 
 To validate the method, we synthesized latent lineages by censoring the sample dates for random selections of up to 50\% of sequences in the simulated or HIV RNA datasets.
@@ -138,11 +139,11 @@ See Table \ref{tab:patientsplasma} for details on the patients from this data se
 The second data set, referred to as the {\em mixed} data set, contained sequences from studies in which both plasma HIV RNA and cellular HIV DNA had been collected from the same individual.
 We used the Los Alamos advanced search interface \citep{LosAlamos} to identify published data sets representing individuals with both HIV RNA and cellular DNA sequences.
 %% what do you mean by "well-characterized"?
-From these results, we manually selected 16 individuals that had well-characterized partial {\em env} sequences and plasma samples from at least 2 RNA time points and 5 DNA time points. 
-We also required that at least 1 DNA time point fell between 2 RNA time points in each indiviudal, other than this there were no selection criteria on the time between sample collection dates. 
-A total of 926 partial {\em env} sequences from blood plasma, and 1548 partial {\em env} sequences from PBMC cells were used in our analysis. 
-We utilized samples from treatment naive individuals from \cite{Shankarappa99, Novitsky09}, samples from individuals that had been treated via HAART from \cite{Llewellyn06}.
-%, and samples from individuals that had been on HAART, but ceased treatment \cite{Fischer04}. 
+From these results, we manually selected 20 individuals that had well-characterized partial {\em env} sequences and plasma samples from at least 2 RNA time points and 3 DNA time points. 
+%We also required that at least 1 RNA time point fell between 2 DNA time points in each indiviudal
+Other than this there were no selection criteria on the time between sample collection dates. 
+A total of 1017 partial {\em env} sequences from blood plasma, and 1799 partial {\em env} sequences from PBMC cells were used in our analysis. 
+We utilized samples from treatment naive individuals from \cite{Shankarappa99, Novitsky09}, samples from individuals that had been treated via HAART from \cite{Llewellyn06}, and a sample from an individual that had been on HAART, but ceased treatment \cite{Fischer04}. 
 See Table \ref{tab:patients} for details on the patients from this data set.
 
 \subsection * {Sequence Alignment} \label{subsec:seqalign}
@@ -269,8 +270,8 @@ We evaluated the latency of the censored sequences using a {binomial test}.
 We used R's binom.test function to apply a right-tailed binomial test on the ocurrence of sequences with positive difference (i.e.~latency). We used $p=0.5$ as the null model.
 
 We also evaulated the latency by fitting the differences to an exponentially modified Gaussian distribution \citep[EMG;][]{Golubev10}. The pdf of the EMG is given by
-\[\operatorname{pdf}(t; \lambda, \mu, \sigma) = \frac{\lambda}{2}e^{\frac{\lambda}{2}(2\mu+\lambda\sigma^2-2t)}\operatorname{erfc}\left(\frac{\mu + \lambda\sigma^2-t}{\sqrt{2}\sigma}\right).\]
-We found the maximum likelihood fit of the differences assuming that the $\mu$ parameter, representing the mean of the Gaussian part of the distribution, was equal to 0.
+\[\operatorname{pdf}(t; \lambda, \mu, \sigma) = \lambda e^{\frac{\lambda}{2}(2\mu+\lambda\sigma^2-2t)}\Theta\left(\frac{\mu + \lambda\sigma^2 - t}{\sigma}\right),\]
+Where $\Theta$ is the cdf of the normal distribution with mean, 0, and deviation, 1. We estimated the $\lambda$ and $\sigma$ parameters by using the method of moments assuming that the $\mu$ parameter --- representing the mean of the Gaussian part of the distribution --- was equal to 0.
 
 %For the {GLME model}, $s$, we computed the difference, $d_s$, between the sampled date and the predicted date of the linear model. For each data set we used a general linear mixed effects model with the normal family to infer an association between the genetic distance of $s$ from the root of its phylogenetic tree and $d_s$. We specified random intercept and slope for each subject.
 
@@ -297,7 +298,7 @@ The {binomial test} for the simulated data without viral latency gave a $p$-valu
 
 For the simulated data with viral latency, we computed the difference between the reconstructed date and the sampled date and the difference between the reconstructed date and the become latent date.
 
-The total scaled RMSD of the simulated models with viral latency from the first set was $0.04059$ and the scaled median difference was $-9.448 \times{} 10^{-4}$. The total scaled RMSD of the simulated models with viral latency from the second set was $0.04273$ and the scaled median difference was $-1.024 \times{} 10^{-4}$. See 
+The total scaled RMSD of the simulated models with viral latency from the first set was $0.06504$ and the scaled median difference was $0.02312$. The total scaled RMSD of the simulated models with viral latency from the second set was $0.06691$ and the scaled median difference was $0.02282$.
 
 The {binomial test} for the first set of simulated data with viral latency gave a $p$-value less than $2.2\times 10^{-15}$ and a predicted success probability of $0.7136$ with a 95\%-confidence interval of $(0.6983, 1.000)$.
 The {binomial test} for the second set of simulated data with viral latency gave a $p$-value less than $2.2\times 10^{-15}$ and a predicted success probability of $0.7120$ with a 95\%-confidence interval of $(0.6967, 1.000)$.
@@ -309,9 +310,8 @@ The {binomial test} for the second set of simulated data with viral latency gave
 %When we performed the same analysis against the simulated archival times, the results were nearly identical to the results without any latent data, suggesting that we can recover the dates of latent sequences provided an accurate clock.
 
 For our final validation, we took the same strategy as the first validation on synthetic data, and applied it to our {\em plasma} data set --- we censored 50\% of the known sampling dates, then attempted to reconstruct them.
-We were able to reject the null hypothesis in all but 1 {\em plasma} subject.
-%% REDO
-The total scaled RMSD the data was $0.5542$ and the scaled median difference was $0.04327$.
+We were able to reject the null hypothesis in all but 2 {\em plasma} subjects.
+The total scaled RMSD the data was $0.4382$ and the scaled median difference was $-0.02612$.
 For the details of the linear model see Table \ref{tab:patientsplasmaerror}.
 
 The {binomial test} for the \emph{plasma} data gave a $p$-value of $0.1087$ and a predicted success probability of $0.5474$ with a 95\%-confidence interval of $(0.4851, 1)$.
@@ -333,11 +333,11 @@ Finally, we tested our methodology on the {\em mixed} data set.
 Overall, we found that the RTT regression performed better or just as well as the outgroup rooting.
 Hence from now on, we only consider the results using RTT regression.
 
-Of the 16 \emph{mixed} subjects, 4 failed to reject the null hypothesis of the date reconstruction regression.
-The total scaled RMSD of the models was $0.7604$ and the scaled median difference was $0.01439$.
+Of the 20 \emph{mixed} subjects, 5 failed to reject the null hypothesis of the date reconstruction regression.
+The total scaled RMSD of the well-fit models was $0.4775$ and the scaled median difference was $0.02605$.
 For the details of the linear model see Table \ref{tab:patientserror}.
 
-The {binomial test} gave a $p$-value of $0.02263$ and a predicted success probability of $0.5294$ with a 95\%-confidence interval of $(0.5052, 1)$.
+The {binomial test} gave a $p$-value of $8.144 \times 10^{-7}$ and a predicted success probability of $0.5640$ with a 95\%-confidence interval of $(0.5419, 1)$.
 
 %The residuals of the {GLME model} without using the transformation were not normally distributed and thus we will only consider the GLME using the transformed differences, $\hat{d}_s$. The $p$-value of the log ratio test between the null model and the GLME was less than $2 \times 10^{-16}$. The mean interecept of the GLME was $13.06$ and the mean coefficient of $d_s$ was $-308.1$. The deviation due to the random effects on the intercept was $15.24$ and the deviation on the coefficient of $d_s$ was $172.1$. A plot of the regression is given in Figure \ref{fig:glm}.
 
@@ -347,7 +347,7 @@ The {binomial test} gave a $p$-value of $0.02263$ and a predicted success probab
 
 The results concerning the simulated data were highly consistent with expectations. 
 The more a phylogeny adheres to a molecular clock, the more accurate predictions made from it will be --- the simulated data is very well informed, and the phylogenies and their clocks are well resolved by the maximum likelihood tree estimate. 
-Since latency is akin to ``pausing'' the evolution of a sequence, and evolution is assumed to be clock-like when sequences are not ``paused'', it is also not surprising that the latent simulated data could be reconstructed with low error. 
+Since latency is akin to ``pausing'' the evolution of a sequence and evolution is assumed to be clock-like when sequences are not ``paused'', it is also not surprising that the latent simulated data could be reconstructed with low error. 
 
 The results from the {\em plasma} data-set are also expected. 
 Each patient from our plasma data-set showed evidence of a molecular clock, so the ability to reconstruct known dates came as no surprise. 
@@ -356,14 +356,20 @@ However, the reconstruction error was higher than that of the simulated data, wh
 Quantitatively, it is difficult to assess the accuracy of the reconstructions within the {\em mixed} data set. 
 Many patients show evidence of latency in their regression plots (see the regression plot in Figure \ref{fig:results2} D) but it is unclear what the general pattern is (if any) for the distribution of the error metrics. 
 Moreover, it is not possible to know the actual error for this data set, as that would require us to know the date at which a sequence became latent. 
-We also observed an interesting sigmoidal pattern in many of the patients in this case.
-However, we do note that most treated patients failed the hypothesis testing, implying that samples after treatment should be ignored in any analysis with this methodology.
+% Where?
+%We also observed an interesting sigmoidal pattern in many of the patients in this case.
+%However, we do note that most treated patients failed the hypothesis testing, implying that samples after treatment should be ignored in any analysis with this methodology.
+
+The {binomial model} appears to identify latency well.
+The confidence intervals of the success probability in the simulated data with latency and the mixed data both do not contain 0.5 suggesting that they contain latent lineages.
+Furthermore the plasma and simulated sequences failed to reject the null huyporthesis of the {binomial model}, which is to be expected if they do not contain latent lineages.
 
 %Typically, we also observed that the rooting method had very little effect on the errors (the supplemental material has Figure \ref{fig:results2} replicated for RTT rooting). 
 %We did, however, identify a case in which RTT rooting fails over outgroup rooting (Figure \ref{fig:degenerate_example} shows an example of this). 
 %Specifically, it is possible for the calibration dates to provide insufficient data to resolve the root of the tree. 
 %We theorize that this is, for patient 820, because their calibration samples are strongly localized in time, which allows too much freedom (temporally) over the possible roots of the tree. 
 
+%% This could come back into the paper
 %We did not attempt to use BEAST \citep{BEAST} to reconstruct any phylogenies from our data.
 %Leaving dates unspecified on the number of tips would have drastically increased the dimensionality of the problem, and we would therefore need a prohibitively large amount of samples from the MCMC chain to assure convergence to the posterior distribution.
 
@@ -505,15 +511,15 @@ Patient ID & Sequences & Time points \\
 Reference & Patient ID & \multicolumn{3}{c}{Sequences} & \multicolumn{3}{c}{Time points} \\
  &  & Plasma & PBMC & Total & Plasma & PBMC & Total\\
 \hline
-\cite{Shankarappa99}% & 820 &       50 &       87 &      137 &        5 &       10 &       15  \\
+\cite{Shankarappa99} & 820 &       50 &       87 &      137 &        5 &       10 &       15  \\
 & 821 &      76 &      192 &      268 &        7 &       17 &       17 \\ 
 & 822 &      32 &       98 &      130 &        3 &       10 &       10 \\ 
 & 824 &     100 &      107 &      207 &        7 &        9 &       13 \\
 & 10137 &     24 &      106 &      130 &        2 &       10 &       12 \\
 & 10138 &     82 &      119 &      201 &        6 &       13 &       16 \\
-%& 10586 &     16 &      121 &      137 &        2 &       12 &       14  \\ 
+& 10586 &     16 &      121 &      137 &        2 &       12 &       14  \\ 
 & 13889 &    151 &      132 &      283 &       13 &       14 &       18 \\
-% \cite{Fischer04} & 10769 &    229 &       96 &      325 &       10 &        4 &       11 &   Yes \\ 
+\cite{Fischer04} & 10769 &    229 &       96 &      325 &       10 &        4 &       11 \\ 
 %& 10770 &    190 &       31 &      221 &       11 &        2 &       11  \\ 
 \cite{Llewellyn06} & 16616 &     16 &       95 &      111 &        2 &        5 &        5 \\
 & 16617 &     16 &       89 &      105 &        2 &        5 &        5 \\
@@ -529,7 +535,7 @@ Reference & Patient ID & \multicolumn{3}{c}{Sequences} & \multicolumn{3}{c}{Time
 %& 34405 &      27 &       29 &       56 &        3 &        2 &        4  \\ 
 & 34408 &       5 &       73 &       78 &        2 &        8 &        8 \\
 & 34410 &      35 &       60 &       95 &        2 &        6 &        6 \\
-%& 34411 &      25 &       43 &       68 &        3 &        3 &        6   \\
+& 34411 &      25 &       43 &       68 &        3 &        3 &        6   \\
 \hline
 \end{tabular}
 \end{center}
@@ -543,15 +549,15 @@ Reference & Patient ID & \multicolumn{3}{c}{Sequences} & \multicolumn{3}{c}{Time
 \begin{tabular}{lrrrr} 
 Patient ID & $p$-value & Median Difference & RMSD & scaled RMSD \\ 
 \hline
-825 & $2.339 \times 10^{-14}$ & 31.68 & 369.5 & 0.1229 \\
-2658 & $< 2.2 \times 10^{-15}$  & -11.17 & 234.3 & 0.1242 \\
-\badpat{7259 & 0.01551 & -5.942 & 571.4 & 0.6442} \\
-7263 & 0.002449 & 164.8 & 194.3 & 0.7711 \\
-7265 & 0.006982 & 20.10 & 190.9 & 0.6966 \\
-13333 & $5.551 \times 10^{-7}$ & 8.415 & 115.6 & 0.2284 \\
-13334 & $5.265 \times 10^{-7}$ & -56.10& 277.4 & 0.3780 \\
-13336 & $5.729 \times 10^{-14}$ & -13.46 & 133.4 & 0.1797 \\
-35566 & $1.965 \times 10^{-5}$ & 73.92 & 249.7 & 0.9602 \\
+825 & $2.324 \times 10^{-11}$ & 124.0 & 534.0 & 0.1776 \\
+2658 & $2.442 \times 10^{-15}$  & -34.84 & 223.0 & 0.1182 \\
+\badpat{7259 & $0.08533$ & -5.942 & 571.4 & 0.6442} \\
+\badpat{7263 & $0.9950$ & 164.8 & 194.3 & 0.7711} \\
+7265 & $0.009766$ & -17.50 & 162.1 & 0.5917 \\
+13333 & $9.312 \times 10^{-10}$ & -12.44 & 114.4 & 0.2260 \\
+13334 & $2.722 \times 10^{-4}$ & -29.77 & 137.0 & 0.1866 \\
+13336 & $1.927 \times 10^{-12}$ & 40.20 & 102.4 & 0.1380 \\
+35566 & $2.744 \times 10^{-5}$ & -85.21 & 203.6 & 0.9602 \\
 \hline
 \end{tabular}
 \end{center}
@@ -568,11 +574,14 @@ Patient ID & $p$-value & Median Difference & RMSD & scaled RMSD \\
 Patient ID & $p$-value & Median Difference & RMSD & scaled RMSD \\ 
 \hline
 820 & $4.842 \times 10^{-4}$ & 3929 & 3712 & 1.196 \\
+821 & $< 2.2 \times 10^{-15}$ &75.92 & 339.3 & 0.1430 \\
 822 & $< 2.2 \times 10^{-15}$ & -45.85 & 262.1 & 0.1231 \\
 824 & $< 2.2 \times 10^{-15}$ & -45.20 & 498.7 & 0.1592 \\
-\badpat{10137 & 0.03119 & -806.1 & 894.2 & 0.3196} \\
+\badpat{10137 & $0.03119$ & -806.1 & 894.2 & 0.3196} \\
 10138 & $< 2.2 \times 10^{-15}$ & 19.00 & 595.4 & 0.1779 \\
+\badpat{10586 & $0.4457$ & -5152 & 7846 & 1.664} \\
 13889 & $< 2.2 \times 10^{-15}$ & 179.3 & 628.9 & 0.1300 \\
+10769 & $1.196 \times 10^{-5}$ & 876.8 & 2360 & 1.194 \\
 16616 & $3.101 \times 10^{-5}$ & 545.8 & 1187 & 0.4538 \\
 16617 & $1.042 \times 10^{-7}$ & -75.41 & 440.8 & 0.1732 \\
 16618 & $7.662 \times 10^{-12}$ & -111.4 & 310.5 & 0.1364 \\
@@ -583,6 +592,7 @@ Patient ID & $p$-value & Median Difference & RMSD & scaled RMSD \\
 34399 & $< 2.2 \times 10^{-15}$ & 106.5 & 247.6 & 0.1686 \\
 \badpat{34408 & 0.4955 & 76.73 & 1021 & 1.864} \\
 34410 & $2.073 \times 10^{-6}$ & -15.95 & 169.4 & 0.3842 \\
+34411 & $9.448 \times 10^{-9}$ & 40.73 & 87.94 & 0.1899 \\
 \hline
 \end{tabular}
 \end{center}
