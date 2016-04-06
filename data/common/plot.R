@@ -79,30 +79,30 @@ species <- "Simulated"
 n.runs <- 1
 
 if (data.type == 2) {
-	pdf('plot.pdf', width=17.5, height=8.5)
+	pdf('plot.pdf', width=8, height=8.5)
 	dev.plot = dev.cur()
 
 	pdf('hist.pdf', width=11.5, height=8.5)
 	par(mfrow=c(1, 2), pty="s")
 	dev.hist = dev.cur()
 } else {
-	pdf('plot.pdf', width=11.5, height=8.5)
+	pdf('plot.pdf', width=8, height=8.5)
 	dev.plot = dev.cur()
 	
-	pdf('hist.pdf', width=6.5, height=8.5)
+	pdf('hist.pdf', width=8, height=8.5)
 	par(mfrow=c(1, 1), pty="s")
 	dev.hist = dev.cur()
 }
 
 par(mar=c(5.1, 6.1, 4.1, 2.1))
-plot(c(-001,-100), xlim=c(-1.0,1.0), ylim=c(0, 3), xlab="Normalized Error", ylab="Density", axes=F)
+plot(c(-001,-100), xlim=c(-1.0,1.0), ylim=c(0, 3), xlab="Normalized Difference", ylab="Density", axes=F)
 axis(side=1, at=seq(-3, 3, by=0.5), tck=.01)
 axis(side=2, at=seq(0, 3, by=0.5), tck=.01)
 box()
 
 if (data.type == 2) {
 	par(mar=c(5.1, 6.1, 4.1, 2.1))
-	plot(c(-201,-300), xlim=c(-1.0,1.0), ylim=c(0, 3), xlab="Normalized Error", ylab="Density", axes=F)
+	plot(c(-201,-300), xlim=c(-1.0,1.0), ylim=c(0, 3), xlab="Normalized Difference", ylab="Density", axes=F)
 	axis(side=1, at=seq(-3, 3, by=0.5), tck=.01)
 	axis(side=2, at=seq(0, 3, by=0.5), tck=.01)
 	box()
@@ -245,7 +245,7 @@ for(tree in trees){
 #		}
 		
 		# make plot showing latency date estimation
-		par(cex=1, mar=c(5,5,2,2)+0.1)
+		par(cex=1, mar=c(5,5,2,2)+0.1, mfrow=c(1, 1))
 		if (data.type==2) {			
 			plot.xlim <- c(min(c(tip.dates, pbmc.r.dates)), max(c(tip.dates, pbmc.r.dates)))
 		}
@@ -254,7 +254,7 @@ for(tree in trees){
 		}
 		plot.ylim <- c(min(c(plasma.dists, pbmc.dists)), max(c(plasma.dists, pbmc.dists)))
 		
-		plot(plasma.dates, plasma.dists, xlab="Time", ylab=sprintf("Divergence from root"), xlim=plot.xlim, ylim=plot.ylim,  pch=20, cex.lab=1.3, cex.axis=1.1, col='grey')
+		plot(plasma.dates, plasma.dists, xlab="Time", ylab=sprintf("Divergence from root"), xlim=plot.xlim, ylim=plot.ylim,  pch=20, cex.lab=1.3, cex.axis=1.1, col='black')
 		points(pbmc.s.dates, pbmc.dists, col='red', pch=5, lty=2)
 		abline(model, lty=2)
 		
@@ -280,10 +280,10 @@ for(tree in trees){
 				lines(x=c(pbmc.s.dates[i], pbmc.r.dates[i]), y=rep(pbmc.dists[i], 2), col='red')
 			}
 	
-#			legend(1200, 0.36, c("Sample dates (RNA)", "Latency dates (DNA)", "Sample dates (DNA)"), col = c("grey", "red", rgb(1,0,0,0.5)), pch = c(20, 18, 5), cex=1)
+			legend(plot.xlim[2] - (plot.xlim[2] - plot.xlim[1])*.4, (plot.ylim[2] - plot.ylim[1])*.13 + plot.ylim[1], c("Sample dates (uncensored)", "Latency dates (censored)", "Sample dates (censored)"), col = c("black", "red", "red"), pch = c(20, 18, 5), cex=1)
 		}
 		else {
-#			legend(1200, 0.36, c("Sample dates (RNA)", "Sample dates (DNA)"), col = c("grey", rgb(1,0,0,0.5)), pch = c(20, 5), cex=1)
+			legend(plot.xlim[2] - (plot.xlim[2] - plot.xlim[1])*.4, (plot.ylim[2] - plot.ylim[1])*.09 + plot.ylim[1], c("Sample dates (uncensored)", "Sample dates (censored)"), col = c("black", "red"), pch = c(20, 5), cex=1)
 		}
 		
 		if (data.type == 2) {
@@ -293,14 +293,14 @@ for(tree in trees){
 		}
 		
 		par(mar=c(5.1, 6.1, 4.1, 2.1))
-		plot(c(-1001,-1100), xlim=c(-1.0,1.0), ylim=c(0, 3), xlab="Normalized Error", ylab="Density", axes=F)
+		plot(c(-1001,-1100), xlim=c(-1.0,1.0), ylim=c(0, 3), xlab="Normalized Difference", ylab="Density", axes=F)
 		axis(side=1, at=seq(-3, 3, by=0.5), tck=.01)
 		axis(side=2, at=seq(0, 3, by=0.5), tck=.01)
 		box()
 
 		if (data.type == 2) {
 			par(mar=c(5.1, 6.1, 4.1, 2.1))
-			plot(c(-1101,-1200), xlim=c(-1.0,1.0), ylim=c(0, 3), xlab="Normalized Error", ylab="Density", axes=F)
+			plot(c(-1101,-1200), xlim=c(-1.0,1.0), ylim=c(0, 3), xlab="Normalized Difference", ylab="Density", axes=F)
 			axis(side=1, at=seq(-3, 3, by=0.5), tck=.01)
 			axis(side=2, at=seq(0, 3, by=0.5), tck=.01)
 			box()

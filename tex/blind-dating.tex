@@ -271,7 +271,7 @@ We used R's binom.test function to apply a right-tailed binomial test on the ocu
 
 We also evaulated the latency by fitting the differences to an exponentially modified Gaussian distribution \citep[EMG;][]{Golubev10}. The pdf of the EMG is given by
 \[\operatorname{pdf}(t; \lambda, \mu, \sigma) = \lambda e^{\frac{\lambda}{2}(2\mu+\lambda\sigma^2-2t)}\Theta\left(\frac{\mu + \lambda\sigma^2 - t}{\sigma}\right),\]
-Where $\Theta$ is the cdf of the normal distribution with mean, 0, and deviation, 1. We estimated the $\lambda$ and $\sigma$ parameters by using the method of moments assuming that the $\mu$ parameter --- representing the mean of the Gaussian part of the distribution --- was equal to 0.
+where $\Theta$ is the cdf of the normal distribution with mean, 0, and deviation, 1. We estimated the $\lambda$ and $\sigma$ parameters by using the method of moments assuming that the $\mu$ parameter --- representing the mean of the Gaussian part of the distribution --- was equal to 0.
 
 %For the {GLME model}, $s$, we computed the difference, $d_s$, between the sampled date and the predicted date of the linear model. For each data set we used a general linear mixed effects model with the normal family to infer an association between the genetic distance of $s$ from the root of its phylogenetic tree and $d_s$. We specified random intercept and slope for each subject.
 
@@ -413,7 +413,7 @@ Additionally, we would like to apply the methodology to next gen sequence data -
 	\centering
 	%\scalebox{5}{\input{figures/example.tex}}
 	\includegraphics{figures/latency-scheme}
-	\caption[]{ 
+	\caption[Latency Scheme]{ 
 	Reconstructing the time that a viral lineage entered a latent state from sequence variation.  
 	A dashed line illustrates the linear relationship between the divergence of lineages from the ancestral sequence at the root ($y$-axis) and passage of time since the root ($x$-axis).
 	Grey lines represent the reconstructed phylogenetic relationships among these lineages.
@@ -439,19 +439,20 @@ Additionally, we would like to apply the methodology to next gen sequence data -
 %% REDO
 \begin{figure}[p]
 	\centering
-	\includegraphics[width=\textwidth]{figures/simulated.pdf} 
-	\includegraphics[width=\textwidth]{figures/simulated_latent.pdf}\\
-	\caption[Simulated Data]{On the left of each case is a plot of evolutionary distance vs time, the right is the super position of density estimates (of normalized error) for each phylogeny (with kernel bandwidth = $0.15$). The red line on the density plot is the mean error, and the black line is the median error. }
+	\includegraphics[width=8cm]{figures/simulated.pdf}\\
+	\includegraphics[width=8cm]{figures/simulated_latent1.pdf}
+	\includegraphics[width=8cm]{figures/simulated_latent2.pdf}\\
+	\caption[Simulated Data]{Plots from each of the simulated data set of the evolutionary distance vs time. The dotted line is the linear regression.}
+%	\caption[Simulated Data]{On the left of each case is a plot of evolutionary distance vs time, the right is the super position of density estimates (of normalized error) for each phylogeny (with kernel bandwidth = $0.15$). The red line on the density plot is the mean error, and the black line is the median error. }
 	 \label{fig:results1}
 \end{figure}
 
 %% REDO
 \begin{figure}[ht]
 	\centering
-	\includegraphics[width=\textwidth]{figures/ancre.pdf}
-	\includegraphics[width=\textwidth]{figures/lanl.pdf}
-	\caption[Examples]{As Figure \ref{fig:results1}, except for the real data.
-The phylogenies in these cases have been rooted with outgroup rooting}
+	\includegraphics[width=8cm]{figures/ancre.pdf}
+	\includegraphics[width=8cm]{figures/lanl.pdf}
+	\caption[Examples]{As Figure \ref{fig:results1}, except for the real data.}
 	\label{fig:results2}
 \end{figure}
 
