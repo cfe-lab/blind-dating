@@ -317,7 +317,7 @@ for(tree in trees){
 		aics <- c(aics, AIC(model))
 		null.aics <- c(null.aics, null.aic.val)
 #		slows <- c(slows, slow.val)
-		
+				
 		plot.hist(err, rgb(0.5, 0.0, 0.9, 1), 1)
 		
 		abline(h = 0, col = "black", lwd = 1)

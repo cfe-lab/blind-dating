@@ -4,6 +4,8 @@
 \usepackage[margin=2cm]{geometry}
 \usepackage{colortbl}
 \usepackage{comment}
+\usepackage{caption}
+\usepackage{subcaption}
 
 \usepackage{times}
 \usepackage{lineno}
@@ -209,7 +211,7 @@ For these data, we generated an additional 100 subjects with 100 sequences each,
 
 \subsection * {Phylogenetic Reconstruction} \label{subsec:phylo}
 In our experiments, our reconstructed phylogenies were maximum likelihood phylogenies reconstructed in FastTree2 \citep{FastTree10} using the GTR model.
-Similar results were obtained with trees reconstructed using RAxML \citep{Raxml14}, which is expected to be more accurate, but can consume orders of magnitude more computational time.
+Similar results were obtained with trees reconstructed using RAxML 8.2.4 \citep{Raxml14}, which is expected to be more accurate, but can consume orders of magnitude more computational time.
 We will only show the results using RAxML.
 
 We evaluated two different methods for rooting these trees. 
@@ -266,12 +268,12 @@ Our error metrics were then calculated from these normalized times.%, giving nor
 
 %We evaluated the latency of the censored sequences using two methods. The first was a {binomial test} and the second was a {GLME model}.
 
-We evaluated the latency of the censored sequences using a {binomial test}.
+We evaluated the latency of the censored sequences using a nonparameteric binomial test.
 We used R's binom.test function to apply a right-tailed binomial test on the ocurrence of sequences with positive difference (i.e.~latency). We used $p=0.5$ as the null model.
 
-We also evaulated the latency by fitting the differences to an exponentially modified Gaussian distribution \citep[EMG;][]{Golubev10}. The pdf of the EMG is given by
-\[\operatorname{pdf}(t; \lambda, \mu, \sigma) = \lambda e^{\frac{\lambda}{2}(2\mu+\lambda\sigma^2-2t)}\Theta\left(\frac{\mu + \lambda\sigma^2 - t}{\sigma}\right),\]
-where $\Theta$ is the cdf of the normal distribution with mean, 0, and deviation, 1. We estimated the $\lambda$ and $\sigma$ parameters by using the method of moments assuming that the $\mu$ parameter --- representing the mean of the Gaussian part of the distribution --- was equal to 0.
+%We also evaulated the latency by fitting the differences to an exponentially modified Gaussian distribution \citep[EMG;][]{Golubev10}. The pdf of the EMG is given by
+%\[\operatorname{pdf}(t; \lambda, \mu, \sigma) = \lambda e^{\frac{\lambda}{2}(2\mu+\lambda\sigma^2-2t)}\Theta\left(\frac{\mu + \lambda\sigma^2 - t}{\sigma}\right),\]
+%where $\Theta$ is the cdf of the normal distribution with mean, 0, and deviation, 1. We estimated the $\lambda$ and $\sigma$ parameters by using the method of moments assuming that the $\mu$ parameter --- representing the mean of the Gaussian part of the distribution --- was equal to 0.
 
 %For the {GLME model}, $s$, we computed the difference, $d_s$, between the sampled date and the predicted date of the linear model. For each data set we used a general linear mixed effects model with the normal family to infer an association between the genetic distance of $s$ from the root of its phylogenetic tree and $d_s$. We specified random intercept and slope for each subject.
 
@@ -284,11 +286,11 @@ where $\Theta$ is the cdf of the normal distribution with mean, 0, and deviation
 %% Rewrite this whole section
 
 \subsection * {Model Validation} \label{sec:sim_results}
-For all of the simulated subjects, we were able to reject the null hypothesis of the date reconstruction regression. 
+For all of the simulated subjects, we were able to reject the null hypothesis of the date reconstruction regression. See Figure \ref{fig:resultssimulated} for an example of the regression on the simulated data without latency.
 
 The total scaled RMSD of the simulated models without viral latency was $0.04479$ and the scaled median difference was $-6.709 \times{} 10^{-4}$.
 
-The {binomial test} for the simulated data without viral latency gave a $p$-value of $0.7454$ and a predicted success probability of $0.4936$ with a 95\%-confidence interval of $(0.4770, 1)$.
+The binomial test for the simulated data without viral latency gave a $p$-value of $0.7454$ and a predicted success probability of $0.4936$ with a 95\%-confidence interval of $(0.4770, 1)$.
 
 %Figure \ref{fig:results1} shows our model validation results over our synthetic data --- here we censor 50\% of the dates, and attempt to reconstruct them. 
 %Under the assumption of a strict molecular clock (that evolution is linearly related to time) the clock is a reliable source of information for these simulations.
@@ -297,11 +299,13 @@ The {binomial test} for the simulated data without viral latency gave a $p$-valu
 %Quantitatively, the censored data points are close to the regression line, and the difference density is heavily peaked around 0.
 
 For the simulated data with viral latency, we computed the difference between the reconstructed date and the sampled date and the difference between the reconstructed date and the become latent date.
+See Figures \ref{fig:resultslatent1} and \ref{fig:resultslatent2} for examples of the regression on the simulated data with latency.
 
-The total scaled RMSD of the simulated models with viral latency from the first set was $0.06504$ and the scaled median difference was $0.02312$. The total scaled RMSD of the simulated models with viral latency from the second set was $0.06691$ and the scaled median difference was $0.02282$.
+The total scaled RMSD of the simulated models with viral latency from the first set was $0.06504$ and the scaled median difference was $0.02312$.
+The total scaled RMSD of the simulated models with viral latency from the second set was $0.06691$ and the scaled median difference was $0.02282$.
 
-The {binomial test} for the first set of simulated data with viral latency gave a $p$-value less than $2.2\times 10^{-15}$ and a predicted success probability of $0.7136$ with a 95\%-confidence interval of $(0.6983, 1.000)$.
-The {binomial test} for the second set of simulated data with viral latency gave a $p$-value less than $2.2\times 10^{-15}$ and a predicted success probability of $0.7120$ with a 95\%-confidence interval of $(0.6967, 1.000)$.
+The binomial test for the first set of simulated data with viral latency gave a $p$-value less than $2.2\times 10^{-15}$ and a predicted success probability of $0.7136$ with a 95\%-confidence interval of $(0.6983, 1.000)$.
+The binomial test for the second set of simulated data with viral latency gave a $p$-value less than $2.2\times 10^{-15}$ and a predicted success probability of $0.7120$ with a 95\%-confidence interval of $(0.6967, 1.000)$.
 
 %Figure \ref{fig:results1} B shows different results for the latent simulations --- here we censor 50\% of the dates, attempt to reconstruct them, then compare them to the simulated collection dates. 
 %In this case, averaged over all simulated data sets, the mean square error was $7.1\times 10^{-3}$, and the average median and mean difference were $4.0\times 10^{-2}$ and $5.1\times 10^{-2}$ respectively. 
@@ -311,10 +315,12 @@ The {binomial test} for the second set of simulated data with viral latency gave
 
 For our final validation, we took the same strategy as the first validation on synthetic data, and applied it to our {\em plasma} data set --- we censored 50\% of the known sampling dates, then attempted to reconstruct them.
 We were able to reject the null hypothesis in all but 2 {\em plasma} subjects.
+See Figure \ref{fig:resultsancre} for an example of the regression on the \emph{plasma} data.
 The total scaled RMSD the data was $0.4382$ and the scaled median difference was $-0.02612$.
+See Figure \ref{fig:densityancre} for a density plot of the RMSDs.
 For the details of the linear model see Table \ref{tab:patientsplasmaerror}.
 
-The {binomial test} for the \emph{plasma} data gave a $p$-value of $0.1087$ and a predicted success probability of $0.5474$ with a 95\%-confidence interval of $(0.4851, 1)$.
+The binomial test for the \emph{plasma} data gave a $p$-value of $0.9084$ and a predicted success probability of $0.4536$ with a 95\%-confidence interval of $(0.3912, 1.000)$.
 %(Figure \ref{fig:results2} C shows this when the phylogenies have been rooted with outgroup rooting). 
 %Averaged over all simulated data sets, the mean square error was $1.7\times 10^{-1}$, and the absolute value of average median and mean difference were $2.1\times 10^{-4}$ and $1.9\times 10^{-2}$ respectively. 
 %The density plot shows similar behavior to that of the synthetic data, except with a wider distribution, and more variation. 
@@ -334,10 +340,12 @@ Overall, we found that the RTT regression performed better or just as well as th
 Hence from now on, we only consider the results using RTT regression.
 
 Of the 20 \emph{mixed} subjects, 5 failed to reject the null hypothesis of the date reconstruction regression.
-The total scaled RMSD of the well-fit models was $0.4775$ and the scaled median difference was $0.02605$.
+See Figure \ref{fig:resultslanl} for an example of the regression on the \emph{mixed} data.
+The total scaled RMSD of the well-fit models was $0.3664$ and the scaled median difference was $0.02654$.
+See Figures \ref{fig:densitylanl1} and \ref{fig:densitylanl2} for density plots of the RMSDs.
 For the details of the linear model see Table \ref{tab:patientserror}.
 
-The {binomial test} gave a $p$-value of $8.144 \times 10^{-7}$ and a predicted success probability of $0.5640$ with a 95\%-confidence interval of $(0.5419, 1)$.
+The binomial test gave a $p$-value of $7.88 \times 10^{-7}$ and a predicted success probability of $0.5664$ with a 95\%-confidence interval of $(0.5435, 1)$.
 
 %The residuals of the {GLME model} without using the transformation were not normally distributed and thus we will only consider the GLME using the transformed differences, $\hat{d}_s$. The $p$-value of the log ratio test between the null model and the GLME was less than $2 \times 10^{-16}$. The mean interecept of the GLME was $13.06$ and the mean coefficient of $d_s$ was $-308.1$. The deviation due to the random effects on the intercept was $15.24$ and the deviation on the coefficient of $d_s$ was $172.1$. A plot of the regression is given in Figure \ref{fig:glm}.
 
@@ -354,15 +362,15 @@ Each patient from our plasma data-set showed evidence of a molecular clock, so t
 However, the reconstruction error was higher than that of the simulated data, which is expected for data that come from a real biological process.
 
 Quantitatively, it is difficult to assess the accuracy of the reconstructions within the {\em mixed} data set. 
-Many patients show evidence of latency in their regression plots (see the regression plot in Figure \ref{fig:results2} D) but it is unclear what the general pattern is (if any) for the distribution of the error metrics. 
+Many patients show evidence of latency in their regression plots (see the regression plot in Figure \ref{fig:resultslanl}) but it is unclear what the general pattern is (if any) for the distribution of the error metrics. 
 Moreover, it is not possible to know the actual error for this data set, as that would require us to know the date at which a sequence became latent. 
 % Where?
 %We also observed an interesting sigmoidal pattern in many of the patients in this case.
 %However, we do note that most treated patients failed the hypothesis testing, implying that samples after treatment should be ignored in any analysis with this methodology.
 
-The {binomial model} appears to identify latency well.
+The nonparametric binomial test appears to identify latency well.
 The confidence intervals of the success probability in the simulated data with latency and the mixed data both do not contain 0.5 suggesting that they contain latent lineages.
-Furthermore the plasma and simulated sequences failed to reject the null huyporthesis of the {binomial model}, which is to be expected if they do not contain latent lineages.
+Furthermore the plasma and simulated data without latency failed to reject the null hypothesis of the binomial test, which is to be expected if they do not contain latent lineages.
 
 %Typically, we also observed that the rooting method had very little effect on the errors (the supplemental material has Figure \ref{fig:results2} replicated for RTT rooting). 
 %We did, however, identify a case in which RTT rooting fails over outgroup rooting (Figure \ref{fig:degenerate_example} shows an example of this). 
@@ -391,8 +399,9 @@ Then, using real data, we performed analogous reconstructions, using both root-t
 However, there are ways in which this method could be improved. 
 These results hinge on the strong assumption of a molecular clock over the data, which is not always true. 
 It may be possible to adapt a maximum likelihood relaxed clock methodology with this approach, giving more flexibility over noisy or unreliable data. 
+Also, the latency model assumes that lineages become latent within the tip (shortly before sampling); however this is contrary to current research which suggests that infected cells can remain latent for years and can partake in clonal expansion \citep{Maldarelli14}.
+Developing a model, such as through dating the internal nodes of the phylogenetic trees, would be {nice}.
 Additionally, we would like to apply the methodology to next gen sequence data --- we would like to see if mass amounts of short read data contain sufficient information to calibrate the clock.
-
 
 %\section{Acknowledgments} \label{sec:ackn}
 %The authors would like to thank --.
@@ -436,24 +445,67 @@ Additionally, we would like to apply the methodology to next gen sequence data -
 \end{figure}
 
 
-%% REDO
-\begin{figure}[p]
+\begin{figure}[ht]
 	\centering
-	\includegraphics[width=8cm]{figures/simulated.pdf}\\
-	\includegraphics[width=8cm]{figures/simulated_latent1.pdf}
-	\includegraphics[width=8cm]{figures/simulated_latent2.pdf}\\
+	\begin{subfigure}[ht]{12cm}
+		\centering
+		\includegraphics[width=8cm]{figures/simulated.pdf}
+		\caption{Simulated data without latency}
+		\label{fig:resultssimulated}
+	\end{subfigure}
+	\begin{subfigure}[ht]{8cm}
+		\includegraphics[width=8cm]{figures/simulated_latent1.pdf}
+		\caption{Simulated data with latency from the first set}
+		\label{fig:resultslatent1}
+	\end{subfigure}
+	\begin{subfigure}[ht]{8cm}
+		\includegraphics[width=8cm]{figures/simulated_latent2.pdf}
+		\caption{Simulated data with latency from the second set}
+		\label{fig:resultslatent2}
+	\end{subfigure}		
 	\caption[Simulated Data]{Plots from each of the simulated data set of the evolutionary distance vs time. The dotted line is the linear regression.}
 %	\caption[Simulated Data]{On the left of each case is a plot of evolutionary distance vs time, the right is the super position of density estimates (of normalized error) for each phylogeny (with kernel bandwidth = $0.15$). The red line on the density plot is the mean error, and the black line is the median error. }
 	 \label{fig:results1}
 \end{figure}
 
-%% REDO
 \begin{figure}[ht]
 	\centering
-	\includegraphics[width=8cm]{figures/ancre.pdf}
-	\includegraphics[width=8cm]{figures/lanl.pdf}
+	\begin{subfigure}[ht]{8cm}
+		\includegraphics[width=8cm]{figures/ancre.pdf}
+		\caption{Patient 2658 from the \emph{plasma} data set}
+		\label{fig:resultsancre}
+	\end{subfigure}
+	\begin{subfigure}[ht]{8cm}
+		\includegraphics[width=8cm]{figures/lanl.pdf}
+		\caption{Patient 13889 from the \emph{mixed} data set}
+		\label{fig:resultslanl}
+	\end{subfigure}
 	\caption[Examples]{As Figure \ref{fig:results1}, except for the real data.}
 	\label{fig:results2}
+\end{figure}
+
+\begin{figure}[ht]
+	\centering
+	\begin{subfigure}[ht]{12cm}
+		\centering
+		\includegraphics[width=8cm]{{figures/ancre.hist}.pdf}
+		\caption{Density of the scaled difference of the \emph{plasma} data set with a solid line representing the density of the difference of the simulated data set without latency.}
+		\label{fig:densityancre}
+	\end{subfigure}
+	\begin{subfigure}[ht]{8cm}
+		\centering
+		\includegraphics[width=8cm]{{figures/lanl.hist1}.pdf}
+		\caption{Density of the scaled difference of the \emph{plasma} data set with a solid line representingt he density of the scaled difference of the first set of simulated data set with latency.}
+		\label{fig:densitylanl1}
+		\end{subfigure}
+	\begin{subfigure}[ht]{8cm}
+		\centering
+		\includegraphics[width=8cm]{{figures/lanl.hist2}.pdf}
+		\caption{Density of the scaled difference of the \emph{plasma} data set with a solid line representing the density of the scaled difference of the second set of simulated data set with latency.}
+		\label{fig:densitylanl2}
+	\end{subfigure}
+	\caption[Differencde Density]{The density of the scaled difference. The solid lines represent the density in the simulated data.}
+	\label{fig:density}
 \end{figure}
 
 \begin{comment}
@@ -488,10 +540,10 @@ Additionally, we would like to apply the methodology to next gen sequence data -
 \begin{tabular}{lrr} 
 Patient ID & Sequences & Time points \\
 \hline
-263 & 15 & 3 \\
 825 & 53 & 6 \\
 2658 & 85 & 5 \\
 7259 & 29 & 4 \\
+7263 & 15 & 3 \\
 7265 & 22 & 3 \\
 13333 & 40 & 4 \\
 13334 & 39 & 5 \\

@@ -7,8 +7,7 @@ library(lme4)
 library(BSDA)
 
 # bug fix
-dnorm <- function (x, mean = 0, sd = 1, log = FALSE) 
-{
+dnorm <- function (x, mean = 0, sd = 1, log = FALSE) {
     if (is.numeric(x) && is.numeric(mean) && is.numeric(sd)) 
         stats__dnorm(x, mean, sd, log = log)
     else if ((x.mp <- is(x, "mpfr")) || is(mean, "mpfr") || (s.mp <- is(sd, 
@@ -28,8 +27,7 @@ dnorm <- function (x, mean = 0, sd = 1, log = FALSE)
     else stop("invalid arguments (x,mean,sd)")
 }
 
-pnorm <- function (q, mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE) 
-{
+pnorm <- function (q, mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE) {
     if (is.numeric(q) && is.numeric(mean) && is.numeric(sd)) 
         stats__pnorm(q, mean, sd, lower.tail = lower.tail, log.p = log.p)
     else if ((q.mp <- is(q, "mpfr")) || is(mean, "mpfr") || is(sd, 
@@ -72,16 +70,19 @@ pnorm <- function (q, mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE)
     else stop("(q,mean,sd) must be numeric or \"mpfr\"")
 }
 
+paste.0 <- function(...) {paste(..., sep='')}
+
 # get args
 args <- commandArgs(trailing=T)
 
 suffix <- args[1]
+data.name <- args[2]
 #legend.posx <- as.double(args[2])
 #legend.posy <- as.double(args[3])
 #legend.ncols <- as.integer(args[4])
 
 # read files
-df <- read.csv(paste("data", args[1], ".csv", sep=""), header=T)
+df <- read.csv(paste0("data", suffix, ".csv"), header=T)
 
 good <- read.csv("good_fits.txt", header=F)
 names(good) <- c("id", "name")
@@ -187,7 +188,7 @@ print.lines.to.plot <- function(x) {
 	}
 }
 
-paste.0 <- function(...) {paste(..., sep='')}
+print.to.plot(data.name)
 
 # binomial test
 bin.test <- binom.test(sum(df.good$Is.Latent), length(df.good$Is.Latent), alternative="greater")
@@ -196,8 +197,7 @@ print.to.plot(bin.test)
 bin.glme.test <- glmer(Is.Latent ~ (1 | Patient), data=df.good, family=binomial)
 s <- summary(bin.glme.test)
 print.to.plot(s)
-print(coef(s))
-print.to.plot(c(paste0("AIC: ", AIC(bin.glme.test), " null AIC: ", AIC(glm(Is.Latent ~ 1, data=df.good, family=binomial))),  paste0("p-value: ", 1-pchisq(AIC(glm(Is.Latent ~ 1, data=df.good, family=binomial))- AIC(bin.glme.test) + 2, df=2)), paste0("mean: ", 1/(1 + exp(-coef(s)[, "Estimate"])), " ( ", 1/(1 + exp(-coef(s)[, "Estimate"]+1.96*coef(s)[, "Std. Error"])), ", ", 1/(1 + exp(-coef(s)[, "Estimate"]-1.96*coef(s)[, "Std. Error"])), " )")))
+print.to.plot(c(paste0("AIC: ", AIC(bin.glme.test), ", null AIC: ", AIC(glm(Is.Latent ~ 1, data=df.good, family=binomial))), paste0("p-value: ", 1-pchisq(AIC(glm(Is.Latent ~ 1, data=df.good, family=binomial))- AIC(bin.glme.test) + 2, df=1)), paste0("mean: ", 1/(1 + exp(-coef(s)[, "Estimate"])))))
 EDA(resid(bin.glme.test))
 
 # norm exp fit
