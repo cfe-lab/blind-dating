@@ -82,7 +82,7 @@ Although a patient's viral load can be reduced below detectable levels when that
 Not much is known about when specific latent reservoirs are established over the course of an infection. 
 The chronology of their establishment is of interest as the distribution of ages of the latent virus lineages may provide information concerning the types of adaptations that those lineages may have accumulated. 
 Specifically, the timing of reservoir establishment may influence how virions produced by those reservoirs will react to immune-mediated and/or therapeutic treatments. 
-Previous studies have developed techniques to detect latent lineages by reduced rates of viral evolution \citep{Immonen14} and modelled the population dynamics of different classes of the virus within host \citep{Althaus14}. 
+Previous studies have developed techniques to detect latent lineages by reduced rates of viral evolution \citep{Immonen14} and modeled the population dynamics of different classes of the virus within host \citep{Althaus14}. 
 However, there has been limited work on estimating when viral lineages suspected of being latent became integrated into the host genome, or qualitatively assessing the distribution of collection-age differences for suspected latent samples.
 
 An HIV-1 population rapidly accumulates genetic diversity over the course of an infection, due to its high mutation rate and short generation time %, and intense selective pressure by the host's immune system 
@@ -103,7 +103,7 @@ Thus, viral latency effectively halts the molecular evolution of that particular
 
 Viral latency can be manifested by a discordance between a sample's actual collection time and its apparent age based on its sequence divergence from other lineages (Figure \ref{fig:latenttree}). 
 Therefore, it may be possible to use phylogenetic analysis to reconstruct the dates that a given virus lineage became latent.
-We propose a simple framework to estimate dates of latent reservoirs which assumes that HIV evolution within a host can be adequately modelled by a strict molecular clock, such that the expected number of substitutions per site increases linearly with time \citep{Ho14}. 
+We propose a simple framework to estimate dates of latent reservoirs which assumes that HIV evolution within a host can be adequately modeled by a strict molecular clock, such that the expected number of substitutions per site increases linearly with time \citep{Ho14}. 
 %Our method extracts timing information from the phylogenetic relationships between the virus sampled at various time-points along the infection. 
 First, we construct a phylogeny relating sequences derived from both cellular HIV DNA and plasma HIV RNA sampled from the same patient.
 Next, we parameterize a strict clock by fitting a linear model to the known collection dates of the HIV RNA sequences and the path lengths from the corresponding tips of the phylogeny to the root, which represents the earliest point in time in the phylogeny. 
@@ -142,10 +142,11 @@ The second data set, referred to as the {\em mixed} data set, contained sequence
 We used the Los Alamos advanced search interface \citep{LosAlamos} to identify published data sets representing individuals with both HIV RNA and cellular DNA sequences.
 %% what do you mean by "well-characterized"?
 From these results, we manually selected 20 individuals that had well-characterized partial {\em env} sequences and plasma samples from at least 2 RNA time points and 3 DNA time points. 
-%We also required that at least 1 RNA time point fell between 2 DNA time points in each indiviudal
+%We also required that at least 1 RNA time point fell between 2 DNA time points in each individual
 Other than this there were no selection criteria on the time between sample collection dates. 
 A total of 1017 partial {\em env} sequences from blood plasma, and 1799 partial {\em env} sequences from PBMC cells were used in our analysis. 
-We utilized samples from treatment naive individuals from \cite{Shankarappa99, Novitsky09}, samples from individuals that had been treated via HAART from \cite{Llewellyn06}, and a sample from an individual that had been on HAART, but ceased treatment \cite{Fischer04}. 
+We utilized samples from treatment naive individuals from \cite{Shankarappa99, Novitsky09}, samples from individuals that had been treated via HAART from \cite{Llewellyn06}.
+%, and a sample from an individual that had been on HAART, but ceased treatment \cite{Fischer04}. 
 See Table \ref{tab:patients} for details on the patients from this data set.
 
 \subsection * {Sequence Alignment} \label{subsec:seqalign}
@@ -268,10 +269,11 @@ Our error metrics were then calculated from these normalized times.%, giving nor
 
 %We evaluated the latency of the censored sequences using two methods. The first was a {binomial test} and the second was a {GLME model}.
 
-We evaluated the latency of the censored sequences using a nonparameteric binomial test.
-We used R's binom.test function to apply a right-tailed binomial test on the ocurrence of sequences with positive difference (i.e.~latency). We used $p=0.5$ as the null model.
+We evaluated the latency of the censored sequences using a nonparametric binomial test.
+We used R's binom.test function to apply a right-tailed binomial test on the occurrence of sequences with positive difference (i.e.~latency). We used $p=0.5$ as the null model.
+We also applied a general mixed effects model with the binomial family to the data with quantitatively similar results.
 
-%We also evaulated the latency by fitting the differences to an exponentially modified Gaussian distribution \citep[EMG;][]{Golubev10}. The pdf of the EMG is given by
+%We also evaluated the latency by fitting the differences to an exponentially modified Gaussian distribution \citep[EMG;][]{Golubev10}. The pdf of the EMG is given by
 %\[\operatorname{pdf}(t; \lambda, \mu, \sigma) = \lambda e^{\frac{\lambda}{2}(2\mu+\lambda\sigma^2-2t)}\Theta\left(\frac{\mu + \lambda\sigma^2 - t}{\sigma}\right),\]
 %where $\Theta$ is the cdf of the normal distribution with mean, 0, and deviation, 1. We estimated the $\lambda$ and $\sigma$ parameters by using the method of moments assuming that the $\mu$ parameter --- representing the mean of the Gaussian part of the distribution --- was equal to 0.
 
@@ -294,7 +296,7 @@ The binomial test for the simulated data without viral latency gave a $p$-value 
 
 %Figure \ref{fig:results1} shows our model validation results over our synthetic data --- here we censor 50\% of the dates, and attempt to reconstruct them. 
 %Under the assumption of a strict molecular clock (that evolution is linearly related to time) the clock is a reliable source of information for these simulations.
-%Figure \ref{fig:results1} A shows this result for the synthetic data with no latent behaviour.
+%Figure \ref{fig:results1} A shows this result for the synthetic data with no latent behaviour
 %Averaged over all simulated data sets, the mean square error was $3.0\times 10^{-3}$, and the average median and mean difference were 0 and $5.0\times 10^{-5}$ respectively. 
 %Quantitatively, the censored data points are close to the regression line, and the difference density is heavily peaked around 0.
 
@@ -317,7 +319,7 @@ For our final validation, we took the same strategy as the first validation on s
 We were able to reject the null hypothesis in all but 2 {\em plasma} subjects.
 See Figure \ref{fig:resultsancre} for an example of the regression on the \emph{plasma} data.
 The total scaled RMSD the data was $0.4382$ and the scaled median difference was $-0.02612$.
-See Figure \ref{fig:densityancre} for a density plot of the RMSDs.
+See Figure \ref{fig:densityancre} for a density plot of the RMSD's.
 For the details of the linear model see Table \ref{tab:patientsplasmaerror}.
 
 The binomial test for the \emph{plasma} data gave a $p$-value of $0.9084$ and a predicted success probability of $0.4536$ with a 95\%-confidence interval of $(0.3912, 1.000)$.
@@ -342,12 +344,12 @@ Hence from now on, we only consider the results using RTT regression.
 Of the 20 \emph{mixed} subjects, 5 failed to reject the null hypothesis of the date reconstruction regression.
 See Figure \ref{fig:resultslanl} for an example of the regression on the \emph{mixed} data.
 The total scaled RMSD of the well-fit models was $0.3664$ and the scaled median difference was $0.02654$.
-See Figures \ref{fig:densitylanl1} and \ref{fig:densitylanl2} for density plots of the RMSDs.
+See Figures \ref{fig:densitylanl1} and \ref{fig:densitylanl2} for density plots of the RMSD's.
 For the details of the linear model see Table \ref{tab:patientserror}.
 
 The binomial test gave a $p$-value of $7.88 \times 10^{-7}$ and a predicted success probability of $0.5664$ with a 95\%-confidence interval of $(0.5435, 1)$.
 
-%The residuals of the {GLME model} without using the transformation were not normally distributed and thus we will only consider the GLME using the transformed differences, $\hat{d}_s$. The $p$-value of the log ratio test between the null model and the GLME was less than $2 \times 10^{-16}$. The mean interecept of the GLME was $13.06$ and the mean coefficient of $d_s$ was $-308.1$. The deviation due to the random effects on the intercept was $15.24$ and the deviation on the coefficient of $d_s$ was $172.1$. A plot of the regression is given in Figure \ref{fig:glm}.
+%The residuals of the {GLME model} without using the transformation were not normally distributed and thus we will only consider the GLME using the transformed differences, $\hat{d}_s$. The $p$-value of the log ratio test between the null model and the GLME was less than $2 \times 10^{-16}$. The mean intercept of the GLME was $13.06$ and the mean coefficient of $d_s$ was $-308.1$. The deviation due to the random effects on the intercept was $15.24$ and the deviation on the coefficient of $d_s$ was $172.1$. A plot of the regression is given in Figure \ref{fig:glm}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section * {Discussion} \label{sec:discuss}
@@ -383,7 +385,7 @@ Furthermore the plasma and simulated data without latency failed to reject the n
 
 
 
-%We also noticed that the patients who had begun treatment (regardless of whether or not they regressed) typically failed the hypothesis testing. Upon analysing the clocks of these individuals, they showed two trends. 
+%We also noticed that the patients who had begun treatment (regardless of whether or not they regressed) typically failed the hypothesis testing. Upon analyzing the clocks of these individuals, they showed two trends. 
 %The first trend, in patients who had regressed after treatment, was the ``resetting'' of the molecular clock --- that is, after treatment started, the clock was set to a previous point in time, then continued as it had before after treatment failed. 
 %For patients who had successfully been treated, there appeared to be an emergence of a clock with near zero slope after treatment.
 %This suggests that after a patient begins treatment, the assumption of a molecular clock  is not valid over the whole temporal range of the phylogeny. 
@@ -495,9 +497,9 @@ Additionally, we would like to apply the methodology to next gen sequence data -
 	\begin{subfigure}[ht]{8cm}
 		\centering
 		\includegraphics[width=8cm]{{figures/lanl.hist1}.pdf}
-		\caption{Density of the scaled difference of the \emph{plasma} data set with a solid line representingt he density of the scaled difference of the first set of simulated data set with latency.}
+		\caption{Density of the scaled difference of the \emph{plasma} data set with a solid line representing the density of the scaled difference of the first set of simulated data set with latency.}
 		\label{fig:densitylanl1}
-		\end{subfigure}
+	\end{subfigure}
 	\begin{subfigure}[ht]{8cm}
 		\centering
 		\includegraphics[width=8cm]{{figures/lanl.hist2}.pdf}
@@ -513,8 +515,8 @@ Additionally, we would like to apply the methodology to next gen sequence data -
 	\centering
 	\includegraphics[width=\textwidth]{figures/GLM_plot.pdf}
 	\caption[Regression]{A scatterplot of the genetic distance from the root versus the difference from the estimate of the date reconstruction.
-	The coloured circles respresent the values for each DNA sequence for each subject. 
-	The solid black line is the quadratric regression with the mean of the parameters from the mixed effects model.  %The dotted lines are the 95\% confidence interval of the parameters of the quadratric regression.
+	The coloured circles represent the values for each DNA sequence for each subject. 
+	The solid black line is the quadratic regression with the mean of the parameters from the mixed effects model.  %The dotted lines are the 95\% confidence interval of the parameters of the quadratic regression.
 	}
 	\label{fig:glm}
 \end{figure}
@@ -614,7 +616,7 @@ Patient ID & $p$-value & Median Difference & RMSD & scaled RMSD \\
 \hline
 \end{tabular}
 \end{center}
-  \caption{Details of linear models applied to the \emph{plasma} data. RMSD is the root mean squared deviance. Patients where we were unable to reject the null hypothesis are marked in red.
+  \caption{Details of the linear models applied to the \emph{plasma} data. RMSD is the root mean squared deviance. Patients where we were unable to reject the null hypothesis are marked in red.
    }\label{tab:patientsplasmaerror} 
 \end{table*}
 
@@ -649,7 +651,7 @@ Patient ID & $p$-value & Median Difference & RMSD & scaled RMSD \\
 \hline
 \end{tabular}
 \end{center}
-  \caption{Details of linear models applied to the \emph{mixed} data. RMSD is the root mean squared deviance. Patients where we were unable to reject the null hypothesis are marked in red.
+  \caption{Details of the linear models applied to the \emph{mixed} data. RMSD is the root mean squared deviance. Patients where we were unable to reject the null hypothesis are marked in red.
    }\label{tab:patientserror} 
 \end{table*}
 

@@ -420,3 +420,6 @@ warnings()
 
 dev.off()
 dev.off()
+
+
+#function(t) {plot(t$node.date, node.depth.edgelength(t), col=colour(t)); apply(t$edge, 1, function(e) arrows(t$node.date[e[1]], node.depth.edgelength(t)[e[1]],t$node.date[e[2]], node.depth.edgelength(t)[e[2]], col="#00000060", length=.1)); abline(-min(t$node.date)*t$mu, t$mu, lty=3)}
