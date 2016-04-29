@@ -1,0 +1,1 @@
+Latency period fixed at 100 days or .99 * branch length if the branch length <= 100

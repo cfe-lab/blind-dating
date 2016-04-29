@@ -159,10 +159,17 @@ make.latent <- function(
 #  edge.mod[edges] <- edge.mod[edges]*scale
 #  print(edge.mod[edges])
   
-  if (latency.rate > 1E-100 && unlatency.rate > 1E-100)
-    edge.mod[edges] <- rlatent(edge.mod[edges]) 
-  else
-    edge.mod[edges] <- edge.mod[edges]
+  edge.mod[edges] <- if (latency.rate > 1E-100 && unlatency.rate > 1E-100)
+      rlatent(edge.mod[edges])
+    else 
+      if (unlatency > 1E-100) {
+        edge.mod[edges] <- edge.mod[edges] - 100
+        bad <- edge.mod[edges] <= 0
+        edge.mod[edges][bad] <- .1 * (edge.mod[edges][bad] + 100)
+        edge.mod[edges]
+      }
+      else
+        edge.mod[edges]
 #  print(edge.mod[edges])
   
         
