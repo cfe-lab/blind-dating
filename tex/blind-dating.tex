@@ -7,6 +7,7 @@
 \usepackage{caption}
 \usepackage{subcaption}
 \usepackage{mathptmx}
+\usepackage{nicefrac}
 
 \usepackage{times}
 \usepackage{lineno}
@@ -30,10 +31,11 @@
 \titleformat{\subsubsection} [runin] {\bf}{\thesubsubsection} {12pt} {}
 
 \definecolor{badpatcol}{HTML}{FF6666}
- 
- \newcommand{\badpat}[1]{\rowcolor{badpatcol}#1}
- 
- \captionsetup[subfigure]{width=0.9\textwidth}
+\newcommand{\badpat}[1]{\rowcolor{badpatcol}#1}
+
+\captionsetup[subfigure]{width=0.9\textwidth}
+
+\newcommand{\high}[1]{{\textcolor{badpatcol} #1}} 
  
 \begin{document}
 
@@ -61,18 +63,18 @@ We propose a simple method to date suspected reservoir sequences using phylogene
 %Simulated sequence data were generated.
 %A total of 410 HIV RNA sequences sampled longitudinally from 9 untreated HIV-infected individuals with estimated dates of infection and a total of 2816 HIV DNA and RNA sequences from 20 individuals were obtained from the Los Alamos National Laboratory HIV Sequence Database.
 %The simulated and HIV RNA data were used for method validation.
-Our method is as follows: From aligned HIV sequences from a single individual sampled over multiple time points, a maximum-likelihood phylogeny is reconstructed.
+Our method is as follows: Taking aligned HIV sequences from a single individual sampled over multiple time points, we reconstruct a maximum-likelihood phylogeny.
 The phylogeny is rooted by determining the location of the root using root-to-tip regression.
 The root-to-tip distances of possibly latent sequences are mapped to the optimal regression line to estimate reservoir establishment dates.
 Finally a nonparametric binary test is applied amongst multiple individuals to indentify the presence of latent lineages.
 
-To validate the method, we generated simulated HIV phylogenies and used RAxML to produce simulated HIV sequences.
+To validate our method, we generated simulated HIV phylogenies and used RAxML to produce simulated HIV sequences.
 We then applied our method to simulated sequences with and without latency and to HIV RNA datasets.
-Next we simulated latent lineages by shortening tip lengths and applied the same methodology as above.
+Next we simulated latent lineages by shortening tip lengths and employed the same methodology as above.
 %We synthesized latent lineages by censoring the sample dates for random selections of up to 50\% of sequences in the simulated and HIV RNA datasets.
 When this method was applied to HIV DNA sequences in phylogenies containing dated HIV RNA sequences, we observed that the predicted dates tended to precede dates of sampling, which was consistent with latency.
 
-Our results indicate that the dates that HIV DNA lineages entered a latent state can be reconstructed from a phylogenetic analysis of HIV RNA sequence variation from the same patient.
+Our results indicate that the dates when HIV DNA lineages entered a latent state can be accurately estimated from a phylogenetic analysis of HIV RNA sequence variation from the same patient.
 This can provide important insights into the dynamics of HIV reservoirs within hosts.
 
 
@@ -160,7 +162,7 @@ See Table \ref{tab:patients} for details on the patients from these data sets.
 When applicable, we used MUSCLE 3.8.31 \citep{Muscle04} to align the patient-derived sequences, which were then visually inspected and cleaned with AliView \citep{AliView14}. 
 Alignments were manually trimmed to the interval in which at least  50\% of sequences within the data set had coverage over each base.
 %Since the simulated sequence data contained no insertions or deletions, no alignment of these data was necessary. 
-The plasma data set had already been aligned and cleaned \citep{McCloskey14}, so no further alignment was performed.
+The {\emph plasma} data set had already been aligned and cleaned \citep{McCloskey14}, so no further alignment was performed.
 
 \subsection * {Simulated Data} \label{subsec:simdata}
 
@@ -189,20 +191,22 @@ Specifically, the stationary distribution was set to 0.42, 0.15, 0.15, 0.28 for 
 %A phylogeny was reconstructed from the simulated sequence alignments using the approximate maximum likelihood heuristic implemented in FastTree2.
 %Similar results were obtained with trees reconstructed using RAxML \citep{Raxml14}, which is expected to be more accurate, but can consume orders of magnitude more computational time.
 
-To simulate phylogenies with latent viral lineages, we used an approach similar to  \citet{Immonen14}. 
-However, we used the simplifying assumptions that any sampled virus lineage could undergo no more than one latent period, and that once a lineage entered a latent state, it remained latent until becoming sampled.
-For each simulated `latency-free' phylogeny, we chose 50 tips uniformly at random, then shortened their expected number of substitutions and their branch time (the time between the tip, and the tip's parent).
+To simulate phylogenies with latent viral lineages, we employed an approach similar to  \citet{Immonen14}. 
+However, we used the simplifying assumptions that any sampled virus lin=eage could undergo no more than one latent period, and that once a lineage entered a latent state, it remained latent until becoming sampled.
+For each simulated `latency-free' phylogeny, we selected 50 tips uniformly at random, then shortened their expected number of substitutions and their branch time (the time between the tip, and the tip's parent).
 
-To do this we applied the following procedure:
+To do this we applied two different methods. The first method was an extreme case used as a baseline where we shortened each chosen tip's branch time by either 100 days or by a factor of $0.99$ of the branch time if the branch time was less than 100 days.
+
+The second method was intended to be more realistic and is as follows. For each chosen:
 \begin{enumerate}
 \item Draw a random period for becoming unlatent, $U$, from an exponential distribution with rate, $u$.
 \item Draw a random waiting time to latency, $L$, from a restricted exponential distribution with rate, $l$, and bounds $\max\{S-U, 0\}$ and $S$, where $S$ is the branch time of the tip.
 \item Shorten the branch time to equal $L$.
-\item Scale the expected number of substitutions.
+%\item Scale the expected number of substitutions.
 \end{enumerate}
 See Figure \ref{fig:latencymodel} for an illustration of this model.
 
-We used two sets of values for $u$ and $l$.
+We utilized two sets of values for the parameters $u$ and $l$ of the second method to simulate viral latency.
 For the first set, we computed $u$ from the mean half life ($3.6$ years) estimated by \cite{Crooks15}.
 Using this estimate we computed $u = 0.00053$ day$^{-1}$.
 We estimated $l$ from the frequency of latent cells found by \cite{Ho13} ($l=0.0003$ day$^{-1}$).
@@ -215,8 +219,8 @@ See Supplementary Materials (ref) for details.
 %We took $l = f(1-\epsilon_{RT})k$ with $\epsilon_{RT} = 0$ and $f$ and $k$ as above.
 %Using this approach, we get $l = 0.00015$.
 
-We then recorded both the simulated waiting time to latency and simulated collection time and generated sequences along these latent seed trees with INDELible using the same parameters as above. 
-For these data, we generated an additional 100 subjects with 100 sequences each, bringing the total amount of simulated data to 150 subjects.
+We then recorded both the simulated waiting time to latency and the simulated collection time and generated sequences along these latent seed trees with INDELible using the same parameters as above. 
+For these data, we generated an additional 150 subjects with 100 sequences each, bringing the total amount of simulated data to 200 subjects.
 
 \subsection * {Phylogenetic Reconstruction} \label{subsec:phylo}
 In our experiments, our reconstructed phylogenies were approximate maximum likelihood phylogenies reconstructed using RAxML 8.2.4 \citep{Raxml14} with the GTR model.
@@ -224,10 +228,10 @@ In our experiments, our reconstructed phylogenies were approximate maximum likel
 We evaluated two different methods for rooting these trees. 
 The first method was outgroup rooting, in which one or more sequences from taxa outside but sufficiently related to the group of interest are added to the phylogenetic reconstruction \citep{Huelsenbeck02}.
 The point at which the branch leading to the outgroup intersects the rest of the tree provides an estimate of the root for the latter.
-We used the HIV-1 B ancestral sequence reconstruction curated by the LANL database \citep{LosAlamos} as the outgroup sequence.
+We selected the HIV-1 B ancestral sequence reconstruction curated by the LANL database \citep{LosAlamos} as the outgroup sequence.
 %% unless we refer to a specific implementation of RTT, there is no reason to claim that our method is "modified"
 Second, we used root-to-tip regression \citep[RTT;][]{Korber00}, which performs an exhaustive search by re-rooting the tree at every branch to find the root that minimizes or maximizes an objective function between the sample collection dates and the evolutionary distance of tips from the candidate root.
-In our experiments, we used the maximum correlation coefficient as our objective function.
+In our experiments, the maximum correlation coefficient was used as our objective function.
 %%RTT regression typically uses dates from all tips.
 %For this application, we ignored the tips that were undetermined (either censored or otherwise unknown). 
 Our simulated data were only rooted using RTT regression; for all real data, both outgroup rooting and RTT regression were evaluated for rooting the phylogeny.
@@ -241,7 +245,7 @@ Irrespective of the method used to root the phylogeny, we used a linear model to
 The expected amount of evolution was taken to be the response and the sampling dates of the data were taken as the input. 
 These models were only calibrated over the uncensored/plasma data for the simulated and real data sets respectively.
 %We then used the linear model to predict the dates of the latent/unknown sequences.
-To screen for data that were amenable to our analysis, we used the nested log ratio test \citep{Ho14}. 
+The data were screened for amenability to our research using the nest log ratio test \citep{Ho14}. 
 %To screen for data that were amenable to our analysis, we used Akaike Information Criteria \cite[AIC;][]{Akaike74}.
 Our null model was a linear model with zero slope over the expected amount of evolution over time.
 %We rejected any sequence data sets whose phylogeny could not reject the null model with a relative AIC of ${-5}$.
@@ -350,6 +354,7 @@ The binomial test for the \emph{plasma} data gave a $p$-value of $0.91$ and a pr
 Finally, we tested our methodology on the {\em mixed} data set.
 Overall, we found that the RTT regression performed better or just as well as the outgroup rooting.
 Hence from now on, we only consider the results using RTT regression.
+See Supplemenatary Materials (ref) for details pn the results using the outgroup rooting.
 
 Of the 20 \emph{mixed} subjects, 5 failed to reject the null hypothesis of the date reconstruction regression.
 See Figure \ref{fig:resultslanl} for an example of the regression on the \emph{mixed} data.
