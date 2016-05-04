@@ -66,7 +66,7 @@ We propose a simple method to date suspected reservoir sequences using phylogene
 Our method is as follows: Taking aligned HIV sequences from a single individual sampled over multiple time points, we reconstruct a maximum-likelihood phylogeny.
 The phylogeny is rooted by determining the location of the root using root-to-tip regression.
 The root-to-tip distances of possibly latent sequences are mapped to the optimal regression line to estimate reservoir establishment dates.
-Finally a nonparametric binary test is applied amongst multiple individuals to indentify the presence of latent lineages.
+Finally a nonparametric binary test is applied amongst multiple individuals to identify the presence of latent lineages.
 
 To validate our method, we generated simulated HIV phylogenies and used RAxML to produce simulated HIV sequences.
 We then applied our method to simulated sequences with and without latency and to HIV RNA datasets.
@@ -104,7 +104,7 @@ When lineages are known to be sampled at different times, however, the correspon
 This additional information enables one to rescale a phylogeny in chronological time, which is especially true for HIV-1 populations in which genetic differences can accumulate in weeks or months \citep{Williamson:2003}.
 %With an appropriate method of relating evolutionary distance to time (a {\em clock model}), the phylogeny can be re-scaled chronologically, then by fixing the tips to their respective sampling dates, clock ``rates'' can be estimated .
 Among the actively replicating HIV lineages within a host, the rate of molecular evolution is fairly consistent over time \citep{Leitner99, Kuhner95, Korber00}.
-Consequently, the inital divergence of these lineages from the transmitted/founder virus can be adequately approximated by a `strict' molecular clock model in which a single rate of evolution is sustained throughout \citep{Keele08}.
+Consequently, the initial divergence of these lineages from the transmitted/founder virus can be adequately approximated by a `strict' molecular clock model in which a single rate of evolution is sustained throughout \citep{Keele08}.
 %For sequences originating from the active population of virus, it is not unreasonable to assume that the rate of molecular evolution is relatively constant --- in other words, it adheres to a `molecular clock' model . 
 Once a virus lineage becomes integrated into a host genome, however, its rate of evolution becomes negligible relative to the baseline rate in the actively replicating population.
 Thus, viral latency effectively halts the molecular evolution of that particular virus lineage until reactivation. 
@@ -171,7 +171,7 @@ The {\emph plasma} data set had already been aligned and cleaned \citep{McCloske
 %%% 3. simulate sequence evolution on trees - additional error
 
 To characterize sources of error in reconstructing dates on tips of a phylogeny, we generated phylogenetic trees by direct simulation. % and from the plasma data sets.
-First, we generated phylogenies with 100 tips each under a birth-death model with serial sampling using the `sim.bdsky.stt' function in the \textit{R} package \textit{TreeSim} \citep{Boskova14}.
+First, we generated phylogenies with 100 tips each under a birth-death model with serial sampling using the \emph{sim.bdsky.stt} function in the \textit{R} package \textit{TreeSim} \citep{Boskova14}.
 Birth-death models have been applied to studying speciation processes \citep{Nee:2006} and infectious disease epidemics \citep{Stradler13}, but have only recently been used to model the proliferation of virus lineages in cell populations \citep{Hartfield:2015}.
 %% This paragraph needs to be rewritten
 The birth-death model was parameterized by fitting this model to samples from the {\em plasma} dataset.
@@ -192,7 +192,7 @@ Specifically, the stationary distribution was set to 0.42, 0.15, 0.15, 0.28 for 
 %Similar results were obtained with trees reconstructed using RAxML \citep{Raxml14}, which is expected to be more accurate, but can consume orders of magnitude more computational time.
 
 To simulate phylogenies with latent viral lineages, we employed an approach similar to  \citet{Immonen14}. 
-However, we used the simplifying assumptions that any sampled virus lin=eage could undergo no more than one latent period, and that once a lineage entered a latent state, it remained latent until becoming sampled.
+However, we used the simplifying assumptions that any sampled virus lineage could undergo no more than one latent period, and that once a lineage entered a latent state, it remained latent until becoming sampled.
 For each simulated `latency-free' phylogeny, we selected 50 tips uniformly at random, then shortened their expected number of substitutions and their branch time (the time between the tip, and the tip's parent).
 
 To do this we applied two different methods. The first method was an extreme case used as a baseline where we shortened each chosen tip's branch time by either 100 days or by a factor of $0.99$ of the branch time if the branch time was less than 100 days.
@@ -255,7 +255,7 @@ We calculated the root mean square deviation (RMSD) and the median difference to
 %We used the root mean square error to quantify the difference between the predicted and known dates of sampling.
 %the mean square error for predicted date, as well as the mean and median difference between the predicted and known sampling dates.
 %and sampling date, where difference defined as simply the predicted date minus the observed date.
-All tip dates were re-scaled to lie between $0$ and $1$ to facilit      ate comparisons among longitudinal data sets using the formula $ \hat{t} = \frac{t - \min(\bf{t}) }{ \max{(\bf{t})} - \min{(\bf{t}})}$ where $t$ is the the unscaled time of any tip, and $\bf{t}$ is the vector of all tip dates for a given tree. 
+All tip dates were re-scaled to lie between $0$ and $1$ to facilitate comparisons among longitudinal data sets using the formula $ \hat{t} = \frac{t - \min(\bf{t}) }{ \max{(\bf{t})} - \min{(\bf{t}})}$ where $t$ is the the unscaled time of any tip, and $\bf{t}$ is the vector of all tip dates for a given tree. 
 %We refer to $\hat{t}$ as the `normalized time' of a tip. 
 Our error metrics were then calculated from these normalized times.%, giving normalized mean square error, normalized mean difference, and normalized median difference.
 
@@ -280,8 +280,8 @@ Our error metrics were then calculated from these normalized times.%, giving nor
 %We evaluated the latency of the censored sequences using two methods. The first was a {binomial test} and the second was a {GLME model}.
 
 Latent lineages are more likely than lineages without latency to appear later in time than the line of the linear regression from the previous section, see Figure \ref{fig:latenttree}.
-Thus if the frequency of censored lineages whose difference between sample and predicted date are positive (i.e.~are sampled later than the regression predicts) is signifacantly greater than a half, then we expect that some of the censored lineages have latency.
-However is the frequency of censored lineages whose difference between sample and predicted date are positive is close to a half, then the censored lineages behave similar to the uncesored lineages suggesting that there is little or no latency in the censored lineages.
+Thus if the frequency of censored lineages whose difference between sample and predicted date are positive (i.e.~are sampled later than the regression predicts) is significantly greater than a half, then we expect that some of the censored lineages have latency.
+However is the frequency of censored lineages whose difference between sample and predicted date are positive is close to a half, then the censored lineages behave similar to the uncensored lineages suggesting that there is little or no latency in the censored lineages.
 
 We evaluated the latency of the censored sequences using a nonparametric binomial test.
 We used R's {\it binom.test} function to apply a right-tailed binomial test on the occurrence of sequences with positive difference using $p=0.5$ as the null model.
@@ -302,11 +302,15 @@ We also applied a general mixed effects model with the binomial family to the da
 %% Rewrite this whole section
 
 \subsection * {Model Validation} \label{sec:sim_results}
-For all of the simulated subjects, we were able to reject the null hypothesis of the date reconstruction regression. See Figure \ref{fig:resultssimulated} for an example of the regression on the simulated data without latency.
+First we validated our methodology using simulated data. Overall, the simulated data performed well. The date reconstruction of each simulated phylogeny was valid under the log ratio test. See Figure \ref{fig:results1} for examples of the date reconstruction on simulated phylogenies.
 
-The total scaled RMSD of the simulated models without viral latency was $4.5 \times 10^{-2}$ days and the scaled median difference was $-6.7 \times 10^{-4}$ days.
+We applied our method to simulated phylogenies without viral latency incorporated. After censoring 50\% of the tips, we attempted to reconstruct their dates. The scaled RMSD of the reconstructed dates was $4.5 \times 10^{-2}$ and the scaled median difference $-6.7 \times 10^{-4}$ days. A nonparametric binomial test on the sign of the difference between sampled and reconstructed dates agrees that there is no latency (p=0.74).
 
-The binomial test for the simulated data without viral latency gave a $p$-value of $0.74$ and a predicted success probability of $0.49$ with a 95\%-confidence interval of $(0.48, 1)$.
+%For all of the simulated subjects, we were able to reject the null hypothesis of the date reconstruction regression. See Figure \ref{fig:resultssimulated} for an example of the regression on the simulated data without latency.
+
+%The total scaled RMSD of the simulated models without viral latency was $4.5 \times 10^{-2}$ days and the scaled median difference was $-6.7 \times 10^{-4}$ days.
+
+%The binomial test for the simulated data without viral latency gave a $p$-value of $0.74$ and a predicted success probability of $0.49$ with a 95\%-confidence interval of $(0.48, 1)$.
 
 %Figure \ref{fig:results1} shows our model validation results over our synthetic data --- here we censor 50\% of the dates, and attempt to reconstruct them. 
 %Under the assumption of a strict molecular clock (that evolution is linearly related to time) the clock is a reliable source of information for these simulations.
@@ -317,9 +321,10 @@ The binomial test for the simulated data without viral latency gave a $p$-value 
 For the simulated data with viral latency, we computed the difference between the reconstructed date and the sampled date and the difference between the reconstructed date and the become latent date.
 See Figure \ref{fig:resultslatent} for an example of the regression on the simulated data with latency.
 
-The total scaled RMSD of the simulated models with viral latency from the first set was $6.5 \times 10^{-2}$ days and the scaled median difference was $2.3 \times 10^{-2}$ days. The unscaled median difference was $51.$ days compared to the actual median latency of $35.$ days.
+The total scaled RMSD of the extreme simulated model with viral latency was $3.3 \times{10}^{-2}$ days and the scaled median difference was $5.6 \times 10^{-2}$. The total scaled RMSD of the simulated models with viral latency from the first set was $6.5 \times 10^{-2}$ days and the scaled median difference was $2.3 \times 10^{-2}$ days. The unscaled median difference was $51.$ days compared to the actual median latency of $35.$ days.
 The total scaled RMSD of the simulated models with viral latency from the second set was $6.7 \times 10^{-2}$ days and the scaled median difference was $2.3 \times 10^{-2}$ days. The unscaled difference was $52.$ days compared to the actual median latency of $37.$ days.
 
+The binomial test for the extreme simulated data with viral latency gave a $p$-value less than $2.2\times 10^{-15}$ and a predicted success probability of $0.80$ with a 95\%-confidence interval of $(0.79, 1)$.
 The binomial test for the first set of simulated data with viral latency gave a $p$-value less than $2.2\times 10^{-15}$ and a predicted success probability of $0.71$ with a 95\%-confidence interval of $(0.70, 1)$.
 The binomial test for the second set of simulated data with viral latency gave a $p$-value less than $2.2\times 10^{-15}$ and a predicted success probability of $0.71$ with a 95\%-confidence interval of $(0.70, 1)$.
 
@@ -330,8 +335,9 @@ The binomial test for the second set of simulated data with viral latency gave a
 %When we performed the same analysis against the simulated archival times, the results were nearly identical to the results without any latent data, suggesting that we can recover the dates of latent sequences provided an accurate clock.
 
 For our final validation, we took the same strategy as the first validation on synthetic data, and applied it to our {\em plasma} data set --- we censored 50\% of the known sampling dates, then attempted to reconstruct them.
-We were able to reject the null hypothesis in all but 2 {\em plasma} subjects.
-See Figure \ref{fig:resultsancre} for an example of the regression on the \emph{plasma} data.
+2 of the individuals from the {\em plasma} data set were screened as (inconclusive) when applying the log ratio test to their date reconstruction.
+See Figure \ref{fig:resultsancre} for an example of the date reconstruction from the \emph{plasma} data.
+
 The total scaled RMSD the data was $4.4 \times 10^{-1}$ days and the scaled median difference was $-2.6 \times 10^{-2}$ days.
 See Figure \ref{fig:densityancre} for a density plot of the RMSD's.
 For the details of the linear model see Table \ref{tab:patients}.
@@ -354,7 +360,7 @@ The binomial test for the \emph{plasma} data gave a $p$-value of $0.91$ and a pr
 Finally, we tested our methodology on the {\em mixed} data set.
 Overall, we found that the RTT regression performed better or just as well as the outgroup rooting.
 Hence from now on, we only consider the results using RTT regression.
-See Supplemenatary Materials (ref) for details pn the results using the outgroup rooting.
+See Supplementary Materials (ref) for details pn the results using the outgroup rooting.
 
 Of the 20 \emph{mixed} subjects, 5 failed to reject the null hypothesis of the date reconstruction regression.
 See Figure \ref{fig:resultslanl} for an example of the regression on the \emph{mixed} data.
@@ -364,7 +370,7 @@ For the details of the linear model see Table \ref{tab:patientserror}.
 
 The binomial test gave a $p$-value of $7.9 \times 10^{-7}$ and a predicted success probability of $0.57$ with a 95\%-confidence interval of $(0.54, 1)$.
 
-Applying the binonimal test to only the individuals who recieved treatment gave a lower predicted success probability and significantly higher $p$-value (0.45 and 0.98 respectively). This suggests that there are few latent lineages in the treated patients.
+Applying the binomial test to only the individuals who received treatment gave a lower predicted success probability and significantly higher $p$-value (0.45 and 0.98 respectively). This suggests that there are few latent lineages in the treated patients.
 
 %The residuals of the {GLME model} without using the transformation were not normally distributed and thus we will only consider the GLME using the transformed differences, $\hat{d}_s$. The $p$-value of the log ratio test between the null model and the GLME was less than $2 \times 10^{-16}$. The mean intercept of the GLME was $13.06$ and the mean coefficient of $d_s$ was $-308.1$. The deviation due to the random effects on the intercept was $15.24$ and the deviation on the coefficient of $d_s$ was $172.1$. A plot of the regression is given in Figure \ref{fig:glm}.
 
@@ -416,7 +422,7 @@ Furthermore the plasma and simulated data without latency failed to reject the n
 
 %\section * {Conclusion} \label{sec:conclusion}
 %There are ways in which this method could be improved. 
-This model is fast, but simple and serves as a baseline for estimating the time that cellular lineages reamain latent; hence there are many ways that this method could be improved.
+This model is fast, but simple and serves as a baseline for estimating the time that cellular lineages remain latent; hence there are many ways that this method could be improved.
 These results hinge on the strong assumption of a strict molecular clock over the data, which is unlikely true \citep{Shankarappa99}. 
 It may be possible to adapt a relaxed molecular clock (with r8ts \citep{r8ts} for example) to this approach, giving more flexibility over noisy or unreliable data.
 Also, the latency model assumes that lineages become latent within the tip (shortly before sampling); however this is contrary to current research which suggests that infected cells can remain latent for years and can partake in clonal expansion \citep{Maldarelli14}.
