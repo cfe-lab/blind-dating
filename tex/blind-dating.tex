@@ -8,6 +8,7 @@
 \usepackage{subcaption}
 \usepackage{mathptmx}
 \usepackage{nicefrac}
+\usepackage{authblk}
 
 \usepackage{times}
 \usepackage{lineno}
@@ -41,7 +42,14 @@
 
 \title{Blind dating: A phylogenetic approach to dating HIV reservoir sequences}
 
-\author{Bradley R. Jones$^{1,2}$, Joshua Horacsek$^{1,2}$, Jeffrey B. Joy$^2$, \\ Zabrina L. Brumme$^{1,2}$, and Art F.Y. Poon$^{1,2,3}$}
+\author[1,2]{Bradley R. Jones}
+\author[1,2]{Joshua Horacsek}
+\author[1,3]{Jeffrey B. Joy}
+\author[1,2]{Zabrina L. Brumme}
+\author[1,2,3]{Art F.Y. Poon}
+\affil[1]{Simon Fraser University, Burnaby, Canada}
+\affil[2]{BC Centre for Excellence in HIV/AIDS, Vancouver, Canada}
+\affil[3]{University of British Columbia, Vancouver, Canada}
 %%% 1 Simon Fraser University
 %%% 2 BC Centre for Excellence in HIV/AIDS
 %%% 3 University of British Columbia
@@ -182,7 +190,7 @@ We used BEAST version 2.3.2 to estimate the posterior distribution defined by th
 %From these simulations, we evaluated the accuracy of predicting sample collection times from a strict molecular clock model that was fit to a training subset of these data.
 The lineage birth rate, death rate and sampling probability were estimated to be: $\lambda = 5.116 \times 10^{-2}$ day$^{-1}$, $\delta = 5.006 \times 10^{-2}$ day$^{-1}$, $s = 5.237 \times 10^{-3}$ respectively.
 
-We used the \textit{R} package, NELSI \citep{NELSI}, to assign rates of evolution to these trees by drawing values from a Gaussian distribution with a mean rate $\mu = \ 1.964\times 10^{-4}$ substitutions per generation and standard deviation $\sigma = \ 1.417\times 10^{-5}$. %; Figure \ref{fig:seedtree} for an example).
+We used the \textit{R} package, \emph{NELSI} \citep{NELSI}, to assign rates of evolution to these trees by drawing values from a Gaussian distribution with a mean rate $\mu = \ 1.964\times 10^{-4}$ substitutions per generation and standard deviation $\sigma = \ 1.417\times 10^{-5}$. %; Figure \ref{fig:seedtree} for an example).
 
 To model uncertainty in phylogenetic reconstruction from sequence variation, we simulated sequence evolution along each birth-death tree with INDELible version 1.03 \citep{Indelible09} under an HKY85 \citep{HKY85} model of nucleotide substitution.
 Parameters for the substitution model were set to empirical estimates derived from previously published HIV within-host data sets \citep{McCloskey14}. 
@@ -280,8 +288,8 @@ Our error metrics were then calculated from these normalized times.%, giving nor
 %We evaluated the latency of the censored sequences using two methods. The first was a {binomial test} and the second was a {GLME model}.
 
 Latent lineages are more likely than lineages without latency to appear later in time than the line of the linear regression from the previous section, see Figure \ref{fig:latenttree}.
-Thus if the frequency of censored lineages whose difference between sample and predicted date are positive (i.e.~are sampled later than the regression predicts) is significantly greater than a half, then we expect that some of the censored lineages have latency.
-However is the frequency of censored lineages whose difference between sample and predicted date are positive is close to a half, then the censored lineages behave similar to the uncensored lineages suggesting that there is little or no latency in the censored lineages.
+Thus if the frequency of censored lineages whose difference between predicted and sampling date are negative (i.e.~are sampled later than the regression predicts) is significantly greater than a half, then we expect that some of the censored lineages have latency.
+However if the frequency of censored lineages whose difference between predicted and sampling date are negative is close to a half, then the censored lineages behave similarly to the uncensored lineages suggesting that there is little or no latency in the censored lineages.
 
 We evaluated the latency of the censored sequences using a nonparametric binomial test.
 We used R's {\it binom.test} function to apply a right-tailed binomial test on the occurrence of sequences with positive difference using $p=0.5$ as the null model.
@@ -291,7 +299,7 @@ We also applied a general mixed effects model with the binomial family to the da
 %\[\operatorname{pdf}(t; \lambda, \mu, \sigma) = \lambda e^{\frac{\lambda}{2}(2\mu+\lambda\sigma^2-2t)}\Theta\left(\frac{\mu + \lambda\sigma^2 - t}{\sigma}\right),\]
 %where $\Theta$ is the cdf of the normal distribution with mean, 0, and deviation, 1. We estimated the $\lambda$ and $\sigma$ parameters by using the method of moments assuming that the $\mu$ parameter --- representing the mean of the Gaussian part of the distribution --- was equal to 0.
 
-%For the {GLME model}, $s$, we computed the difference, $d_s$, between the sampled date and the predicted date of the linear model. For each data set we used a general linear mixed effects model with the normal family to infer an association between the genetic distance of $s$ from the root of its phylogenetic tree and $d_s$. We specified random intercept and slope for each subject.
+%For the {GLME model}, $s$, we computed the difference, $d_s$, between the sampling date and the predicted date of the linear model. For each data set we used a general linear mixed effects model with the normal family to infer an association between the genetic distance of $s$ from the root of its phylogenetic tree and $d_s$. We specified random intercept and slope for each subject.
 
 %We then transformed the difference, $d_s$, by
 %\[\hat{d}_s = \operatorname{sign}(d_s)\sqrt{|d_s|}\]
@@ -304,7 +312,10 @@ We also applied a general mixed effects model with the binomial family to the da
 \subsection * {Model Validation} \label{sec:sim_results}
 First we validated our methodology using simulated data. Overall, the simulated data performed well. The date reconstruction of each simulated phylogeny was valid under the log ratio test. See Figure \ref{fig:results1} for examples of the date reconstruction on simulated phylogenies.
 
-We applied our method to simulated phylogenies without viral latency incorporated. After censoring 50\% of the tips, we attempted to reconstruct their dates. The scaled RMSD of the reconstructed dates was $4.5 \times 10^{-2}$ and the scaled median difference $-6.7 \times 10^{-4}$ days. A nonparametric binomial test on the sign of the difference between sampled and reconstructed dates agrees that there is no latency (p=0.74).
+We applied our method to simulated phylogenies without viral latency incorporated.
+After censoring 50\% of the tips, we attempted to reconstruct their dates.
+%The scaled RMSD of the reconstructed dates was $4.5 \times 10^{-2}$ and the scaled median difference $6.7 \times 10^{-4}$.
+A nonparametric binomial test on the sign of the difference between sampling and reconstructed dates agrees that there is no latency ($p = 0.74$).
 
 %For all of the simulated subjects, we were able to reject the null hypothesis of the date reconstruction regression. See Figure \ref{fig:resultssimulated} for an example of the regression on the simulated data without latency.
 
@@ -318,15 +329,20 @@ We applied our method to simulated phylogenies without viral latency incorporate
 %Averaged over all simulated data sets, the mean square error was $3.0\times 10^{-3}$, and the average median and mean difference were 0 and $5.0\times 10^{-5}$ respectively. 
 %Quantitatively, the censored data points are close to the regression line, and the difference density is heavily peaked around 0.
 
-For the simulated data with viral latency, we computed the difference between the reconstructed date and the sampled date and the difference between the reconstructed date and the become latent date.
-See Figure \ref{fig:resultslatent} for an example of the regression on the simulated data with latency.
+%For the simulated data with viral latency, we computed the difference between the reconstructed date and the sampling date and the difference between the reconstructed date and the become latent date.
+%See Figure \ref{fig:resultslatent} for an example of the regression on the simulated data with latency.
 
-The total scaled RMSD of the extreme simulated model with viral latency was $3.3 \times{10}^{-2}$ days and the scaled median difference was $5.6 \times 10^{-2}$. The total scaled RMSD of the simulated models with viral latency from the first set was $6.5 \times 10^{-2}$ days and the scaled median difference was $2.3 \times 10^{-2}$ days. The unscaled median difference was $51.$ days compared to the actual median latency of $35.$ days.
-The total scaled RMSD of the simulated models with viral latency from the second set was $6.7 \times 10^{-2}$ days and the scaled median difference was $2.3 \times 10^{-2}$ days. The unscaled difference was $52.$ days compared to the actual median latency of $37.$ days.
+Next we applied the method to simulated phylogenenies with 50\% of the tips containing viral latency. We only censored the tips that had latency. We used three models to produce latency, one extreme and two realistic; their details are in the Methods section. The nonparametric binomial test correctly predicted that there was latency in each of these data sets ($p < 2.2 \times 10^{-15}$ for each data set). The difference of the sampling date and the predicted date of a tip is analogous to the amount of latency in the tip's lineage. The RMSD between this difference and the actual amount latency simulated in each simulated data set were $83$, $85$, and $77$ days. One reason for the high RMSD is that some of the differences were negative and latency periods are always positive.
 
-The binomial test for the extreme simulated data with viral latency gave a $p$-value less than $2.2\times 10^{-15}$ and a predicted success probability of $0.80$ with a 95\%-confidence interval of $(0.79, 1)$.
-The binomial test for the first set of simulated data with viral latency gave a $p$-value less than $2.2\times 10^{-15}$ and a predicted success probability of $0.71$ with a 95\%-confidence interval of $(0.70, 1)$.
-The binomial test for the second set of simulated data with viral latency gave a $p$-value less than $2.2\times 10^{-15}$ and a predicted success probability of $0.71$ with a 95\%-confidence interval of $(0.70, 1)$.
+%The total scaled RMSDs of three simulated models with viral latency were $3.3 \times{10}^{-2}$, $6.5 \times 10^{-2}$, and $6.7 \times 10^{-2}$ respectively.
+%The scaled median difference of the data sets were $-5.6 \times 10^{-2}$, $2.3 \times 10^{-2}$ and $2.3 \times 10^{-2}$ respectively.
+%The unscaled median difference was $070.$ compared to the actual median latency of $90.$ days.
+%The unscaled median difference was $051.$ days compared to the actual median latency of $35.$ days.
+%The unscaled difference was $-52.$ days compared to the actual median latency of $37.$ days.
+
+%The binomial test for the extreme simulated data with viral latency gave a $p$-value less than $2.2\times 10^{-15}$ and a predicted success probability of $0.80$ with a 95\%-confidence interval of $(0.79, 1)$.
+%The binomial test for the first set of simulated data with viral latency gave a $p$-value less than $2.2\times 10^{-15}$ and a predicted success probability of $0.71$ with a 95\%-confidence interval of $(0.70, 1)$.
+%The binomial test for the second set of simulated data with viral latency gave a $p$-value less than $2.2\times 10^{-15}$ and a predicted success probability of $0.71$ with a 95\%-confidence interval of $(0.70, 1)$.
 
 %Figure \ref{fig:results1} B shows different results for the latent simulations --- here we censor 50\% of the dates, attempt to reconstruct them, then compare them to the simulated collection dates. 
 %In this case, averaged over all simulated data sets, the mean square error was $7.1\times 10^{-3}$, and the average median and mean difference were $4.0\times 10^{-2}$ and $5.1\times 10^{-2}$ respectively. 
@@ -335,17 +351,17 @@ The binomial test for the second set of simulated data with viral latency gave a
 %When we performed the same analysis against the simulated archival times, the results were nearly identical to the results without any latent data, suggesting that we can recover the dates of latent sequences provided an accurate clock.
 
 For our final validation, we took the same strategy as the first validation on synthetic data, and applied it to our {\em plasma} data set --- we censored 50\% of the known sampling dates, then attempted to reconstruct them.
-2 of the individuals from the {\em plasma} data set were screened as (inconclusive) when applying the log ratio test to their date reconstruction.
-See Figure \ref{fig:resultsancre} for an example of the date reconstruction from the \emph{plasma} data.
-
-The total scaled RMSD the data was $4.4 \times 10^{-1}$ days and the scaled median difference was $-2.6 \times 10^{-2}$ days.
-See Figure \ref{fig:densityancre} for a density plot of the RMSD's.
-For the details of the linear model see Table \ref{tab:patients}.
-
-The binomial test for the \emph{plasma} data gave a $p$-value of $0.91$ and a predicted success probability of $0.4536$ with a 95\%-confidence interval of $(0.39, 1)$.
+2 of the individuals from the {\em plasma} data set were screened as invalid after applying the log ratio test to their date reconstruction.
+See Figure \ref{fig:resultsancre} for an example of the date reconstruction from the \emph{plasma} data set and Table \ref{tab:patientserror} for the error metrics for each patient in the \emph{plasma} data set.
+The binomial test for the \emph{plasma} data predicted that there was no latency ($p=0.45$) as we expected.
 %(Figure \ref{fig:results2} C shows this when the phylogenies have been rooted with outgroup rooting). 
 %Averaged over all simulated data sets, the mean square error was $1.7\times 10^{-1}$, and the absolute value of average median and mean difference were $2.1\times 10^{-4}$ and $1.9\times 10^{-2}$ respectively. 
-%The density plot shows similar behavior to that of the synthetic data, except with a wider distribution, and more variation. 
+%The density plot shows similar behavior to that of the synthetic data, except with a wider distribution, and more variation.
+
+The error metric from the linear regression for the simulated and real data sets in given in Table \ref{tab:error}.
+It is important to note that the RMSD of the simulated data is much lower that RMSD of the real data.
+Figure \ref{fig:densityancre} shows the density plot of the RMSD of each patient from the \emph{plasma} data set with the density plot of the RMSD of the simulated data set without latency overlayed.
+Although not all of the density plots fit into the simulated data set's density plot, some of the density plots fit very well.
 
 \subsection * {Application} \label{sec:mixed_data}
 
@@ -357,20 +373,20 @@ The binomial test for the \emph{plasma} data gave a $p$-value of $0.91$ and a pr
 
 %Individuals that had received treatment at some point generally failed the hypothesis test --- there was only one patient that did not --- these individuals were not included in the above analysis. 
 
-Finally, we tested our methodology on the {\em mixed} data set.
-Overall, we found that the RTT regression performed better or just as well as the outgroup rooting.
+Finally, we tested our methodology on the {\em mixed} data set to look for evidence of viral latency.
+Overall, we found that the RTT regression performed better or just as well as the outgroup rooting based on the number of patients who fail the log ratio test of the linear regression.
 Hence from now on, we only consider the results using RTT regression.
-See Supplementary Materials (ref) for details pn the results using the outgroup rooting.
+See Supplementary Materials (ref) for details of the results using the outgroup rooting.
 
-Of the 20 \emph{mixed} subjects, 5 failed to reject the null hypothesis of the date reconstruction regression.
-See Figure \ref{fig:resultslanl} for an example of the regression on the \emph{mixed} data.
-The total scaled RMSD of the models was $3.6 \times 10^{-1}$ days and the scaled median difference was $2.6 \times 10^{-2}$ days.
-See Figure \ref{fig:densitylanl} for a density plot of the RMSD.
-For the details of the linear model see Table \ref{tab:patientserror}.
+Of the 20 \emph{mixed} subjects, 5 were screened as invalid after applying the log ratio test to their date reconstruction. All of these patients had RNA sampled over only 2 or 3 time points; however the data from some of the patients who had RNA sequences sampled over only 2 time points passed the log ratio test (Patient 34391 for example).
 
-The binomial test gave a $p$-value of $7.9 \times 10^{-7}$ and a predicted success probability of $0.57$ with a 95\%-confidence interval of $(0.54, 1)$.
+See Figure \ref{fig:resultslanl} for an example of the regression on the \emph{mixed} data and Table \ref{tab:patientserror} for the error metrics for each patient in the \emph{mixed} data set.
+Figure \ref{fig:densityancre} shows the density plot of the RMSD of each patient from the simulated data set with the density plot of the RMSD of the first set of parametrized simulated data set with latency overlayed.
+Most of the density plots of the \emph{mixed} data set fit well in the simulated data set's density plot and most of the density plots that do not fit well are very negative, which suggests a high degree of viral latency in those patients.
 
-Applying the binomial test to only the individuals who received treatment gave a lower predicted success probability and significantly higher $p$-value (0.45 and 0.98 respectively). This suggests that there are few latent lineages in the treated patients.
+The binomial test predicted that there was latency in the DNA lineages of the \emph{mixed} data set ($p=7.9 \times 10^{-7}$).
+However when restricted to only the individuals who received therapy, the binomial test predicted that there was no latency ($p=0.98$).
+This suggests that there is more viral latency in treatment-naive patients.
 
 %The residuals of the {GLME model} without using the transformation were not normally distributed and thus we will only consider the GLME using the transformed differences, $\hat{d}_s$. The $p$-value of the log ratio test between the null model and the GLME was less than $2 \times 10^{-16}$. The mean intercept of the GLME was $13.06$ and the mean coefficient of $d_s$ was $-308.1$. The deviation due to the random effects on the intercept was $15.24$ and the deviation on the coefficient of $d_s$ was $172.1$. A plot of the regression is given in Figure \ref{fig:glm}.
 
@@ -625,43 +641,63 @@ Reference & Patient ID & \multicolumn{3}{c}{Sequences} & \multicolumn{3}{c}{Time
 \def\arraystretch{1.3}%
 \begin{center}
 \begin{tabular}{lrrrr} 
-Patient ID & $p$-value & Median Difference (days) & RMSD (days) & scaled RMSD \\ 
+Patient ID & $p$-value & Median Difference (days) & RMSD (days) & Scaled RMSD \\ 
 \hline
-825 & $2.3 \times 10^{-11}$ & 120 & 530 & 0.18 \\
-2658 & $2.4 \times 10^{-15}$  & -35. & 220 & 0.12 \\
-\badpat{7259 & $0.085$ & -5.9 & 570 & 0.64} \\
-\badpat{7263 & $1.00$ & 160 & 190 & 0.77} \\
-7265 & $0.0098$ & -18. & 160 & 0.59 \\
-13333 & $9.3 \times 10^{-10}$ & -12. & 110 & 0.22 \\
-13334 & $2.7 \times 10^{-4}$ & -30. & 140 & 0.19 \\
-13336 & $1.9 \times 10^{-12}$ & 40. & 100 & 0.14 \\
-35566 & $2.7 \times 10^{-5}$ & -85. & 200 & 0.96 \\
+825 & $2.3 \times 10^{-11}$ & -120 & 530 & 0.18 \\
+2658 & $2.4 \times 10^{-15}$  & 35. & 220 & 0.12 \\
+\badpat{7259 & $0.085$ & 5.9 & 570 & 0.64} \\
+\badpat{7263 & $1.00$ & -160 & 190 & 0.77} \\
+7265 & $0.0098$ & 18. & 160 & 0.59 \\
+13333 & $9.3 \times 10^{-10}$ & 12. & 110 & 0.22 \\
+13334 & $2.7 \times 10^{-4}$ & 30. & 140 & 0.19 \\
+13336 & $1.9 \times 10^{-12}$ & -40. & 100 & 0.14 \\
+35566 & $2.7 \times 10^{-5}$ & 85. & 200 & 0.96 \\
 \hline
-820 & $4.8 \times 10^{-4}$ & $3.9 \times 10^{3}$ & $3.7 \times 10^{3}$ & 1.2 \\
-821 & $< 2.2 \times 10^{-15}$ &76. & 340 & 0.14 \\
-822 & $< 2.2 \times 10^{-15}$ & -46. & 260 & 0.12 \\
-824 & $< 2.2 \times 10^{-15}$ & -45. & 500 & 0.16 \\
-\badpat{10137 & $0.031$ & -810 & 890 & 0.32} \\
-10138 & $< 2.2 \times 10^{-15}$ & 19. & 560 & 0.18 \\
-\badpat{10586 & $0.44$ & $-5.2 \times 10^3$ & $7.8 \times 10^{3}$ & 1.7} \\
-13889 & $< 2.2 \times 10^{-15}$ & 180 & 628.9 & 0.13 \\
-\badpat{34391 & 0.018 & 65.06 & 220 & 0.59} \\
-34393 & $2.3 \times 10^{-4}$ & 5.2 & 103.6 & 0.29 \\
-\badpat{34396 & 0.15 & 710 & 630 & 1.9} \\
-34399 & $< 2.2 \times 10^{-15}$ & 110 & 250 & 0.17 \\
-\badpat{34408 & 0.50 & 77 & $1.0 \times 10^{3}$ & 1.9} \\
-34410 & $2.1 \times 10^{-6}$ & -16. & 170 & 0.38 \\
-34411 & $9.4 \times 10^{-9}$ & 41. & 88. & 0.19 \\
-10769 & $1.2 \times 10^{-5}$ & 880 & $2.4 \times 10^3$ & 1.2 \\
-16616 & $3.1 \times 10^{-5}$ & 540 & $1.2 \times 10^{3}$ & 0.45 \\
-16617 & $1.0 \times 10^{-7}$ & -75. & 440 & 0.17 \\
-16618 & $7.7 \times 10^{-12}$ & -110 & 310 & 0.14 \\
-16619 & $5.5 \times 10^{-4}$ & -300 & 540 & 0.27 \\
+820 & $4.8 \times 10^{-4}$ & $-3.9 \times 10^{3}$ & $3.7 \times 10^{3}$ & 1.2 \\
+821 & $< 2.2 \times 10^{-15}$ & -76. & 340 & 0.14 \\
+822 & $< 2.2 \times 10^{-15}$ & 46. & 260 & 0.12 \\
+824 & $< 2.2 \times 10^{-15}$ & 45. & 500 & 0.16 \\
+\badpat{10137 & $0.031$ & 810 & 890 & 0.32} \\
+10138 & $< 2.2 \times 10^{-15}$ & -19. & 560 & 0.18 \\
+\badpat{10586 & $0.44$ & $5.2 \times 10^3$ & $7.8 \times 10^{3}$ & 1.7} \\
+13889 & $< 2.2 \times 10^{-15}$ & -180 & 628.9 & 0.13 \\
+\badpat{34391 & 0.018 & -65.06 & 220 & 0.59} \\
+34393 & $2.3 \times 10^{-4}$ & -5.2 & 103.6 & 0.29 \\
+\badpat{34396 & 0.15 & -710 & 630 & 1.9} \\
+34399 & $< 2.2 \times 10^{-15}$ & -110 & 250 & 0.17 \\
+\badpat{34408 & 0.50 & -77 & $1.0 \times 10^{3}$ & 1.9} \\
+34410 & $2.1 \times 10^{-6}$ & 16. & 170 & 0.38 \\
+34411 & $9.4 \times 10^{-9}$ & -41. & 88. & 0.19 \\
+10769 & $1.2 \times 10^{-5}$ & -880 & $2.4 \times 10^3$ & 1.2 \\
+16616 & $3.1 \times 10^{-5}$ & -540 & $1.2 \times 10^{3}$ & 0.45 \\
+16617 & $1.0 \times 10^{-7}$ & 75. & 440 & 0.17 \\
+16618 & $7.7 \times 10^{-12}$ & 110 & 310 & 0.14 \\
+16619 & $5.5 \times 10^{-4}$ & 300 & 540 & 0.27 \\
 \hline
 \end{tabular}
 \end{center}
   \caption{Details of the linear models applied to the real data sets. RMSD is the root mean squared deviance. Patients where we were unable to reject the null hypothesis are marked in red.
    }\label{tab:patientserror} 
+\end{table*}
+
+\begin{table*}[!ht]
+\def\arraystretch{1.3}%
+\begin{center}
+\begin{tabular}{lrr}
+Data set & Total Scaled RMSD & Total Scaled Median Difference \\ % TMD (days) & Median Latency (days)  \\ 
+\hline
+simulated (no latency) & $4.5 \times 10^{-2}$ & $6.7 \times 10^{-4}$ \\% & $1.3$ & $0$ \\
+simulated (extreme latency) & $3.3 \times 10^{-2}$ & $-5.6 \times 10^{-2}$ \\ % & $-70.$ & $90.$ \\
+simulated (latency 1) & $6.5 \times 10^{-2}$ & $-2.3 \times 10^{-2}$ \\ % & $-51.$ & $35.$ \\
+simulated (latency 2) & $6.7 \times 10^{-2}$ & $-2.3 \times 10^{-2}$ \\ % & $-52.$ & $37.$ \\
+\emph{plasma} & $4.4 \times 10^{-1}$ & $2.6 \times 10^{-2}$ \\ % & $23.$  & \\
+\emph{mixed} & $3.6 \times 10^{-1}$ & $2.6 \times 10^{-2}$ \\ % & $-41.$ & \\
+\hline
+\end{tabular}
+\end{center}
+ \caption{Details of the error metrics of the linear models applied to each data set.
+ % Scaled RMSD is the total scaled root mean squared deviance, TSMD is the total scaled median difference, TMD is the total median difference.
+ }\label{tab:error} 
 \end{table*}
 
 \end{document}
