@@ -76,11 +76,11 @@ The phylogeny is rooted by determining the location of the root using root-to-ti
 The root-to-tip distances of possibly latent sequences are mapped to the optimal regression line to estimate reservoir establishment dates.
 Finally a nonparametric binary test is applied amongst multiple individuals to identify the presence of latent lineages.
 
-To validate our method, we generated simulated HIV phylogenies and used RAxML to produce simulated HIV sequences.
+To validate our method, we generated simulated HIV sequences and used RAxML to infer phylogenies from the simulated HIV sequences.
 We then applied our method to simulated sequences with and without latency and to HIV RNA datasets.
 Next we simulated latent lineages by shortening tip lengths and employed the same methodology as above.
 %We synthesized latent lineages by censoring the sample dates for random selections of up to 50\% of sequences in the simulated and HIV RNA datasets.
-When this method was applied to HIV DNA sequences in phylogenies containing dated HIV RNA sequences, we observed that the predicted dates tended to precede dates of sampling, which was consistent with latency.
+When this method was applied to HIV DNA sequences in phylogenies containing dated HIV RNA sequences, we observed that the predicted dates tended to precede dates of sampling, consistent with latency.
 
 Our results indicate that the dates when HIV DNA lineages entered a latent state can be accurately estimated from a phylogenetic analysis of HIV RNA sequence variation from the same patient.
 This can provide important insights into the dynamics of HIV reservoirs within hosts.
@@ -94,14 +94,14 @@ HIV, Latency, Cellular Reservoirs, Phylogenetics, Linear Regression\\
 \underline{}
 \section * {Introduction} \label{sec:intro}
 
-A major obstacle along the path of developing HIV cure strategies is the long-term persistence of the virus within latently infected cellular reservoirs \citep{Pace11}. 
+A major obstacle in developing HIV cure strategies is the long-term persistence of the virus within latently infected cellular reservoirs \citep{Pace11}. 
 Latently infected cells contain integrated HIV DNA and have entered a dormant state in which they not only have a lowered rate of virion production, but may also persist within an individual for several years or more.
 Although a patient's viral load can be reduced below detectable levels when that patient is subjected to highly active antiretroviral therapy (HAART), latent reservoirs will eventually reseed an infection if a patient halts treatment \citep{Joos08, Pomerantz03, Richman09}. 
 Not much is known about when specific latent reservoirs are established over the course of an infection. 
 The chronology of their establishment is of interest as the distribution of ages of the latent virus lineages may provide information concerning the types of adaptations that those lineages may have accumulated. 
 Specifically, the timing of reservoir establishment may influence how virions produced by those reservoirs will react to immune-mediated and/or therapeutic treatments. 
 Previous studies have developed techniques to detect latent lineages by reduced rates of viral evolution \citep{Immonen14} and modeled the population dynamics of different classes of the virus within host \citep{Althaus14}. 
-However, there has been limited work on estimating when viral lineages suspected of being latent became integrated into the host genome, or qualitatively assessing the distribution of collection-age differences for suspected latent samples.
+However, there has been limited research on estimating when viral lineages suspected of being latent became integrated into the host genome, or qualitatively assessing the distribution of collection-age differences for suspected latent samples.
 
 An HIV-1 population rapidly accumulates genetic diversity over the course of an infection, due to its high mutation rate and short generation time %, and intense selective pressure by the host's immune system 
 \citep{Alizon13, Shankarappa99, Rambaut04}. 
@@ -119,8 +119,8 @@ Thus, viral latency effectively halts the molecular evolution of that particular
 
 %Between the active and latent populations, latent cells are then expected to be more genetically different to active lineages than active lineages are among each other.
 
-Viral latency can be manifested by a discordance between a sample's actual collection time and its apparent age based on its sequence divergence from other lineages (Figure \ref{fig:latenttree}). 
-Therefore, it may be possible to use phylogenetic analysis to reconstruct the dates that a given virus lineage became latent.
+Viral latency can be manifested by discordance between a sample's actual collection time and its apparent age based on its sequence divergence from other lineages (Figure \ref{fig:latenttree}). 
+Therefore, it may be possible to use phylogenetic analysis to recover the dates that a given virus lineage became latent.
 We propose a simple framework to estimate dates of latent reservoirs which assumes that HIV evolution within a host can be adequately modeled by a strict molecular clock, such that the expected number of substitutions per site increases linearly with time \citep{Ho14}. 
 %Our method extracts timing information from the phylogenetic relationships between the virus sampled at various time-points along the infection. 
 First, we construct a phylogeny relating sequences derived from both cellular HIV DNA and plasma HIV RNA sampled from the same patient.
@@ -161,7 +161,7 @@ We used the Los Alamos advanced search interface \citep{LosAlamos} to identify p
 From these results, we manually selected 20 individuals that had well-characterized partial {\em env} sequences and plasma samples from at least 2 RNA time points and 3 DNA time points. 
 %We also required that at least 1 RNA time point fell between 2 DNA time points in each individual
 Other than this there were no selection criteria on the time between sample collection dates. 
-A total of 1017 partial {\em env} sequences from blood plasma, and 1799 partial {\em env} sequences from PBMC cells were used in our analysis. 
+A total of 1,017 partial {\em env} sequences from blood plasma, and 1,799 partial {\em env} sequences from PBMC cells were used in our analysis. 
 We utilized samples from treatment naive individuals from \cite{Shankarappa99, Novitsky09} and samples from individuals that had been intermittently treated via HAART from \cite{Llewellyn06,Fischer04}. 
 
 See Table \ref{tab:patients} for details on the patients from these data sets.
@@ -231,7 +231,7 @@ We then recorded both the simulated waiting time to latency and the simulated co
 For these data, we generated an additional 150 subjects with 100 sequences each, bringing the total amount of simulated data to 200 subjects.
 
 \subsection * {Phylogenetic Reconstruction} \label{subsec:phylo}
-In our experiments, our reconstructed phylogenies were approximate maximum likelihood phylogenies reconstructed using RAxML 8.2.4 \citep{Raxml14} with the GTR model.
+In our experiments, our reconstructed phylogenies were maximum likelihood phylogenies reconstructed using RAxML 8.2.4 \citep{Raxml14} with the GTR model.
 
 We evaluated two different methods for rooting these trees. 
 The first method was outgroup rooting, in which one or more sequences from taxa outside but sufficiently related to the group of interest are added to the phylogenetic reconstruction \citep{Huelsenbeck02}.
