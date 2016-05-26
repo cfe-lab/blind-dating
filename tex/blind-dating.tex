@@ -75,8 +75,8 @@ We propose a simple method to date suspected reservoir sequences using phylogene
 %The simulated and HIV RNA data were used for method validation.
 Our method is as follows: Taking aligned HIV sequences from a single individual sampled over multiple time points, we reconstruct a maximum-likelihood phylogeny.
 The phylogeny is rooted by determining the location of the root using root-to-tip regression.
-The root-to-tip distances of possibly latent sequences are mapped to the optimal regression line to estimate reservoir establishment dates.
-Finally, the presence of latent lineages within () was detected using a nonparametric binary test.
+Finaly, the root-to-tip distances of possibly latent sequences are mapped to the optimal regression line to estimate reservoir establishment dates.
+%Finally, the presence of latent lineages within () was detected using a nonparametric binary test.
 
 To validate our method, we generated simulated HIV sequences and used RAxML to infer phylogenies from the simulated HIV sequences.
 We then applied our method to simulated sequences with and without latency and to HIV RNA datasets.
@@ -128,9 +128,12 @@ We then use the linear model to reconstruct tip dates of HIV-1 sequences for whi
 
 \section * {Methods} \label{sec:methods}
 
-%\subsection * {Data Collection  / Sequence Generation}
+\subsection * {Data sets}
+For our experiments we compiled 6 data sets of real and synthetic longitudunal HIV sequences.
+4 of the data sets were simulated --- 3 of which had viral latency incorporated into their models.
+The other 2 data sets were comprised of real HIV-1 \emph{env} sequences --- one data set contained sequences only from HIV RNA extracted from plasma and the other contained both HIV RNA and HIV DNA extracted from PBMC.
 
-\subsection * {Simulated Data} \label{subsec:simdata}
+\subsubsection * {Simulated Data} \label{subsec:simdata}
 
 %%% 1. simulate trees with strict clock - baseline
 %%% 2. directly manipulate plasma trees
@@ -152,7 +155,9 @@ We used the \textit{R} package, \emph{NELSI} \citep{NELSI}, to assign rates of e
 
 To model uncertainty in phylogenetic reconstruction from sequence variation, we simulated sequence evolution along each birth-death tree with INDELible version 1.03 \citep{Indelible09} under an HKY85 \citep{HKY85} model of nucleotide substitution.
 Parameters for the substitution model were set to empirical estimates derived from previously published HIV within-host data sets \citep{McCloskey14}. 
-Specifically, the stationary distribution was set to 0.42, 0.15, 0.15, 0.28 for the nucleotides A, C, G and T, respectively, and the transition bias parameter was set to 8.5. Using this approach, we generated a total of 50 replicate subjects without viral latency. 
+Specifically, the stationary distribution was set to 0.42, 0.15, 0.15, 0.28 for the nucleotides A, C, G and T, respectively, and the transition bias parameter was set to 8.5.
+Using this approach, we generated a total of 50 replicate subjects without viral latency.
+We will call the set of these subjects the \emph{simulated (no latency)} data set.
 
 %A phylogeny was reconstructed from the simulated sequence alignments using the approximate maximum likelihood heuristic implemented in FastTree2.
 %Similar results were obtained with trees reconstructed using RAxML \citep{Raxml14}, which is expected to be more accurate, but can consume orders of magnitude more computational time.
@@ -160,7 +165,8 @@ Specifically, the stationary distribution was set to 0.42, 0.15, 0.15, 0.28 for 
 To simulate phylogenies with latent viral lineages, we employed an approach similar to \citet{Immonen14}, but with the simplifying assumptions that any sampled virus lineage could undergo no more than one latent period, and that once a lineage entered a latent state, it remained latent until becoming sampled.
 To do this, we selected 50 tips uniformly at random from each `latency-free' phylogeny, then shortened their expected number of substitutions and their branch time (the time between the tip, and the tip's parent).
 
-To do this we applied two different methods. The first method was an extreme case used as a baseline where we shortened each chosen tip's branch time by either 100 days or by a factor of $0.99$ of the branch time if the branch time was less than 100 days.
+To do this we applied two different methods.
+The first method was an extreme case used as a baseline where we shortened each chosen tip's branch time by either 100 days or by a factor of $0.99$ of the branch time if the branch time was less than 100 days.
 
 The second method was intended to be more realistic and is as follows. For each chosen:
 \begin{enumerate}
@@ -184,10 +190,11 @@ See Supplementary Materials (ref) for details.
 %We took $l = f(1-\epsilon_{RT})k$ with $\epsilon_{RT} = 0$ and $f$ and $k$ as above.
 %Using this approach, we get $l = 0.00015$.
 
-We then recorded both the simulated waiting time to latency and the simulated collection time and generated sequences along these latent seed trees with INDELible using the same parameters as above. 
-For these data, we generated an additional 150 subjects with 100 sequences each, bringing the total amount of simulated data to 200 subjects.
+We then recorded both the simulated waiting time to latency and the simulated collection time and generated sequences along these latent seed trees with INDELible using the same parameters as above.
+The set of simulated subjects created from each of these methods comprise the \emph{simulated (no extreme)}, \emph{simulated (latency 1)}, and \emph{simulated (latency 2)} data sets respectively.
+For these data, we generated an additional 150 subjects with 100 sequences each, bringing the total amount of simulated data to 200 subjects and 2000 sequences.
 
-\subsection * {Data Collection} \label{subsec:dcollection}
+\subsubsection * {Data Collection} \label{subsec:dcollection} % Collection of real data
 We collected two distinct sets of real data for our experiments. 
 The first we refer to as the {\em plasma} data set, which comprised over 19,000 published HIV \textit{env} sequences derived from viral RNA from longitudinal plasma samples ($n=335$) collected from 232 different individuals \citep{McCloskey14}. 
 From these data, we selected treatment naive individuals with two or more clonal or single-genome sequences available at each time point, and with a known time-line relative to one of several reference points: HIV infection, seroconversion or presentation of symptomatic seroconversion illness. 
@@ -207,16 +214,20 @@ We utilized samples from treatment naive individuals from \cite{Shankarappa99, N
 
 See Table \ref{tab:patients} for details on the patients from these data sets.
 
-\subsection * {Sequence Alignment} \label{subsec:seqalign}
+\subsubsection * {Sequence Alignment} \label{subsec:seqalign}
 We used MUSCLE 3.8.31 \citep{Muscle04} to align the patient-derived sequences of the \emph{mixed} data set, which were then visually inspected and cleaned with AliView \citep{AliView14}. 
 Alignments were manually trimmed to the interval in which at least  50\% of sequences within the data set had coverage over each base.
 %Since the simulated sequence data contained no insertions or deletions, no alignment of these data was necessary. 
-The {\emph plasma} data set had already been aligned and cleaned \citep{McCloskey14} and the simulated sequences were generated as aligned sequences, so no further alignment was performed.
+The \emph{plasma} data set had already been aligned and cleaned \citep{McCloskey14} and the simulated sequences were generated as aligned sequences, so no further alignment was performed.
 
-%\subsection{Blind dating}
+\subsection * {Blind dating}
+Each data set, real and simulated, was run through our blind dating pipeline.
+First we reconstructed each patient's phylogeny from their HIV sequences.
+Then we censored the dates of the possibly latent tips and applied a linear model to predict the dates of the censored tips.
+Finally we applied a nonparamatric binomial test to detect the presence of latency in the data set.
 
-\subsection * {Phylogenetic Reconstruction} \label{subsec:phylo}
-In our experiments, our reconstructed phylogenies from the simulated and real data sets were maximum likelihood phylogenies reconstructed using RAxML 8.2.4 \citep{Raxml14} with the GTR model.
+\subsubsection * {Phylogenetic Reconstruction} \label{subsec:phylo}
+In our experiments, our reconstructed phylogenies were maximum likelihood phylogenies reconstructed using RAxML 8.2.4 \citep{Raxml14} with the GTR model.
 
 We evaluated two different methods for rooting these trees. 
 The first method was outgroup rooting, in which one or more sequences from taxa outside but sufficiently related to the group of interest are added to the phylogenetic reconstruction \citep{Huelsenbeck02}.
@@ -230,19 +241,25 @@ In our experiments, the maximum correlation coefficient was used as our objectiv
 Our simulated data were only rooted using RTT regression; for all real data, both outgroup rooting and RTT regression were evaluated for rooting the phylogeny.
 
 
-\subsection * {Date Reconstruction} \label{subsec:daterecon}
+\subsubsection * {Date Reconstruction} \label{subsec:daterecon}
 %% Find a way to distinguish this GLM with the one in the next section
 
 %Irrespective of the method used to root the phylogeny, we used a general linear model with the normal family to infer the association between the tip dates and sequence divergence from the root. 
 Irrespective of the method used to root the phylogeny, we used a linear model to infer the association between the tip dates and sequence divergence from the root. 
-The expected amount of evolution was taken to be the dependent variable and the sampling dates of the data were taken as the independent variables. 
-
+The expected amount of evolution was taken to be the dependent variable and the sampling dates of the data were taken to be the independent variables.
+For the simulated data set without viral latency and the \emph{plasma} data set, we censored 50\% of the tips uniformly at random; for the simulated data sets with viral latency, we censored the tips with viral latency; and for the \emph{mixed} data set, we censored the tips with DNA sequences.
+We then applied the model to each patient using only the uncensored tips.
 %We then used the linear model to predict the dates of the latent/unknown sequences.
+
+The use of a linear model is not necessarily appropriate for all data sets.
+This could be due to insufficient amount of data, handling/processing errors, or a lack of phylogenetic signal \citep{Tempest}.
 The data were screened for amenability to our research using the nested log ratio test \citep{Ho14}. 
 %To screen for data that were amenable to our analysis, we used Akaike Information Criteria \cite[AIC;][]{Akaike74}.
 Our null model was a linear model with zero slope over the expected amount of evolution over time.
 %We rejected any sequence data sets whose phylogeny could not reject the null model with a relative AIC of ${-5}$.
-We rejected any sequence data sets whose phylogeny couldn't reject the null model with threshold $\alpha=0.01$, since this implied a lack of phylogenetic signal. We then used the linear model to predict the date of the censored sequences.
+We rejected any sequence data sets whose phylogeny couldn't reject the null model with threshold $\alpha=0.01$.
+%, since this implied a lack of phylogenetic signal.
+We then used the linear model to predict the dates of the censored sequences.
 
 We calculated the root mean square deviation (RMSD) and the median difference to quantify the error of the difference between the predicted and known sampling dates.
 %We used the root mean square error to quantify the difference between the predicted and known dates of sampling.
@@ -252,7 +269,7 @@ All tip dates were re-scaled to lie between $0$ and $1$ to facilitate comparison
 %We refer to $\hat{t}$ as the `normalized time' of a tip. 
 Our error metrics were then calculated from these normalized times.%, giving normalized mean square error, normalized mean difference, and normalized median difference.
 
-\subsection * {Experiments} \label{subsec:experiments}
+\subsubsection * {Finding latent lineages} \label{subsec:experiments}
 
 %Our first validation experiment on simulated data was performed as follows.
 %First, we chose 50\% of the tips of a simulated phylogeny and censored those dates.
@@ -272,12 +289,12 @@ Our error metrics were then calculated from these normalized times.%, giving nor
 
 %We evaluated the latency of the censored sequences using two methods. The first was a {binomial test} and the second was a {GLME model}.
 
-Latent lineages are more likely than non-latent lineages to appear later in time than the line of the linear regression from the previous section, see Figure \ref{fig:latenttree}.
-Thus if the frequency of censored lineages whose difference between predicted and sampling date are negative (i.e.~are sampled later than the regression predicts) is significantly greater than a half, then we expect that some of the censored lineages have latency.
-However if the frequency of censored lineages whose difference between predicted and sampling date are negative is close to a half, then the censored lineages behave similarly to the uncensored lineages suggesting that there is little or no latency in the censored lineages.
+The sampling dates of latent lineages are more likely to appear later in time than predicted by the linear model, see Figure \ref{fig:latenttree}.
+Thus if the frequency of censored lineages whose difference between predicted and sampling date are negative (i.e.~are sampled later than the linear model predicts) is significantly greater than 0.5, then we expect that some of the censored lineages have latency.
+However if the frequency of censored lineages whose difference between predicted and sampling date are negative is close 0.5, then the censored lineages behave similarly to the uncensored lineages suggesting that there is little or no latency in the censored lineages.
 
 We evaluated the latency of the censored sequences using a nonparametric binomial test.
-We used R's {\it binom.test} function to apply a right-tailed binomial test on the occurrence of sequences with positive difference using $p=0.5$ as the null model.
+We used R's {\it binom.test} function to apply a right-tailed binomial test on the occurrence of sequences with negative difference using $p=0.5$ as the null model.
 We also applied a general mixed effects model with the binomial family to the data with quantitatively similar results.
 
 %We also evaluated the latency by fitting the differences to an exponentially modified Gaussian distribution \citep[EMG;][]{Golubev10}. The pdf of the EMG is given by
@@ -295,10 +312,14 @@ We also applied a general mixed effects model with the binomial family to the da
 %% Rewrite this whole section
 
 \subsection * {Model Validation} \label{sec:sim_results}
-First we validated our methodology using simulated data. Overall, the simulated data performed well. The date reconstruction of each simulated phylogeny was valid under the log ratio test. See Figure \ref{fig:results1} for examples of the date reconstruction on simulated phylogenies.
+First we validated our methodology using simulated data.
+Overall, the simulated data performed well. The reconstruction of the censored dates for each simulated phylogeny was valid under the log ratio test.
 
-We applied our method to simulated phylogenies without viral latency incorporated.
+We applied our method to simulated phylogenies without viral latency incorporated from the \emph{simulated (no latency)} data set.
 After censoring 50\% of the tips, we attempted to reconstruct their dates.
+In Figure \ref{fig:resultssimulated}, we show an example of the date reconstruction on a simulated patient without latency.
+Each HIV sequence from the simulated patient is plotted on a genetic distance versus collection time plot.
+Note how the points all lie close to the line of regression, which indicates the predicted values of the linear model.
 %The scaled RMSD of the reconstructed dates was $4.5 \times 10^{-2}$ and the scaled median difference $6.7 \times 10^{-4}$.
 A nonparametric binomial test on the sign of the difference between sampling and reconstructed dates agrees that there is no latency ($p = 0.74$).
 
@@ -317,7 +338,19 @@ A nonparametric binomial test on the sign of the difference between sampling and
 %For the simulated data with viral latency, we computed the difference between the reconstructed date and the sampling date and the difference between the reconstructed date and the become latent date.
 %See Figure \ref{fig:resultslatent} for an example of the regression on the simulated data with latency.
 
-Next we applied the method to simulated phylogenenies with 50\% of the tips containing viral latency. We only censored the tips that had latency. We used three models to produce latency, one extreme and two realistic; their details are in the Methods section. The nonparametric binomial test correctly predicted that there was latency in each of these data sets ($p < 2.2 \times 10^{-15}$ for each data set). The difference of the sampling date and the predicted date of a tip is analogous to the amount of latency in the tip's lineage. The RMSD between this difference and the actual amount latency simulated in each simulated data set were $83$, $85$, and $77$ days. One reason for the high RMSD is that some of the differences were negative and latency periods are always positive.
+Next we applied the method to simulated phylogenenies with 50\% of the tips containing viral latency.
+We only censored the tips that had latency.
+We used three models to produce latency, one extreme and two realistic; their details are in the Methods section.
+In Figure \ref{fig:resultslatent}, we have an example of the date reconstruction of a simulated patient with viral latency incorportated from the \emph{simulated (latency 1)} data set.
+Each HIV sequence from the simulated patient is plotted on a genetic distance versus collection time plot.
+The viral integration time of each latent tip is also plotted and line connects the point to its sampling time.
+The phylogeny generated for the patient in Figure \ref{fig:resultslatent} is the same phylogeny as the patient in Figure \ref{fig:resultssimulated}, except that the censored tips were also shortened to simulated viral latency.
+We can see that most of the `latent' sequences appear to the right of the regression line and some are ().
+The nonparametric binomial test correctly predicted that there was latency in each of these data sets ($p < 2.2 \times 10^{-15}$ for each data set).
+
+The difference of the sampling date and the predicted date of a tip is analogous to the amount of latency in the tip's lineage.
+The RMSD between this difference and the actual amount latency simulated in each simulated data set were $83$, $85$, and $77$ days.
+One reason that these RMSD's are high is that some of the some of the predicted dates where later than the sampling dates leading to a negative difference. In contrast, the latency periods are always positive.
 
 %The total scaled RMSDs of three simulated models with viral latency were $3.3 \times{10}^{-2}$, $6.5 \times 10^{-2}$, and $6.7 \times 10^{-2}$ respectively.
 %The scaled median difference of the data sets were $-5.6 \times 10^{-2}$, $2.3 \times 10^{-2}$ and $2.3 \times 10^{-2}$ respectively.
@@ -336,8 +369,11 @@ Next we applied the method to simulated phylogenenies with 50\% of the tips cont
 %When we performed the same analysis against the simulated archival times, the results were nearly identical to the results without any latent data, suggesting that we can recover the dates of latent sequences provided an accurate clock.
 
 For our final validation, we took the same strategy as the first validation on synthetic data, and applied it to our {\em plasma} data set --- we censored 50\% of the known sampling dates, then attempted to reconstruct them.
-2 of the individuals from the {\em plasma} data set were screened as invalid after applying the log ratio test to their date reconstruction.
-See Figure \ref{fig:resultsancre} for an example of the date reconstruction from the \emph{plasma} data set and Table \ref{tab:patientserror} for the error metrics for each patient in the \emph{plasma} data set.
+2 of the individuals from the {\em plasma} data set were screened as invalid after applying the log ratio test to their linear models.
+
+Figure \ref{fig:resultsancre} shows an example of the date reconstruction from the \emph{plasma} data set. We can see that in the real data the points do fit around the regression line as well as in the simulated data. (More)
+
+See Table \ref{tab:patientserror} for the error metrics for each patient in the \emph{plasma} data set.
 The binomial test for the \emph{plasma} data predicted that there was no latency ($p=0.45$) as we expected.
 %(Figure \ref{fig:results2} C shows this when the phylogenies have been rooted with outgroup rooting). 
 %Averaged over all simulated data sets, the mean square error was $1.7\times 10^{-1}$, and the absolute value of average median and mean difference were $2.1\times 10^{-4}$ and $1.9\times 10^{-2}$ respectively. 
@@ -365,15 +401,30 @@ See Supplementary Materials (ref) for details of the results using the outgroup 
 
 Of the 20 \emph{mixed} subjects, 5 were screened as invalid after applying the log ratio test to their date reconstruction. All of these patients had RNA sampled over only 2 or 3 time points; however the data from some of the patients who had RNA sequences sampled over only 2 time points passed the log ratio test (Patient 34391 for example).
 
-See Figure \ref{fig:resultslanl} for an example of the regression on the \emph{mixed} data and Table \ref{tab:patientserror} for the error metrics for each patient in the \emph{mixed} data set.
+Figure \ref{fig:resultslanl} shows an example of the regression on the \emph{mixed} data.
+(Explain)
+
+Table \ref{tab:patientserror} contains the error metrics for each patient in the \emph{mixed} data set.
 Figure \ref{fig:densityancre} shows the density plot of the RMSD of each patient from the simulated data set with the density plot of the RMSD of the first set of parametrized simulated data set with latency overlayed.
 Most of the density plots of the \emph{mixed} data set fit well in the simulated data set's density plot and most of the density plots that do not fit well are very negative, which suggests a high degree of viral latency in those patients.
 
 The binomial test predicted that there was latency in the DNA lineages of the \emph{mixed} data set ($p=7.9 \times 10^{-7}$).
-However when restricted to only the individuals who received therapy, the binomial test predicted that there was no latency ($p=0.98$).
-This suggests that there is more viral latency in treatment-naive patients.
+%However when restricted to only the individuals who received therapy, the binomial test predicted that there was no latency ($p=0.98$).
+%This suggests that there is more viral latency in treatment-naive patients.
 
 %The residuals of the {GLME model} without using the transformation were not normally distributed and thus we will only consider the GLME using the transformed differences, $\hat{d}_s$. The $p$-value of the log ratio test between the null model and the GLME was less than $2 \times 10^{-16}$. The mean intercept of the GLME was $13.06$ and the mean coefficient of $d_s$ was $-308.1$. The deviation due to the random effects on the intercept was $15.24$ and the deviation on the coefficient of $d_s$ was $172.1$. A plot of the regression is given in Figure \ref{fig:glm}.
+
+%% Case study
+Finally, we shall consider viral latency under HAART.
+Patient 16617 (Patient 1180 from \cite{Llewellyn06}) was treated 1247 days after seroconversion was with a combination of ddl, Efavirenz and 3TC.
+While on therapy the patient's viral load remained above or below the detectable limit of the study (50 copies/ml).
+However, after treatment was halted 439 days after the onset of therapy the viral load of the patient quickly returned to its previous value before therapy was initated \citep{Llewellyn06}.
+
+In Figure \ref{fig:treatment} we show the results of our pipeline on Patient 16617.
+The dotted green lines indicate the period that the patient was on therapy.
+Due to their relative position to the line of regression, we believe that the (circled) points have undergone latency.
+We can see that there many more apparent latent lineages than in Figures \ref{fig:resultsancre} and \ref{fig:resultslanl}.
+Note that none of the latent lineages appear before the patient started treatment suggesting that the treatment increased the proportion of latent to active cells by reducing the amount of active cells.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section * {Discussion} \label{sec:discuss}
@@ -419,11 +470,14 @@ Furthermore the plasma and simulated data without latency failed to reject the n
 %For patients who had successfully been treated, there appeared to be an emergence of a clock with near zero slope after treatment.
 %This suggests that after a patient begins treatment, the assumption of a molecular clock  is not valid over the whole temporal range of the phylogeny. 
 
-
+%% Strengths and weaknesses
+This model is fast, but simple and serves as a baseline for estimating the time that cellular lineages remain latent.
+(expand strengths and weakness)
+Bayesian methods to estimate unknown sequence dates \citep{Shapiro11} may be more acurrate, but require more computation time (and resources).
 
 %\section * {Conclusion} \label{sec:conclusion}
 %There are ways in which this method could be improved. 
-This model is fast, but simple and serves as a baseline for estimating the time that cellular lineages remain latent; hence there are many ways that this method could be improved.
+There are many ways that this method could be improved.
 These results hinge on the strong assumption of a strict molecular clock over the data, which is unlikely to be true \citep{Shankarappa99}. 
 It may be possible to adapt a relaxed molecular clock (with r8ts \citep{r8ts} for example) to this approach, giving more flexibility over noisy or unreliable data.
 Also, the latency model assumes that lineages become latent within the tip (shortly before sampling); however this is contrary to current research which suggests that infected cells can remain latent for years and can partake in clonal expansion \citep{Maldarelli14}.
@@ -518,7 +572,7 @@ This work was supported by the Canadian Institutes of Health Research (CIHR Team
 		\label{fig:resultsancre}
 	\end{subfigure}
 	\begin{subfigure}[ht]{8cm}
-		\includegraphics[width=8cm]{figures/lanl.pdf}
+		\includegraphics[width=8cm]{figures/lanl_annot.pdf}
 		\caption{Patient 13889 from the \emph{mixed} data set}
 		\label{fig:resultslanl}
 	\end{subfigure}
@@ -550,6 +604,13 @@ This work was supported by the Canadian Institutes of Health Research (CIHR Team
 \end{comment}
 	\caption[Difference Density]{The density of the scaled difference. The solid lines represent the density in the simulated data.}
 	\label{fig:density}
+\end{figure}
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=12cm]{figures/patient_16617_annot.pdf}
+	\caption{Patient 16617 from the \emph{mixed} data set. The time between the green bars represents when the patient underwent therapy.}
+	\label{fig:treatment}
 \end{figure}
 
 \begin{comment}
@@ -677,12 +738,12 @@ Patient ID & $p$-value & Median Difference (days) & RMSD (days) & Scaled RMSD \\
 \begin{tabular}{lrr}
 Data set & Total Scaled RMSD & Total Scaled Median Difference \\ % TMD (days) & Median Latency (days)  \\ 
 \hline
-simulated (no latency) & $4.5 \times 10^{-2}$ & $6.7 \times 10^{-4}$ \\% & $1.3$ & $0$ \\
-simulated (extreme latency) & $3.3 \times 10^{-2}$ & $-5.6 \times 10^{-2}$ \\ % & $-70.$ & $90.$ \\
-simulated (latency 1) & $6.5 \times 10^{-2}$ & $-2.3 \times 10^{-2}$ \\ % & $-51.$ & $35.$ \\
-simulated (latency 2) & $6.7 \times 10^{-2}$ & $-2.3 \times 10^{-2}$ \\ % & $-52.$ & $37.$ \\
+\emph{simulated (no latency)} & $4.5 \times 10^{-2}$ & $6.7 \times 10^{-4}$ \\% & $1.3$ & $0$ \\
+\emph{simulated (extreme latency)} & $3.3 \times 10^{-2}$ & $-5.6 \times 10^{-2}$ \\ % & $-70.$ & $90.$ \\
+\emph{simulated (latency 1)} & $6.5 \times 10^{-2}$ & $-2.3 \times 10^{-2}$ \\ % & $-51.$ & $35.$ \\
+\emph{simulated (latency 2)} & $6.7 \times 10^{-2}$ & $-2.3 \times 10^{-2}$ \\ % & $-52.$ & $37.$ \\
 \emph{plasma} & $4.4 \times 10^{-1}$ & $2.6 \times 10^{-2}$ \\ % & $23.$  & \\
-\emph{mixed} & $3.6 \times 10^{-1}$ & $2.6 \times 10^{-2}$ \\ % & $-41.$ & \\
+\emph{mixed} & $4.8 \times 10^{-1}$ & $-2.6 \times 10^{-2}$ \\ % & $-41.$ & \\
 \hline
 \end{tabular}
 \end{center}
