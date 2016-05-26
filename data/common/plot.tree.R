@@ -1,21 +1,8 @@
+library(ape)
+library(parallel)
 
-args.all <- commandArgs(trailingOnly=F)
 
-make.hist <- function(pdf.file, df) {
-	pdf(pdf.file, width=7, height=7)
-	par(mfrow=c(1, 1), pty="s")
-	dev.hist = dev.cur()
-	
-	par(mar=c(5, 5, 2, 2), ps=12)
-	plot(c(-001,-100), xlim=c(min(df$Error), max(df$Error)), ylim=c(0, 10), xlab="Difference", ylab="Density", axes=F, cex.lab=1)
-	axis(side=1, at=seq(floor(min(df$Error)), ceiling(max(df$Error)), by=100), tck=.01, cex.axis=1)
-	axis(side=2, at=seq(0, 10, by=0.5), tck=.01, cex.axis=1)
-	box()
-	
-	polygon(df$Error, col=rgb(0.5, 0.0, 0.9, 1), xlim=c(-0.1,0.2), border=rgb(1,1,1,0))
-			
-	dev.off()
-}
+args.all <- commandArgs(trailingOnly = F)
 
 if (any(grep("--file=", args.all))) {
 	source.dir <- dirname(sub("--file=", "", args.all[grep("--file=", args.all)]))
@@ -33,14 +20,6 @@ if (any(grep("--file=", args.all))) {
 	}
 }
 
-args <- commandArgs(trailingOnly=T)
-
-pat.id <- args[1]
-tree.path <- args[2]
-treatment.start <- as.numeric(args[3])
-treatment.end <- as.numeric(args[4])
-
-# plot
 source(file.path(source.dir, 'rtt.R'), chdir=T)
 source(file.path(source.dir, 'test.R'), chdir=T)
 #source('../common/raxml.R', chdir=T)
@@ -49,11 +28,15 @@ source(file.path(source.dir, 'test.R'), chdir=T)
 args <- commandArgs(trailing = T)
 
 
-tree.path <- file.path(tree.path, paste0("patient_", pat.id, ".tre"))
-data.type <- 1
-use.rtt <- 2
-out.pdf <- paste0("patient_", pat.id, ".pdf")
-leg.lab <- 0
+tree.path <- args[1]
+data.type <- as.integer(args[2])	# 0 = no dna, 1 = mixed (latency unknown), 2 = mixed (latency known)
+use.rtt <- as.integer(args[3])		# 0 = no, 1 = yes (only plasma), 2 = yes (all)
+r.seed <- as.integer(args[4])
+out.pdf <- args[5]
+leg.lab <- as.integer(args[6])
+
+if (r.seed != 0)
+	set.seed(r.seed)
 
 trim <- function (x) gsub("^\\s+|\\s+$", "", x)
 types <- function(x) gsub("(.+)_((PLASMA)|(PBMC))_([0-9\\.]+)?$", "\\2", x, perl=T)
@@ -185,25 +168,5 @@ pdf(out.pdf, width=8, height=8)
 		
 			legend(l.x, l.y, legend.labels, col = c("black", "red"), pch = c(20, 5), y.intersp=y.intersp, cex=cex)
 		}
-				
-abline(v=treatment.start, col=rgb(0, .8, 0, 1), lty=2, lwd=1)
-abline(v=treatment.end, col=rgb(0, .8, 0, 1), lty=2, lwd=1)
-			
 		
 dev.off()
-
-
-# read data
-df <- read.csv(paste0("data.rttall.csv"), header=T)
-good <- read.csv("good_fits.txt", header=F)
-names(good) <- c("id", "name")
-df.pat <- df[df$Patient == good[good$name == as.numeric(pat.id), 1], ]
-
-# binomial test
-df.pat$Is.Latent <- df.pat$Error > 0
-bin.test <- binom.test(sum(df.pat$Is.Latent), length(df.pat$Is.Latent), alternative="greater")
-bin.test
-
-# histogram
-make.hist(paste0("hist_", pat.id, ".pdf"), df.pat)
-
