@@ -9,6 +9,7 @@
 \usepackage{mathptmx}
 \usepackage{nicefrac}
 \usepackage{authblk}
+\usepackage{xr}
 
 \usepackage{times}
 \usepackage{lineno}
@@ -25,6 +26,8 @@
 \urlstyle{same}
 
 \usepackage[small,compact]{titlesec}
+
+\externaldocument{sm}
 
 %\titleformat{\section} {\vspace{24pt}\bf\sffamily\MakeUppercase}{\thesection} {0pt} {}
 \titleformat{\section} {\vspace{12pt}\bf\large}{\thesection}{0pt}{}
@@ -44,7 +47,7 @@
 
 \author[1,2]{Bradley R. Jones}
 \author[1,2]{Joshua Horacsek}
-\author[1,3]{Jeffrey B. Joy}
+\author[2,3]{Jeffrey B. Joy}
 \author[1,2]{Zabrina L. Brumme}
 \author[1,2,3,*]{Art F.Y. Poon}
 \affil[1]{Simon Fraser University, Burnaby, Canada}
@@ -75,7 +78,7 @@ We propose a simple method to date suspected reservoir sequences using phylogene
 %The simulated and HIV RNA data were used for method validation.
 Our method is as follows: Taking aligned HIV sequences from a single individual sampled over multiple time points, we reconstruct a maximum-likelihood phylogeny.
 The phylogeny is rooted by determining the location of the root using root-to-tip regression.
-Finaly, the root-to-tip distances of possibly latent sequences are mapped to the optimal regression line to estimate reservoir establishment dates.
+Finally, the root-to-tip distances of possibly latent sequences are mapped to the optimal regression line to estimate reservoir establishment dates.
 %Finally, the presence of latent lineages within () was detected using a nonparametric binary test.
 
 To validate our method, we generated simulated HIV sequences and used RAxML to infer phylogenies from the simulated HIV sequences.
@@ -113,7 +116,7 @@ The method utilizes longitudinal plasma HIV RNA sequences sampled over an indivi
 Because HIV-1 sequences within a given infected host rapidly accumulate genetic diversity due to HIV-1's high mutation rate and short generation time \citep{Alizon13,Rambaut04,Shankarappa99}, it is possible reconstruct a phylogenetic tree that represents the ancestor-descendant relationships between HIV-1 sequences sampled longitudinally from within that host.
 A phylogeny that is reconstructed by parameterizing a model of molecular evolution solely on the basis of sequence homology \citep[e.g., by maximum likelihood estimation;][]{Felsenstein81} has branch lengths in units of expected numbers of substitutions, in which the passage of time is confounded with the rate of evolution.
 In other words, a tree that stretches far back in time with a slow rate of evolution will explain a given set of sequences just as effectively as a shallow tree with rapid evolution.
-When sampling dates are known however, the corresponding tips of the phylogeny can be fixed at these timepoints, allowing the rate of evolution be estimated directly \citep{Rodrigo99}.
+When sampling dates are known however, the corresponding tips of the phylogeny can be fixed at these time points, allowing the rate of evolution be estimated directly \citep{Rodrigo99}.
 Knowledge of sampling dates thus enables one to rescale a phylogeny in chronological time, which is especially useful for within-host HIV-1 populations in which substantial genetic differences can accumulate in weeks or months \citep{Williamson03}.
 Moreover, among the actively replicating HIV lineages within a host, the rate of molecular evolution is fairly consistent over time \citep{Korber00,Kuhner95,Leitner99}.
 Consequently, the divergence of descendant lineages from the transmitted/founder virus can be approximated by a ‘strict’ molecular clock model in which a consistent rate of evolution is sustained, at least over the initial years, of an individual's infection course \citep{Keele08}. 
@@ -129,7 +132,7 @@ We then use the linear model to reconstruct tip dates of HIV-1 sequences for whi
 \section * {Methods} \label{sec:methods}
 
 \subsection * {Data sets}
-For our experiments we compiled 6 data sets of real and synthetic longitudunal HIV sequences.
+For our experiments we compiled 6 data sets of real and synthetic longitudinal HIV sequences.
 4 of the data sets were simulated --- 3 of which had viral latency incorporated into their models.
 The other 2 data sets were comprised of real HIV-1 \emph{env} sequences --- one data set contained sequences only from HIV RNA extracted from plasma and the other contained both HIV RNA and HIV DNA extracted from PBMC.
 
@@ -196,7 +199,7 @@ For these data, we generated an additional 150 subjects with 100 sequences each,
 
 \subsubsection * {Data Collection} \label{subsec:dcollection} % Collection of real data
 We collected two distinct sets of real data for our experiments. 
-The first we refer to as the {\em plasma} data set, which comprised over 19,000 published HIV \textit{env} sequences derived from viral RNA from longitudinal plasma samples ($n=335$) collected from 232 different individuals \citep{McCloskey14}. 
+The first we refer to as the {\em plasma} data set, which comprised of sequences derived from viral RNA from longitudinal plasma samples \citep{McCloskey14}. 
 From these data, we selected treatment naive individuals with two or more clonal or single-genome sequences available at each time point, and with a known time-line relative to one of several reference points: HIV infection, seroconversion or presentation of symptomatic seroconversion illness. 
 The baseline samples were collected within 186 days of this reference point, and at least one of the subsequent ``follow-up'' time points occurred a minimum of 6 months after baseline.
 Individuals who had been classified as ``superinfected'' were also excluded \citep{McCloskey14}.
@@ -224,7 +227,7 @@ The \emph{plasma} data set had already been aligned and cleaned \citep{McCloskey
 Each data set, real and simulated, was run through our blind dating pipeline.
 First we reconstructed each patient's phylogeny from their HIV sequences.
 Then we censored the dates of the possibly latent tips and applied a linear model to predict the dates of the censored tips.
-Finally we applied a nonparamatric binomial test to detect the presence of latency in the data set.
+Finally we applied a nonparametric binomial test to detect the presence of latency in the data set.
 
 \subsubsection * {Phylogenetic Reconstruction} \label{subsec:phylo}
 In our experiments, our reconstructed phylogenies were maximum likelihood phylogenies reconstructed using RAxML 8.2.4 \citep{Raxml14} with the GTR model.
@@ -338,10 +341,10 @@ A nonparametric binomial test on the sign of the difference between sampling and
 %For the simulated data with viral latency, we computed the difference between the reconstructed date and the sampling date and the difference between the reconstructed date and the become latent date.
 %See Figure \ref{fig:resultslatent} for an example of the regression on the simulated data with latency.
 
-Next we applied the method to simulated phylogenenies with 50\% of the tips containing viral latency.
+Next we applied the method to simulated phylogenies with 50\% of the tips containing viral latency.
 We only censored the tips that had latency.
 We used three models to produce latency, one extreme and two realistic; their details are in the Methods section.
-In Figure \ref{fig:resultslatent}, we have an example of the date reconstruction of a simulated patient with viral latency incorportated from the \emph{simulated (latency 1)} data set.
+In Figure \ref{fig:resultslatent}, we have an example of the date reconstruction of a simulated patient with viral latency incorporated from the \emph{simulated (latency 1)} data set.
 Each HIV sequence from the simulated patient is plotted on a genetic distance versus collection time plot.
 The viral integration time of each latent tip is also plotted and line connects the point to its sampling time.
 The phylogeny generated for the patient in Figure \ref{fig:resultslatent} is the same phylogeny as the patient in Figure \ref{fig:resultssimulated}, except that the censored tips were also shortened to simulated viral latency.
@@ -384,7 +387,7 @@ The binomial test for the \emph{plasma} data predicted that there was no latency
 
 The error metric from the linear regression for the simulated and real data sets in given in Table \ref{tab:error}.
 It is important to note that the RMSD of the simulated data is much lower that RMSD of the real data.
-Figure \ref{fig:densityancre} shows the density plot of the RMSD of each patient from the \emph{plasma} data set with the density plot of the RMSD of the simulated data set without latency overlayed.
+Figure \ref{fig:densityancre} shows the density plot of the RMSD of each patient from the \emph{plasma} data set with the density plot of the RMSD of the simulated data set without latency overlaid
 Although not all of the density plots fit into the simulated data set's density plot, some of the density plots fit very well.
 
 \subsection * {Application} \label{sec:mixed_data}
@@ -412,7 +415,7 @@ Even so the linear model for this patient passed our screening criterion and the
 The sequence circled in blue appears far to right of the regression line and is not nearby the other points sampled at the same time.
 This suggests that this particular lineage underwent viral latency.
 
-In Figure \ref{fig:densityancre}, we have the density plot of the RMSD of each patient from the simulated data set with the density plot of the RMSD of the first set of parametrized simulated data set with latency overlayed.
+In Figure \ref{fig:densityancre}, we have the density plot of the RMSD of each patient from the simulated data set with the density plot of the RMSD of the first set of parametrized simulated data set with latency overlaid
 Most of the density plots of the \emph{mixed} data set fit well in the simulated data set's density plot and most of the density plots that do not fit well are very negative, which suggests a high degree of viral latency in those patients.
 The binomial test predicted that there was latency in the DNA lineages of the \emph{mixed} data set ($p=7.9 \times 10^{-7}$).
 %However when restricted to only the individuals who received therapy, the binomial test predicted that there was no latency ($p=0.98$).
@@ -424,7 +427,7 @@ The binomial test predicted that there was latency in the DNA lineages of the \e
 Finally, we shall consider viral latency under HAART.
 Patient 16617 (Patient 1180 from \cite{Llewellyn06}) was treated 1247 days after seroconversion was with a combination of ddl, Efavirenz and 3TC.
 While on therapy the patient's viral load remained at or below the detectable limit of the study (50 copies/ml).
-However, after treatment was halted 439 days after the onset of therapy, the viral load of the patient quickly returned to its previous value before therapy was initated \citep{Llewellyn06}.
+However, after treatment was halted 439 days after the onset of therapy, the viral load of the patient quickly returned to its previous value before therapy was initiated \citep{Llewellyn06}.
 
 In Figure \ref{fig:treatment} we show the results of our pipeline on Patient 16617.
 The dotted green lines indicate the period that the patient was on therapy.
@@ -524,7 +527,7 @@ This work was supported by the Canadian Institutes of Health Research (CIHR Team
 	%Above is a time calibrated phylogeny with three taxa, the dotted line in is an example of latency. 
 	One of these lineages had become latent at an earlier point in time (red hexagon).
 	This lineage subsequently underwent negligible molecular evolution until it was sampled as integrated viral DNA (dashed circle).
-	If the relationship between sequence divergence and time is sufficiently linear, then the time between l;atency establishment and sampling, here represented by the thick red dashed line, can be inferred from its sequence.
+	If the relationship between sequence divergence and time is sufficiently linear, then the time between l;latency establishment and sampling, here represented by the thick red dashed line, can be inferred from its sequence.
 	%Sequence A was archived at time $t$, and was collected at the same time as sequence B, at time $t^\prime$ (a drift of $t^\prime - t$ is expected).
 	%If the molecular clock assumption holds true, the MRCA is known, and B and C are reliable time-points, then the date at $t$ can be inferred from from the expected amount of evolution for B from the root.
 	}
