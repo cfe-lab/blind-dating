@@ -9,7 +9,6 @@
 \usepackage{mathptmx}
 \usepackage{nicefrac}
 \usepackage{authblk}
-\usepackage{xr}
 
 \usepackage{times}
 \usepackage{lineno}
@@ -26,9 +25,6 @@
 \urlstyle{same}
 
 \usepackage[small,compact]{titlesec}
-
-\externaldocument{sm}
-
 %\titleformat{\section} {\vspace{24pt}\bf\sffamily\MakeUppercase}{\thesection} {0pt} {}
 \titleformat{\section} {\vspace{12pt}\bf\large}{\thesection}{0pt}{}
 \titleformat{\subsection} {\vspace{6pt}\bf}{\thesubsection} {0pt} {\vspace{-2pt}}
@@ -185,7 +181,7 @@ For the first set, we computed $l$ from the mean half life ($3.6$ years) estimat
 Using this estimate we computed $l = 5.3 \times 10^{-4}$ day$^{-1}$.
 We estimated $i$ from the frequency of latent cells found by \cite{Ho13} ($i = 3. \times 10^{-4}$ day$^{-1}$).
 For the second set we calculated $l = 2.8 \times 10^{-4}$ day$^{-1}$ and $i = 1.5 \times 10^{-4}$ day$^{-1}$ based on the model of \cite{Kim06}.
-See Supplementary Materials (ref) for details.
+See Supplementary Materials S1 for details.
 
 %% For supplementary
 %We took $u$ to equal their $a_0 = c\frac{V_0}{NL_0}-(1-f)(1-\epsilon)kT_0\frac{V_0}{L_0}$ with $c = \delta$, $N = \lambda$,  $\frac{V_0}{L_0} = f$, $\epsilon = 0$, $k = \lambda$, $T_0 = 1$ and $f = 0.003$.
@@ -381,7 +377,7 @@ This implies
 
 See Table \ref{tab:patientserror} for the error metrics for each patient in the \emph{plasma} data set.
 The binomial test for the \emph{plasma} data predicted that there was no latency ($p=0.45$) as we expected.
-%(Figure \ref{fig:results2} C shows this when the phylogenies have been rooted with outgroup rooting). 
+%(Figure \ref{fig:results2} C shows this when the phylogenies have been rooted with out-group rooting). 
 %Averaged over all simulated data sets, the mean square error was $1.7\times 10^{-1}$, and the absolute value of average median and mean difference were $2.1\times 10^{-4}$ and $1.9\times 10^{-2}$ respectively. 
 %The density plot shows similar behavior to that of the synthetic data, except with a wider distribution, and more variation.
 
@@ -403,7 +399,7 @@ Although not all of the density plots fit into the simulated data set's density 
 Finally, we tested our methodology on the {\em mixed} data set to look for evidence of viral latency.
 Overall, we found that the RTT regression performed better or just as well as the outgroup rooting based on the number of patients who fail the log ratio test of the linear regression.
 Hence from now on, we only consider the results using RTT regression.
-See Supplementary Materials (ref) for details of the results using the outgroup rooting.
+See Supplementary Materials S2 for details of the results using the outgroup rooting.
 
 Of the 20 \emph{mixed} subjects, 5 were screened as invalid after applying the log ratio test to their date reconstruction.
 All of these patients had RNA sampled over only 2 or 3 time points; however the data from some of the patients who had RNA sequences sampled over only 2 time points passed the log ratio test (Patient 34391 for example).
@@ -723,9 +719,9 @@ Patient ID & $p$-value & Median Difference (days) & RMSD (days) & Scaled RMSD \\
 \badpat{10137 & $0.031$ & 810 & 890 & 0.32} \\
 10138 & $< 2.2 \times 10^{-15}$ & -19. & 560 & 0.18 \\
 \badpat{10586 & $0.44$ & $5.2 \times 10^3$ & $7.8 \times 10^{3}$ & 1.7} \\
-13889 & $< 2.2 \times 10^{-15}$ & -180 & 628.9 & 0.13 \\
-\badpat{34391 & 0.018 & -65.06 & 220 & 0.59} \\
-34393 & $2.3 \times 10^{-4}$ & -5.2 & 103.6 & 0.29 \\
+13889 & $< 2.2 \times 10^{-15}$ & -180 & 630 & 0.13 \\
+\badpat{34391 & 0.018 & -65. & 220 & 0.59} \\
+34393 & $2.3 \times 10^{-4}$ & -5.2 & 100 & 0.29 \\
 \badpat{34396 & 0.15 & -710 & 630 & 1.9} \\
 34399 & $< 2.2 \times 10^{-15}$ & -110 & 250 & 0.17 \\
 \badpat{34408 & 0.50 & -77 & $1.0 \times 10^{3}$ & 1.9} \\
