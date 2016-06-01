@@ -20,7 +20,7 @@ output_file = sys.argv[2]
 with open(input_file) as fi:
 	with open(output_file, 'w') as fo:
 		for l in fi:
-			new_l = l
+			new_l = l.replace("-0", "0")
 			i = new_l.find("e-", 0)
 			
 			while i > -1:

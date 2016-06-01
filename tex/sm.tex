@@ -27,8 +27,12 @@
 
 \usepackage[small,compact]{titlesec}
 
+\renewcommand{\thefigure}{S\arabic{figure}}
+\renewcommand{\thetable}{S\arabic{table}}
+\renewcommand{\thesection}{S\arabic{section}}
+
 %\titleformat{\section} {\vspace{24pt}\bf\sffamily\MakeUppercase}{\thesection} {0pt} {}
-\titleformat{\section} {\vspace{12pt}\bf\large}{S\thesection\ }{0pt}{}
+\titleformat{\section} {\vspace{12pt}\bf\large}{\thesection\ }{0pt}{}
 \titleformat{\subsection} {\vspace{6pt}\bf}{\thesubsection} {0pt} {\vspace{-2pt}}
 \titleformat{\subsubsection} [runin] {\bf}{\thesubsubsection} {12pt} {}
 
@@ -61,15 +65,26 @@
 \maketitle
 
 % Sections
+\begin{comment}
 \section{\emph{simulated (latency 2)} latency model parameter deriviation} \label{sec:latencyparams}
-%% Fix
-We took $u$ to equal their $a_0 = c\frac{V_0}{NL_0}-(1-f)(1-\epsilon)kT_0\frac{V_0}{L_0}$ with $c = \delta$, $N = \lambda$,  $\frac{V_0}{L_0} = f$, $\epsilon = 0$, $k = \lambda$, $T_0 = 1$ and $f = 0.003$.
-This gives $u = 0.00028$.
-We took $l = f(1-\epsilon_{RT})k$ with $\epsilon_{RT} = 0$ and $f$ and $k$ as above.
-Using this approach, we get $l = 0.00015$.
+We derived the values for the parameters, $l$ and $i$, for the \emph{simulated (latency 2)} from the dynamic model of \cite{Kim06}. Their model is as follows:
+\[\frac{da}{dt} = -\omega(a-a_{\text{min}}) \]
+\[\frac{dT^*}{dt} = (1-f)(1-\epsilon )kT_0V + aL - \delta T^*\]
+\[\frac{dL}{dt} = f(1-\epsilon )kT_0V + rL - aL\]
+\[\frac{dV}{dt} = N\delta T^* - cV\]
+where $a$ is the activation rate of the latently-infected T-cells, $T^*$ is the number of actively-infected T-cells, $L$ is the number of latently-infected T-cells and $V$ is the numnber of HIV virions and $t$ is time given in days.
+The parameters of the model are described in Table \ref{tab:modelparams}.
+The values we used for the model parameters are also given in Table \ref{tab:modelparams} and are derived from their paper unless otherwise stated.
+
+We took $l$ to equal their $a_0$, which is the initial value of the activation rate $a$.
+In order for the model to give a realistic solution, \cite{Kim06} require that $a_0 \leq c\frac{V_0}{NL_0}-(1-f)(1-\epsilon)kT_0\frac{V_0}{L_0}$.
+We follow them when they choose $a_0$ to be the maximum such value to get $l = a_0 = 5.8 \times 10^{-3}$ day$^{-1}$.
+We took $i$ to be the infection rate of latently-infected cells: $f(1-\epsilon)k$.
+Using this approach, we get $i = 2.0 \times 10^{-12}$ day$^{-1}$.
+\end{comment}
 
 \section{Results with outgroup rooting} \label{sec:ogr}
-Supplementary Materials Table \ref{tab:patientserrorogr} shows the results of the linear model on the data sets using outgroup rooting to root the phylogenies.
+Supplementary Materials Table \ref{tab:patientserrorogr} shows the results of the linear model on the data sets using outgroup rooting \citep{Huelsenbeck02} to root the phylogenies.
 5 patients from the \emph{plasma} data set and 7 patients from the \emph{mixed} data set were rejected by our screening process when using outgroup rooting.
 Overall, outgroup rooting performed poorer than rooting with root-to-tip regression, in terms of the $p$-values of the linear models and the resulting RMSD's.
 
@@ -88,19 +103,27 @@ Also included in this Supplementary Materials are the corresponding figuresof th
 
 \begin{figure}[ht]
 	\centering
+	\includegraphics[width=12cm]{figures/simulated_extreme.pdf}
+	\caption[Simulated Data]{Plot from the \emph{simulated (extreme latency)} data set of the evolutionary distance vs time. The dotted line is the linear regression.}
+%	Patient: HIV_12
+	\label{fig:resultsextreme}
+\end{figure}
+
+\begin{figure}[ht]
+	\centering
 	\begin{subfigure}[ht]{8cm}
 		\includegraphics[width=8cm]{{figures/ancre.ogr}.pdf}
 		\caption{Patient 2658 from the \emph{plasma} data set}
-		\label{fig:resultsancre}
+		\label{fig:resultsancreogr}
 	\end{subfigure}
 %	Patient: patient_1
 	\begin{subfigure}[ht]{8cm}
 		\includegraphics[width=8cm]{{figures/lanl.ogr}.pdf}
 		\caption{Patient 13889 from the \emph{mixed} data set}
-		\label{fig:resultslanl}
+		\label{fig:resultslanlogr}
 	\end{subfigure}
 	\caption[Examples]{As Figure 4 from the primary work, except using outgroup rooting.}
-	\label{fig:results2}
+	\label{fig:results2ogr}
 \end{figure}
 
 \begin{figure}[ht]
@@ -109,22 +132,14 @@ Also included in this Supplementary Materials are the corresponding figuresof th
 		\centering
 		\includegraphics[width=8cm]{{figures/ancre.hist.ogr}.pdf}
 		\caption{Density of the scaled difference of the \emph{plasma} data set with a solid line representing the density of the difference of the simulated data set without latency.}
-		\label{fig:densityancre}
+		\label{fig:densityancreogr}
 	\end{subfigure}
 	\begin{subfigure}[ht]{8cm}
 		\centering
 		\includegraphics[width=8cm]{{figures/lanl.hist1.ogr}.pdf}
 		\caption{Density of the scaled difference of the \emph{plasma} data set with a solid line representing the density of the scaled difference of the first set of simulated data set with latency.}
-		\label{fig:densitylanl}
+		\label{fig:densitylanlogr}
 	\end{subfigure}
-\begin{comment}
-	\begin{subfigure}[ht]{8cm}
-		\centering
-		\includegraphics[width=8cm]{{figures/lanl.hist2}.pdf}
-		\caption{Density of the scaled difference of the \emph{plasma} data set with a solid line representing the density of the scaled difference of the second set of simulated data set with latency.}
-		\label{fig:densitylanl2}
-	\end{subfigure}
-\end{comment}
 	\caption[Difference Density]{As Figure 5 from the primary work, except using outgroup rooting.}
 	\label{fig:density}
 \end{figure}
@@ -136,7 +151,39 @@ Also included in this Supplementary Materials are the corresponding figuresof th
 	\label{fig:treatment}
 \end{figure}
 
+\begin{figure}[ht]
+	
+\end{figure}
+
 % Tables
+\begin{comment}
+\begin{table}[!ht]
+\def\arraystretch{1.3}%
+\begin{center}
+\begin{tabular}{llr}
+Parameter & Description & Value \\
+\hline
+$\omega$ & Decay rate of the activation rate & \\
+$a_{\text{min}}$ & Minimum of the activation rate & \\
+$f$ & Proportion of infected cells that become latent & $3. \times 10^{-6}$ \\
+$\epsilon$ & Drug efficacy & $0.7$ \\
+$k$ & Viral infectivity & $2.248 \times 10^{-6}$ $\mu$l/day \\
+$T_0$ & Inital concentration of uninfected T-cells & $565$ $\mu$l$^{-1}$ \\
+$\delta$ & Actively-infected T-cell death rate & \\
+$r$ & Latently-infected T-cell regeneration rate & \\
+$N$ & Number of virions produced by a single infected T-cell & $2. \times 10^4$  \\
+$c$ & Virion clearance rate & $23$ day$^{-1}$ \\
+$V_0$ & Inital number of virions & $7.5 \times 10^5$ \\
+$L_0$ & Inital number of latently-infected cells & $1.0 \times 10^5$ \\
+\hline
+\end{tabular}
+\end{center}
+\caption{The parameters and their values for the dynamic model from \cite{Kim06}.
+Parameters unused in our analysis are given no value.}
+\label{tab:modelparams}
+\end{table}
+\end{comment}
+
 \begin{table*}[!ht]
 \def\arraystretch{1.3}%
 \begin{center}

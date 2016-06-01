@@ -176,12 +176,12 @@ The second method was intended to be more realistic and is as follows. For each 
 \end{enumerate}
 See Figure \ref{fig:latencymodel} for an illustration of this model.
 
-We utilized two sets of values for the parameters $l$ and $i$ of the second method to simulate viral latency.
-For the first set, we computed $l$ from the mean half life ($3.6$ years) estimated by \cite{Crooks15}.
-Using this estimate we computed $l = 5.3 \times 10^{-4}$ day$^{-1}$.
+We derived the parameters, $l$ and $i$, from results found in the literature.
+We computed $l$ from the mean half life ($3.6$ years) estimated by \cite{Crooks15}.
+Using this estimate we calculated $l = 5.3 \times 10^{-4}$ day$^{-1}$.
 We estimated $i$ from the frequency of latent cells found by \cite{Ho13} ($i = 3. \times 10^{-4}$ day$^{-1}$).
-For the second set we calculated $l = 2.8 \times 10^{-4}$ day$^{-1}$ and $i = 1.5 \times 10^{-4}$ day$^{-1}$ based on the model of \cite{Kim06}.
-See Supplementary Materials S1 for details.
+%For the second set we calculated $l = 2.8 \times 10^{-4}$ day$^{-1}$ and $i = 1.5 \times 10^{-4}$ day$^{-1}$ based on the model of \cite{Kim06}.
+%See Supplementary Materials S1 for details.
 
 %% For supplementary
 %We took $u$ to equal their $a_0 = c\frac{V_0}{NL_0}-(1-f)(1-\epsilon)kT_0\frac{V_0}{L_0}$ with $c = \delta$, $N = \lambda$,  $\frac{V_0}{L_0} = f$, $\epsilon = 0$, $k = \lambda$, $T_0 = 1$ and $f = 0.003$.
@@ -190,8 +190,8 @@ See Supplementary Materials S1 for details.
 %Using this approach, we get $l = 0.00015$.
 
 We then recorded both the simulated waiting time to latency and the simulated collection time and generated sequences along these latent seed trees with INDELible using the same parameters as above.
-The set of simulated subjects created from each of these methods comprise the \emph{simulated (no extreme)}, \emph{simulated (latency 1)}, and \emph{simulated (latency 2)} data sets respectively.
-For these data, we generated an additional 150 subjects with 100 sequences each, bringing the total amount of simulated data to 200 subjects and 20,000 sequences.
+The set of simulated subjects created from each of these methods comprise the \emph{simulated (extreme)} and \emph{simulated (latency)} data sets respectively.
+For these data, we generated an additional 100 subjects with 100 sequences each, bringing the total amount of simulated data to 150 subjects and 20,000 sequences.
 
 \subsubsection * {Data Collection} \label{subsec:dcollection} % Collection of real data
 We collected two distinct sets of real data for our experiments. 
@@ -320,7 +320,7 @@ In Figure \ref{fig:resultssimulated}, we show an example of the date reconstruct
 Each HIV sequence from the simulated patient is plotted on a genetic distance versus collection time plot.
 Note how the points all lie close to the line of regression, which indicates the predicted values of the linear model.
 %The scaled RMSD of the reconstructed dates was $4.5 \times 10^{-2}$ and the scaled median difference $6.7 \times 10^{-4}$.
-A nonparametric binomial test on the sign of the difference between sampling and reconstructed dates agrees that there is no latency ($p = 0.74$).
+A nonparametric binomial test on the sign of the difference between sampling and reconstructed dates suggests that there is no evidence of viral latency ($p = 0.74$).
 
 %For all of the simulated subjects, we were able to reject the null hypothesis of the date reconstruction regression. See Figure \ref{fig:resultssimulated} for an example of the regression on the simulated data without latency.
 
@@ -339,17 +339,20 @@ A nonparametric binomial test on the sign of the difference between sampling and
 
 Next we applied the method to simulated phylogenies with 50\% of the tips containing viral latency.
 We only censored the tips that had latency.
-We used three models to produce latency, one extreme and two realistic; their details are in the Methods section.
-In Figure \ref{fig:resultslatent}, we have an example of the date reconstruction of a simulated patient with viral latency incorporated from the \emph{simulated (latency 1)} data set.
+We used tone models to produce latency, one extreme and one realistic; the details of these methods are in the Methods section.
+In Figure \ref{fig:resultslatent}, we have an example of the date reconstruction of a simulated patient with viral latency incorporated from the \emph{simulated (latency)} data set.
 Each HIV sequence from the simulated patient is plotted on a genetic distance versus collection time plot.
 The viral integration time of each latent tip is also plotted and line connects the point to its sampling time.
 The phylogeny generated for the patient in Figure \ref{fig:resultslatent} is the same phylogeny as the patient in Figure \ref{fig:resultssimulated}, except that the censored tips were also shortened to simulated viral latency.
 We can see that most of the `latent' sequences appear to the right of the regression line and some are substantially far to the right.
+See Supplementary Materials Figure S1 for a similar figure from the \emph{simulated (extreme)} data set.
 The nonparametric binomial test correctly predicted that there was latency in each of these data sets ($p < 2.2 \times 10^{-15}$ for each data set).
 
 The difference of the sampling date and the predicted date of a tip is analogous to the amount of latency in the tip's lineage.
-The RMSD between this difference and the actual amount latency simulated in each simulated data set were $83$, $85$, and $77$ days.
-One reason that these RMSD's are high is that some of the some of the predicted dates where later than the sampling dates leading to a negative difference. In contrast, the latency periods are always positive.
+The RMSD between this difference and the actual amount of latency simulated in the \emph{simulated (extreme)} and \emph{simulated (latency)} were $77.$ and $83.$ days respectively.
+One reason that these RMSD's are high is that some of the some of the predicted dates were later than the sampling dates leading to a negative difference.
+In contrast, the latency periods are always positive.
+Ignoring the differences that are negative, we estimated the latency of 80\% and 71\% of the latent lineages in the \emph{simulated (extreme)} and \emph{simulated (latency)} data sets with RMSD's of $64.$ and $75.$ days respectively.
 
 %The total scaled RMSDs of three simulated models with viral latency were $3.3 \times{10}^{-2}$, $6.5 \times 10^{-2}$, and $6.7 \times 10^{-2}$ respectively.
 %The scaled median difference of the data sets were $-5.6 \times 10^{-2}$, $2.3 \times 10^{-2}$ and $2.3 \times 10^{-2}$ respectively.
@@ -376,7 +379,7 @@ Three of the censored points (circled in blue) appear far to the right of the re
 This implies
 
 See Table \ref{tab:patientserror} for the error metrics for each patient in the \emph{plasma} data set.
-The binomial test for the \emph{plasma} data predicted that there was no latency ($p=0.45$) as we expected.
+The binomial test for the \emph{plasma} data predicted that there was no evidence of viral latency ($p=0.45$) as we expected.
 %(Figure \ref{fig:results2} C shows this when the phylogenies have been rooted with out-group rooting). 
 %Averaged over all simulated data sets, the mean square error was $1.7\times 10^{-1}$, and the absolute value of average median and mean difference were $2.1\times 10^{-4}$ and $1.9\times 10^{-2}$ respectively. 
 %The density plot shows similar behavior to that of the synthetic data, except with a wider distribution, and more variation.
@@ -399,7 +402,7 @@ Although not all of the density plots fit into the simulated data set's density 
 Finally, we tested our methodology on the {\em mixed} data set to look for evidence of viral latency.
 Overall, we found that the RTT regression performed better or just as well as the outgroup rooting based on the number of patients who fail the log ratio test of the linear regression.
 Hence from now on, we only consider the results using RTT regression.
-See Supplementary Materials S2 for details of the results using the outgroup rooting.
+See Supplementary Materials S1 for details of the results using the outgroup rooting.
 
 Of the 20 \emph{mixed} subjects, 5 were screened as invalid after applying the log ratio test to their date reconstruction.
 All of these patients had RNA sampled over only 2 or 3 time points; however the data from some of the patients who had RNA sequences sampled over only 2 time points passed the log ratio test (Patient 34391 for example).
@@ -746,9 +749,9 @@ Patient ID & $p$-value & Median Difference (days) & RMSD (days) & Scaled RMSD \\
 Data set & Total Scaled RMSD & Total Scaled Median Difference \\ % TMD (days) & Median Latency (days)  \\ 
 \hline
 \emph{simulated (no latency)} & $4.5 \times 10^{-2}$ & $6.7 \times 10^{-4}$ \\% & $1.3$ & $0$ \\
-\emph{simulated (extreme latency)} & $3.3 \times 10^{-2}$ & $-5.6 \times 10^{-2}$ \\ % & $-70.$ & $90.$ \\
-\emph{simulated (latency 1)} & $6.5 \times 10^{-2}$ & $-2.3 \times 10^{-2}$ \\ % & $-51.$ & $35.$ \\
-\emph{simulated (latency 2)} & $6.7 \times 10^{-2}$ & $-2.3 \times 10^{-2}$ \\ % & $-52.$ & $37.$ \\
+\emph{simulated (extreme)} & $3.3 \times 10^{-2}$ & $-5.6 \times 10^{-2}$ \\ % & $-70.$ & $90.$ \\
+\emph{simulated (latency)} & $6.5 \times 10^{-2}$ & $-2.3 \times 10^{-2}$ \\ % & $-51.$ & $35.$ \\
+%\emph{simulated (latency 2)} & $6.7 \times 10^{-2}$ & $-2.3 \times 10^{-2}$ \\ % & $-52.$ & $37.$ \\
 \emph{plasma} & $4.4 \times 10^{-1}$ & $2.6 \times 10^{-2}$ \\ % & $23.$  & \\
 \emph{mixed} & $4.8 \times 10^{-1}$ & $-2.6 \times 10^{-2}$ \\ % & $-41.$ & \\
 \hline
