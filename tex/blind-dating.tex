@@ -5,7 +5,7 @@
 \usepackage{colortbl}
 \usepackage{comment}
 \usepackage{caption}
-\usepackage[labelfont=bf,textfont=bf]{subcaption}
+\usepackage{subcaption}
 \usepackage{mathptmx}
 \usepackage{nicefrac}
 \usepackage{authblk}
@@ -41,7 +41,7 @@
 \newcommand{\tabletitle}[1]{\caption*{\bfseries #1}\vspace{-10pt}}
 \newcommand{\figtitle}[1]{\caption*{\Large \bfseries #1}}
 \newcommand{\figtitlel}[1]{\subcaption[\large \bfseries]{#1}}
- 
+
 \begin{document}
 
 \title{Blind dating: a phylogenetic approach to determining the ages of HIV-1 reservoir sequences within host}
@@ -222,7 +222,6 @@ We utilized samples from treatment naive individuals from \cite{Shankarappa99, N
 See Table \ref{tab:patients} for details on the patients from these data sets.
 
 \begin{table*}
-\tabletitle{Patient sequence data}
 \def\arraystretch{1.3}%
 \begin{center}
 \begin{tabular}{llrrrrrrr} 
@@ -268,7 +267,9 @@ Reference & Patient ID & \multicolumn{3}{c}{Sequences} & \multicolumn{3}{c}{Time
 \hline
 \end{tabular}
 \end{center}
-  \caption{Summary of all the patient data collected from the HIV LANL database in the real data sets. Patient ID corresponds to the Los Alamos database's Patient ID \citep{LosAlamos}.
+  \caption{
+  {Summary of all the patient data collected from the HIV LANL database in the real data sets.}
+  Patient ID corresponds to the Los Alamos database's Patient ID \citep{LosAlamos}.
    }\label{tab:patients} 
 \end{table*}
 
@@ -444,7 +445,7 @@ The binomial test for the \emph{plasma} data predicted that there was no evidenc
 %The density plot shows similar behavior to that of the synthetic data, except with a wider distribution, and more variation.
 
 \begin{table*}
-\tabletitle{Linear model details}
+%\tabletitle{Linear model details}
 \def\arraystretch{1.3}%
 \begin{center}
 \begin{tabular}{+l^r^r^r^r} 
@@ -483,8 +484,10 @@ Patient ID & $p$-value & Median Difference (days) & RMSD (days) & Scaled RMSD \\
 \hline
 \end{tabular}
 \end{center}
-  \caption{Details of the linear models applied to the real data sets. RMSD is the root mean squared deviance. Patients where we were unable to reject the null hypothesis are marked in bold.
-   }\label{tab:patientserror} 
+	\caption{
+	{Details of the linear models applied to the real data sets.}
+	RMSD is the root mean squared deviance. Patients where we were unable to reject the null hypothesis are marked in bold.
+	}\label{tab:patientserror} 
 \end{table*}
 
 The error metric from the linear regression for the simulated and real data sets in given in Table \ref{tab:error}.
@@ -493,7 +496,6 @@ Figure \ref{fig:densityancre} shows the density plot of the RMSD of each patient
 Although not all of the density plots fit into the simulated data set's density plot, some of the density plots fit very well.
 
 \begin{table*}
-\tabletitle{Error metrics}
 \def\arraystretch{1.3}%
 \begin{center}
 \begin{tabular}{lrr}
@@ -508,8 +510,9 @@ Data set & Total Scaled RMSD & Total Scaled Median Difference \\ % TMD (days) & 
 \hline
 \end{tabular}
 \end{center}
- \caption{Details of the error metrics of the linear models applied to each data set.
- % Scaled RMSD is the total scaled root mean squared deviance, TSMD is the total scaled median difference, TMD is the total median difference.
+ \caption{
+ {Details of the error metrics of the linear models applied to each data set.}
+ %Total Scaled RMSD is the total scaled root mean squared deviance, TSMD is the total scaled median difference, TMD is the total median difference.
  }\label{tab:error} 
 \end{table*}
 
@@ -665,11 +668,11 @@ Supplemenatary Materials and Figures: sm.pdf.
 %\section * {Figures}
 
 \begin{figure}[p]
-	\figtitle{Latency scheme}
 	\centering
 	\includegraphics{figures/latency-scheme}
 	\caption[Latency Scheme]{
-	Reconstructing the time that a viral lineage entered a latent state from sequence variation. A dashed line illustrates the linear relationship between the divergence of lineages from the ancestral sequence at the root ($y$-axis) and passage of time since the root ($x$-axis).
+	{Reconstructing the time that a viral lineage entered a latent state from sequence variation.}
+	A dashed line illustrates the linear relationship between the divergence of lineages from the ancestral sequence at the root ($y$-axis) and passage of time since the root ($x$-axis).
 	Grey lines represent the reconstructed phylogenetic relationships among these lineages.
 	The lineages were sampled (open circles) at three points in time.
 	%Above is a time calibrated phylogeny with three taxa, the dotted line in is an example of latency. 
@@ -685,11 +688,10 @@ Supplemenatary Materials and Figures: sm.pdf.
 \clearpage
 
 \begin{figure}[p]
-	\figtitle{Latency model}
 	\centering{}
 	\includegraphics[width=10cm]{figures/latency-model}
 	\caption[Latency Model]{
-	An illustration of the model simulating viral latency.
+	{Model simulating viral latency.}
 	On a tip with branch length $S$, we randomly select a latency period, $L$ --- after which time the lineage would reactivate if it had not been sampled.
 	Then we randomly select an integration period, $I$ --- the waiting period before integration --- between the interval $S-L$ and $S$.
 	Here, $S-L$ is the earliest that the sequence could be integrated and still be sampled before activation.
@@ -703,18 +705,19 @@ Supplemenatary Materials and Figures: sm.pdf.
 \begin{figure}[p]
 	\centering
 	\begin{subfigure}[ht]{8cm}
-		\figtitlel{Simulated data without latency}
-		\label{fig:resultssimulated}
 		\centering
 		\includegraphics[width=8cm]{figures/simulated.pdf}
+		\figtitlel{Simulated data without latency}
+		\label{fig:resultssimulated}
 	\end{subfigure}
 	\begin{subfigure}[ht]{8cm}
-		\figtitlel{Simulated data with latency}
-		\label{fig:resultslatent}
 		\centering{}
 		\includegraphics[width=8cm]{figures/simulated_latent1.pdf}
+		\figtitlel{Simulated data with latency}
+		\label{fig:resultslatent}
 	\end{subfigure}
-	\caption[Simulated Data]{Plots from the simulated data set of the evolutionary distance vs time.
+	\caption[Simulated Data]{
+	{Simulated data.}
 	The dotted line is the linear regression.
 	The solid red lines in (\subref{fig:resultslatent}) connect the sampled dates of a lineage to its integration date.
 	(\subref{fig:resultssimulated}) shows an example from the \emph{simulated (no latency)} data set and (\subref{fig:resultslatent}) shows an example from the \emph{simulated (latency)} data set.
@@ -728,18 +731,21 @@ Supplemenatary Materials and Figures: sm.pdf.
 \begin{figure}[p]
 	\centering
 	\begin{subfigure}[ht]{8cm}
+		\includegraphics[width=8cm]{figures/ancre.pdf}
 		\caption{Patient 2658 from the \emph{plasma} data set}
 		\label{fig:resultsancre}
-		\includegraphics[width=8cm]{figures/ancre.pdf}
 	\end{subfigure}
 %	Patient: patient_1
 	\begin{subfigure}[ht]{8cm}
+		\includegraphics[width=8cm]{figures/lanl.pdf}
 		\caption{Patient 13889 from the \emph{mixed} data set}
 		\label{fig:resultslanl}
-		\includegraphics[width=8cm]{figures/lanl.pdf}
 	\end{subfigure}
-	\caption[Examples]{As Figure \ref{fig:results1}, except for the real data.
-	Interesting sequences are circled in blue.}
+	\caption[Examples]{
+	{Real data.}
+	As Figure \ref{fig:results1}, except for the real data.
+	Interesting sequences are circled in blue.
+	}
 	\label{fig:results2}
 \end{figure}
 
@@ -748,29 +754,33 @@ Supplemenatary Materials and Figures: sm.pdf.
 \begin{figure}[p]
 	\centering
 	\begin{subfigure}[ht]{8cm}
-		\caption{Density of the scaled difference of the \emph{plasma} data set}
-		\label{fig:densityancre}
 		\centering		
 		\includegraphics[width=8cm]{{figures/ancre.hist}.pdf}
+		\caption{Density of the scaled difference of the \emph{plasma} data set}
+		\label{fig:densityancre}
 	\end{subfigure}
 	\begin{subfigure}[ht]{8cm}
-		\caption{Density of the scaled difference of the \emph{mixed} data set}
-		\label{fig:densitylanl}
 		\centering
 		\includegraphics[width=8cm]{{figures/lanl.hist1}.pdf}	
+		\caption{Density of the scaled difference of the \emph{mixed} data set}
+		\label{fig:densitylanl}
 	\end{subfigure}
-	\caption[Difference Density]{The densities of the scaled difference of each patient in the real data sets.
-	The solid lines represent the total density in the \emph{simulated (no latency)} data set for (\subref{fig:densityancre}) and \emph{simulated (latency)} data set for (\subref{fig:densitylanl}).}
+	\caption[Difference Densities]{
+	{The densities of the scaled difference of each patient in the real data sets.}
+	The solid lines represent the total density in the \emph{simulated (no latency)} data set for (\subref{fig:densityancre}) and \emph{simulated (latency)} data set for (\subref{fig:densitylanl}).
+	}
 	\label{fig:density}
 \end{figure}
 
 \clearpage
 
 \begin{figure}[p]
-	\figtitle{Patient 16617 from the \emph{mixed} data set}
 	\centering
 	\includegraphics[width=12cm]{figures/patient_16617.pdf}
-	\caption[Treament]{Same as Figure \ref{fig:results1} for Patient 16617 from the \emph{mixed} data set. The time between the green bars represents when the patient underwent therapy.}
+	\caption[Treament]{
+	{Patient 16617 from the \emph{mixed} data set.}
+	Same as Figure \ref{fig:results1} for Patient 16617 from the \emph{mixed} data set.
+	The time between the green bars represents when the patient underwent therapy.}
 	\label{fig:treatment}
 \end{figure}
 
