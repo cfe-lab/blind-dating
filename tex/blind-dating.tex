@@ -1,14 +1,15 @@
 % !TEX TS-program = xelatex
-\documentclass[12pt]{article}
+\documentclass[12pt,titlepage]{article}
 
 \usepackage[margin=2cm]{geometry}
 \usepackage{colortbl}
 \usepackage{comment}
 \usepackage{caption}
-\usepackage{subcaption}
+\usepackage[labelfont=bf,textfont=bf]{subcaption}
 \usepackage{mathptmx}
 \usepackage{nicefrac}
 \usepackage{authblk}
+\usepackage{array}
 
 \usepackage{times}
 \usepackage{lineno}
@@ -30,29 +31,35 @@
 \titleformat{\subsection} {\vspace{6pt}\bf}{\thesubsection} {0pt} {\vspace{-2pt}}
 \titleformat{\subsubsection} [runin] {\bf}{\thesubsubsection} {12pt} {}
 
+\newcolumntype{+}{>{\global\let\currentrowstyle\relax}}
+\newcolumntype{^}{>{\currentrowstyle}}
 \definecolor{badpatcol}{HTML}{FF6666}
-\newcommand{\badpat}[1]{\rowcolor{badpatcol}#1}
+\newcommand{\badpat}{\gdef\currentrowstyle{\bfseries}\bfseries\ignorespaces }
 
 \captionsetup[subfigure]{width=0.9\textwidth}
-
-\newcommand{\high}[1]{{\textcolor{badpatcol} #1}} 
+ 
+\newcommand{\tabletitle}[1]{\caption*{\bfseries #1}\vspace{-10pt}}
+\newcommand{\figtitle}[1]{\caption*{\Large \bfseries #1}}
+\newcommand{\figtitlel}[1]{\subcaption[\large \bfseries]{#1}}
  
 \begin{document}
 
 \title{Blind dating: a phylogenetic approach to determining the ages of HIV-1 reservoir sequences within host}
 
-\author[1,2]{Bradley R. Jones}
-\author[1,2]{Joshua Horacsek}
-\author[2,3]{Jeffrey B. Joy}
-\author[1,2]{Zabrina L. Brumme}
-\author[1,2,3,*]{Art F.Y. Poon}
-\affil[1]{Simon Fraser University, Burnaby, Canada}
-\affil[2]{BC Centre for Excellence in HIV/AIDS, Vancouver, Canada}
-\affil[3]{University of British Columbia, Vancouver, Canada}
+\author[1,2]{Bradley R. Jones} % brj1@sfu.ca
+\author[1,2]{Joshua Horacsek} % jjh13@sfu.ca
+\author[2]{Jeffrey B. Joy} % jjoy@cfenet.ubc.ca
+\author[1,2]{Zabrina L. Brumme} % zbrumme@sfu.ca
+\author[1,2,3,*]{Art F.Y. Poon} % apoon@cfenet.ubc.ca
+\affil[1]{Faculty of Health Sciences, Simon Fraser University}%, Burnaby, V5A 1S6, Canada}
+\affil[2]{BC Centre for Excellence in HIV/AIDS}%, Vancouver, V6Z 1Y6, Canada}
+\affil[3]{Department of Medicine, University of British Columbia}%, Vancouver, V5Z 1M9, Canada}
+\affil[*]{Corresponding author}
+
 %%% 1 Simon Fraser University
 %%% 2 BC Centre for Excellence in HIV/AIDS
 %%% 3 University of British Columbia
-\baselineskip 22pt
+\baselineskip 30pt
 \pagewiselinenumbers
 
 \date{}
@@ -60,7 +67,7 @@
 
 \section * {Abstract}
 
-%Background: 
+{\bf Background:}
 The ability of HIV to persist within latent cellular reservoirs represents a major barrier to
 %developing an effective
 cure.
@@ -68,7 +75,8 @@ The timing of establishment of individual viral reservoirs over the course of an
 However, methods to accurately estimate the age of reservoir sequences remain scarce.
 We propose a simple method to date suspected reservoir sequences using phylogenetically informed regression.
 
-%Method: 
+% Possibly fix these subsections
+{\bf Results:}
 %Simulated sequence data were generated.
 %A total of 410 HIV RNA sequences sampled longitudinally from 9 untreated HIV-infected individuals with estimated dates of infection and a total of 2816 HIV DNA and RNA sequences from 20 individuals were obtained from the Los Alamos National Laboratory HIV Sequence Database.
 %The simulated and HIV RNA data were used for method validation.
@@ -83,18 +91,18 @@ Next we simulated latent lineages by shortening tip lengths and employed the sam
 %We synthesized latent lineages by censoring the sample dates for random selections of up to 50\% of sequences in the simulated and HIV RNA datasets.
 When this method was applied to HIV DNA sequences in phylogenies containing dated HIV RNA sequences, we observed that the predicted dates tended to precede dates of sampling, consistent with latency.
 
-%Discussion
+{\bf Conclusion:}
 Our results indicate that the dates when HIV DNA lineages entered a latent state can be accurately estimated from a phylogenetic analysis of HIV RNA sequence variation from the same patient.
 This can provide important insights into the dynamics of HIV reservoirs within hosts.
 
 
-Keywords: 
-HIV, Latency, Cellular Reservoirs, Phylogenetics, Linear Regression\\
+\section*{Keywords} 
+HIV, Latency, Cellular Reservoirs, Phylogenetics, Linear Regression
 
 
 
 \underline{}
-\section * {Introduction} \label{sec:intro}
+\section * {Background} \label{sec:intro}
 
 HIV-1, like all retroviruses, integrates its genome into the chromosome of the infected host cell during the viral life cycle.
 Though the vast majority of infected cells die as a result of viral cytopathic effects or immune-mediated elimination, a small minority \citep[broadly estimated as one in every million resting CD4+ T-cells;][]{Chun97,Finzi97} harbor integrated HIV DNA in a state of near or complete transcriptional quiescence over long time periods \citep{Archin14,Pace11,Richman09}.
@@ -128,8 +136,8 @@ We then use the linear model to reconstruct tip dates of HIV-1 sequences for whi
 \section * {Methods} \label{sec:methods}
 
 \subsection * {Data sets}
-For our experiments we compiled 6 data sets of real and synthetic longitudinal HIV sequences.
-4 of the data sets were simulated --- 3 of which had viral latency incorporated into their models.
+For our experiments we compiled 5 data sets of real and synthetic longitudinal HIV sequences.
+3 of the data sets comprised of simulated data --- 2 of which had viral latency incorporated into their models.
 The other 2 data sets were comprised of real HIV-1 \emph{env} sequences --- one data set contained sequences only from HIV RNA extracted from plasma and the other contained both HIV RNA and HIV DNA extracted from PBMC.
 
 \subsubsection * {Simulated Data} \label{subsec:simdata}
@@ -212,6 +220,57 @@ A total of 1,017 partial {\em env} sequences from blood plasma, and 1,799 partia
 We utilized samples from treatment naive individuals from \cite{Shankarappa99, Novitsky09} and samples from individuals that had been intermittently treated via HAART from \cite{Llewellyn06,Fischer04}. 
 
 See Table \ref{tab:patients} for details on the patients from these data sets.
+
+\begin{table*}
+\tabletitle{Patient sequence data}
+\def\arraystretch{1.3}%
+\begin{center}
+\begin{tabular}{llrrrrrrr} 
+
+Reference & Patient ID & \multicolumn{3}{c}{Sequences} & \multicolumn{3}{c}{Time points} \\
+ &  & Plasma & PBMC & Total & Plasma & PBMC & Total\\
+\hline
+\cite{McCloskey14} & 825 & 53 & & 53 & 6 & & 6 \\
+& 2658 & 85 & & 85 & 5 & & 5 \\
+& 7259 & 29 & & 29 & 4 & & 4 \\
+& 7263 & 15 & & 15 & 3 & & 3 \\
+& 7265 & 22 & & 22 & 3 & & 3 \\
+& 13333 & 40 & & 40 & 4 & & 4 \\
+& 13334 & 39 & & 39 & 5 & & 5 \\
+& 13336 & 43 & & 43 & 4 & & 4 \\
+& 35566 & 93 & & 93 & 2 & & 2 \\
+\hline
+\cite{Shankarappa99} & 820 &       50 &       87 &      137 &        5 &       10 &       15  \\
+& 821 &      76 &      192 &      268 &        7 &       17 &       17 \\ 
+& 822 &      32 &       98 &      130 &        3 &       10 &       10 \\ 
+& 824 &     100 &      107 &      207 &        7 &        9 &       13 \\
+& 10137 &     24 &      106 &      130 &        2 &       10 &       12 \\
+& 10138 &     82 &      119 &      201 &        6 &       13 &       16 \\
+& 10586 &     16 &      121 &      137 &        2 &       12 &       14  \\ 
+& 13889 &    151 &      132 &      283 &       13 &       14 &       18 \\
+\cite{Novitsky09}% & 34382 &     37 &        5 &       42 &        3 &        1 &        4  \\ 
+& 34391 &     13 &       38 &       51 &        3 &        5 &        6 \\
+& 34393 &     25 &       74 &       99 &        2 &        6 &        7 \\
+& 34396 &      23 &       46 &       69 &        2 &        5 &        5 \\
+%& 34397 &      26 &       25 &       51 &        2 &        2 &        4  \\ 
+& 34399 &      61 &       88 &      149 &        5 &        9 &       12 \\
+%& 34400 &      54 &       23 &       77 &        4 &        1 &        5  \\ 
+%& 34405 &      27 &       29 &       56 &        3 &        2 &        4  \\ 
+& 34408 &       5 &       73 &       78 &        2 &        8 &        8 \\
+& 34410 &      35 &       60 &       95 &        2 &        6 &        6 \\
+& 34411 &      25 &       43 &       68 &        3 &        3 &        6   \\
+\cite{Fischer04} & 10769 &    229 &       96 &      325 &       10 &        4 &       11 \\ 
+%& 10770 &    190 &       31 &      221 &       11 &        2 &       11  \\ 
+\cite{Llewellyn06} & 16616 &     16 &       95 &      111 &        2 &        5 &        5 \\
+& 16617 &     16 &       89 &      105 &        2 &        5 &        5 \\
+& 16618 &     25 &       75 &      100 &        2 &        5 &        6 \\
+& 16619 &     13 &       60 &       73 &        2 &        6 &        6 \\
+\hline
+\end{tabular}
+\end{center}
+  \caption{Summary of all the patient data collected from the HIV LANL database in the real data sets. Patient ID corresponds to the Los Alamos database's Patient ID \citep{LosAlamos}.
+   }\label{tab:patients} 
+\end{table*}
 
 \subsubsection * {Sequence Alignment} \label{subsec:seqalign}
 We used MUSCLE 3.8.31 \citep{Muscle04} to align the patient-derived sequences of the \emph{mixed} data set, which were then visually inspected and cleaned with AliView \citep{AliView14}. 
@@ -384,10 +443,75 @@ The binomial test for the \emph{plasma} data predicted that there was no evidenc
 %Averaged over all simulated data sets, the mean square error was $1.7\times 10^{-1}$, and the absolute value of average median and mean difference were $2.1\times 10^{-4}$ and $1.9\times 10^{-2}$ respectively. 
 %The density plot shows similar behavior to that of the synthetic data, except with a wider distribution, and more variation.
 
+\begin{table*}
+\tabletitle{Linear model details}
+\def\arraystretch{1.3}%
+\begin{center}
+\begin{tabular}{+l^r^r^r^r} 
+Patient ID & $p$-value & Median Difference (days) & RMSD (days) & Scaled RMSD \\ 
+\hline
+825 & $2.3 \times 10^{-11}$ & -120 & 530 & 0.18 \\
+2658 & $2.4 \times 10^{-15}$  & 35. & 220 & 0.12 \\
+\badpat 7259 & 0.085 & 5.9 & 570 & 0.64 \\
+\badpat 7263 & 1.00 & -160 & 190 & 0.77 \\
+7265 & $0.0098$ & 18. & 160 & 0.59 \\
+13333 & $9.3 \times 10^{-10}$ & 12. & 110 & 0.22 \\
+13334 & $2.7 \times 10^{-4}$ & 30. & 140 & 0.19 \\
+13336 & $1.9 \times 10^{-12}$ & -40. & 100 & 0.14 \\
+35566 & $2.7 \times 10^{-5}$ & 85. & 200 & 0.96 \\
+\hline
+820 & $4.8 \times 10^{-4}$ & $-3.9 \times 10^{3}$ & $3.7 \times 10^{3}$ & 1.2 \\
+821 & $< 2.2 \times 10^{-15}$ & -76. & 340 & 0.14 \\
+822 & $< 2.2 \times 10^{-15}$ & 46. & 260 & 0.12 \\
+824 & $< 2.2 \times 10^{-15}$ & 45. & 500 & 0.16 \\
+\badpat 10137 & 0.031 & 810 & 890 & 0.32 \\
+10138 & $< 2.2 \times 10^{-15}$ & -19. & 560 & 0.18 \\
+\badpat 10586 & 0.44 & $\mathbf{5.2 \times 10^3}$ & $\mathbf{7.8 \times 10^{3}}$ & 1.7 \\
+13889 & $< 2.2 \times 10^{-15}$ & -180 & 630 & 0.13 \\
+\badpat 34391 & 0.018 & -65. & 220 & 0.59 \\
+34393 & $2.3 \times 10^{-4}$ & -5.2 & 100 & 0.29 \\
+\badpat 34396 & 0.15 & -710 & 630 & 1.9 \\
+34399 & $< 2.2 \times 10^{-15}$ & -110 & 250 & 0.17 \\
+\badpat 34408 & 0.50 & -77 & $\mathbf{1.0 \times 10^{3}}$ & 1.9 \\
+34410 & $2.1 \times 10^{-6}$ & 16. & 170 & 0.38 \\
+34411 & $9.4 \times 10^{-9}$ & -41. & 88. & 0.19 \\
+10769 & $1.2 \times 10^{-5}$ & -880 & $2.4 \times 10^3$ & 1.2 \\
+16616 & $3.1 \times 10^{-5}$ & -540 & $1.2 \times 10^{3}$ & 0.45 \\
+16617 & $1.0 \times 10^{-7}$ & 75. & 440 & 0.17 \\
+16618 & $7.7 \times 10^{-12}$ & 110 & 310 & 0.14 \\
+16619 & $5.5 \times 10^{-4}$ & 300 & 540 & 0.27 \\
+\hline
+\end{tabular}
+\end{center}
+  \caption{Details of the linear models applied to the real data sets. RMSD is the root mean squared deviance. Patients where we were unable to reject the null hypothesis are marked in bold.
+   }\label{tab:patientserror} 
+\end{table*}
+
 The error metric from the linear regression for the simulated and real data sets in given in Table \ref{tab:error}.
 It is important to note that the RMSD of the simulated data is much lower that RMSD of the real data.
 Figure \ref{fig:densityancre} shows the density plot of the RMSD of each patient from the \emph{plasma} data set with the density plot of the RMSD of the simulated data set without latency overlaid
 Although not all of the density plots fit into the simulated data set's density plot, some of the density plots fit very well.
+
+\begin{table*}
+\tabletitle{Error metrics}
+\def\arraystretch{1.3}%
+\begin{center}
+\begin{tabular}{lrr}
+Data set & Total Scaled RMSD & Total Scaled Median Difference \\ % TMD (days) & Median Latency (days)  \\ 
+\hline
+\emph{simulated (no latency)} & $4.5 \times 10^{-2}$ & $6.7 \times 10^{-4}$ \\% & $1.3$ & $0$ \\
+\emph{simulated (extreme)} & $3.3 \times 10^{-2}$ & $-5.6 \times 10^{-2}$ \\ % & $-70.$ & $90.$ \\
+\emph{simulated (latency)} & $6.5 \times 10^{-2}$ & $-2.3 \times 10^{-2}$ \\ % & $-51.$ & $35.$ \\
+%\emph{simulated (latency 2)} & $6.7 \times 10^{-2}$ & $-2.3 \times 10^{-2}$ \\ % & $-52.$ & $37.$ \\
+\emph{plasma} & $4.4 \times 10^{-1}$ & $2.6 \times 10^{-2}$ \\ % & $23.$  & \\
+\emph{mixed} & $4.8 \times 10^{-1}$ & $-2.6 \times 10^{-2}$ \\ % & $-41.$ & \\
+\hline
+\end{tabular}
+\end{center}
+ \caption{Details of the error metrics of the linear models applied to each data set.
+ % Scaled RMSD is the total scaled root mean squared deviance, TSMD is the total scaled median difference, TMD is the total median difference.
+ }\label{tab:error} 
+\end{table*}
 
 \subsection * {Application} \label{sec:mixed_data}
 
@@ -499,28 +623,53 @@ Therefore we suspect that these extensions will not provide much of an improveme
 
 %Additionally, we would like to apply the methodology to next gen sequence data --- we would like to see if mass amounts of short read data contain sufficient information to calibrate the clock.
 
-\section * {Acknowledgments} \label{sec:ackn}
+\section * {Conclusions} \label{sec:concl}
+(Need conclusion.)
+
+\section * {Declarations} \label{sec:decl}
+\subsection*{Ethics approval and consent to participate}
+Not applicable.
+
+\subsection*{Consent for publication}
+Not applicable.
+
+\subsection*{Availability of data and material}
+The datasets supporting the conclusions of this article are available in a GitHub repository: \\ \mbox{http://github.com/ArtPoon/blind-dating}.
+
+\subsection*{Competing interests}
+We have no compteting interests.
+
+\subsection*{Funding}
 This work was supported by the Canadian Institutes of Health Research (CIHR Team Grant: HIV Cure Research --- The Canadian HIV Cure Research Enterprise; CanCure) and by a CIHR operating grant to Art Poon (HOP-111406).
 
-\clearpage
+\subsection*{Author's contributions}
+% Do better
+Conception and design: BRJ, JBJ, ZLB, AFYP; Collection of data: JH; Analysis and interpretation of data: BRJ, JH; Writing of manuscript: BRJ, JH, JBJ, ZLB, AFYP. All authors read and approved the final manuscript.
+
+\subsection*{Acknowledgements}
+(Any?)
+
+\subsection*{Additional files}
+Supplemenatary Materials and Figures: sm.pdf.
+
+%\clearpage
 
 \bibliographystyle{plainnat}
 \bibliography{blind-dating}
 
 
-\clearpage
+%\clearpage
 
 %%%%%%%%%%%%%%%  FIGURES  %%%%%%%%%%%%%%%
 
-\section * {Figures}
+%\section * {Figures}
 
-\begin{figure}[ht]
+\begin{figure}[p]
+	\figtitle{Latency scheme}
 	\centering
-	%\scalebox{5}{\input{figures/example.tex}}
 	\includegraphics{figures/latency-scheme}
-	\caption[Latency Scheme]{ 
-	Reconstructing the time that a viral lineage entered a latent state from sequence variation.  
-	A dashed line illustrates the linear relationship between the divergence of lineages from the ancestral sequence at the root ($y$-axis) and passage of time since the root ($x$-axis).
+	\caption[Latency Scheme]{
+	Reconstructing the time that a viral lineage entered a latent state from sequence variation. A dashed line illustrates the linear relationship between the divergence of lineages from the ancestral sequence at the root ($y$-axis) and passage of time since the root ($x$-axis).
 	Grey lines represent the reconstructed phylogenetic relationships among these lineages.
 	The lineages were sampled (open circles) at three points in time.
 	%Above is a time calibrated phylogeny with three taxa, the dotted line in is an example of latency. 
@@ -533,11 +682,14 @@ This work was supported by the Canadian Institutes of Health Research (CIHR Team
 	\label{fig:latenttree}
 \end{figure}
 
-\begin{figure}[ht]
+\clearpage
+
+\begin{figure}[p]
+	\figtitle{Latency model}
 	\centering{}
 	\includegraphics[width=10cm]{figures/latency-model}
 	\caption[Latency Model]{
-	An illustration of the latency model.
+	An illustration of the model simulating viral latency.
 	On a tip with branch length $S$, we randomly select a latency period, $L$ --- after which time the lineage would reactivate if it had not been sampled.
 	Then we randomly select an integration period, $I$ --- the waiting period before integration --- between the interval $S-L$ and $S$.
 	Here, $S-L$ is the earliest that the sequence could be integrated and still be sampled before activation.
@@ -546,220 +698,88 @@ This work was supported by the Canadian Institutes of Health Research (CIHR Team
 	\label{fig:latencymodel}
 \end{figure}
 
+\clearpage
 
-\begin{figure}[ht]
+\begin{figure}[p]
 	\centering
 	\begin{subfigure}[ht]{8cm}
+		\figtitlel{Simulated data without latency}
+		\label{fig:resultssimulated}
 		\centering
 		\includegraphics[width=8cm]{figures/simulated.pdf}
-		\caption{Simulated data without latency}
-		\label{fig:resultssimulated}
 	\end{subfigure}
 	\begin{subfigure}[ht]{8cm}
-		\includegraphics[width=8cm]{figures/simulated_latent1.pdf}
-		\caption{Simulated data with latency}
+		\figtitlel{Simulated data with latency}
 		\label{fig:resultslatent}
+		\centering{}
+		\includegraphics[width=8cm]{figures/simulated_latent1.pdf}
 	\end{subfigure}
-\begin{comment}
-	\begin{subfigure}[ht]{8cm}
-		\includegraphics[width=8cm]{figures/simulated_latent2.pdf}
-		\caption{Simulated data with latency from the second set}
-		\label{fig:resultslatent2}
-	\end{subfigure}
-\end{comment}
-	\caption[Simulated Data]{Plots from the simulated data set of the evolutionary distance vs time. The dotted line is the linear regression.}
-%	\caption[Simulated Data]{On the left of each case is a plot of evolutionary distance vs time, the right is the super position of density estimates (of normalized error) for each phylogeny (with kernel bandwidth = $0.15$). The red line on the density plot is the mean error, and the black line is the median error. }
+	\caption[Simulated Data]{Plots from the simulated data set of the evolutionary distance vs time.
+	The dotted line is the linear regression.
+	The solid red lines in (\subref{fig:resultslatent}) connect the sampled dates of a lineage to its integration date.
+	(\subref{fig:resultssimulated}) shows an example from the \emph{simulated (no latency)} data set and (\subref{fig:resultslatent}) shows an example from the \emph{simulated (latency)} data set.
+	}
 %	Patient: HIV_12
 	\label{fig:results1}
 \end{figure}
 
-\begin{figure}[ht]
+\clearpage
+
+\begin{figure}[p]
 	\centering
 	\begin{subfigure}[ht]{8cm}
-		\includegraphics[width=8cm]{figures/ancre.pdf}
 		\caption{Patient 2658 from the \emph{plasma} data set}
 		\label{fig:resultsancre}
+		\includegraphics[width=8cm]{figures/ancre.pdf}
 	\end{subfigure}
 %	Patient: patient_1
 	\begin{subfigure}[ht]{8cm}
-		\includegraphics[width=8cm]{figures/lanl.pdf}
 		\caption{Patient 13889 from the \emph{mixed} data set}
 		\label{fig:resultslanl}
+		\includegraphics[width=8cm]{figures/lanl.pdf}
 	\end{subfigure}
-	\caption[Examples]{As Figure \ref{fig:results1}, except for the real data.}
+	\caption[Examples]{As Figure \ref{fig:results1}, except for the real data.
+	Interesting sequences are circled in blue.}
 	\label{fig:results2}
 \end{figure}
 
-\begin{figure}[ht]
+\clearpage
+
+\begin{figure}[p]
 	\centering
 	\begin{subfigure}[ht]{8cm}
-		\centering
-		\includegraphics[width=8cm]{{figures/ancre.hist}.pdf}
-		\caption{Density of the scaled difference of the \emph{plasma} data set with a solid line representing the density of the difference of the simulated data set without latency.}
+		\caption{Density of the scaled difference of the \emph{plasma} data set}
 		\label{fig:densityancre}
+		\centering		
+		\includegraphics[width=8cm]{{figures/ancre.hist}.pdf}
 	\end{subfigure}
 	\begin{subfigure}[ht]{8cm}
-		\centering
-		\includegraphics[width=8cm]{{figures/lanl.hist1}.pdf}
-		\caption{Density of the scaled difference of the \emph{plasma} data set with a solid line representing the density of the scaled difference of the first set of simulated data set with latency.}
+		\caption{Density of the scaled difference of the \emph{mixed} data set}
 		\label{fig:densitylanl}
-	\end{subfigure}
-\begin{comment}
-	\begin{subfigure}[ht]{8cm}
 		\centering
-		\includegraphics[width=8cm]{{figures/lanl.hist2}.pdf}
-		\caption{Density of the scaled difference of the \emph{plasma} data set with a solid line representing the density of the scaled difference of the second set of simulated data set with latency.}
-		\label{fig:densitylanl2}
+		\includegraphics[width=8cm]{{figures/lanl.hist1}.pdf}	
 	\end{subfigure}
-\end{comment}
-	\caption[Difference Density]{The density of the scaled difference. The solid lines represent the density in the simulated data.}
+	\caption[Difference Density]{The densities of the scaled difference of each patient in the real data sets.
+	The solid lines represent the total density in the \emph{simulated (no latency)} data set for (\subref{fig:densityancre}) and \emph{simulated (latency)} data set for (\subref{fig:densitylanl}).}
 	\label{fig:density}
 \end{figure}
 
-\begin{figure}[ht]
+\clearpage
+
+\begin{figure}[p]
+	\figtitle{Patient 16617 from the \emph{mixed} data set}
 	\centering
 	\includegraphics[width=12cm]{figures/patient_16617.pdf}
-	\caption{Patient 16617 from the \emph{mixed} data set. The time between the green bars represents when the patient underwent therapy.}
+	\caption[Treament]{Same as Figure \ref{fig:results1} for Patient 16617 from the \emph{mixed} data set. The time between the green bars represents when the patient underwent therapy.}
 	\label{fig:treatment}
 \end{figure}
-
-\begin{comment}
-\begin{figure}[ht]
-	\centering
-	\includegraphics[width=\textwidth]{figures/GLM_plot.pdf}
-	\caption[Regression]{A scatterplot of the genetic distance from the root versus the difference from the estimate of the date reconstruction.
-	The coloured circles represent the values for each DNA sequence for each subject. 
-	The solid black line is the quadratic regression with the mean of the parameters from the mixed effects model.  %The dotted lines are the 95\% confidence interval of the parameters of the quadratic regression.
-	}
-	\label{fig:glm}
-\end{figure}
-\end{comment}
-
-%\begin{figure*}[ht]
-%	\centering
-%	\includegraphics[scale=0.425]{figures/rtt.pdf} \\
-%	\caption[Example of bad root]{Root to tip rooting fails due to insufficient temporal resolution at the root}
-%	\label{fig:degenerate_example}
-%\end{figure*}
-
 
 \clearpage
 
 %%%%%%%%%%%%%%%  TABLES  %%%%%%%%%%%%%%%
 
-\section * {Tables}
+%\section * {Tables}
 
-\begin{table*}[!ht]
-\def\arraystretch{1.3}%
-\begin{center}
-\begin{tabular}{llrrrrrrr} 
 
-Reference & Patient ID & \multicolumn{3}{c}{Sequences} & \multicolumn{3}{c}{Time points} \\
- &  & Plasma & PBMC & Total & Plasma & PBMC & Total\\
-\hline
-\cite{McCloskey14} & 825 & 53 & & 53 & 6 & & 6 \\
-& 2658 & 85 & & 85 & 5 & & 5 \\
-& 7259 & 29 & & 29 & 4 & & 4 \\
-& 7263 & 15 & & 15 & 3 & & 3 \\
-& 7265 & 22 & & 22 & 3 & & 3 \\
-& 13333 & 40 & & 40 & 4 & & 4 \\
-& 13334 & 39 & & 39 & 5 & & 5 \\
-& 13336 & 43 & & 43 & 4 & & 4 \\
-& 35566 & 93 & & 93 & 2 & & 2 \\
-\hline
-\cite{Shankarappa99} & 820 &       50 &       87 &      137 &        5 &       10 &       15  \\
-& 821 &      76 &      192 &      268 &        7 &       17 &       17 \\ 
-& 822 &      32 &       98 &      130 &        3 &       10 &       10 \\ 
-& 824 &     100 &      107 &      207 &        7 &        9 &       13 \\
-& 10137 &     24 &      106 &      130 &        2 &       10 &       12 \\
-& 10138 &     82 &      119 &      201 &        6 &       13 &       16 \\
-& 10586 &     16 &      121 &      137 &        2 &       12 &       14  \\ 
-& 13889 &    151 &      132 &      283 &       13 &       14 &       18 \\
-\cite{Novitsky09}% & 34382 &     37 &        5 &       42 &        3 &        1 &        4  \\ 
-& 34391 &     13 &       38 &       51 &        3 &        5 &        6 \\
-& 34393 &     25 &       74 &       99 &        2 &        6 &        7 \\
-& 34396 &      23 &       46 &       69 &        2 &        5 &        5 \\
-%& 34397 &      26 &       25 &       51 &        2 &        2 &        4  \\ 
-& 34399 &      61 &       88 &      149 &        5 &        9 &       12 \\
-%& 34400 &      54 &       23 &       77 &        4 &        1 &        5  \\ 
-%& 34405 &      27 &       29 &       56 &        3 &        2 &        4  \\ 
-& 34408 &       5 &       73 &       78 &        2 &        8 &        8 \\
-& 34410 &      35 &       60 &       95 &        2 &        6 &        6 \\
-& 34411 &      25 &       43 &       68 &        3 &        3 &        6   \\
-\cite{Fischer04} & 10769 &    229 &       96 &      325 &       10 &        4 &       11 \\ 
-%& 10770 &    190 &       31 &      221 &       11 &        2 &       11  \\ 
-\cite{Llewellyn06} & 16616 &     16 &       95 &      111 &        2 &        5 &        5 \\
-& 16617 &     16 &       89 &      105 &        2 &        5 &        5 \\
-& 16618 &     25 &       75 &      100 &        2 &        5 &        6 \\
-& 16619 &     13 &       60 &       73 &        2 &        6 &        6 \\
-\hline
-\end{tabular}
-\end{center}
-  \caption{Summary of all the patient data collected from the HIV LANL database in the real data sets --- Patient ID corresponds to the Los Alamos database's Patient ID \citep{LosAlamos}.
-   }\label{tab:patients} 
-\end{table*}
-
-\begin{table*}[!ht]
-\def\arraystretch{1.3}%
-\begin{center}
-\begin{tabular}{lrrrr} 
-Patient ID & $p$-value & Median Difference (days) & RMSD (days) & Scaled RMSD \\ 
-\hline
-825 & $2.3 \times 10^{-11}$ & -120 & 530 & 0.18 \\
-2658 & $2.4 \times 10^{-15}$  & 35. & 220 & 0.12 \\
-\badpat{7259 & $0.085$ & 5.9 & 570 & 0.64} \\
-\badpat{7263 & $1.00$ & -160 & 190 & 0.77} \\
-7265 & $0.0098$ & 18. & 160 & 0.59 \\
-13333 & $9.3 \times 10^{-10}$ & 12. & 110 & 0.22 \\
-13334 & $2.7 \times 10^{-4}$ & 30. & 140 & 0.19 \\
-13336 & $1.9 \times 10^{-12}$ & -40. & 100 & 0.14 \\
-35566 & $2.7 \times 10^{-5}$ & 85. & 200 & 0.96 \\
-\hline
-820 & $4.8 \times 10^{-4}$ & $-3.9 \times 10^{3}$ & $3.7 \times 10^{3}$ & 1.2 \\
-821 & $< 2.2 \times 10^{-15}$ & -76. & 340 & 0.14 \\
-822 & $< 2.2 \times 10^{-15}$ & 46. & 260 & 0.12 \\
-824 & $< 2.2 \times 10^{-15}$ & 45. & 500 & 0.16 \\
-\badpat{10137 & $0.031$ & 810 & 890 & 0.32} \\
-10138 & $< 2.2 \times 10^{-15}$ & -19. & 560 & 0.18 \\
-\badpat{10586 & $0.44$ & $5.2 \times 10^3$ & $7.8 \times 10^{3}$ & 1.7} \\
-13889 & $< 2.2 \times 10^{-15}$ & -180 & 630 & 0.13 \\
-\badpat{34391 & 0.018 & -65. & 220 & 0.59} \\
-34393 & $2.3 \times 10^{-4}$ & -5.2 & 100 & 0.29 \\
-\badpat{34396 & 0.15 & -710 & 630 & 1.9} \\
-34399 & $< 2.2 \times 10^{-15}$ & -110 & 250 & 0.17 \\
-\badpat{34408 & 0.50 & -77 & $1.0 \times 10^{3}$ & 1.9} \\
-34410 & $2.1 \times 10^{-6}$ & 16. & 170 & 0.38 \\
-34411 & $9.4 \times 10^{-9}$ & -41. & 88. & 0.19 \\
-10769 & $1.2 \times 10^{-5}$ & -880 & $2.4 \times 10^3$ & 1.2 \\
-16616 & $3.1 \times 10^{-5}$ & -540 & $1.2 \times 10^{3}$ & 0.45 \\
-16617 & $1.0 \times 10^{-7}$ & 75. & 440 & 0.17 \\
-16618 & $7.7 \times 10^{-12}$ & 110 & 310 & 0.14 \\
-16619 & $5.5 \times 10^{-4}$ & 300 & 540 & 0.27 \\
-\hline
-\end{tabular}
-\end{center}
-  \caption{Details of the linear models applied to the real data sets. RMSD is the root mean squared deviance. Patients where we were unable to reject the null hypothesis are marked in red.
-   }\label{tab:patientserror} 
-\end{table*}
-
-\begin{table*}[!ht]
-\def\arraystretch{1.3}%
-\begin{center}
-\begin{tabular}{lrr}
-Data set & Total Scaled RMSD & Total Scaled Median Difference \\ % TMD (days) & Median Latency (days)  \\ 
-\hline
-\emph{simulated (no latency)} & $4.5 \times 10^{-2}$ & $6.7 \times 10^{-4}$ \\% & $1.3$ & $0$ \\
-\emph{simulated (extreme)} & $3.3 \times 10^{-2}$ & $-5.6 \times 10^{-2}$ \\ % & $-70.$ & $90.$ \\
-\emph{simulated (latency)} & $6.5 \times 10^{-2}$ & $-2.3 \times 10^{-2}$ \\ % & $-51.$ & $35.$ \\
-%\emph{simulated (latency 2)} & $6.7 \times 10^{-2}$ & $-2.3 \times 10^{-2}$ \\ % & $-52.$ & $37.$ \\
-\emph{plasma} & $4.4 \times 10^{-1}$ & $2.6 \times 10^{-2}$ \\ % & $23.$  & \\
-\emph{mixed} & $4.8 \times 10^{-1}$ & $-2.6 \times 10^{-2}$ \\ % & $-41.$ & \\
-\hline
-\end{tabular}
-\end{center}
- \caption{Details of the error metrics of the linear models applied to each data set.
- % Scaled RMSD is the total scaled root mean squared deviance, TSMD is the total scaled median difference, TMD is the total median difference.
- }\label{tab:error} 
-\end{table*}
 
 \end{document}
