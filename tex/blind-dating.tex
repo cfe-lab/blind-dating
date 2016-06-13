@@ -1,5 +1,5 @@
 % !TEX TS-program = xelatex
-\documentclass[12pt,titlepage]{article}
+\documentclass[12pt]{article}
 
 \usepackage[margin=2cm]{geometry}
 \usepackage{colortbl}
@@ -67,7 +67,7 @@
 
 \section * {Abstract}
 
-{\bf Background:}
+\paragraph{Background:}
 The ability of HIV to persist within latent cellular reservoirs represents a major barrier to
 %developing an effective
 cure.
@@ -76,27 +76,27 @@ However, methods to accurately estimate the age of reservoir sequences remain sc
 We propose a simple method to date suspected reservoir sequences using phylogenetically informed regression.
 
 % Possibly fix these subsections
-{\bf Results:}
+\paragraph{Results:}
 %Simulated sequence data were generated.
 %A total of 410 HIV RNA sequences sampled longitudinally from 9 untreated HIV-infected individuals with estimated dates of infection and a total of 2816 HIV DNA and RNA sequences from 20 individuals were obtained from the Los Alamos National Laboratory HIV Sequence Database.
 %The simulated and HIV RNA data were used for method validation.
 Our method is as follows: Taking aligned HIV sequences from a single individual sampled over multiple time points, we reconstruct a maximum-likelihood phylogeny.
-The phylogeny is rooted by determining the location of the root using root-to-tip regression.
+The location of the root in the phylogeny is determined using root-to-tip regression.
+%The phylogeny is rooted by determining the location of the root using root-to-tip regression.
 Finally, the root-to-tip distances of possibly latent sequences are mapped to the optimal regression line to estimate reservoir establishment dates.
 %Finally, the presence of latent lineages within () was detected using a nonparametric binary test.
-
-To validate our method, we generated simulated HIV sequences and used RAxML to infer phylogenies from the simulated HIV sequences.
-We then applied our method to simulated sequences with and without latency and to HIV RNA datasets.
-Next we simulated latent lineages by shortening tip lengths and employed the same methodology as above.
+To validate our method, we simulated HIV sequence evolution under a standard model and reconstructed phylogenies from these data by maximum likelihood.
+Latency was simulated by shortening the branch lengths of up to 50\% of the tips in the tree.
+We employed this same approach to validate the method on HIV RNA sequences, which provided a more realistic assessment of sources of error than direct simulation.
 %We synthesized latent lineages by censoring the sample dates for random selections of up to 50\% of sequences in the simulated and HIV RNA datasets.
-When this method was applied to HIV DNA sequences in phylogenies containing dated HIV RNA sequences, we observed that the predicted dates tended to precede dates of sampling, consistent with latency.
+When this method was applied to HIV DNA sequences in phylogenies containing dated HIV RNA sequences, we observed that the predicted dates significantly preceded dates of sampling, which was consistent with latency.
 
-{\bf Conclusion:}
-Our results indicate that the dates when HIV DNA lineages entered a latent state can be accurately estimated from a phylogenetic analysis of HIV RNA sequence variation from the same patient.
-This can provide important insights into the dynamics of HIV reservoirs within hosts.
+\paragraph{Conclusion:}
+Our results provide evidence that the date that a lineage of HIV entered a latent state can be reconstructed from phylogenetic analysis of HIV RNA sequence variation from the same patient.
+These dates can provide important insights into the dynamics of HIV reservoirs within hosts.
 
 
-\section*{Keywords} 
+\paragraph{Keywords:} 
 HIV, Latency, Cellular Reservoirs, Phylogenetics, Linear Regression
 
 
@@ -106,24 +106,26 @@ HIV, Latency, Cellular Reservoirs, Phylogenetics, Linear Regression
 
 HIV-1, like all retroviruses, integrates its genome into the chromosome of the infected host cell during the viral life cycle.
 Though the vast majority of infected cells die as a result of viral cytopathic effects or immune-mediated elimination, a small minority \citep[broadly estimated as one in every million resting CD4+ T-cells;][]{Chun97,Finzi97} harbor integrated HIV DNA in a state of near or complete transcriptional quiescence over long time periods \citep{Archin14,Pace11,Richman09}.
-Termed latent HIV-1 reservoirs, such cells represent the major obstacle in curing HIV-1 as they can persist for years in the presence of suppressive antiretroviral therapy, but can be re-activated at any point to produce infectious virus, thus reseeding infection \citep{Durand12,Joos08,Katlama13,Pomerantz03,Shen08,Richman09}. 
+Termed latent HIV-1 reservoirs, such cells represent the major obstacle in curing HIV-1 infection as they can persist for years.
+In the presence of suppressive antiretroviral therapy, for instance, these reservoirs can be re-activated at any point to produce infectious virus and thereby reseeding infection \citep{Durand12,Joos08,Katlama13,Pomerantz03,Shen08,Richman09}. 
 
 Establishment of individual viral reservoirs within a given host  begins within hours or days following infection and continues thereafter \citep{Whitney14,Leford14}.
 As within-host HIV-1 populations rapidly accumulate genetic diversity over the course of an infection \citep{Alizon13,Rambaut04,Shankarappa99}, latent viral genomes present during chronic infection should be heterogeneous in terms of age and genetics, ranging from those archived soon after infection (that resemble ancestral viruses within the host) to those that have integrated relatively recently into cellular reservoirs (that resemble contemporary plasma strains).
-The chronology of establishment and genetic distribution of latent HIV-1 lineages within a given host is relevant to the development of strategies to eliminate them, as these properties may influence their susceptibility to reactivation and/or immune-mediated clearance (for example, while the "oldest" reservoirs within a given individual may be the most inherently refractory to reactivation with latency reversing agents, "younger" reservoirs may be largely refractory to subsequent immune-mediated elimination due to an accumulated burden of immune escape mutations \citep{Deng15}.
+The chronology of establishment and genetic distribution of latent HIV-1 lineages within a given host is relevant to the development of strategies to eliminate them, as these properties may influence their susceptibility to reactivation and/or immune-mediated clearance.
+For example, while the `oldest' reservoirs within a given individual may be the most inherently refractory to reactivation with latency reversing agents, `younger' reservoirs may be largely refractory to subsequent immune-mediated elimination due to an accumulated burden of immune escape mutations \citep{Deng15}.
 However, within-host dynamics of HIV-1 reservoir establishment remain incompletely characterized.
 Previous studies have developed techniques to detect latent lineages by reduced rates of viral evolution \citep{Immonen14} and modeled the population dynamics of different classes of the virus within a given host \citep{Althaus14}.
 However, there has been limited research on estimating when known or suspected latent viral lineages originally became integrated into their respective host cell genomes, or qualitatively assessing the age distributions of latent HIV-1 lineages within a given host.  
 
-We here describe a novel phylogenetic method to "date" individual viral reservoir sequences within a host.
+We here describe a novel phylogenetic method to `date' individual viral reservoir sequences within a host.
 The method utilizes longitudinal plasma HIV RNA sequences sampled over an individual's infection to calibrate a host-specific HIV evolutionary rate from which the ages of known or suspected reservoir sequences are then inferred. The premise is as follows.
 Because HIV-1 sequences within a given infected host rapidly accumulate genetic diversity due to HIV-1's high mutation rate and short generation time \citep{Alizon13,Rambaut04,Shankarappa99}, it is possible reconstruct a phylogenetic tree that represents the ancestor-descendant relationships between HIV-1 sequences sampled longitudinally from within that host.
-A phylogeny that is reconstructed by parameterizing a model of molecular evolution solely on the basis of sequence homology \citep[e.g., by maximum likelihood estimation;][]{Felsenstein81} has branch lengths in units of expected numbers of substitutions, in which the passage of time is confounded with the rate of evolution.
+A phylogeny that is reconstructed by parameterizing a model of molecular evolution solely on the basis of sequence homology \citep[\textit{e.g.}, by maximum likelihood estimation;][]{Felsenstein81} has branch lengths in units of expected numbers of substitutions, in which the passage of time is confounded with the rate of evolution.
 In other words, a tree that stretches far back in time with a slow rate of evolution will explain a given set of sequences just as effectively as a shallow tree with rapid evolution.
 When sampling dates are known however, the corresponding tips of the phylogeny can be fixed at these time points, allowing the rate of evolution be estimated directly \citep{Rodrigo99}.
 Knowledge of sampling dates thus enables one to rescale a phylogeny in chronological time, which is especially useful for within-host HIV-1 populations in which substantial genetic differences can accumulate in weeks or months \citep{Williamson03}.
 Moreover, among the actively replicating HIV lineages within a host, the rate of molecular evolution is fairly consistent over time \citep{Korber00,Kuhner95,Leitner99}.
-Consequently, the divergence of descendant lineages from the transmitted/founder virus can be approximated by a â€˜strictâ€™ molecular clock model in which a consistent rate of evolution is sustained, at least over the initial years, of an individual's infection course \citep{Keele08}. 
+Consequently, the divergence of descendant lineages from the transmitted/founder virus can be approximated by a `˜strict'€™ molecular clock model in which a consistent rate of evolution is sustained, at least over the initial years, of an individual's infection course \citep{Keele08}. 
 
 Upon integration of a given HIV-1 sequence into a host cell genome, evolution of that lineage effectively ceases until a new round of replication ensues.
 Latent HIV-1 sequences will therefore display a characteristic discordance between their sampling date and their apparent (younger) age based on sequence divergence from other within-host lineages (where the latter age reflects the date on which that HIV-1 sequence originally integrated into the host cell genome; see Figure \ref{fig:latenttree}).
