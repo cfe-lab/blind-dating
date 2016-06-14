@@ -153,10 +153,10 @@ Birth-death models have been applied to studying speciation processes \citep{Nee
 The birth-death model was parameterized by fitting this model to samples from the {\em plasma} dataset.
 %% we may need to provide some justification for using BD
 %To assess the sensitivity of our method, we first simulated HIV sequence data sets without viral latency.
-We used BEAST version 2.3.2 to estimate the posterior distribution defined by the serial model with a Bayesian skyline, a strict molecular clock, and the HKY85 \citep{HKY85} model of nucleotide substitution.
+We used BEAST version 2.3.2 to estimate the posterior distribution defined by the serial model with a Bayesian skyline \citep{Stadler13}, a strict molecular clock, and the HKY85 \citep{HKY85} model of nucleotide substitution.
 %Using this approach, we generated samples of trees for each sequence alignment in the plasma dataset.
 %From these simulations, we evaluated the accuracy of predicting sample collection times from a strict molecular clock model that was fit to a training subset of these data.
-The lineage birth rate, death rate and sampling probability were estimated to be: $\lambda = 5.116 \times 10^{-2}$ day$^{-1}$, $\delta = 5.006 \times 10^{-2}$ day$^{-1}$, $s = 5.237 \times 10^{-3}$ respectively.
+The lineage birth rate, death rate and sampling probability were estimated to be: $\lambda = 5.116 \times 10^{-2}$ day$^{-1}$, $\delta = 5.006 \times 10^{-2}$ day$^{-1}$, and $s = 5.237 \times 10^{-3}$ respectively.
 
 We used the \textit{R} package, \emph{NELSI} \citep{NELSI}, to assign rates of evolution to these trees by drawing values from a Gaussian distribution with a mean rate $\mu = \ 1.964\times 10^{-4}$ substitutions per generation and standard deviation $\sigma = \ 1.417\times 10^{-5}$. %; Figure \ref{fig:seedtree} for an example).
 
