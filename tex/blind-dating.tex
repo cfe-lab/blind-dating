@@ -120,12 +120,12 @@ However, there has been limited research on estimating when known or suspected l
 We here describe a novel phylogenetic method to `date' individual viral reservoir sequences within a host.
 The method utilizes longitudinal plasma HIV RNA sequences sampled over an individual's infection to calibrate a host-specific HIV evolutionary rate from which the ages of known or suspected reservoir sequences are then inferred. The premise is as follows.
 Because HIV-1 sequences within a given infected host rapidly accumulate genetic diversity due to HIV-1's high mutation rate and short generation time \citep{Alizon13,Rambaut04,Shankarappa99}, it is possible reconstruct a phylogenetic tree that represents the ancestor-descendant relationships between HIV-1 sequences sampled longitudinally from within that host.
-A phylogeny that is reconstructed by parameterizing a model of molecular evolution solely on the basis of sequence homology \citep[\textit{e.g.}, by maximum likelihood estimation;][]{Felsenstein81} has branch lengths in units of expected numbers of substitutions, in which the passage of time is confounded with the rate of evolution.
+A phylogeny that is reconstructed by parameterizing a model of molecular evolution solely on the basis of sequence homology \citep[\emph{e.g.}, by maximum likelihood estimation;][]{Felsenstein81} has branch lengths in units of expected numbers of substitutions, in which the passage of time is confounded with the rate of evolution.
 In other words, a tree that stretches far back in time with a slow rate of evolution will explain a given set of sequences just as effectively as a shallow tree with rapid evolution.
 When sampling dates are known however, the corresponding tips of the phylogeny can be fixed at these time points, allowing the rate of evolution be estimated directly \citep{Rodrigo99}.
 Knowledge of sampling dates thus enables one to rescale a phylogeny in chronological time, which is especially useful for within-host HIV-1 populations in which substantial genetic differences can accumulate in weeks or months \citep{Williamson03}.
 Moreover, among the actively replicating HIV lineages within a host, the rate of molecular evolution is fairly consistent over time \citep{Korber00,Kuhner95,Leitner99}.
-Consequently, the divergence of descendant lineages from the transmitted/founder virus can be approximated by a `˜strict'€™ molecular clock model in which a consistent rate of evolution is sustained, at least over the initial years, of an individual's infection course \citep{Keele08}. 
+Consequently, the divergence of descendant lineages from the transmitted/founder virus can be approximated by a `ï¿½strict'ï¿½ï¿½ molecular clock model in which a consistent rate of evolution is sustained, at least over the initial years, of an individual's infection course \citep{Keele08}. 
 
 Upon integration of a given HIV-1 sequence into a host cell genome, evolution of that lineage effectively ceases until a new round of replication ensues.
 Latent HIV-1 sequences will therefore display a characteristic discordance between their sampling date and their apparent (younger) age based on sequence divergence from other within-host lineages (where the latter age reflects the date on which that HIV-1 sequence originally integrated into the host cell genome; see Figure \ref{fig:latenttree}).
@@ -488,7 +488,8 @@ Patient ID & $p$-value & Median Difference (days) & RMSD (days) & Scaled RMSD \\
 \end{center}
 	\caption{
 	{Details of the linear models applied to the real data sets.}
-	RMSD is the root mean squared deviance. Patients where we were unable to reject the null hypothesis are marked in bold.
+	RMSD is the root mean squared deviance.
+	Patients for whom we were unable to reject the null hypothesis are marked in bold.
 	}\label{tab:patientserror} 
 \end{table*}
 
