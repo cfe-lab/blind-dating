@@ -13,10 +13,10 @@
 
 \usepackage{times}
 \usepackage{lineno}
-\usepackage[round]{natbib}
-\makeatletter
-\renewcommand{\@biblabel}[1]{#1.}
-\makeatother
+%\usepackage[round]{natbib}
+%\makeatletter
+%\renewcommand{\@biblabel}[1]{#1.}
+%\makeatother
 
 \usepackage{graphicx}
 \usepackage{amsmath}
@@ -84,7 +84,7 @@ Using this approach, we get $i = 2.0 \times 10^{-12}$ day$^{-1}$.
 \end{comment}
 
 \section{Results with outgroup rooting} \label{sec:ogr}
-Supplementary Materials Table \ref{tab:patientserrorogr} shows the results of the linear model on the data sets using outgroup rooting \citep{Huelsenbeck02} to root the phylogenies.
+Supplementary Materials Table \ref{tab:patientserrorogr} shows the results of the linear model on the data sets using outgroup rooting \cite{Huelsenbeck02} to root the phylogenies.
 5 patients from the \emph{plasma} data set and 7 patients from the \emph{mixed} data set were rejected by our screening process when using outgroup rooting.
 Overall, outgroup rooting performed poorer than rooting with root-to-tip regression, in terms of the $p$-values of the linear models and the resulting RMSD's.
 
@@ -96,7 +96,7 @@ The binomial test on the \emph{mixed} data set predicted that there was latency,
 Also included in this Supplementary Materials are the corresponding figures of the real data from the primary work using outgroup rooting instead of root-to-tip regression.
 
 
-\bibliographystyle{plainnat}
+\bibliographystyle{retro}
 \bibliography{blind-dating}
 
 % Figures
@@ -140,14 +140,14 @@ Also included in this Supplementary Materials are the corresponding figures of t
 		\caption{Density of the scaled difference of the \emph{plasma} data set with a solid line representing the density of the scaled difference of the first set of simulated data set with latency.}
 		\label{fig:densitylanlogr}
 	\end{subfigure}
-	\caption[Difference Density]{As Figure 5 from the primary work, except using outgroup rooting.}
+	\caption[Difference Density]{Real data with outgroup rooting. As Figure 5 from the primary work, except using outgroup rooting.}
 	\label{fig:density}
 \end{figure}
 
 \begin{figure}[ht]
 	\centering
 	\includegraphics[width=12cm]{{figures/patient_16617.ogr}.pdf}
-	\caption{As Figure 6 from the primary work, except using outgroup rooting}
+	\caption{Patient 16617 with outgroup rooting. As Figure 6 from the primary work, except using outgroup rooting}
 	\label{fig:treatment}
 \end{figure}
 
