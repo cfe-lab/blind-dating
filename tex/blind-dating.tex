@@ -61,7 +61,7 @@
 %%% 2 BC Centre for Excellence in HIV/AIDS
 %%% 3 University of British Columbia
 \baselineskip 30pt
-\pagewiselinenumbers
+%\pagewiselinenumbers
 
 \date{}
 \maketitle
@@ -106,7 +106,7 @@ HIV, Latency, Cellular Reservoirs, Phylogenetics, Linear Regression
 \section * {Background} \label{sec:intro}
 
 HIV-1, like all retroviruses, integrates its genome into the chromosome of the infected host cell during the viral life cycle.
-Though the vast majority of infected cells die as a result of viral cytopathic effects or immune-mediated elimination, a small minority (broadly estimated as one in every million resting CD4+ T-cells \cite{Chun97,Finzi97}) harbor integrated HIV DNA in a state of near or complete transcriptional quiescence over long time periods \cite{Archin14,Pace11,Richman09}.
+Though the vast majority of infected cells die as a result of viral cytopathic effects or immune-mediated elimination, a small minority (broadly estimated as one in every million resting CD4+ T-cells \cite{Chun97,Finzi97}) harbour integrated HIV DNA in a state of near or complete transcriptional quiescence over long time periods \cite{Archin14,Pace11,Richman09}.
 Termed latent HIV-1 reservoirs, such cells represent a major obstacle in curing HIV-1 infection as they can persist for years.
 In the presence of suppressive antiretroviral therapy, for instance, these reservoirs can be re-activated at any point to produce infectious virus, thereby reseeding infection \cite{Richman09,Durand12,Joos08,Katlama13,Pomerantz03,Shen08}. 
 
@@ -115,13 +115,13 @@ As within-host HIV-1 populations rapidly accumulate genetic diversity over the c
 The chronology of establishment and genetic distribution of latent HIV-1 lineages within a given host is relevant to the development of strategies to eliminate them, as these properties may influence their susceptibility to reactivation and/or immune-mediated clearance.
 For example, while the `oldest' reservoirs within a given individual may be the most inherently refractory to reactivation with latency reversing agents, `younger' reservoirs may be largely refractory to subsequent immune-mediated elimination due to an accumulated burden of immune escape mutations \cite{Deng15}.
 However, within-host dynamics of HIV-1 reservoir establishment remain incompletely characterized.
-Previous studies have developed techniques to detect latent lineages by reduced rates of viral evolution \cite{Immonen14} and modeled the population dynamics of different classes of the virus within a given host \cite{Althaus14}.
+Previous studies have developed techniques to detect latent lineages by reduced rates of viral evolution \cite{Immonen14} and modelled the population dynamics of different classes of the virus within a given host \cite{Althaus14}.
 However, there has been limited research on estimating when known or suspected latent viral lineages originally became integrated into their respective host cell genomes, or qualitatively assessing the age distributions of latent HIV-1 lineages within a given host.  
 
 We here describe a novel phylogenetic method to `date' individual viral reservoir sequences within a host.
 The method utilizes longitudinal plasma HIV RNA sequences sampled over an individual's infection to calibrate a host-specific HIV evolutionary rate from which the ages of known or suspected reservoir sequences are then inferred. The premise is as follows.
 Because HIV-1 sequences within a given infected host rapidly accumulate genetic diversity due to HIV-1's high mutation rate and short generation time \cite{Alizon13,Rambaut04,Shankarappa99}, it is possible to reconstruct a phylogenetic tree that represents the ancestor-descendant relationships between HIV-1 sequences sampled longitudinally from within that host.
-A phylogeny that is reconstructed by parameterizing a model of molecular evolution solely on the basis of sequence homology (\emph{e.g.}, by maximum likelihood estimation \cite{Felsenstein81}) has branch lengths in units of expected numbers of substitutions, in which the passage of time is confounded with the rate of evolution.
+A phylogeny that is reconstructed by parametrizing a model of molecular evolution solely on the basis of sequence homology (\emph{e.g.}, by maximum likelihood estimation \cite{Felsenstein81}) has branch lengths in units of expected numbers of substitutions, in which the passage of time is confounded with the rate of evolution.
 In other words, a tree that stretches far back in time with a slow rate of evolution will explain a given set of sequences just as effectively as a shallow tree with rapid evolution.
 When sampling dates are known however, the corresponding tips of the phylogeny can be fixed at these time points, allowing the rate of evolution to be estimated directly \cite{Rodrigo99}.
 Knowledge of sampling dates thus enables one to rescale a phylogeny in chronological time, which is especially useful for within-host HIV-1 populations in which substantial genetic differences can accumulate in weeks or months \cite{Williamson03}.
@@ -131,7 +131,7 @@ Consequently, the divergence of descendant lineages from the transmitted/founder
 Upon integration of a given HIV-1 sequence into a host cell genome, evolution of that lineage effectively ceases until a new round of virus replication ensues.
 Latent HIV-1 sequences will therefore display a characteristic discordance between their sampling date and their apparent (younger) age based on sequence divergence from other within-host lineages (where the latter age reflects the date on which that HIV-1 sequence originally integrated into the host cell genome; see Figure \ref{fig:latenttree}).
 Our method is therefore based on the premise that we can use within-host phylogenetic analysis to estimate the original integration dates of known or suspected latent HIV-1 sequences.
-Assuming that within-host HIV-1 evolution can be adequately modeled by a strict molecular clock such that the expected number of substitutions per site increases linearly with time \cite{Ho14}, we construct a phylogeny relating sequences derived from plasma HIV-1 RNA sequences sampled longitudinally from within a given host. We then parameterize a strict molecular clock by fitting a linear model to the known HIV RNA collection dates and the path lengths from the corresponding tips of the phylogeny to the inferred tree root (which represents the earliest point in time in the phylogeny).
+Assuming that within-host HIV-1 evolution can be adequately modelled by a strict molecular clock such that the expected number of substitutions per site increases linearly with time \cite{Ho14}, we construct a phylogeny relating sequences derived from plasma HIV-1 RNA sequences sampled longitudinally from within a given host. We then parametrize a strict molecular clock by fitting a linear model to the known HIV RNA collection dates and the path lengths from the corresponding tips of the phylogeny to the inferred tree root (which represents the earliest point in time in the phylogeny).
 Next, we use the linear model to reconstruct tip dates of HIV-1 sequences for which sampling dates were masked. 
 We employed simulated and real longitudinal HIV sequence data to evaluate model accuracy, and finally applied the model to estimate the distribution of integration dates of viral lineages sampled as cellular HIV DNA in real longitudinal data sets.
 
@@ -154,7 +154,7 @@ To characterize sources of error in reconstructing dates on tips of a phylogeny,
 First, we generated phylogenies with 100 tips each under a birth-death model with serial sampling using the \emph{sim.bdsky.stt} function in the \textit{R} package \textit{TreeSim} \cite{Boskova14}.
 Birth-death models have been applied to studying speciation processes \cite{Nee:2006} and infectious disease epidemics \cite{Stradler13}, but have only recently been used to model the proliferation of virus lineages in cell populations \cite{Hartfield:2015}.
 %% This paragraph needs to be rewritten
-The birth-death model was parameterized by fitting this model to samples from the {\em plasma} dataset.
+The birth-death model was parametrized by fitting this model to samples from the {\em plasma} dataset.
 %% we may need to provide some justification for using BD
 %To assess the sensitivity of our method, we first simulated HIV sequence data sets without viral latency.
 We used BEAST version 2.3.2 \cite{BEAST2} to estimate the posterior distribution defined by the serial model with a Bayesian skyline \cite{Stadler13}, a strict molecular clock, and the HKY85 \cite{HKY85} model of nucleotide substitution.
@@ -188,7 +188,7 @@ See Figure \ref{fig:latencymodel} for an illustration of this model.
 We derived the parameters, $l$ and $i$, from results found in the literature.
 We computed $l$ from the mean half life ($3.6$ years) estimated by \cite{Crooks15}.
 Using this estimate, we calculated $l = 5.3 \times 10^{-4}$ day$^{-1}$.
-Similarly, we parameterized $i$ from the frequency of latent cells found by \cite{Ho13} ($i = 3. \times 10^{-4}$ day$^{-1}$).
+Similarly, we parametrized $i$ from the frequency of latent cells found by \cite{Ho13} ($i = 3. \times 10^{-4}$ day$^{-1}$).
 %For the second set we calculated $l = 2.8 \times 10^{-4}$ day$^{-1}$ and $i = 1.5 \times 10^{-4}$ day$^{-1}$ based on the model of \cite{Kim06}.
 %See Supplementary Materials S1 for details.
 %% For supplementary
@@ -330,7 +330,7 @@ We calculated the root mean square deviation (RMSD) and the median difference to
 %We used the root mean square error to quantify the difference between the predicted and known dates of sampling.
 %the mean square error for predicted date, as well as the mean and median difference between the predicted and known sampling dates.
 %and sampling date, where difference defined as simply the predicted date minus the observed date.
-All tip dates were re-scaled to lie between $0$ and $1$ to facilitate comparisons among longitudinal data sets using the formula: $\hat{t} = \frac{t - \min(\bf{t}) }{ \max{(\bf{t})} - \min{(\bf{t}})}$, where $t$ is the the unscaled time of any tip, and $\bf{t}$ is the vector of all tip dates for a given tree. 
+All tip dates were re-scaled to lie between $0$ and $1$ to facilitate comparisons among longitudinal data sets using the formula: $\hat{t} = \frac{t - \min(\bf{t}) }{ \max{(\bf{t})} - \min{(\bf{t}})}$, where $t$ is the unscaled time of any tip, and $\bf{t}$ is the vector of all tip dates for a given tree. 
 %We refer to $\hat{t}$ as the `normalized time' of a tip. 
 Our error metrics were then calculated from these normalized times.%, giving normalized mean square error, normalized mean difference, and normalized median difference.
 
@@ -418,7 +418,7 @@ One reason that these RMSD's are high is that some of the some of the predicted 
 In contrast, the latency periods are always positive.
 Ignoring the differences that are negative, we estimated the latency of 80\% and 71\% of the latent lineages in the \emph{simulated (extreme)} and \emph{simulated (latency)} data sets with RMSD's of $64$ and $75$ days respectively.
 
-%The total scaled RMSDs of three simulated models with viral latency were $3.3 \times{10}^{-2}$, $6.5 \times 10^{-2}$, and $6.7 \times 10^{-2}$ respectively.
+%The total scaled RMSD's of three simulated models with viral latency were $3.3 \times{10}^{-2}$, $6.5 \times 10^{-2}$, and $6.7 \times 10^{-2}$ respectively.
 %The scaled median difference of the data sets were $-5.6 \times 10^{-2}$, $2.3 \times 10^{-2}$ and $2.3 \times 10^{-2}$ respectively.
 %The unscaled median difference was $070.$ compared to the actual median latency of $90.$ days.
 %The unscaled median difference was $051.$ days compared to the actual median latency of $35.$ days.
@@ -442,7 +442,7 @@ See Table \ref{tab:patientserror} for the error metrics for each patient in the 
 The binomial test for the \emph{plasma} data predicted that there was no evidence of viral latency ($p=0.45$) as we expected.
 %(Figure \ref{fig:results2} C shows this when the phylogenies have been rooted with out-group rooting). 
 %Averaged over all simulated data sets, the mean square error was $1.7\times 10^{-1}$, and the absolute value of average median and mean difference were $2.1\times 10^{-4}$ and $1.9\times 10^{-2}$ respectively. 
-%The density plot shows similar behavior to that of the synthetic data, except with a wider distribution, and more variation.
+%The density plot shows similar behaviour to that of the synthetic data, except with a wider distribution, and more variation.
 
 \begin{table*}
 %\tabletitle{Linear model details}
@@ -521,7 +521,7 @@ Data set & Total Scaled RMSD & Total Scaled Median Difference \\ % TMD (days) & 
 
 %Finally, we tested our methodology on the {\em mixed} data set.
 %Figure \ref{fig:results2} D shows the regression over the plasma calibration dates the plasma collection dates. 
-%In this case, we do not know the actual date of archival, however, the superposition of the difference density plots shows similar behavior to that of the latent simulated data.
+%In this case, we do not know the actual date of archival, however, the superposition of the difference density plots shows similar behaviour to that of the latent simulated data.
 
 %With respect to the sampling time, over all individuals, the mean square error was $4.9\times 10^{-2}$, and the absolute value of average median and mean difference were $2.4\times 10^{-2}$ and $4.7\times 10^{-3}$.
 
@@ -562,8 +562,6 @@ Note that none of the latent lineages appeared before the patient started treatm
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section * {Discussion} \label{sec:discuss}
-%% Rewrite this section
-
 In this work we showed that a phylogeny's `clock', when reliable, is a useful source of information with respect to dating sequences that are suspected to show viral latency in patients infected with HIV-1. 
 Through simulation, we built phylogenies under the assumption of a strict molecular clock, with and without latent sequences.
 From these trees, we were able to reliably reconstruct dates for both active and latent sequences, rooting the trees via root-to-tip regression.
@@ -596,7 +594,7 @@ Furthermore, the plasma and simulated data without latency failed to reject the 
 
 
 
-%We also noticed that the patients who had begun treatment (regardless of whether or not they regressed) typically failed the hypothesis testing. Upon analyzing the clocks of these individuals, they showed two trends. 
+%We also noticed that the patients who had begun treatment (regardless of whether or not they regressed) typically failed the hypothesis testing. Upon analysing the clocks of these individuals, they showed two trends. 
 %The first trend, in patients who had regressed after treatment, was the ``resetting'' of the molecular clock --- that is, after treatment started, the clock was set to a previous point in time, then continued as it had before after treatment failed. 
 %For patients who had successfully been treated, there appeared to be an emergence of a clock with near zero slope after treatment.
 %This suggests that after a patient begins treatment, the assumption of a molecular clock  is not valid over the whole temporal range of the phylogeny. 
@@ -623,7 +621,9 @@ Therefore we suspect that these extensions will not provide much of an improveme
 %Additionally, we would like to apply the methodology to next gen sequence data --- we would like to see if mass amounts of short read data contain sufficient information to calibrate the clock.
 
 \section * {Conclusions} \label{sec:concl}
-(Need conclusion.)
+We introduced a pipeline which estimates the integration dates of HIV-1 lineages within-host given the assumption of a strict molecular clock.
+We showed how this pipeline can be used to accurately recover the dates when latent lineages were incorporated into the HIV-1 reservoir.
+It is our hope that the ability to estimate the dates of HIV integration in the latent reservoir will aid in the development of more effective cure strategies of HIV.
 
 \section * {Declarations} \label{sec:decl}
 \subsection*{Ethics approval and consent to participate}
@@ -783,7 +783,7 @@ ts1.pdf {\bf Additional File 5: Table S1}. Details of the linear model Details o
 \begin{figure}[p]
 	\centering
 	\includegraphics[width=12cm]{figures/patient_16617.pdf}
-	\caption[Treament]{
+	\caption[Treatment]{
 	{Patient 16617 from the \emph{mixed} data set.}
 	Same as Figure \ref{fig:results1} for Patient 16617 from the \emph{mixed} data set.
 	The time between the green bars represents when the patient underwent therapy.}
