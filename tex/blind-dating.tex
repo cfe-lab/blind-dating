@@ -205,8 +205,8 @@ For these data, we generated an additional 100 subjects with 100 sequences each,
 We collected two distinct sets of real data for our experiments. 
 The first we refer to as the {\em plasma} data set, which comprised of sequences derived from viral RNA from longitudinal plasma samples \cite{McCloskey14}. 
 From these data, we selected treatment naive individuals with two or more clonal or single-genome sequences available at each time point, and with a known time-line relative to one of several reference points: HIV infection, seroconversion or presentation of symptomatic seroconversion illness. 
-The baseline samples were collected within 186 days of this reference point, and at least one of the subsequent ``follow-up'' time points occurred a minimum of 6 months after baseline.
-Individuals who had been classified as ``superinfected'' were also excluded \cite{McCloskey14}.
+The baseline samples were collected within 186 days of this reference point, and at least one of the subsequent `follow-up' time points occurred a minimum of 6 months after baseline.
+Individuals who had been classified as `superinfected' were also excluded \cite{McCloskey14}.
 After applying these criteria, we retained 410 HIV RNA sequences from 9 individuals for phylogenetic analysis.
 The purpose of the plasma data set was to provide representative samples of within-host HIV diversity for evaluating and calibrating the model.
 
@@ -568,7 +568,7 @@ From these trees, we were able to reliably reconstruct dates for both active and
 Using real data, we then performed similar reconstructions using both root-to-tip regression and outgroup rooting and obtained results comparable to the simulations.
 Results from simulated data were highly consistent with expectations. 
 For instance, more accurate predictions were obtained when the phylogeny conformed to a strict molecular clock --- the data were simulated to retain a strong phylogenetic signal, such that the molecular clocks could be well resolved by the maximum likelihood tree estimate. 
-Since latency is akin to ``pausing'' the evolution of a sequence and evolution is assumed to be clock-like when sequences are not ``paused'', it is also not surprising that the latent simulated data could be reconstructed with low error. 
+Since latency is akin to `pausing' the evolution of a sequence and evolution is assumed to be clock-like when sequences are not `paused', it is also not surprising that the latent simulated data could be reconstructed with low error. 
 
 %The results from the {\em plasma} data-set are also expected. 
 The viral population of most of the patients from the {\em plasma} data-set showed evidence of a molecular clock, so the ability to accurately reconstruct the known sample collection dates was expected.
@@ -621,9 +621,14 @@ Therefore we suspect that these extensions will not provide much of an improveme
 %Additionally, we would like to apply the methodology to next gen sequence data --- we would like to see if mass amounts of short read data contain sufficient information to calibrate the clock.
 
 \section * {Conclusions} \label{sec:concl}
-We introduced a pipeline which estimates the integration dates of HIV-1 lineages within-host given the assumption of a strict molecular clock.
-We showed how this pipeline can be used to accurately recover the dates when latent lineages were incorporated into the HIV-1 reservoir.
-It is our hope that the ability to estimate the dates of HIV integration in the latent reservoir will aid in the development of more effective cure strategies of HIV.
+
+We have found evidence of viral latency from the reconstructed dates of HIV-1 integration within hosts using a simple new method of phylogenetic analysis of sequence variation.
+Using simulated data sets, we verified that this method could accurately recover integration dates from the phylogeny.
+This approach can provide an important resource for the study of HIV latent reservoirs and the development of effective cure strategies.
+
+%We introduced a pipeline which estimates the integration dates of HIV-1 lineages within-host given the assumption of a strict molecular clock.
+%We showed how this pipeline can be used to accurately recover the dates when latent lineages were incorporated into the HIV-1 reservoir.
+%It is our hope that the ability to estimate the dates of HIV integration in the latent reservoir will aid in the development of more effective cure strategies of HIV.
 
 \section * {Declarations} \label{sec:decl}
 \subsection*{Ethics approval and consent to participate}
