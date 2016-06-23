@@ -9,6 +9,7 @@
 \usepackage{mathptmx}
 \usepackage{nicefrac}
 \usepackage{authblk}
+\usepackage{array}
 
 
 \usepackage{times}
@@ -36,8 +37,10 @@
 \titleformat{\subsection} {\vspace{6pt}\bf}{\thesubsection} {0pt} {\vspace{-2pt}}
 \titleformat{\subsubsection} [runin] {\bf}{\thesubsubsection} {12pt} {}
 
+\newcolumntype{+}{>{\global\let\currentrowstyle\relax}}
+\newcolumntype{^}{>{\currentrowstyle}}
 \definecolor{badpatcol}{HTML}{FF6666}
-\newcommand{\badpat}[1]{\rowcolor{badpatcol}#1}
+\newcommand{\badpat}{\gdef\currentrowstyle{\bfseries}\bfseries\ignorespaces }
 
 \captionsetup[subfigure]{width=0.9\textwidth}
 
@@ -45,16 +48,16 @@
  
 \begin{document}
 
-\title{Supplementary Materials \\ Blind dating: a phylogenetic approach to determining the ages of HIV-1 reservoir sequences within host}
+\title{Supplementary Materials, Figures and Tables \\ Blind dating: a phylogenetic approach to determining the ages of HIV-1 reservoir sequences within host}
 
 \author[1,2]{Bradley R. Jones}
 \author[1,2]{Joshua Horacsek}
 \author[2,3]{Jeffrey B. Joy}
 \author[1,2]{Zabrina L. Brumme}
-\author[1,2,3,*]{Art F.Y. Poon}
-\affil[1]{Simon Fraser University, Burnaby, Canada}
-\affil[2]{BC Centre for Excellence in HIV/AIDS, Vancouver, Canada}
-\affil[3]{University of British Columbia, Vancouver, Canada}
+\author[1,2,3]{Art F.Y. Poon}
+\affil[1]{Faculty of Health Sciences, Simon Fraser University, Burnaby, V5A 1S6, Canada}
+\affil[2]{BC Centre for Excellence in HIV/AIDS, Vancouver, V6Z 1Y6, Canada}
+\affil[3]{Department of Medicine, University of British Columbia, Vancouver, V5Z 1M9, Canada}
 %%% 1 Simon Fraser University
 %%% 2 BC Centre for Excellence in HIV/AIDS
 %%% 3 University of British Columbia
@@ -86,7 +89,7 @@ Using this approach, we get $i = 2.0 \times 10^{-12}$ day$^{-1}$.
 \section{Results with outgroup rooting} \label{sec:ogr}
 Supplementary Materials Table \ref{tab:patientserrorogr} shows the results of the linear model on the data sets using outgroup rooting \cite{Huelsenbeck02} to root the phylogenies.
 5 patients from the \emph{plasma} data set and 7 patients from the \emph{mixed} data set were rejected by our screening process when using outgroup rooting.
-Overall, outgroup rooting performed poorer than rooting with root-to-tip regression, in terms of the $p$-values of the linear models and the resulting RMSD's.
+Overall, outgroup rooting performed poorer than rooting with root-to-tip regression, in terms of the $p$-values of the linear models and the resulting RMSDs.
 
 The total scaled RMSD of the \emph{plasma} data set using outgroup rooting was $0.13$ and the total scaled median differrence was $0.030$.
 The total scaled RMSD of the \emph{mixed} data set using outgroup rooting was $0.52$ and the total scaled median differrence was $-0.011$.
@@ -151,10 +154,6 @@ Also included in this Supplementary Materials are the corresponding figures of t
 	\label{fig:treatment}
 \end{figure}
 
-\begin{figure}[ht]
-	
-\end{figure}
-
 % Tables
 \begin{comment}
 \begin{table}[!ht]
@@ -187,34 +186,34 @@ Parameters unused in our analysis are given no value.}
 \begin{table*}[!ht]
 \def\arraystretch{1.3}%
 \begin{center}
-\begin{tabular}{lrrrr} 
+\begin{tabular}{+l^r^r^r^r} 
 Patient ID & $p$-value & Median Difference (days) & RMSD (days) & Scaled RMSD \\ 
 \hline
-\badpat{825 & $0.52$ & $1.1 \times 10^3$ & $6.8 \times 10^3$ & 2.3} \\
+\badpat 825 & 0.52 & $\mathbf{1.1 \times 10^3}$ & $\mathbf{6.8 \times 10^3}$ & 2.3 \\
 2658 & $< 2.2 \times 10^{-15}$  & -67. & 380 & 0.20 \\
-\badpat{7259 & $0.285$ & -7.70 & $1.2 \times 10^{3}$ & 1.3} \\
-\badpat{7263 & $0.074$ & -25. & 200 & 0.78} \\
-\badpat{7265 & $0.030$ & -110 & 320 & 1.2} \\
+\badpat 7259 & 0.285 & -7.70 & $\mathbf{1.2 \times 10^{3}}$ & 1.3 \\
+\badpat 7263 & 0.074 & -25. & 200 & 0.78 \\
+\badpat 7265 & 0.030 & -110 & 320 & 1.2 \\
 13333 & $2.4 \times 10^{-8}$ & 28. & 160 & 0.31 \\
 13334 & $5.8 \times 10^{-10}$ & 22. & 210 & 0.29 \\
 13336 & $9.9 \times 10^{-3}$ & 220 & 470 & 0.63 \\
-\badpat{35566 & $0.016$ & 75. & 320 & 1.2} \\
+\badpat 35566 & 0.016 & 75. & 320 & 1.2 \\
 \hline
 820 & $4.8 \times 10^{-4}$ & $-1.3 \times 10^{3}$ & $1.7 \times 10^{3}$ & 0.56 \\
 821 & $< 2.2 \times 10^{-15}$ & -120. & 550 & 0.23 \\
 822 & $2.0 \times 10^{-15}$ & 130 & 690 & 0.32 \\
 824 & $< 2.2 \times 10^{-15}$ & -9.1 & 600 & 0.19 \\
-\badpat{10137 & $0.031$ & 810 & 900 & 0.32} \\
+\badpat 10137 & 0.031 & 810 & 900 & 0.32 \\
 10138 & $< 2.2 \times 10^{-15}$ & -72. & 610 & 0.18 \\
-\badpat{10586 & $0.45$ & $5.2 \times 10^3$ & $7.8 \times 10^{3}$ & 1.7} \\
+\badpat 10586 & 0.45 & $\mathbf{5.2 \times 10^3}$ & $\mathbf{7.8 \times 10^{3}}$ & 1.7 \\
 13889 & $< 2.2 \times 10^{-15}$ & -150 & 640 & 0.13 \\
-\badpat{34391 & 0.056 & -33 & 280 & 0.76} \\
-\badpat{34393 & 0.47 & 340 & 400 & 1.1} \\
-\badpat{34396 & 0.59 & -690 & 970 & 2.9} \\
+\badpat 34391 & 0.056 & -33 & 280 & 0.76 \\
+\badpat 34393 & 0.47 & 340 & 400 & 1.1 \\
+\badpat 34396 & 0.59 & -690 & 970 & 2.9 \\
 34399 & $< 2.2 \times 10^{-15}$ & 29 & 250 & 0.17 \\
-\badpat{34408 & 0.75 & $-2.1 \times 10^{3}$ & $1.1 \times 10^{4}$ & 21.} \\
+\badpat 34408 & 0.75 & $\mathbf{-2.1 \times 10^{3}}$ & $\mathbf{1.1 \times 10^{4}}$ & 21. \\
 34410 & $2.3 \times 10^{-3}$ & -16. & 590 & 1.3 \\
-\badpat{34411 & 0.39 & 210. & 410 & 0.89} \\
+\badpat 34411 & 0.39 & 210. & 410 & 0.89 \\
 10769 & $4.3 \times 10^{-5}$ & -530 & $2.5 \times 10^3$ & 1.3 \\
 16616 & $1.9 \times 10^{-6}$ & -100 & 800 & 0.31 \\
 16617 & $1.0 \times 10^{-7}$ & 75. & 550 & 0.22 \\
@@ -223,7 +222,7 @@ Patient ID & $p$-value & Median Difference (days) & RMSD (days) & Scaled RMSD \\
 \hline
 \end{tabular}
 \end{center}
-  \caption{Details of the linear models applied to the real data sets using outgroup rooting. RMSD is the root mean squared deviance. Patients where we were unable to reject the null hypothesis are marked in red.
+  \caption{Details of the linear models applied to the real data sets using outgroup rooting. RMSD is the root mean squared deviance. Patients where we were unable to reject the null hypothesis are marked in bold.
    }\label{tab:patientserrorogr} 
 \end{table*}
 
