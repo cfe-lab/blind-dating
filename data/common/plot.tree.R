@@ -1,5 +1,6 @@
 library(ape)
 library(parallel)
+library(plotrix)
 
 
 args.all <- commandArgs(trailingOnly = F)
@@ -135,10 +136,14 @@ pdf(out.pdf, width=8, height=8)
 		
 		y.intersp=1
 		cex=1
-				
+						
 		plot(plasma.dates, plasma.dists, xlab="Time (days)", ylab=sprintf("Divergence from root"), xlim=plot.xlim, ylim=plot.ylim,  pch=20, cex.lab=1.2, cex.axis=1, col='black', cex=cex)
 		points(pbmc.s.dates, pbmc.dists, col='red', pch=5, lty=2, cex=cex)
+#		text(pbmc.s.dates, pbmc.dists, labels=1:length(pbmc.dists), cex=cex)
 		abline(model, lty=2)
+		
+#		draw.circle(pbmc.s.dates[22], pbmc.dists[22], radius=100, col="#00000000", border="#003ecc")
+#		lines(c((pbmc.dists[22] - a) / b, pbmc.s.dates[22] - 100), y=rep(pbmc.dists[22], 2), col="#003ecc", lty=2)
 		
 		legend.labels <- if (data.type == 2) {
 				l.x <- plot.xlim[2] - (plot.xlim[2] - plot.xlim[1])*.395
