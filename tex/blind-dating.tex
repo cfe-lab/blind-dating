@@ -112,7 +112,7 @@ In the presence of suppressive antiretroviral therapy, for instance, these reser
 
 Establishment of individual viral reservoirs within a given host  begins within hours or days following infection and continues thereafter \cite{Whitney14,Leford14}.
 As within-host HIV-1 populations rapidly accumulate genetic diversity over the course of an infection \cite{Alizon13,Rambaut04,Shankarappa99}, latent viral genomes present during untreated chronic infection should be heterogeneous in terms of age and genetics, ranging from those archived soon after infection (that resemble ancestral viruses within the host) to those that have integrated relatively recently into cellular reservoirs (that resemble contemporary plasma strains).
-The chronology of establishment and genetic distribution of latent HIV-1 lineages within a given host is relevant to the development of strategies to eliminate them, as these properties may influence their susceptibility to reactivation and/or immune-mediated clearance.
+The chronology of establishment and genetic distribution of latent HIV-1 lineages within a given host is may be relevant to the development of strategies to eliminate them, as these properties could influence their susceptibility to reactivation and/or immune-mediated clearance.
 For example, while the `oldest' reservoirs within a given individual may be the most inherently refractory to reactivation with latency reversing agents, `younger' reservoirs may be largely refractory to subsequent immune-mediated elimination due to an accumulated burden of immune escape mutations \cite{Deng15}.
 However, within-host dynamics of HIV-1 reservoir establishment remain incompletely characterized.
 Previous studies have developed techniques to detect latent lineages by reduced rates of viral evolution \cite{Immonen14} and modelled the population dynamics of different classes of the virus within a given host \cite{Althaus14}.
@@ -355,7 +355,7 @@ Our error metrics were then calculated from these normalized times.%, giving nor
 %We evaluated the latency of the censored sequences using two methods. The first was a {binomial test} and the second was a {GLME model}.
 
 The sampling dates of latent lineages are more likely to appear later in time than predicted by the linear model (Figure \ref{fig:latenttree}).
-Thus, if the frequency of censored lineages who are sampled later than the linear model predicts is significantly greater than 0.5, then we expect that some of the censored lineages have undergone at least some latency.
+Thus, if the frequency of censored lineages who are sampled later than the linear model predicts is significantly greater than 0.5, then we expect that some of the censored lineages represent latent sequences.
 If this frequency is closer to 0.5, however, then the censored lineages cannot be distinguished from the uncensored lineages, suggesting that there is little or no latency in the censored lineages.
 We evaluated the latency of the censored sequences using a nonparametric binomial test.
 We used R's {\it binom.test} function to apply a right-tailed binomial test on the occurrence of sequences with negative difference using $p=0.5$ as the null model.
@@ -542,7 +542,7 @@ The sequence circled in blue was sampled at 3681 days after the first sequence w
 The dashed blue line represents the period when the sequence was latent --- its length is 915 days, supporting that the sequence is from a latent lineage.
 % The length of the estimated latency period and the lack of proximity in genetic distance of the circled sequence to the other sequences sampled at the time support the hypothesis that the sequence is from a latent lineage.
 
-In Figure \ref{fig:densitylanl}, we have the density plot of the RMSD of each patient from the \emph{mixed}data set with the density plot of the RMSD of the \emph{simulated (latency)} data set overlaid.
+In Figure \ref{fig:densitylanl}, we have the density plot of the RMSD of each patient from the \emph{mixed} data set with the density plot of the RMSD of the \emph{simulated (latency)} data set overlaid.
 Most of the density plots of the \emph{mixed} data set fit well in the simulated data set's density plot and most of the density plots that do not fit well are very negative, which suggests a high degree of viral latency in those patients.
 The binomial test predicted that there was latency in the DNA lineages of the \emph{mixed} data set ($p=7.9 \times 10^{-7}$).
 %However when restricted to only the individuals who received therapy, the binomial test predicted that there was no latency ($p=0.98$).
@@ -560,7 +560,7 @@ The dotted green lines indicate the period that the patient was on therapy.
 Due to their relative position to the line of regression, we believe that the sequences circled in blue represent latent lineages.
 Moreover, there are more apparently latent lineages in this population than in previous analyses (\textit{e.g.}, figures \ref{fig:resultsancre} and \ref{fig:resultslanl}).
 Note no latent lineages were detected before the patient started treatment.
-This is consistent with the potent reduction in HIV replication under HAART, which servers to increase the ratio of latent to actively-infected cells by reducing the latter.
+This is consistent with the potent reduction in HIV replication under HAART, which serves to increase the ratio of latent to actively-infected cells by reducing the latter.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section * {Discussion} \label{sec:discuss}

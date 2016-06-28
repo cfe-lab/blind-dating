@@ -1,3 +1,4 @@
+library(plotrix)
 
 args.all <- commandArgs(trailingOnly=F)
 
@@ -156,6 +157,15 @@ pdf(out.pdf, width=8, height=8)
 		plot(plasma.dates, plasma.dists, xlab="Time (days)", ylab=sprintf("Divergence from root"), xlim=plot.xlim, ylim=plot.ylim,  pch=20, cex.lab=1.2, cex.axis=1, col='black', cex=cex)
 		points(pbmc.s.dates, pbmc.dists, col='red', pch=5, lty=2, cex=cex)
 		abline(model, lty=2)
+		
+		latent <- function(x, r=75) {
+			draw.circle(pbmc.s.dates[x], pbmc.dists[x], radius=r, col="#00000000", border="#003ecc")
+			lines(c((pbmc.dists[x] - a) / b, pbmc.s.dates[x] - r), y=rep(pbmc.dists[x], 2), col="#003ecc", lty=2)
+		}
+		
+		latent(2)
+		latent(10)
+		latent(87)
 		
 		legend.labels <- if (data.type == 2) {
 				l.x <- plot.xlim[2] - (plot.xlim[2] - plot.xlim[1])*.395
