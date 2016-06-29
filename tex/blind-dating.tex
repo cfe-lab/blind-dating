@@ -1,14 +1,21 @@
-% !TEX TS-program = xelatex
-\documentclass[12pt]{article}
+%% BioMed_Central_Tex_Template_v1.06
+%%                                      %
+%  bmc_article.tex            ver: 1.06 %
+%                                       %
 
-\usepackage[margin=2cm]{geometry}
-\usepackage{colortbl}
+% !TEX TS-program = xelatex
+\documentclass{bmcart}
+
+
+\usepackage[utf8]{inputenc} 
+%\usepackage[margin=2cm]{geometry}
+%\usepackage{colortbl}
 \usepackage{comment}
-\usepackage{caption}
-\usepackage{subcaption}
+%\usepackage{caption}
+%\usepackage{subcaption}
 \usepackage{mathptmx}
 \usepackage{nicefrac}
-\usepackage{authblk}
+%\usepackage{authblk}
 \usepackage{array}
 
 \usepackage{times}
@@ -23,51 +30,77 @@
 \usepackage{amsmath}
 \usepackage{xcolor}
 
-\usepackage{url}
-\urlstyle{same}
+%z\def\includegraphic{}
+%\def\includegraphics{}
 
-\usepackage[small,compact]{titlesec}
+\startlocaldefs
+%\usepackage{url}
+%\urlstyle{same}
+
+\graphicspath{{figures/}{./}}
+
+%\usepackage[small,compact]{titlesec}
 %\titleformat{\section} {\vspace{24pt}\bf\sffamily\MakeUppercase}{\thesection} {0pt} {}
-\titleformat{\section} {\vspace{12pt}\bf\large}{\thesection}{0pt}{}
-\titleformat{\subsection} {\vspace{6pt}\bf}{\thesubsection} {0pt} {\vspace{-2pt}}
-\titleformat{\subsubsection} [runin] {\bf}{\thesubsubsection} {12pt} {}
+%\titleformat{\section} {\vspace{12pt}\bf\large}{\thesection}{0pt}{}
+%\titleformat{\subsection} {\vspace{6pt}\bf}{\thesubsection} {0pt} {\vspace{-2pt}}
+%\titleformat{\subsubsection} [runin] {\bf}{\thesubsubsection} {12pt} {}
 
 \newcolumntype{+}{>{\global\let\currentrowstyle\relax}}
 \newcolumntype{^}{>{\currentrowstyle}}
 \definecolor{badpatcol}{HTML}{FF6666}
 \newcommand{\badpat}{\gdef\currentrowstyle{\bfseries}\bfseries\ignorespaces }
 
-\captionsetup[subfigure]{width=0.9\textwidth}
+\newcounter{subfigure}[figure]
+\newcounter{subfiguresmall}[figure]
+\newcommand{\sublabel}[1]{\refstepcounter{subfigure}\label{#1}\refstepcounter{subfiguresmall}\label{#1small}}
+\renewcommand{\thesubfigure}{\thefigure \alph{subfigure}}
+\renewcommand{\thesubfiguresmall}{\alph{subfiguresmall}}
+\newcommand{\subref}[1]{\ref{#1small}}
+
+\endlocaldefs
+
+%\captionsetup[subfigure]{width=0.9\textwidth}
  
-\newcommand{\tabletitle}[1]{\caption*{\bfseries #1}\vspace{-10pt}}
-\newcommand{\figtitle}[1]{\caption*{\Large \bfseries #1}}
-\newcommand{\figtitlel}[1]{\subcaption[\large \bfseries]{#1}}
+%\newcommand{\tabletitle}[1]{\caption*{\bfseries #1}\vspace{-10pt}}
+%\newcommand{\figtitle}[1]{\caption*{\Large \bfseries #1}}
+%\newcommand{\figtitlel}[1]{\subcaption[\large \bfseries]{#1}}
 
 \begin{document}
 
+\pagewiselinenumbers
+
+\begin{frontmatter}
+
+\begin{fmbox}
+
+\dochead{Retrovirology}
+
 \title{Blind dating: a phylogenetic approach to determining the ages of HIV-1 reservoir sequences within host}
 
-\author[1,2]{Bradley R. Jones} % brj1@sfu.ca
-\author[1,2]{Joshua Horacsek} % jjh13@sfu.ca
-\author[2,3]{Jeffrey B. Joy} % jjoy@cfenet.ubc.ca
-\author[1,2]{Zabrina L. Brumme} % zbrumme@sfu.ca
-\author[1,2,3,*]{Art F.Y. Poon} % apoon@cfenet.ubc.ca
-\affil[1]{Faculty of Health Sciences, Simon Fraser University, Burnaby, V5A 1S6, Canada}
-\affil[2]{BC Centre for Excellence in HIV/AIDS, Vancouver, V6Z 1Y6, Canada}
-\affil[3]{Department of Medicine, University of British Columbia, Vancouver, V5Z 1M9, Canada}
-\affil[*]{Corresponding author}
+\author[addressref={1,2},email={brj1@sfu.ca}]{Bradley R. Jones} % brj1@sfu.ca
+\author[addressref={1,2},email={jjh13@sfu.ca}]{Joshua Horacsek} % jjh13@sfu.ca
+\author[addressref={2,3},email={jjoy@cfenet.ubc.ca}]{Jeffrey B. Joy} % jjoy@cfenet.ubc.ca
+\author[addressref={1,2},email={zbrumme@sfu.ca}]{Zabrina L. Brumme} % zbrumme@sfu.ca
+\author[addressref={1,2,3},email={apoon@cfenet.ubc.ca},corref={3}]{Art F.Y. Poon} % apoon@cfenet.ubc.ca
+\address[id=1]{\orgname{Faculty of Health Sciences, Simon Fraser University} \street{8888 University Drive} \city{Burnaby} \postcode{V5A 1S6} \cny{Canada}}
+\address[id=2]{\orgname{BC Centre for Excellence in HIV/AIDS} \street{1081 Burrard Street} \city{Vancouver} \postcode{V6Z 1Y6}, \cny{Canada}}
+\address[id=3]{\orgname{Department of Medicine, University of British Columbia} \street{2775 Laurel Street} \city{Vancouver} \postcode{V5Z 1M9} \cny{Canada}}
+%\affil[*]{Corresponding author}
 
 %%% 1 Simon Fraser University
 %%% 2 BC Centre for Excellence in HIV/AIDS
 %%% 3 University of British Columbia
-\baselineskip 30pt
-%\pagewiselinenumbers
+%\baselineskip 30pt
 
-\date{}
-\maketitle
 
-\section * {Abstract}
+\begin{artnotes}
+\end{artnotes}
 
+%\maketitle
+\end{fmbox}
+
+\begin{abstractbox}
+\begin{abstract}
 \paragraph{Background:}
 The ability of HIV to persist within latent cellular reservoirs represents a major barrier to
 %developing an effective
@@ -99,10 +132,12 @@ These dates can provide important insights into the dynamics of HIV reservoirs w
 
 \paragraph{Keywords:} 
 HIV, Latency, Cellular Reservoirs, Phylogenetics, Linear Regression
+\end{abstract}
+\end{abstractbox}
+\end{frontmatter}
 
+\baselineskip 30pt
 
-
-\underline{}
 \section * {Background} \label{sec:intro}
 
 HIV-1, like all retroviruses, integrates its genome into the chromosome of the infected host cell during the viral life cycle.
@@ -125,7 +160,7 @@ A phylogeny that is reconstructed by parametrizing a model of molecular evolutio
 In other words, a tree that stretches far back in time with a slow rate of evolution will explain a given set of sequences just as effectively as a shallow tree with rapid evolution.
 When sampling dates are known however, the corresponding tips of the phylogeny can be fixed at these time points, allowing the rate of evolution to be estimated directly \cite{Rodrigo99}.
 Knowledge of sampling dates thus enables one to rescale a phylogeny in chronological time, which is especially useful for within-host HIV-1 populations in which substantial genetic differences can accumulate in weeks or months \cite{Williamson03}.
-Moreover, among the actively replicating HIV lineages within a host, the rate of molecular evolution is fairly consistent over time \cite{Korber00,Kuhner95,Leitner99}.
+Moreover, among the actively replicating HIV lineages within a host, the rate of molecular evolution is fairly consistent over time \cite{Korber00,Kuhner95,Leitner99,Park16}.
 Consequently, the divergence of descendant lineages from the transmitted/founder virus can be approximated by a `strict' molecular clock model in which a consistent rate of evolution is sustained, at least over the initial years, of an individual's infection course \cite{Keele08}. 
 
 Upon integration of a given HIV-1 sequence into a host cell genome, evolution of that lineage effectively ceases until a new round of virus replication ensues.
@@ -375,7 +410,7 @@ We also applied a general mixed effects model with the binomial family to the da
 
 %% Rewrite this whole section
 
-\subsection * {Model validation} \label{sec:sim_results}
+\subsection * {Model validation} \label{sec:simresults}
 First we validated our methodology using simulated data.
 Overall, the simulated data performed well. The reconstruction of the censored dates for each simulated phylogeny was valid under the log ratio test.
 We applied our method to simulated phylogenies without viral latency incorporated from the \emph{simulated (no latency)} data set.
@@ -628,40 +663,30 @@ Using simulated data sets, we verified that this method could accurately recover
 When applied to real data sets that included both plasma HIV RNA and proviral DNA sequences, the method found evidence of latent viral lineages within the latter population.
 This approach can provide an important resource to understand the age distribution of latent HIV reservoirs within a given host, information that is relevant to the ultimate goal of developing an HIV cure.
 
-\section * {Declarations} \label{sec:decl}
-\subsection*{Ethics approval and consent to participate}
+%\section * {Declarations} \label{sec:decl}
+\begin{backmatter}
+\section*{Ethics approval and consent to participate}
 Not applicable.
 
-\subsection*{Consent for publication}
+\section*{Consent for publication}
 Not applicable.
 
-\subsection*{Availability of data and material}
+\section*{Availability of data and material}
 The datasets supporting the conclusions of this article are available in the GitHub repository: \\ \mbox{http://github.com/ArtPoon/blind-dating}.
 
-\subsection*{Competing interests}
+\section*{Competing interests}
 We have no competing interests.
 
-\subsection*{Funding}
+\section*{Funding}
 This work was supported by the Canadian HIV Cure Enterprise Grant HIG-133050 (to ZLB/AFYP) from the Canadian Institutes of Health Research in partnership with the Canadian Foundation for AIDS Research (CANFAR) and the International AIDS Society (IAS).
 This work was also supported by a Canadian Institutes of Health Research operating grant to AFYP (HOP-111406).
 ZLB was supported by a Scholar Award from the Michael Smith Foundation for Health Research.
 AFYP was supported by a CIHR New Investigator Award and a Scholar Award funded by a partnership between the Michael Smith Foundation for Health Research, St.~Paul's Hospital Foundation, and the Providence Health Care Research Institute.
 
 
-\subsection*{Author's contributions}
+\section*{Author's contributions}
 % Do better
 Conception and design: JBJ, ZLB, AFYP; Collection of data: JH; Software programming: BRJ, JH; Analysis and interpretation of data: BRJ, JH, AFYP; Writing of manuscript: BRJ, JH, JBJ, ZLB, AFYP. All authors read and approved the final manuscript.
-
-\subsection*{Additional files}
-sm.pdf {\bf Additional file 1: Supplementary Materials, Figures and Tables}. Results with outgroup rooting.
-
-%fs1.pdf {\bf Additional file 2: Figure S1}. Plot from the \emph{simulated (extreme latency)} data set of the evolutionary distance vs time.
-
-%fs2.pdf {\bf Additional file 3: Figure S2}. Real data with outgroup rooting
-
-%fs3.pdf {\bf Additional file 4: Figure S3}. Patient 16617 with outgroup rooting.
-
-%ts1.pdf {\bf Additional file 5: Table S1}. Details of the linear model Details of the linear models applied to the real data sets using outgroup rooting.
 
 %\clearpage
 
@@ -673,13 +698,13 @@ sm.pdf {\bf Additional file 1: Supplementary Materials, Figures and Tables}. Res
 
 %%%%%%%%%%%%%%%  FIGURES  %%%%%%%%%%%%%%%
 
-%\section * {Figures}
+\section * {Figures}
 
-\begin{figure}[p]
+\begin{figure}[h!]
 	\centering
-	\includegraphics{figures/latency-scheme}
-	\caption[Latency Scheme]{
-	{Reconstructing the time that a viral lineage entered a latent state from with-host sequence variation.}
+	\includegraphics[width=10cm]{latency-scheme}
+	\caption{%
+	\csentence{Reconstructing the time that a viral lineage entered a latent state from with-host sequence variation.}
 	A dashed line illustrates the linear relationship between the divergence of lineages from the ancestral sequence at the root ($y$-axis) and passage of time since the root ($x$-axis).
 	Grey lines represent the reconstructed phylogenetic relationships among these lineages.
 	The lineages were sampled (open circles) at three points in time.
@@ -693,13 +718,12 @@ sm.pdf {\bf Additional file 1: Supplementary Materials, Figures and Tables}. Res
 	\label{fig:latenttree}
 \end{figure}
 
-\clearpage
 
-\begin{figure}[p]
+\begin{figure}[h!]
 	\centering{}
-	\includegraphics[width=10cm]{figures/latency-model}
-	\caption[Latency Model]{
-	{Model simulating viral latency.}
+	\includegraphics[width=10cm]{latency-model}
+	\caption{%
+	\csentence{Model simulating viral latency.}
 	On a tip with branch length $S$, we randomly select a latency period, $L$ --- after which time the lineage would reactivate if it had not been sampled.
 	Then we randomly select an integration period, $I$ --- the waiting period before integration --- between the interval $S-L$ and $S$.
 	Here, $S-L$ is the earliest that the sequence could be integrated and still be sampled before activation.
@@ -708,98 +732,74 @@ sm.pdf {\bf Additional file 1: Supplementary Materials, Figures and Tables}. Res
 	\label{fig:latencymodel}
 \end{figure}
 
-\clearpage
-
-\begin{figure}[p]
+\begin{figure}[h!]
 	\centering
-	\begin{subfigure}[ht]{8cm}
-		\centering
-		\includegraphics[width=8cm]{figures/simulated.pdf}
-		\figtitlel{Simulated data without latency}
-		\label{fig:resultssimulated}
-	\end{subfigure}
-	\begin{subfigure}[ht]{8cm}
-		\centering{}
-		\includegraphics[width=8cm]{figures/simulated_latent1.pdf}
-		\figtitlel{Simulated data with latency}
-		\label{fig:resultslatent}
-	\end{subfigure}
-	\caption[Simulated Data]{
-	{Simulated data.}
+	\includegraphics[width=12cm]{{Figure.3}.pdf}
+	\caption{%
+	\csentence{Simulated data.}
 	The dotted line is the linear regression.
 	(\subref{fig:resultssimulated}) shows an example from the \emph{simulated (no latency)} data set and (\subref{fig:resultslatent}) shows an example from the \emph{simulated (latency)} data set.
 	The solid red lines in (\subref{fig:resultslatent}) connect the sampled dates of a lineage to its integration date.
 	}
 %	Patient: HIV_12
 	\label{fig:results1}
+	\sublabel{fig:resultssimulated}
+	\sublabel{fig:resultslatent}		
 \end{figure}
 
-\clearpage
-
-\begin{figure}[p]
+\begin{figure}[h!]
 	\centering
-	\begin{subfigure}[ht]{8cm}
-		\includegraphics[width=8cm]{figures/ancre.pdf}
-		\caption{Patient 2658 from the \emph{plasma} data set}
-		\label{fig:resultsancre}
-	\end{subfigure}
-%	Patient: patient_1
-	\begin{subfigure}[ht]{8cm}
-		\includegraphics[width=8cm]{figures/lanl.pdf}
-		\caption{Patient 13889 from the \emph{mixed} data set}
-		\label{fig:resultslanl}
-	\end{subfigure}
-	\caption[Examples]{
-	{Real data.}
+	\includegraphics[width=12cm]{{Figure.4}.pdf}
+	\caption{%
+	\csentence{Real data.}
 	As Figure \ref{fig:results1}, except for the real data.
 	In (\subref{fig:resultslanl}), a putative latent lineage is circled in blue.
 	A dashed blue line is drawn between the sampled sequence and its predicted integration time; this line represents the estimated period that the lineage was latent before being sampled.
 	}
 	\label{fig:results2}
+	\sublabel{fig:resultsancre}
+	\sublabel{fig:resultslanl}
 \end{figure}
 
-\clearpage
-
-\begin{figure}[p]
+\begin{figure}[h!]
 	\centering
-	\begin{subfigure}[ht]{8cm}
-		\centering		
-		\includegraphics[width=8cm]{{figures/ancre.hist}.pdf}
-		\caption{Density of the scaled difference of the \emph{plasma} data set}
-		\label{fig:densityancre}
-	\end{subfigure}
-	\begin{subfigure}[ht]{8cm}
-		\centering
-		\includegraphics[width=8cm]{{figures/lanl.hist1}.pdf}	
-		\caption{Density of the scaled difference of the \emph{mixed} data set}
-		\label{fig:densitylanl}
-	\end{subfigure}
-	\caption[Difference Densities]{
-	{The densities of the scaled difference of each patient in the real data sets.}
+	\includegraphics[width=12cm]{{Figure.5}.pdf}
+	\caption{%
+	\csentence{The densities of the scaled difference of each patient in the real data sets.}
 	The solid lines represent the total density in the \emph{simulated (no latency)} data set for (\subref{fig:densityancre}) and \emph{simulated (latency)} data set for (\subref{fig:densitylanl}).
 	}
 	\label{fig:density}
+	\sublabel{fig:densityancre}
+	\sublabel{fig:densitylanl}
 \end{figure}
 
-\clearpage
-
-\begin{figure}[p]
+\begin{figure}[h!]
 	\centering
-	\includegraphics[width=12cm]{figures/patient_16617.pdf}
-	\caption[Treatment]{
-	{Patient 16617 from the \emph{mixed} data set.}
+	\includegraphics[width=10cm]{patient_16617}
+	\caption{%
+	\csentence{Patient 16617 from the \emph{mixed} data set.}
 	Same as Figure \ref{fig:resultslanl} for Patient 16617 from the \emph{mixed} data set.
 	The time between the green bars represents when the patient underwent therapy.
-	The sequences circled in blue are likely to have latent lineages.}
+	The sequences circled in blue are likely to have latent lineages.
+	}
 	\label{fig:treatment}
 \end{figure}
-
-\clearpage
 
 %%%%%%%%%%%%%%%  TABLES  %%%%%%%%%%%%%%%
 
 %\section * {Tables}
 
+\section*{Additional files}
+sm.pdf {\bf Additional file 1: Supplementary Materials, Figures., and Tables}. Results with outgroup rooting.
 
+%fs1.pdf {\bf Additional file 2: Figure S1}. Plot from the \emph{simulated (extreme latency)} data set of the evolutionary distance vs time.
+
+%fs2.pdf {\bf Additional file 3: Figure S2}. Real data with outgroup rooting
+
+%fs3.pdf {\bf Additional file 4: Figure S3}. Patient 16617 with outgroup rooting.
+
+%ts1.pdf {\bf Additional file 5: Table S1}. Details of the linear model Details of the linear models applied to the real data sets using outgroup rooting.
+
+\end{backmatter}
 
 \end{document}
