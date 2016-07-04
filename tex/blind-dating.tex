@@ -30,8 +30,8 @@
 \usepackage{amsmath}
 \usepackage{xcolor}
 
-%z\def\includegraphic{}
-%\def\includegraphics{}
+\def\includegraphic{}
+\def\includegraphics{}
 
 \startlocaldefs
 %\usepackage{url}
@@ -73,7 +73,7 @@
 
 \begin{fmbox}
 
-\dochead{Retrovirology}
+\dochead{}
 
 \title{Blind dating: a phylogenetic approach to determining the ages of HIV-1 reservoir sequences within host}
 
@@ -81,11 +81,13 @@
 \author[addressref={1,2},email={jjh13@sfu.ca}]{Joshua Horacsek} % jjh13@sfu.ca
 \author[addressref={2,3},email={jjoy@cfenet.ubc.ca}]{Jeffrey B. Joy} % jjoy@cfenet.ubc.ca
 \author[addressref={1,2},email={zbrumme@sfu.ca}]{Zabrina L. Brumme} % zbrumme@sfu.ca
-\author[addressref={1,2,3},email={apoon@cfenet.ubc.ca},corref={3}]{Art F.Y. Poon} % apoon@cfenet.ubc.ca
-\address[id=1]{\orgname{Faculty of Health Sciences, Simon Fraser University} \street{8888 University Drive} \city{Burnaby} \postcode{V5A 1S6} \cny{Canada}}
-\address[id=2]{\orgname{BC Centre for Excellence in HIV/AIDS} \street{1081 Burrard Street} \city{Vancouver} \postcode{V6Z 1Y6}, \cny{Canada}}
+\author[addressref={2,3},email={apoon@cfenet.ubc.ca},corref={3}]{Art F.Y. Poon} % apoon@cfenet.ubc.ca
+\address[id=1]{\orgname{Faculty of Health Sciences, Simon Fraser University} \city{Burnaby} \cny{Canada}}
+\address[id=2]{\orgname{BC Centre for Excellence in HIV/AIDS} \city{Vancouver} \cny{Canada}}
 \address[id=3]{\orgname{Department of Medicine, University of British Columbia} \street{2775 Laurel Street} \city{Vancouver} \postcode{V5Z 1M9} \cny{Canada}}
 %\affil[*]{Corresponding author}
+
+\printaddresses
 
 %%% 1 Simon Fraser University
 %%% 2 BC Centre for Excellence in HIV/AIDS
@@ -691,14 +693,329 @@ Conception and design: JBJ, ZLB, AFYP; Collection of data: JH; Software programm
 %\clearpage
 
 \bibliographystyle{retro}
-\bibliography{blind-dating}
+\begin{thebibliography}{10}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi:\discretionary{}{}{}#1}\else
+  \providecommand{\doi}{doi:\discretionary{}{}{}\begingroup
+  \urlstyle{rm}\Url}\fi
 
+\bibitem{Chun97}
+Chun TW, Stuyver L, Mizell SB, Ehler LA, Mican JA, et~al.
+\newblock Presence of an inducible {HIV-1} latent reservoir during highly
+  active antiretroviral therapy.
+\newblock Proc Natl Acad of Sci U S A. 1997;\hspace{0pt}94:13193--13197.
+
+\bibitem{Finzi97}
+Finzi D, Hermankova M, Pierson T, Carruth LM, Buck C, et~al.
+\newblock Identification of a reservoir for {HIV-1} in patients on highly
+  active antiretroviral therapy.
+\newblock Science. 1997;\hspace{0pt}278:1295--1300.
+
+\bibitem{Archin14}
+Archin NM, Sung JM, Garrido C, Soriano-Sarabia N, Margolis DM.
+\newblock Eradicating {HIV-1} infection: seeking to clear a persistent
+  pathogen.
+\newblock Nat Rev Microbiology. 2014;\hspace{0pt}12:750--764.
+
+\bibitem{Pace11}
+Pace MJ, Agosto L, Graf EH, O'Doherty U.
+\newblock {HIV} reservoirs and latency models.
+\newblock Virology. 2011;\hspace{0pt}411:344--354.
+
+\bibitem{Richman09}
+Richman DD, Margolis DM, Delaney M, Greene WC, Hazuda D, et~al.
+\newblock The challenge of finding a cure for {HIV} infection.
+\newblock Science. 2009;\hspace{0pt}323:1304--1307.
+
+\bibitem{Durand12}
+Durand CM, Blankson JN, Siliciano RF.
+\newblock Developing strategies for {HIV-1} eradication.
+\newblock Trends Immunol. 2012;\hspace{0pt}33:554--562.
+
+\bibitem{Joos08}
+Joos B, Fischer M, Kuster H, Pillai SK, Wong JK, et~al.
+\newblock {HIV} rebounds from latently infected cells, rather than from
+  continuing low-level replication.
+\newblock Proceedings of the National Academy of Sciences.
+  2008;\hspace{0pt}105:16725--16730.
+
+\bibitem{Katlama13}
+Katlama C, Deeks SG, Autran B, Martinez-Picado J, van Lunzen J, et~al.
+\newblock Barriers to a cure for {HIV}: new ways to target and eradicate
+  {HIV-1} reservoirs.
+\newblock Lancet. 2013;\hspace{0pt}381:2109--2117.
+
+\bibitem{Pomerantz03}
+Pomerantz RJ.
+\newblock Reservoirs, sanctuaries, and residual disease: the hiding spots of
+  {HIV-1}.
+\newblock HIV clinical trials. 2003;\hspace{0pt}4:137--143.
+
+\bibitem{Shen08}
+Shen L, Siliciano RF.
+\newblock Viral reservoirs, residual viremia, and the potential of highly
+  active antiretroviral therapy to eradicate {HIV} infection.
+\newblock J Allergy Clin Immounol. 2008;\hspace{0pt}122:22--28.
+
+\bibitem{Whitney14}
+Whitney JB, Hill AL, Sanisetty S, Penaloza-MacMaster P, andM Shetty JL, et~al.
+\newblock Rapid seeding of the viral reservoir prior to {SIV} viraemia in
+  rhesus monkeys.
+\newblock Nature. 2014;\hspace{0pt}512:74--77.
+
+\bibitem{Leford14}
+Leford H.
+\newblock {HIV} rebound dashes hope of {`Mississippi baby'} cure.
+\newblock Nature. 2014;\hspace{0pt} \doi{10.1038/nature.2014.15535}.
+
+\bibitem{Alizon13}
+Alizon S, Fraser C.
+\newblock Within-host and between-host evolutionary rates across the {HIV-1}
+  genome.
+\newblock Retrovirology. 2013;\hspace{0pt}10:49.
+
+\bibitem{Rambaut04}
+Rambaut A, Posada D, Crandall KA, Holmes EC.
+\newblock The causes and consequences of {HIV} evolution.
+\newblock Nat Rev Genet. 2004;\hspace{0pt}5:52--61.
+
+\bibitem{Shankarappa99}
+Shankarappa R, Margolick JB, Gange SJ, Rodrigo AG, Upchurch D, et~al.
+\newblock Consistent viral evolutionary changes associated with the progression
+  of human immunodeficiency virus type 1 infection.
+\newblock J Virol. 1999;\hspace{0pt}73:10489--10502.
+
+\bibitem{Deng15}
+Deng K, Pertea M, Rongvaux A, Wang L, Durand CM, et~al.
+\newblock Broad {CTL} response is required to clear latent {HIV-1} due to
+  dominance of escape mutations.
+\newblock Nature. 2015;\hspace{0pt}517:381--385.
+
+\bibitem{Immonen14}
+Immonen TT, Leitner T.
+\newblock Reduced evolutionary rates in {HIV-1} reveal extensive latency
+  periods among replicating lineages.
+\newblock Retrovirology. 2014;\hspace{0pt}11:81.
+
+\bibitem{Althaus14}
+Althaus CL, Joos B, Perelson AS, Gunthard HF.
+\newblock Quantifying the turnover of transcriptional subclasses of
+  {HIV-1-infected} cells.
+\newblock PLoS Comput Biol. 2014;\hspace{0pt}10:e1003871.
+
+\bibitem{Felsenstein81}
+Felsenstein J.
+\newblock Evolutionary trees from {DNA} sequences: a maximum likelihood
+  approach.
+\newblock J Mol Evol. 1981;\hspace{0pt}17:368--76.
+
+\bibitem{Rodrigo99}
+Rodrigo AG, Felsenstein J.
+\newblock Coalescent approaches to {HIV} population genetics.
+\newblock In: Crandall KA, editor. The Evolution of HIV.
+\newblock Baltimore: Johns Hopkins University Press. 1999.
+\newblock 233--271.
+
+\bibitem{Williamson03}
+Williamson S.
+\newblock Adaptation in the env gene of {HIV-1} and evolutionary theories of
+  disease progression.
+\newblock Mol Biol Evol. 2003;\hspace{0pt}20:1318--25.
+
+\bibitem{Korber00}
+Korber B, Muldoon M, Theiler J, Gao F, Gupta R, et~al.
+\newblock Timing the ancestor of the {HIV-1} pandemic strains.
+\newblock Science. 2000;\hspace{0pt}288:1789--1796.
+
+\bibitem{Kuhner95}
+Kuhner MK, Yamato J, Felsenstein J.
+\newblock Estimating effective population size and mutation rate from sequence
+  data using metropolis-hastings sampling.
+\newblock Genetics. 1995;\hspace{0pt}140:1421--1430.
+
+\bibitem{Leitner99}
+Leitner T, Albert J.
+\newblock The molecular clock of {HIV-1} unveiled through analysis of a known
+  transmission history.
+\newblock Proceedings of the National Academy of Sciences.
+  1999;\hspace{0pt}96:10752--10757.
+
+\bibitem{Park16}
+Park SY, Love TMT, Perelson AS, Mack WJ, Lee HY.
+\newblock Molecular clock of {HIV-1} envelope genes under early immune
+  selection.
+\newblock Retrovirology. 2016;\hspace{0pt}13:38.
+
+\bibitem{Keele08}
+Keele BF, Giorgi EE, Salazar-Gonzalez JF, Decker JM, Pham KT, et~al.
+\newblock Identification and characterization of transmitted and early founder
+  virus envelopes in primary {HIV-1} infection.
+\newblock Proceedings of the National Academy of Sciences of the United States
+  of America. 2008;\hspace{0pt}105:7552--7557.
+
+\bibitem{Ho14}
+Ho SY, Duchene S.
+\newblock Molecular-clock methods for estimating evolutionary rates and
+  timescales.
+\newblock Mol Ecol. 2014;\hspace{0pt}23:5947--5965.
+
+\bibitem{Boskova14}
+Boskova V, Bonhoeffer S, Stadler T.
+\newblock Inference of epidemiological dynamics based on simulated phylogenies
+  using birth-death and coalescent models.
+\newblock PLoS Comput Biol. 2014;\hspace{0pt}10:e1003913.
+
+\bibitem{Nee:2006}
+Nee S.
+\newblock Birth-death models in macroevolution.
+\newblock Annual Review of Ecology, Evolution, and Systematics.
+  2006;\hspace{0pt}37:1--17.
+
+\bibitem{Stradler13}
+Stadler T, Kuhnert D, Bonhoeffer S, Drummond AJ.
+\newblock Birth-death skyline plot reveals temporal changes of epidemic spread
+  in {HIV} and hepatitis {C} virus {(HCV)}.
+\newblock Proc Natl Acad Sci USA. 2013;\hspace{0pt}110:228--233.
+
+\bibitem{Hartfield:2015}
+Hartfield M, Alizon S, Asquith B.
+\newblock Within-host stochastic emergence dynamics of immune-escape mutants.
+\newblock PLoS Computational Biology. 2015;\hspace{0pt}11:e1004149.
+
+\bibitem{BEAST2}
+Bouckaert R, Heled J, {K\:{u}hnert} D, Vaughan T, Wu CH, et~al.
+\newblock {BEAST} 2: A software platform for {Bayesian} evolutionary analysis.
+\newblock PLOS Computational Biology. 2014;\hspace{0pt}10:e1003537.
+
+\bibitem{Stadler13}
+Stadler T, D K, Bonhoeffer S, Drummond AJ.
+\newblock Birth-death skyline plot reveals temporal changes of epidemic spread
+  in {HIV} and hepatitus {C} virus {(HCV)}.
+\newblock PNAS. 2013;\hspace{0pt}110:228--233.
+
+\bibitem{HKY85}
+Hasegawa M, Kishino H, Yano T.
+\newblock Dating of the human-ape splitting by a molecular clock of
+  mitochondrial {DNA}.
+\newblock J Mol Evol. 1985;\hspace{0pt}22:160--174.
+
+\bibitem{NELSI}
+Ho SYW, Duchene D, Duchene S.
+\newblock Simulating and detecting autocorrelation of molecular evolutionary
+  rates among lineages.
+\newblock Molecular Ecology Resources. 2015;\hspace{0pt}15:688--696.
+
+\bibitem{Indelible09}
+Fletcher W, Yang Z.
+\newblock {{I}{N}{D}{E}{L}ible: a flexible simulator of biological sequence
+  evolution}.
+\newblock Mol Biol Evol. 2009;\hspace{0pt}26:1879--1888.
+
+\bibitem{McCloskey14}
+McCloskey RM, Liang RH, Harrigan PR, Brumme ZL, Poon AF.
+\newblock An evaluation of phylogenetic methods for reconstructing transmitted
+  {HIV} variants using longitudinal clonal {HIV} sequence data.
+\newblock J Virol. 2014;\hspace{0pt}88:6181--6194.
+
+\bibitem{Crooks15}
+Crooks AM, Bateson R, Cope AB, Dahl NP, Kurur JD, et~al.
+\newblock Precise quantitation of the latent {HIV-1} reservoir: Implications
+  for eradication strategies.
+\newblock Journal of Infectious Diseases. 2015;\hspace{0pt}212:1361--1365.
+
+\bibitem{Ho13}
+Ho YC, Shan L, Hosmane NN, Wang J, Laskey SB, et~al.
+\newblock Replication-competent noninduced proviruses in the latent reservoir
+  increase barrier to cure.
+\newblock Cell. 2013;\hspace{0pt}155:540--551.
+
+\bibitem{LosAlamos}
+{HIV Sequence Database}.
+\newblock {Los} {Alamos} {National} {Laboratory}. 2015.
+\newblock {http://www.hiv.lanl.gov/}. Accessed June 24, 2015.
+
+\bibitem{Novitsky09}
+Novitsky V, Wang R, Margolin L, Baca J, Kebaabetswe L, et~al.
+\newblock Timing constraints of in vivo gag mutations during primary {HIV-1}
+  subtype {C} infection.
+\newblock PLoS ONE. 2009;\hspace{0pt}4:e7727.
+
+\bibitem{Llewellyn06}
+Llewellyn N, Zioni R, Zhu H, Andrus T, Xu Y, et~al.
+\newblock Continued evolution of {HIV-1} circulating in blood monocytes with
+  antiretroviral therapy: genetic analysis of {HIV-1} in monocytes and {CD4+}
+  {T} cells of patients with discontinued therapy.
+\newblock J Leukoc Biol. 2006;\hspace{0pt}80:1118--1126.
+
+\bibitem{Fischer04}
+Fischer M, Joos B, Wong JK, Ott P, Opravil M, et~al.
+\newblock Attenuated and nonproductive viral transcription in the lymphatic
+  tissue of {HIV-1-infected} patients receiving potent antiretroviral therapy.
+\newblock J Infect Dis. 2004;\hspace{0pt}189:273--285.
+
+\bibitem{Muscle04}
+Edgar RC.
+\newblock {MUSCLE}: multiple sequence alignment with high accuracy and high
+  throughput.
+\newblock Nucleic Acids Res. 2004;\hspace{0pt}32:1792--1797.
+
+\bibitem{AliView14}
+Larsson A.
+\newblock {AliView}: a fast and lightweight alignment viewer and editor for
+  large datasets.
+\newblock Bioinformatics. 2014;\hspace{0pt}30:3276--3278.
+
+\bibitem{Raxml14}
+Stamatakis A.
+\newblock {RAxML} version 8: a tool for phylogenetic analysis and post-analysis
+  of large phylogenies.
+\newblock Bioinformatics. 2014;\hspace{0pt}30:1312--1313.
+
+\bibitem{Huelsenbeck02}
+Huelsenbeck JP, Bollback JP, Levine AM.
+\newblock Inferring the root of a phylogenetic tree.
+\newblock Systematic Biology. 2002;\hspace{0pt}51:32--43.
+
+\bibitem{Tempest}
+Rambaut A, Lam TT, Carvalho LM, Pybus OG.
+\newblock Exploring the temporal structure of heterochronous sequences using
+  {TempEst} (formerly {Path-O-Gen}).
+\newblock Virus Evolution. 2016;\hspace{0pt}2:vew007.
+
+\bibitem{Buzon14}
+Buzon MJ, Sun H, Li C, Shaw A, Seiss K, et~al.
+\newblock {HIV-1} persistence in {CD4+} {T} cells with stem cell-like
+  properties.
+\newblock Nat Med. 2014;\hspace{0pt}20:139--142.
+
+\bibitem{Shapiro11}
+Shapiro B, Ho SYW, Drummond A, Suchard MA, Pybus O, et~al.
+\newblock A {Bayesian} phylogenetic method to estimate unknown sequence ages.
+\newblock Mol Biol Evol. 2011;\hspace{0pt}28:879--887.
+
+\bibitem{r8ts}
+Sanderson MJ.
+\newblock {r8s}: inferring absolute rates of molecular evolution and divergence
+  times in the absence of a molecular clock.
+\newblock Bioinformatics. 2003;\hspace{0pt}19:301--302.
+
+\bibitem{Maldarelli14}
+Maldarelli F, Wu X, Su L, Simonetti FR, Shao W, et~al.
+\newblock Specific {HIV} integration sites are linked to clonal expansion and
+  persistence of infected cells.
+\newblock Science. 2014;\hspace{0pt}345:179--183.
+
+\end{thebibliography}
+
+
+\section*{Additional file labels}
+sm.pdf {\bf Additional file 1: Supplementary Materials, Figures, and Tables}. Results with outgroup rooting.
 
 %\clearpage
 
 %%%%%%%%%%%%%%%  FIGURES  %%%%%%%%%%%%%%%
 
-\section * {Figures}
+\section * {Figure labels}
 
 \begin{figure}[h!]
 	\centering
@@ -775,7 +1092,7 @@ Conception and design: JBJ, ZLB, AFYP; Collection of data: JH; Software programm
 
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=10cm]{patient_16617}
+	\includegraphics[width=10cm]{patient\_16617}
 	\caption{%
 	\csentence{Patient 16617 from the \emph{mixed} data set.}
 	Same as Figure \ref{fig:resultslanl} for Patient 16617 from the \emph{mixed} data set.
@@ -788,9 +1105,6 @@ Conception and design: JBJ, ZLB, AFYP; Collection of data: JH; Software programm
 %%%%%%%%%%%%%%%  TABLES  %%%%%%%%%%%%%%%
 
 %\section * {Tables}
-
-\section*{Additional files}
-sm.pdf {\bf Additional file 1: Supplementary Materials, Figures., and Tables}. Results with outgroup rooting.
 
 %fs1.pdf {\bf Additional file 2: Figure S1}. Plot from the \emph{simulated (extreme latency)} data set of the evolutionary distance vs time.
 

@@ -415,7 +415,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \ead, \printead
 
-\def\email@text{}
+\def\@text{}
 \def\url@text{http://}
 \def\ead@sep{;~}
 
@@ -839,12 +839,15 @@
 \setattribute{ead}         {size} {}
 
 % COPYRIGHT TEXT, etc.
-\setattribute{address}          {text} {Author details}
+\setattribute{address}          {text} {}
 \setattribute{corref}           {text} {Correspondence: }
-\setattribute{authorinfo}       {text} {Full list of author information is available at the end of the article\endgraf}
+%\setattribute{authorinfo}       {text} {Full list of author information is available at the end of the article\endgraf}
+\setattribute{authorinfo}       {text} {\endgraf}
 \setattribute{presentaddress}   {text} {\textit{Present address: }}
-\setattribute{copyright}        {text} {\@runauthor\ \textit{\journal@name}}
-\setattribute{runninghead}      {text} {\@runauthor\ \textit{\journal@name} \hfill \thepage@fmt{\thepage}}
+%\setattribute{copyright}        {text} {\@runauthor\ \textit{\journal@name}}
+%\setattribute{runninghead}      {text} {\@runauthor\ \textit{\journal@name} \hfill \thepage@fmt{\thepage}}
+\setattribute{copyright}        {text} {}
+\setattribute{runninghead}      {text} {\hfill \thepage@fmt{\thepage}}
 \setattribute{footline}         {text} {\textcopyright\ \@copyrt\ \copyrightowner@text} 
 \setattribute{pdfsubject}       {text} {\journal@name}
 
@@ -1125,6 +1128,8 @@
 
   \define@key{author}{email}{%
     \author@emailtrue%
+    \def\author@email{#1}%
+    \@ifundefined{authors@id@list}{\xdef\authors@email@list{#1}}{\xdef\authors@email@list{\authors@email@list,#1}}
     \ead[label=\author@id]{#1}}
 
   \define@key{author}{thanksref}{%
@@ -1247,6 +1252,7 @@
      \set@author@lists%
      \a@sep\authorname@fmt{#2}\print@author@lists%
   \egroup}%
+  \textless\authors@email@list\textgreater%
   \ignorespaces}
 
 \def\author@fmt@init{%
@@ -1289,6 +1295,14 @@
     \global\csname address@\address@id\endcsname={#2}%
 }
 
+\def\address@fmt[#1]#2{%
+    \stepcounter{address}%
+    \xdef\address@id{aff\the\c@address}%
+    \setkeys{address}{#1}%
+    \@ifundefined{address@id@list}{\xdef\address@id@list{\address@id}}{\xdef\address@id@list{\address@id@list,\address@id}}%
+    \expandafter\newtoks\csname address@\address@id\endcsname%
+    \global\csname address@\address@id\endcsname={#2}%
+}
 
 \def\address@definitions{
     \def\\{\break}%
@@ -1714,7 +1728,6 @@
 \def\bmcfix@natbib{%
    \def\bibfont{\backmatter@style\backmatter@size}
    \def\bibsection{%
-     \printaddresses%
      \heading*{\refname}}
    \def\bibnumfmt##1{##1.}
    \setlength\bibsep{0pt}}
