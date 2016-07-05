@@ -1129,7 +1129,7 @@
   \define@key{author}{email}{%
     \author@emailtrue%
     \def\author@email{#1}%
-    \@ifundefined{authors@id@list}{\xdef\authors@email@list{#1}}{\xdef\authors@email@list{\authors@email@list,#1}}
+%    \@ifundefined{authors@id@list}{\xdef\authors@email@list{#1}}{\xdef\authors@email@list{\authors@email@list,#1}}
     \ead[label=\author@id]{#1}}
 
   \define@key{author}{thanksref}{%
@@ -1252,7 +1252,6 @@
      \set@author@lists%
      \a@sep\authorname@fmt{#2}\print@author@lists%
   \egroup}%
-  \textless\authors@email@list\textgreater%
   \ignorespaces}
 
 \def\author@fmt@init{%
