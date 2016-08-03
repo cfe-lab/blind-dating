@@ -20,7 +20,7 @@ output_file = sys.argv[2]
 with open(input_file) as fi:
 	with open(output_file, 'w') as fo:
 		for l in fi:
-			new_l = l.replace("-0", "0")
+			new_l = l
 			i = new_l.find("e-", 0)
 			
 			while i > -1:
@@ -33,5 +33,7 @@ with open(input_file) as fi:
 				new_l = new_l.replace(new_l[st:i+4], digit)
 				
 				i = new_l.find("e-", i + 1)
+				
+			new_l = new_l.replace("-0", "0")
 				
 			fo.write(new_l)

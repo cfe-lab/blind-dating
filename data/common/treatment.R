@@ -1,6 +1,5 @@
 library(plotrix)
-
-args.all <- commandArgs(trailingOnly=F)
+library(lme4)
 
 make.hist <- function(pdf.file, df) {
 	pdf(pdf.file, width=7, height=7)
@@ -18,22 +17,6 @@ make.hist <- function(pdf.file, df) {
 	dev.off()
 }
 
-if (any(grep("--file=", args.all))) {
-	source.dir <- dirname(sub("--file=", "", args.all[grep("--file=", args.all)]))
-} else {
-	file.arg <- F
-
-	for (i in 1:length(args.all)) {
-		if (file.arg) {
-			source.dir <- dirname(args.all[i])
-		
-			break
-		}
-		
-		file.arg <- args.all[i] == '-f'
-	}
-}
-
 args <- commandArgs(trailingOnly=T)
 
 pat.id <- args[1]
@@ -42,10 +25,11 @@ treatment.start <- as.numeric(args[3])
 treatment.end <- as.numeric(args[4])
 
 # plot
-source(file.path(source.dir, 'rtt.R'), chdir=T)
-source(file.path(source.dir, 'test.R'), chdir=T)
+#source(file.path(source.dir, 'rtt.R'), chdir=T)
+#source(file.path(source.dir, 'test.R'), chdir=T)
 #source('../common/raxml.R', chdir=T)
 #source('../common/queue.R', chdir=T)
+library(ape)
 
 args <- commandArgs(trailing = T)
 
@@ -74,7 +58,7 @@ tree <- if (sum("REFERENCE"==tree$tip.label) > 0) {
 			tree
 		}
 
-pdf(out.pdf, width=8, height=8)
+#pdf(out.pdf, width=8, height=8)
 
 ##
 		tip.dates <- extract_dates_pp(tree$tip.label)
@@ -132,11 +116,13 @@ pdf(out.pdf, width=8, height=8)
 		distances <- node.depth.edgelength(tree)[1:length(tip.dates)]
 		plasma.dists <- distances[tip.plasma]
 		pbmc.dists <- distances[tip.pbmc]
-	
-		model <- glm(plasma.dists ~ plasma.dates)
+		
+		treatment.stage <- as.integer(tip.dates > treatment.start) + as.integer(tip.dates > treatment.end)
+			
+		model <- lmer(distances ~ tip.dates + (tip.dates | treatment.stage))
 				
-		a<-model$coefficients[[1]]
-		b<-model$coefficients[[2]]
+#		a<-model$coefficients[[1]]
+#		b<-model$coefficients[[2]]
 					
 		# make plot showing latency date estimation
 		par(cex=1, mar=c(5,5,2,2))
@@ -156,16 +142,12 @@ pdf(out.pdf, width=8, height=8)
 				
 		plot(plasma.dates, plasma.dists, xlab="Time (days)", ylab=sprintf("Divergence from root"), xlim=plot.xlim, ylim=plot.ylim,  pch=20, cex.lab=1.2, cex.axis=1, col='black', cex=cex)
 		points(pbmc.s.dates, pbmc.dists, col='red', pch=5, lty=2, cex=cex)
-		abline(model, lty=2)
+#		abline(model, lty=2)
 		
 		latent <- function(x, r=75) {
 			draw.circle(pbmc.s.dates[x], pbmc.dists[x], radius=r, col="#00000000", border="#003ecc")
 			lines(c((pbmc.dists[x] - a) / b, pbmc.s.dates[x] - r), y=rep(pbmc.dists[x], 2), col="#003ecc", lty=2)
 		}
-		
-		latent(2)
-		latent(10)
-		latent(87)
 		
 		legend.labels <- if (data.type == 2) {
 				l.x <- plot.xlim[2] - (plot.xlim[2] - plot.xlim[1])*.395
@@ -200,7 +182,7 @@ abline(v=treatment.start, col=rgb(0, .8, 0, 1), lty=2, lwd=1)
 abline(v=treatment.end, col=rgb(0, .8, 0, 1), lty=2, lwd=1)
 			
 		
-dev.off()
+#dev.off()
 
 
 # read data
