@@ -351,8 +351,10 @@ Our simulated data were only rooted using RTT regression; for all real data, bot
 %Irrespective of the method used to root the phylogeny, we used a general linear model with the normal family to infer the association between the tip dates and sequence divergence from the root. 
 Irrespective of the method used to root the phylogeny, we used a linear model to infer the association between the tip dates and sequence divergence from the root. 
 The expected amount of evolution was taken to be the dependent variable and the sampling dates of the data were taken to be the independent variables.
-For the \emph{simulated (no latency)} and the \emph{plasma} data sets, we censored 50\% of the tips uniformly at random; for the simulated data sets with viral latency, we censored the tips with viral latency; and for the \emph{mixed} data set, we censored the tips with DNA sequences.
-We then applied the model to each patient using only the uncensored tips.
+We applied the model for each patient to a training set of sequences.
+For the \emph{simulated (no latency)} and the \emph{plasma} data sets, the training set consisted 50\% of the tips selected uniformly at random; for the simulated data sets with viral latency, the training set consisted of the sequences without viral latency; and for the \emph{mixed} data set, the training set consisted of the RNA sequences.
+The remaining sequences of each patient belong to a validation set.
+%We then applied the model to each patient using only the uncensored tips.
 %We then used the linear model to predict the dates of the latent/unknown sequences.
 
 The use of a linear model is not necessarily appropriate for all subjects.
@@ -363,7 +365,7 @@ Our null model was a linear model with zero slope over the expected amount of ev
 %We rejected any sequence data sets whose phylogeny could not reject the null model with a relative AIC of ${-5}$.
 We rejected any sequence data sets whose phylogeny couldn't reject the null model with threshold $\alpha=0.01$.
 %, since this implied a lack of phylogenetic signal.
-We then used the linear model to predict the dates of the censored sequences.
+We then used the linear model to predict the dates of the sequences from the validation set.
 
 We calculated the root mean square deviation (RMSD) and the median difference to quantify the error of the difference between the predicted and known sampling dates.
 %We used the root mean square error to quantify the difference between the predicted and known dates of sampling.
@@ -394,9 +396,9 @@ Our error metrics were then calculated from these normalized times.%, giving nor
 %We evaluated the latency of the censored sequences using two methods. The first was a {binomial test} and the second was a {GLME model}.
 
 The sampling dates of latent lineages are more likely to appear later in time than predicted by the linear model (Figure \ref{fig:latenttree}).
-Thus, if the frequency of censored lineages who are sampled later than the linear model predicts is significantly greater than 0.5, then we expect that some of the censored lineages represent latent sequences.
-If this frequency is closer to 0.5, however, then the censored lineages cannot be distinguished from the uncensored lineages, suggesting that there is little or no latency in the censored lineages.
-We evaluated the latency of the censored sequences using a nonparametric binomial test.
+Thus, if the frequency of validation lineages who are sampled later than the linear model predicts is significantly greater than 0.5, then we expect that some of the lineages represent latent sequences.
+If this frequency is closer to 0.5, however, then the validation lineages cannot be distinguished from the training lineages, suggesting that there is little or no latency in the validation lineages.
+We evaluated the latency of the validation sequences using a nonparametric binomial test.
 We used R's {\it binom.test} function to apply a right-tailed binomial test on the occurrence of sequences with negative difference using $p=0.5$ as the null model.
 We also applied a general mixed effects model with the binomial family to the data with quantitatively similar results.
 
@@ -416,9 +418,9 @@ We also applied a general mixed effects model with the binomial family to the da
 
 \subsection * {Model validation} \label{sec:simresults}
 First we validated our methodology using simulated data.
-Overall, the simulated data performed well. The reconstruction of the censored dates for each simulated phylogeny was valid under the log ratio test.
+Overall, the simulated data performed well. The reconstruction of dates of sequences for each simulated phylogeny was valid under the log ratio test.
 We applied our method to simulated phylogenies without viral latency incorporated from the \emph{simulated (no latency)} data set.
-After censoring 50\% of the tips, we attempted to reconstruct their dates.
+%After censoring 50\% of the tips, we attempted to reconstruct their dates.
 In Figure \ref{fig:resultssimulated}, we show an example of the date reconstruction for a simulated population without latency.
 Each HIV sequence from the simulated population is plotted on a genetic distance versus collection time plot.
 Note how the points all lie close to the line of regression, which indicates the predicted values of the linear model.
@@ -441,12 +443,12 @@ A nonparametric binomial test on the sign of the difference between sampling and
 %See Figure \ref{fig:resultslatent} for an example of the regression on the simulated data with latency.
 
 Next we applied the method to simulated phylogenies with 50\% of the tips containing viral latency.
-We only censored the tips that had latency.
+%We only censored the tips that had latency.
 We used two models to produce latency, one with an extreme set of assumptions and a second with a more realistic set; the details of these models are in the Methods section.
 In Figure \ref{fig:resultslatent}, we have an example of the date reconstruction of a simulated patient with viral latency incorporated from the \emph{simulated (latency)} data set.
 Each HIV sequence from the simulated patient is plotted on a genetic distance versus collection time plot.
 For each latent tip, the viral integration time is also plotted and a line is drawn between this point and the sampling time.
-The phylogeny generated for the patient in Figure \ref{fig:resultslatent} is the same phylogeny as the patient in Figure \ref{fig:resultssimulated}, except that the censored tips were also shortened to simulated viral latency.
+The phylogeny generated for the patient in Figure \ref{fig:resultslatent} is the same phylogeny as the patient in Figure \ref{fig:resultssimulated}, except that validation tips were shortened to simulated viral latency.
 We can see that most of the `latent' sequences appear to the right of the regression line and some are substantially far to the right, consistent with sampling dates of latent lineages being later in time than their predicted dates of establishment.
 See Supplementary Materials Figure S1 for a similar figure from the \emph{simulated (extreme)} data set.
 The nonparametric binomial test correctly predicted that there was latency in each of these data sets ($p < 2.2 \times 10^{-15}$ for each data set).
@@ -473,7 +475,7 @@ Ignoring the differences that are negative, we estimated the latency of 80\% and
 %More quantitatively, we expect the density plot to be shifted to the right (as it is in figure \ref{fig:results1} B) as this suggests that sequences are older than their sampling dates.
 %When we performed the same analysis against the simulated archival times, the results were nearly identical to the results without any latent data, suggesting that we can recover the dates of latent sequences provided an accurate clock.
 
-For our final validation, we took the same strategy as the first validation on synthetic data, and applied it to our {\em plasma} data set --- we censored 50\% of the known sampling dates, then attempted to reconstruct them.
+For our final validation, we took the same strategy as the first validation on synthetic data, and applied it to our {\em plasma} data set.% --- we censored 50\% of the known sampling dates, then attempted to reconstruct them.
 Two of the nine individuals from the {\em plasma} data set (Patients 7259 and 7263) were screened as invalid after applying the log ratio test to their linear models.
 See Table \ref{tab:patientserror} for the error metrics for each patient in the \emph{plasma} data set.
 Figure \ref{fig:resultsancre} shows an example of the date reconstruction for Patient 2658 from the \emph{plasma} data set.
@@ -525,7 +527,9 @@ Patient ID & $p$-value & Median Difference (days) & RMSD (days) & Scaled RMSD \\
 \end{center}
 	\caption{
 	{Details of the linear models applied to the real data sets.}
-	RMSD is the root mean squared deviation.
+	$p$-value is the is the $p$-value of linear model.
+	Median Difference is the median of the difference between predicted and actual value of the sequences from the validation set.
+	RMSD is the root mean squared deviation of the predicted and actual value of the sequences from the validation set.
 	Patients for whom we were unable to reject the null hypothesis are marked in bold.
 	}\label{tab:patientserror} 
 \end{table*}
@@ -551,7 +555,7 @@ Data set & Total Scaled RMSD & Total Scaled Median Difference \\ % TMD (days) & 
 \end{tabular}
 \end{center}
  \caption{
- {Details of the error metrics of the linear models applied to each data set.}
+ {Details of the error metrics of the linear models applied to each data set. See the `Data Sets' section of the Methods section for details on how each data set was compiled.}
  %Total Scaled RMSD is the total scaled root mean squared deviance, TSMD is the total scaled median difference, TMD is the total median difference.
  }\label{tab:error} 
 \end{table*}
@@ -641,7 +645,7 @@ Furthermore, the plasma and simulated data without latency failed to reject the 
 %This suggests that after a patient begins treatment, the assumption of a molecular clock  is not valid over the whole temporal range of the phylogeny. 
 
 %% Strengths and weaknesses
-Multiple patients from our real data sets had RNA sampled at only two time points; nevertheless, we were able to recover the censored dates.
+Multiple patients from our real data sets had RNA sampled at only two time points; nevertheless, we were able to recover the dates of the validation sequences.
 This is a major advantage over clustering approaches \cite{Buzon14} which require sequences similar to the reservoir sequence to be sampled retrospectively.
 
 This model is fast, but simple and serves as a baseline for estimating the time that cellular lineages remain latent.
