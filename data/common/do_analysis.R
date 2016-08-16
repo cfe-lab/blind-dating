@@ -2,9 +2,9 @@
 
 #library(nlme)
 #library(BSDA)
-library(Rmpfr)
+#library(Rmpfr)
 library(lme4)
-library(BSDA)
+#library(BSDA)
 
 # bug fix
 dnorm <- function (x, mean = 0, sd = 1, log = FALSE) {
@@ -169,7 +169,7 @@ qqplotdist <- function(x, dist) {
 }
 
 # set up pdf printing
-pdf(paste("analysis", suffix, ".pdf", sep=""))
+#pdf(paste("analysis", suffix, ".pdf", sep=""))
 
 print.to.plot <- function(x) {
 	plot.new()
@@ -188,18 +188,41 @@ print.lines.to.plot <- function(x) {
 	}
 }
 
-print.to.plot(data.name)
+do.test <- function(df) {
+	b <- binom.test(sum(df$Is.Latent), length(df$Is.Latent))
+	b$patient <- df$Patient[1]
+	b
+}
+
+get.est <- function(x) 1/(1+exp(-x))
+
+#print.to.plot(data.name)
 
 # binomial test
-bin.test <- binom.test(sum(df.good$Is.Latent), length(df.good$Is.Latent), alternative="greater")
-print.to.plot(bin.test)
+bin.test <- do.test(df.good)
+#print.to.plot(bin.test)
 
 bin.glme.test <- glmer(Is.Latent ~ (1 | Patient), data=df.good, family=binomial)
-s <- summary(bin.glme.test)
-print.to.plot(s)
-print.to.plot(c(paste0("AIC: ", AIC(bin.glme.test), ", null AIC: ", AIC(glm(Is.Latent ~ 1, data=df.good, family=binomial))), paste0("p-value: ", 1-pchisq(AIC(glm(Is.Latent ~ 1, data=df.good, family=binomial))- AIC(bin.glme.test) + 2, df=1)), paste0("mean: ", 1/(1 + exp(-coef(s)[, "Estimate"])))))
-EDA(resid(bin.glme.test))
+bin.glm.test <- glm(Is.Latent ~ 1, data=df.good, family=binomial)
+#s <- summary(bin.glme.test)
+#print.to.plot(s)
+#print.to.plot(c(paste0("AIC: ", AIC(bin.glme.test), ", null AIC: ", AIC(glm(Is.Latent ~ 1, data=df.good, family=binomial))), paste0("p-value: ", 1-pchisq(AIC(glm(Is.Latent ~ 1, data=df.good, family=binomial))- AIC(bin.glme.test) + 2, df=1)), paste0("mean: ", 1/(1 + exp(-coef(s)[, "Estimate"])))))
+#EDA(resid(bin.glme.test))
+#dev.off()
 
+bin.tests <- lapply(split(df.good, df.good$Patient), do.test)
+
+results <- t(rbind(sapply(bin.tests, function(x) data.frame(patient=c(x$patient), value=c(x$estimate), conf.low=c(x$conf.int[1]), conf.high=c(x$conf.int[2]), p.value=(x$p.value), stringsAsFactors=F))))
+
+results <- rbind(data.frame(patient=c("all"), value=c(bin.test$estimate), conf.low=c(bin.test$conf.int[1]), conf.high=c(bin.test$conf.int[2]), p.value=c(bin.test$p.value), stringsAsFactors=F), results)
+
+write.csv(data.frame(lapply(results, as.character), stringsAsFactors=FALSE), file=paste0("analysis.bin", suffix, ".csv"), row.names=F)
+
+write.csv(data.frame(patient=c("all (glme)", "all (null)"), value=get.est(c(mean(unlist(coef(bin.glme.test))), unlist(coef(bin.glm.test)))), AIC=c(AIC(bin.glme.test), AIC(bin.glm.test)), stringsAsFactors=F), file=paste0("analysis.glme", suffix, ".csv"), row.names=F)
+
+write.table(data.frame(patient=row.names(coef(bin.glme.test)[[1]]), value=get.est(unlist(coef(bin.glme.test)))), file=paste0("analysis.glme", suffix, ".csv"), row.names=F, append=T, sep=",", col.names=F)
+
+if (0) {
 # norm exp fit
 logdnormexp <- function(x, lambda, sigma) {log(abs(lambda))+abs(lambda)/2*(abs(lambda)*sigma^2-2*sign(lambda)*x)+pnorm(-(abs(lambda)*sigma^2-sign(lambda)*x)/sigma, log=T)}
 
@@ -269,7 +292,7 @@ write.csv(analysis.frame, paste("analysis", suffix, ".csv", sep=""))
 
 
 dev.off()
-
+}
 if (0) {
 # scale factors
 sd(df.good$Error)
