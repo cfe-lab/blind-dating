@@ -75,19 +75,21 @@
 
 \dochead{}
 
-\title{Blind dating: a phylogenetic approach to determining the ages of HIV-1 reservoir sequences within host}
+%\title{Blind dating: a phylogenetic approach to determining the ages of HIV-1 reservoir sequences within host}
+\title{\uppercase{Blind dating: using phylogeny to find the ages of latent HIV-1 sequences within host}}
 
 \author[addressref={1,2},email={brj1@sfu.ca}]{Bradley R. Jones} % brj1@sfu.ca
 \author[addressref={1,2},email={jjh13@sfu.ca}]{Joshua Horacsek} % jjh13@sfu.ca
 \author[addressref={2,3},email={jjoy@cfenet.ubc.ca}]{Jeffrey B. Joy} % jjoy@cfenet.ubc.ca
 \author[addressref={1,2},email={zbrumme@sfu.ca}]{Zabrina L. Brumme} % zbrumme@sfu.ca
-\author[addressref={2,3},email={apoon@cfenet.ubc.ca},corref={3}]{Art F.Y. Poon} % apoon@cfenet.ubc.ca
-\address[id=1]{\orgname{Faculty of Health Sciences, Simon Fraser University} \city{Burnaby} \cny{Canada}}
-\address[id=2]{\orgname{BC Centre for Excellence in HIV/AIDS} \city{Vancouver} \cny{Canada}}
+\author[addressref={2,3,4},email={apoon42@uwo.ca},corref={4}]{Art F.Y. Poon} % apoon@cfenet.ubc.ca
+\address[id=1]{\orgname{Faculty of Health Sciences, Simon Fraser University} \street{8888 University Drive} \city{Burnaby} \postcode{V5A 1S6} \cny{Canada}}
+\address[id=2]{\orgname{BC Centre for Excellence in HIV/AIDS} \street{1081 Burrard Street} \city{Vancouver} \postcode{V6Z 1Y6} \cny{Canada}}
 \address[id=3]{\orgname{Department of Medicine, University of British Columbia} \street{2775 Laurel Street} \city{Vancouver} \postcode{V5Z 1M9} \cny{Canada}}
+\address[id=4]{\orgname{Department of Pathology and Laboratory Medicine, Western University} \street{Dental Sciences Building} \city{London} \postcode{N6A 5C1} \cny{Canada}}
 %\affil[*]{Corresponding author}
 
-brj1@sfu.ca, jjh13@sfu.ca, jjoy@cfenet.ubc.ca, zbrumme@sfu.ca, apoon@cfenet.ubc.ca
+brj1@sfu.ca, jjh13@sfu.ca, jjoy@cfenet.ubc.ca, zbrumme@sfu.ca, apoon42@uwo.ca
  
 \printaddresses
 
@@ -112,9 +114,9 @@ cure.
 The timing of establishment of individual viral reservoirs over the course of an infection may influence their susceptibility to elimination by immune-mediated or therapeutic approaches.
 However, methods to accurately estimate the age of reservoir sequences remain scarce.
 We propose a simple method to date suspected reservoir sequences using phylogenetically informed regression.
- 
+
+\paragraph{Methods:}
 % Possibly fix these subsections
-\paragraph{Results:}
 %Simulated sequence data were generated.
 %A total of 410 HIV RNA sequences sampled longitudinally from 9 untreated HIV-infected individuals with estimated dates of infection and a total of 2816 HIV DNA and RNA sequences from 20 individuals were obtained from the Los Alamos National Laboratory HIV Sequence Database.
 %The simulated and HIV RNA data were used for method validation.
@@ -127,9 +129,12 @@ To validate our method, we simulated HIV sequence evolution under a standard mod
 Latency was simulated by shortening the branch lengths of up to 50\% of the tips in the tree.
 We employed this same approach to validate the method on HIV RNA sequences, which provided a more realistic assessment of sources of error than direct simulation.
 %We synthesized latent lineages by censoring the sample dates for random selections of up to 50\% of sequences in the simulated and HIV RNA datasets.
+
+\paragraph{Results:}
+We were successfully able to extract HIV reservoir ages from simulated data.
 When this method was applied to HIV DNA sequences in phylogenies containing dated HIV RNA sequences, we observed that the predicted dates significantly preceded dates of sampling, which was consistent with latency.
 
-\paragraph{Conclusion:}
+\paragraph{Conclusions:}
 Our results provide evidence that the date that a lineage of HIV entered a latent state can be reconstructed from phylogenetic analysis of HIV RNA sequence variation from the same patient.
 These dates can provide important insights into the dynamics of HIV reservoirs within hosts.
 
@@ -262,46 +267,46 @@ See Table \ref{tab:patients} for details on the patients from these data sets.
 \begin{table*}
 \def\arraystretch{1.3}%
 \begin{center}
-\begin{tabular}{llrrrrrrr} 
+\begin{tabular}{llrrrrrrrr} 
 
-Reference & Patient ID & \multicolumn{3}{c}{Sequences} & \multicolumn{3}{c}{Time points} \\
- &  & Plasma & PBMC & Total & Plasma & PBMC & Total\\
+Reference & Patient ID & \multicolumn{3}{c}{Sequences} & \multicolumn{3}{c}{Time points} & Follow-up \\
+ &  & Plasma & PBMC & Total & Plasma & PBMC & Total & time (days) \\
 \hline
-\cite{McCloskey14} & 825 & 53 & & 53 & 6 & & 6 \\
-& 2658 & 85 & & 85 & 5 & & 5 \\
-& 7259 & 29 & & 29 & 4 & & 4 \\
-& 7263 & 15 & & 15 & 3 & & 3 \\
-& 7265 & 22 & & 22 & 3 & & 3 \\
-& 13333 & 40 & & 40 & 4 & & 4 \\
-& 13334 & 39 & & 39 & 5 & & 5 \\
-& 13336 & 43 & & 43 & 4 & & 4 \\
-& 35566 & 93 & & 93 & 2 & & 2 \\
+\cite{McCloskey14} & 825 & 53 & & 53 & 6 & & 6 & 3,007 \\ % patient_58
+& 2658 & 85 & & 85 & 5 & & 5 & 1,887 \\ % patient_1
+& 7259 & 29 & & 29 & 4 & & 4 & 887 \\ % patient_133
+& 7263 & 15 & & 15 & 3 & & 3 & 252 \\ % patient_132
+& 7265 & 22 & & 22 & 3 & & 3 & 274 \\ % patient_130
+& 13333 & 40 & & 40 & 4 & & 4 & 506 \\ % patient_128
+& 13334 & 39 & & 39 & 5 & & 5 & 734 \\ % patient_129
+& 13336 & 43 & & 43 & 4 & & 4 & 742 \\ % patient_131
+& 35566 & 93 & & 93 & 2 & & 2 & 260 \\ % patient_427
 \hline
-\cite{Shankarappa99} & 820 &       50 &       87 &      137 &        5 &       10 &       15  \\
-& 821 &      76 &      192 &      268 &        7 &       17 &       17 \\ 
-& 822 &      32 &       98 &      130 &        3 &       10 &       10 \\ 
-& 824 &     100 &      107 &      207 &        7 &        9 &       13 \\
-& 10137 &     24 &      106 &      130 &        2 &       10 &       12 \\
-& 10138 &     82 &      119 &      201 &        6 &       13 &       16 \\
-& 10586 &     16 &      121 &      137 &        2 &       12 &       14  \\ 
-& 13889 &    151 &      132 &      283 &       13 &       14 &       18 \\
+\cite{Shankarappa99} & 820 &       50 &       87 &      137 &        5 &       10 &       15 & 3,103   \\
+& 821 &      76 &      192 &      268 &        7 &       17 &       17 & 2,373 \\ 
+& 822 &      32 &       98 &      130 &        3 &       10 &       10 & 2,130 \\ 
+& 824 &     100 &      107 &      207 &        7 &        9 &       13 & 3,133 \\
+& 10137 &     24 &      106 &      130 &        2 &       10 &       12 & 2,798 \\
+& 10138 &     82 &      119 &      201 &        6 &       13 &       16 & 3,346 \\
+& 10586 &     16 &      121 &      137 &        2 &       12 &       14 & 4,715 \\ 
+& 13889 &    151 &      132 &      283 &       13 &       14 &       18 & 4,837 \\
 \cite{Novitsky09}% & 34382 &     37 &        5 &       42 &        3 &        1 &        4  \\ 
-& 34391 &     13 &       38 &       51 &        3 &        5 &        6 \\
-& 34393 &     25 &       74 &       99 &        2 &        6 &        7 \\
-& 34396 &      23 &       46 &       69 &        2 &        5 &        5 \\
+& 34391 &     13 &       38 &       51 &        3 &        5 &        6 & 364 \\
+& 34393 &     25 &       74 &       99 &        2 &        6 &        7 & 362 \\
+& 34396 &      23 &       46 &       69 &        2 &        5 &        5 & 341 \\
 %& 34397 &      26 &       25 &       51 &        2 &        2 &        4  \\ 
-& 34399 &      61 &       88 &      149 &        5 &        9 &       12 \\
+& 34399 &      61 &       88 &      149 &        5 &        9 &       12 & 1,469 \\
 %& 34400 &      54 &       23 &       77 &        4 &        1 &        5  \\ 
 %& 34405 &      27 &       29 &       56 &        3 &        2 &        4  \\ 
-& 34408 &       5 &       73 &       78 &        2 &        8 &        8 \\
-& 34410 &      35 &       60 &       95 &        2 &        6 &        6 \\
-& 34411 &      25 &       43 &       68 &        3 &        3 &        6   \\
-\cite{Fischer04} & 10769 &    229 &       96 &      325 &       10 &        4 &       11 \\ 
+& 34408 &       5 &       73 &       78 &        2 &        8 &        8 & 548 \\
+& 34410 &      35 &       60 &       95 &        2 &        6 &        6 & 441 \\
+& 34411 &      25 &       43 &       68 &        3 &        3 &        6 & 463  \\
+\cite{Fischer04} & 10769 &    229 &       96 &      325 &       10 &        4 &       11 & 1,976 \\ 
 %& 10770 &    190 &       31 &      221 &       11 &        2 &       11  \\ 
-\cite{Llewellyn06} & 16616 &     16 &       95 &      111 &        2 &        5 &        5 \\
-& 16617 &     16 &       89 &      105 &        2 &        5 &        5 \\
-& 16618 &     25 &       75 &      100 &        2 &        5 &        6 \\
-& 16619 &     13 &       60 &       73 &        2 &        6 &        6 \\
+\cite{Llewellyn06} & 16616 &     16 &       95 &      111 &        2 &        5 &        5 & 2,616 \\
+& 16617 &     16 &       89 &      105 &        2 &        5 &        5 & 2,546 \\
+& 16618 &     25 &       75 &      100 &        2 &        5 &        6 & 2,277 \\
+& 16619 &     13 &       60 &       73 &        2 &        6 &        6 & 2,205 \\
 \hline
 \end{tabular}
 \end{center}
