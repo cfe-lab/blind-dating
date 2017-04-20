@@ -1,0 +1,94 @@
+library(ape)
+
+args.all <- commandArgs(trailingOnly = F)
+
+if (any(grep("--file=", args.all))) {
+	source.dir <- dirname(sub("--file=", "", args.all[grep("--file=", args.all)]))
+} else {
+	file.arg <- F
+
+	for (i in 1:length(args.all)) {
+		if (file.arg) {
+			source.dir <- dirname(args.all[i])
+		
+			break
+		}
+		
+		file.arg <- args.all[i] == '-f'
+	}
+}
+
+source(file.path(source.dir, 'read.info.R'), chdir=T)
+
+args <- commandArgs(trailingOnly = T)
+
+tree.file <- args[1]
+info.file <- args[2]
+pat.id <- args[3]
+link <- if (length(args) >= 4) args[4] else 'identity'
+
+data.file <- paste0("stats/", pat.id, ".data.csv")
+stats.file <- paste0("stats/", pat.id, ".stats.csv")
+
+tree <- read.tree(tree.file)
+info <- read.info(info.file, tree$tip.label)
+n <- length(tree$tip.label)
+
+data <- data.frame(label=tree$tip.label, type=info$TYPE, censored=info$CENSORED, date=as.numeric(as.Date(info$COLDATE)), dist=node.depth.edgelength(tree)[1:n], stringsAsFactors=F)
+
+g <- glm(date ~ dist, data=data, subset=censored == 0, family=Gamma(link))
+g.null <- glm(date ~ 1, data=data, subset=censored == 0, family=Gamma(link))
+
+a <- coef(g)[[1]]
+b <- coef(g)[[2]]
+
+data <- as.data.frame(cbind(data, est.date=data$dist*b+a, date.diff=data$dist*b+a-data$date))
+write.table(data, data.file, col.names=c("ID", "Type", "Censored", "Collection Date", "Divergence", "Estimated Date", "Date Difference"), row.names=F, sep=",")
+
+stats <- data.frame(
+	pat=pat.id,
+	samples.rna=sum(data$type == "PLASMA"),
+	samples.dna=sum(data$type == "PBMC"),
+	samples.total=n,
+	rna.time.points=length(unique(data[data$type == "PLASMA", 'date'])),
+	dna.time.points=length(unique(data[data$type == "PBMC", 'date'])),
+	total.time.points=length(unique(data$date)),
+	min.rna.time.point=min(data[data$type == "PLASMA", 'date']),
+	max.rna.time.point=max(data[data$type == "PLASMA", 'date']),
+	min.dna.time.point=min(data[data$type == "PBMC", 'date']),
+	max.dna.time.point=max(data[data$type == "PBMC", 'date']),
+	min.time.point=min(data$date),
+	max.time.point=max(data$date),
+	AIC=AIC(g),
+	null.AIC=AIC(g.null),
+	p=1-pchisq(AIC(g.null) - AIC(g) + 2, 1),
+	a=a,
+	b=b,
+	mu=1/b,
+	train.RMSE=sqrt(sum(data$date.diff[data$type=="PLASMA"]^2)/sum(data$type=="PLASMA")),
+	cens.RMSD=sqrt(sum(data$date.diff[data$type=="PBMC"]^2)/sum(data$type=="PBMC"))
+)
+stats.col.names <- c(
+	"Patient",
+	"RNA Samples",
+	"DNA Samples",
+	"Total Samples",
+	"RNA Time Points",
+	"DNA Time Points",
+	"Total Time Points",
+	"Minimum RNA Time Point",
+	"Maximum RNA Time Point",
+	"Minimum DNA Time Point",
+	"Maximum DNA Time Point",
+	"Minimum Time Point",
+	"Maximum Time Point",
+	"AIC",
+	"null AIC",
+	"p-value",
+	"Model Intercept",
+	"Model Slope",
+	"Estimated Mutation Rate",
+	"Training RMSE",
+	"Censored RMSD"
+)
+write.table(stats, stats.file, col.names=stats.col.names, row.names=F, sep=",")
