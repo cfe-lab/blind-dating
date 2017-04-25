@@ -55,6 +55,10 @@ fasta.names <- names(fasta)
 info <- read.info(INFO_FILE, fasta.names)
 types <- info$CENSORED
 
+ref <- which("REFERENCE" == fasta.names)
+if (length(ref) > 0)
+	types[ref] <- 1
+
 fasta.rna <- fasta[which(types == 0)]
 fasta.dna <- fasta[which(types == 1)]
 fasta.names <- names(fasta.rna)

@@ -18,12 +18,20 @@ if (any(grep("--file=", args.all))) {
 	}
 }
 
-compare.dates <- function(data, ori.data) {
+compare.dates.rmse <- function(data, ori.data) {
 	m <- match(data$label, ori.data$label)
-	dna <- which(data$type == "PBMC")
+	dna <- which(data$censored == 0)
 	ori.dna <- m[dna]
 	
-	sqrt(sum((data[dna, 'est.date'] - ori.data[ori.dna, 'est.date'])^2 / sum(dna)))
+	sqrt(sum((data[dna, 'est.date'] - ori.data[ori.dna, 'est.date'])^2 / length(dna)))
+}
+
+compare.dates.cor <- function(data, ori.data) {
+	m <- match(data$label, ori.data$label)
+	dna <- which(data$censored == 0)
+	ori.dna <- m[dna]
+	
+	cor(data[dna, 'est.date'], ori.data[ori.dna, 'est.date'])
 }
 
 args <- commandArgs(T)
@@ -37,22 +45,21 @@ data <- lapply(dir(stats.dir, "*data*", full.names=T), read.csv, col.names=c("la
 
 ori.data <- read.csv(ori.data.file, col.names=c("label", "type", "censored", "date", "dist", "est.date", "date.diff"), stringsAsFactors=F)
 
-good <- stats[, "p.value"] < 0.001
-
-rmses <- unlist(lapply(data, compare.dates, ori.data))
-stats <- as.data.frame(cbind(stats, full.rmse=rmses))
+rmses <- unlist(lapply(data, compare.dates.rmse, ori.data))
+cors <- unlist(lapply(data, compare.dates.cor, ori.data))
+stats <- as.data.frame(cbind(stats, full.rmse=rmses, full.cor=cors))
 stats.col.names <- c(
 	"Patient",
-	"RNA Samples",
-	"DNA Samples",
+	"Training Samples",
+	"Censored Samples",
 	"Total Samples",
-	"RNA Time Points",
-	"DNA Time Points",
+	"Training Time Points",
+	"Censored Time Points",
 	"Total Time Points",
-	"Minimum RNA Time Point",
-	"Maximum RNA Time Point",
-	"Minimum DNA Time Point",
-	"Maximum DNA Time Point",
+	"Minimum Training Time Point",
+	"Maximum Training Time Point",
+	"Minimum Censored Time Point",
+	"Maximum Censored Time Point",
 	"Minimum Time Point",
 	"Maximum Time Point",
 	"AIC",
@@ -63,10 +70,7 @@ stats.col.names <- c(
 	"Estimated Mutation Rate",
 	"Training RMSE",
 	"Censored RMSD",
-	"Full RMSE"
+	"Full RMSE",
+	"Full Correlation" 
 )
 write.table(stats, output.stats, row.names=F, col.names=stats.col.names, sep=",")
-
-good.rmses <- rmses[good]
-output.data <- data.frame(good=good/length(data), mean.rmse=mean(good.rmses), median.rmse=median(good.rmses), sd.rmse=sd(good.rmses), mean.AIC.diff=mean(stats[good, "null.AIC"] - stats[good, "AIC"]))
-write.csv(stats, stats.file, row.names=F)

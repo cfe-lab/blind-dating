@@ -35,20 +35,22 @@ apply.axes <- function(p, flipped, scaled) {
 	if (scaled) {
 		if (flipped) {
 			p + y.scale +
-				scale_x_continuous(name="Divergence from root", breaks=seq(0, 0.20, by=.04), limits=c(dist.min, dist.max)) +
-				geom_abline(intercept=stats[,"Model.Intercept"], slope=stats[, "Model.Slope"], color="#0060b0b0", linetype=2)
+				scale_x_continuous(name="Divergence from root", breaks=seq(0.0, 0.20, by=.04), limits=c(dist.min, dist.max)) +
+				geom_abline(intercept=stats[,"Model.Intercept"], slope=stats[, "Model.Slope"], color="#0060b0b0", linetype=2) +
+				geom_hline(yintercept=13361, colour="#60600080", linetype=2)
 		} else {
 			p + x.scale +
-				scale_y_continuous(name="Divergence from root", breaks=seq(0, 0.20, by=.04), limits=c(dist.min, dist.max)) +
-				geom_abline(intercept=-stats[,"Model.Intercept"]/stats[,"Model.Slope"], slope=1/stats[, "Model.Slope"], color="#0060b0b0", linetype=2)
+				scale_y_continuous(name="Divergence from root", breaks=seq(0.0, 0.20, by=.04), limits=c(dist.min, dist.max)) +
+				geom_abline(intercept=-stats[,"Model.Intercept"]/stats[,"Model.Slope"], slope=1/stats[, "Model.Slope"], color="#0060b0b0", linetype=2) +
+				geom_vline(xintercept=13361, colour="#60600080", linetype=2)
 		}
 	} else {
 		if (flipped) {
-			p + scale_x_continuous(name="Divergence from root", breaks=seq(0, 0.20, by=.04), limits=c(dist.min, dist.max)) +
+			p + scale_x_continuous(name="Divergence from root", breaks=seq(0.04, 0.20, by=.04), limits=c(dist.min, dist.max)) +
 				theme(axis.ticks.x=element_blank(), axis.text.x=element_blank())
 		}
 		else {
-			p + scale_y_continuous(name="Divergence from root", breaks=seq(0, 0.20, by=.04), limits=c(dist.min, dist.max)) +
+			p + scale_y_continuous(name="Divergence from root", breaks=seq(0.04, 0.20, by=.04), limits=c(dist.min, dist.max)) +
 				theme(axis.ticks.x=element_blank(), axis.text.x=element_blank())
 		}
 	}
@@ -68,9 +70,9 @@ apply.theme <- function(p, flipped=F, scaled=T) {
 		flipped, scaled)
 }
 
-dist.min <- -.01
-dist.max <- .3
-LIK_TOL <- 1e-5
+dist.min <- -.005
+dist.max <- .27
+LIK_TOL <- 1e-1
 
 args <- commandArgs(trailingOnly = T)
 
