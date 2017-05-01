@@ -101,14 +101,18 @@ tree <- ladderize(read.tree(tree.file))
 data <- read.csv(data.file, col.names=c("tip.label", "type", "censored", "date", "dist", "est.date", "date.diff"), stringsAsFactors=F)
 stats <- read.csv(stats.file, stringsAsFactors=F)
 if (!is.na(pat.id2)) {
-#	data.2 <- read.csv(data.file, col.names=c("tip.label", "type", "censored", "date", "dist", "est.date", "date.diff"), stringsAsFactors=F)
-	stats.2 <- read.csv(stats.file, stringsAsFactors=F)
+	data.2 <- read.csv(data.2.file, col.names=c("tip.label", "type", "censored", "date", "dist", "est.date", "date.diff"), stringsAsFactors=F)
+	stats.2 <- read.csv(stats.2.file, stringsAsFactors=F)
 		
 	mu <- rep(stats[, "Model.Slope"], nrow(tree$edge))
-	clade <- get.child.edges(tree, getMRCA(tree, match(data$tip.label[data$censored == -1], tree$tip.label)))
+	clade <- get.child.edges(tree, getMRCA(tree, data$tip.label[data$censored == -1]))
 	mu[clade] <- stats.2[, "Model.Slope"]
+	clade.tips <- data$edge[clade, 2]
+	clade.tips <- clade.tips[clade.tips <= length(tree$tip.label)]
 		
+	data[clade.tips, ] <- data.2[clade.tips, ]
 	data$censored[data$censored == -1] <- 0
+	
 } else
 	mu <- stats[, "Model.Slope"]
 

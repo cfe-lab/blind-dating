@@ -47,7 +47,7 @@ write.table(data, data.file, col.names=c("ID", "Type", "Censored", "Collection D
 stats <- data.frame(
 	pat=pat.id,
 	samples.rna=sum(data$censored == 0),
-	samples.dna=sum(data$censored == 0),
+	samples.dna=sum(data$censored == 1),
 	samples.total=n,
 	rna.time.points=length(unique(data[data$censored == 0, 'date'])),
 	dna.time.points=length(unique(data[data$censored == 1, 'date'])),
