@@ -47,7 +47,7 @@ plasma.dates <- as.numeric(as.Date(info$COLDATE))
 tip.type <- info$CENSORED
 	
 if (use.rtt == 1)
-	plasma.dates[tip.type == 1] <- NA
+	plasma.dates[tip.type != 0] <- NA
 	
 if (use.rtt)
 	tree <- rtt(tree, plasma.dates, objective='rms', opt.tol=1e-8)

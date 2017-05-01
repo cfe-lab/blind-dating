@@ -1,65 +1,53 @@
+#!/usr/bin/Rscript
+
 library(ape)
 library(phylobase)
 library(ggtree)
-
-args.all <- commandArgs(trailingOnly = F)
-
-if (any(grep("--file=", args.all))) {
-	source.dir <- dirname(sub("--file=", "", args.all[grep("--file=", args.all)]))
-} else {
-	file.arg <- F
-
-	for (i in 1:length(args.all)) {
-		if (file.arg) {
-			source.dir <- dirname(args.all[i])
-		
-			break
-		}
-		
-		file.arg <- args.all[i] == '-f'
-	}
-}
-
-#source(file.path(source.dir, 'read.info.R'), chdir=T)
+library(optparse)
 
 get.date <- function(date) {
-	as.character(
-		if (DATES_AS_DATES)
-			as.Date(date, origin=as.Date("1970-01-01"))
-		else
-			date
-	)
+	as.character(as.Date(date, origin=as.Date("1970-01-01")))
+}
+
+get.child.edges <- function(tree, node) {
+	e <- which(tree$edge[, 1] %in% node)
+	if (length(e) > 0)
+		c(e, get.child.edges(tree, tree$edge[e, 2]))
+	else
+		NULL
 }
 
 apply.axes <- function(p, flipped, scaled) {
-	if (scaled) {
-		if (flipped) {
-			p + y.scale +
-				scale_x_continuous(name="Divergence from root", breaks=seq(0.0, 0.20, by=.04), limits=c(dist.min, dist.max)) +
-				geom_abline(intercept=stats[,"Model.Intercept"], slope=stats[, "Model.Slope"], color="#0060b0b0", linetype=2) +
-				geom_hline(yintercept=13361, colour="#60600080", linetype=2)
-		} else {
-			p + x.scale +
-				scale_y_continuous(name="Divergence from root", breaks=seq(0.0, 0.20, by=.04), limits=c(dist.min, dist.max)) +
-				geom_abline(intercept=-stats[,"Model.Intercept"]/stats[,"Model.Slope"], slope=1/stats[, "Model.Slope"], color="#0060b0b0", linetype=2) +
-				geom_vline(xintercept=13361, colour="#60600080", linetype=2)
-		}
+	if (flipped) {
+		p <- p + scale_x_continuous(name="Divergence from root", breaks=seq(0.0, dist.max, by=dist.by), limits=c(dist.min, dist.max))
+		if (scaled) {
+			p <- p + y.scale +
+				geom_abline(intercept=-stats[, "Model.Intercept"] / stats[, "Model.Slope"], slope=1 / stats[, "Model.Slope"], color="#0060b0b0", linetype=2) +
+				geom_hline(yintercept=THERAPY_START, colour="#60600080", linetype=2)
+			if (!is.na(pat.id2))
+				p <- p + geom_abline(intercept=-stats.2[, "Model.Intercept"] / stats.2[, "Model.Slope"], slope=1 / stats.2[, "Model.Slope"], color="#003058b0", linetype=2)
+		} else
+			p <- p + theme(axis.ticks.x=element_blank(), axis.text.x=element_blank())
 	} else {
-		if (flipped) {
-			p + scale_x_continuous(name="Divergence from root", breaks=seq(0.04, 0.20, by=.04), limits=c(dist.min, dist.max)) +
-				theme(axis.ticks.x=element_blank(), axis.text.x=element_blank())
-		}
-		else {
-			p + scale_y_continuous(name="Divergence from root", breaks=seq(0.04, 0.20, by=.04), limits=c(dist.min, dist.max)) +
-				theme(axis.ticks.x=element_blank(), axis.text.x=element_blank())
-		}
+		p <- p + scale_y_continuous(name="Divergence from root", breaks=seq(0.0, dist.max, by=dist.by), limits=c(dist.min, dist.max))
+		if (scaled) {
+			p <- p + x.scale +
+				geom_abline(intercept=stats[, "Model.Intercept"], slope=stats[, "Model.Slope"], color="#0060b0b0", linetype=2) +
+				geom_vline(xintercept=THERAPY_START, colour="#60600080", linetype=2)
+			if (!is.na(pat.id2))
+				p <- p + geom_abline(intercept=stats.2[, "Model.Intercept"], slope=stats.2[, "Model.Slope"], color="#003058b0", linetype=2)
+		} else
+			p <- p + theme(axis.ticks.x=element_blank(), axis.text.x=element_blank())
 	}
+	p
 }
 
 apply.theme <- function(p, flipped=F, scaled=T) {
 	apply.axes(p + theme_bw() +
 		theme(
 			legend.position=c(.15,.8),
+			legend.background=element_blank(),
+			legend.box.background=element_blank(),
 			panel.grid.major = element_blank(),
 		    panel.grid.minor = element_blank()
 		) +
@@ -70,18 +58,40 @@ apply.theme <- function(p, flipped=F, scaled=T) {
 		flipped, scaled)
 }
 
-dist.min <- -.005
-dist.max <- .27
-LIK_TOL <- 1e-1
+LIK_TOL <- 1e-5
 
-args <- commandArgs(trailingOnly = T)
+op <- OptionParser()
+op <- add_option(op, "--tree", type='character')
+op <- add_option(op, "--patid", type='character')
+op <- add_option(op, "--patid2", type='character')
+op <- add_option(op, "--real", type='logical', action='store_true', default=F)
+op <- add_option(op, "--distmax", type='double')
+op <- add_option(op, "--distmin", type='double', default=-.01)
+op <- add_option(op, "--distby", type='double')
+op <- add_option(op, "--yearstart", type='character')
+op <- add_option(op, "--yearend", type='character')
+op <- add_option(op, "--therapy", type='character', default="0000-01-01")
+args <- parse_args(op)
 
-tree.file <- args[1]
-pat.id <- args[2]
-type <- as.numeric(args[3]) # 0 Training/Censored, 1 RNA/DNA
+tree.file <- args$tree
+pat.id <- args$patid
+pat.id2 <- if ("patid2" %in% names(args)) args$patid2 else NA
+use.real <- args$real # 0 Training/Censored, 1 RNA/DNA
+dist.min <- args$distmin
+dist.max <- args$distmax
+dist.by <- args$distby
+if (use.real) {
+	year.start <- args$yearstart
+	year.end <- args$yearend
+}
+THERAPY_START <- as.numeric(as.Date(args$therapy))
 
 data.file <- paste0("stats/", pat.id, ".data.csv")
 stats.file <- paste0("stats/", pat.id, ".stats.csv")
+if (!is.na(pat.id2)) {
+	data.2.file <- paste0("stats/", pat.id2, ".data.csv")
+	stats.2.file <- paste0("stats/", pat.id2, ".stats.csv")
+}
 pdf.file <- paste0("plots/", pat.id, ".pdf")
 pdf.disttree.file <- paste0("plots/", pat.id, ".disttree.pdf")
 pdf.tree.file <- paste0("plots/", pat.id, ".tree.pdf")
@@ -89,21 +99,40 @@ pdf.hist.file <- paste0("plots/", pat.id, ".hist.pdf")
 
 tree <- ladderize(read.tree(tree.file))
 data <- read.csv(data.file, col.names=c("tip.label", "type", "censored", "date", "dist", "est.date", "date.diff"), stringsAsFactors=F)
-stats <- read.csv(stats.file, , stringsAsFactors=F)
+stats <- read.csv(stats.file, stringsAsFactors=F)
+if (!is.na(pat.id2)) {
+#	data.2 <- read.csv(data.file, col.names=c("tip.label", "type", "censored", "date", "dist", "est.date", "date.diff"), stringsAsFactors=F)
+	stats.2 <- read.csv(stats.file, stringsAsFactors=F)
+		
+	mu <- rep(stats[, "Model.Slope"], nrow(tree$edge))
+	clade <- get.child.edges(tree, getMRCA(tree, match(data$tip.label[data$censored == -1], tree$tip.label)))
+	mu[clade] <- stats.2[, "Model.Slope"]
+		
+	data$censored[data$censored == -1] <- 0
+} else
+	mu <- stats[, "Model.Slope"]
 
-node.dates <- estimate.dates(tree, data$date, 1/stats[,"Model.Slope"], lik.tol=LIK_TOL, show.steps=1000, nsteps=0)
+node.dates <- estimate.dates(tree, data$date, mu, lik.tol=LIK_TOL, show.steps=1000, nsteps=0)
 
 data.all <- as.data.frame(cbind(rbind(data, data.frame(tip.label=paste0("N.", 1:tree$Nnode), type=rep("NODE", tree$Nnode), censored=rep(NA, tree$Nnode), date=rep(NA, tree$Nnode), dist=node.depth.edgelength(tree)[1:tree$Nnode + nrow(data)], est.date=rep(NA, tree$Nnode), date.diff=rep(NA, tree$Nnode))), node.date=node.dates))
 
 ptree <- phylo4d(tree, all.data=data.all)
 
-if (type == 1) {
-	x.scale <- scale_x_continuous(name="Year", breaks=c(9131, 10957, 12784, 14610, 16436), labels=c("1995", "2000", "2005", "2010", "2015"), limits=c(8766, 17532))
-	y.scale <- scale_y_continuous(name="Year", breaks=c(9131, 10957, 12784, 14610, 16436), labels=c("1995", "2000", "2005", "2010", "2015"), limits=c(8766, 17532))
+if (use.real) {
+	date.ticks <- as.character(seq(floor(as.numeric(year.start) / 5) * 5 + 5, as.numeric(year.end), by=5))
+	
+	x.scale <- scale_x_continuous(name="Year", breaks=as.numeric(as.Date(paste0(date.ticks, "-01-01"))), labels=date.ticks, limits=as.numeric(as.Date(paste0(c(year.start, year.end), "-01-01"))))
+	y.scale <- scale_y_continuous(name="Year", breaks=as.numeric(as.Date(paste0(date.ticks, "-01-01"))), labels=date.ticks, limits=as.numeric(as.Date(paste0(c(year.start, year.end), "-01-01"))))
 	type.guide <- guide_legend(override.aes=list(shape=15, size=5))
-	type.break <- c("PLASMA", "PBMC", "PBMC (cultured)", "WHOLE BLOOD")
-	type.label <- c("Plasma RNA", "PBMC DNA", "Cultured PBMC DNA", "Whole Blood DNA")
-	type.value <- c('black', 'red', 'cyan', 'darkgreen')
+	if (length(unique(data$type)) == 4) {
+		type.break <- c("PLASMA", "PBMC", "PBMC (cultured)", "WHOLE BLOOD")
+		type.label <- c("Plasma RNA", "PBMC DNA", "Cultured PBMC DNA", "Whole Blood DNA")
+		type.value <- c('black', 'red', 'cyan', 'darkgreen')
+	} else {
+		type.break <- c("PLASMA", "PBMC")
+		type.label <- c("Plasma RNA", "PBMC DNA")
+		type.value <- c('black', 'red')
+	}
 } else {
 	x.scale <- scale_x_continuous(name="Days post simulation")
 	y.scale <- scale_y_continuous(name="Days post simulation")

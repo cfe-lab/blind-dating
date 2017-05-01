@@ -1,4 +1,4 @@
-
+#!/usr/bin/Rscript
 
 args.all <- commandArgs(trailingOnly = F)
 
@@ -20,7 +20,7 @@ if (any(grep("--file=", args.all))) {
 
 compare.dates.rmse <- function(data, ori.data) {
 	m <- match(data$label, ori.data$label)
-	dna <- which(data$censored == 0)
+	dna <- which(data$censored == 1)
 	ori.dna <- m[dna]
 	
 	sqrt(sum((data[dna, 'est.date'] - ori.data[ori.dna, 'est.date'])^2 / length(dna)))
@@ -28,10 +28,18 @@ compare.dates.rmse <- function(data, ori.data) {
 
 compare.dates.cor <- function(data, ori.data) {
 	m <- match(data$label, ori.data$label)
-	dna <- which(data$censored == 0)
+	dna <- which(data$censored == 1)
 	ori.dna <- m[dna]
 	
 	cor(data[dna, 'est.date'], ori.data[ori.dna, 'est.date'])
+}
+
+avg.var <- function(data) {
+	dna <- data[[1]][which(data[[1]]$censored == 1), 'label']
+	
+	est.date <- do.call(rbind, lapply(data, function(x) x[match(dna, x$label), 'est.date']))
+		
+	mean(apply(est.date, 1, sd))
 }
 
 args <- commandArgs(T)
@@ -47,7 +55,9 @@ ori.data <- read.csv(ori.data.file, col.names=c("label", "type", "censored", "da
 
 rmses <- unlist(lapply(data, compare.dates.rmse, ori.data))
 cors <- unlist(lapply(data, compare.dates.cor, ori.data))
-stats <- as.data.frame(cbind(stats, full.rmse=rmses, full.cor=cors))
+avg.vars <- avg.var(data)
+
+stats <- as.data.frame(cbind(stats, full.rmse=rmses, full.cor=cors, avg.var=avg.vars))
 stats.col.names <- c(
 	"Patient",
 	"Training Samples",
@@ -70,7 +80,8 @@ stats.col.names <- c(
 	"Estimated Mutation Rate",
 	"Training RMSE",
 	"Censored RMSD",
-	"Full RMSE",
-	"Full Correlation" 
+	"Original RMSE",
+	"Original Correlation",
+	"Average Esimated Deviation"
 )
 write.table(stats, output.stats, row.names=F, col.names=stats.col.names, sep=",")

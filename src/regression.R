@@ -25,7 +25,6 @@ args <- commandArgs(trailingOnly = T)
 tree.file <- args[1]
 info.file <- args[2]
 pat.id <- args[3]
-link <- if (length(args) >= 4) args[4] else 'identity'
 
 data.file <- paste0("stats/", pat.id, ".data.csv")
 stats.file <- paste0("stats/", pat.id, ".stats.csv")
@@ -36,13 +35,13 @@ n <- length(tree$tip.label)
 
 data <- data.frame(label=tree$tip.label, type=info$TYPE, censored=info$CENSORED, date=as.numeric(as.Date(info$COLDATE)), dist=node.depth.edgelength(tree)[1:n], stringsAsFactors=F)
 
-g <- glm(date ~ dist, data=data, subset=censored == 0, family=Gamma(link))
-g.null <- glm(date ~ 1, data=data, subset=censored == 0, family=Gamma(link))
+g <- glm(dist ~ date, data=data, subset=censored == 0)
+g.null <- glm(dist ~ 1, data=data, subset=censored == 0)
 
 a <- coef(g)[[1]]
 b <- coef(g)[[2]]
 
-data <- as.data.frame(cbind(data, est.date=data$dist*b+a, date.diff=data$dist*b+a-data$date))
+data <- as.data.frame(cbind(data, est.date=data$dist/b-a/b, date.diff=data$dist/b-a/b-data$date))
 write.table(data, data.file, col.names=c("ID", "Type", "Censored", "Collection Date", "Divergence", "Estimated Date", "Date Difference"), row.names=F, sep=",")
 
 stats <- data.frame(
@@ -64,7 +63,7 @@ stats <- data.frame(
 	p=1-pchisq(AIC(g.null) - AIC(g) + 2, 1),
 	a=a,
 	b=b,
-	mu=1/b,
+	mu=-a/b,
 	train.RMSE=sqrt(sum(data$date.diff[data$censored == 0]^2)/sum(data$censored == 0)),
 	cens.RMSD=sqrt(sum(data$date.diff[data$censored == 1]^2)/sum(data$censored == 1))
 )
@@ -87,7 +86,7 @@ stats.col.names <- c(
 	"p-value",
 	"Model Intercept",
 	"Model Slope",
-	"Estimated Mutation Rate",
+	"Estimated Root Date",
 	"Training RMSE",
 	"Censored RMSD"
 )

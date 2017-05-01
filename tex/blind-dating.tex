@@ -28,6 +28,7 @@
 \author[c]{Ronald Truong}
 \author[a]{Bruce Ganase}
 \author[a]{Marianne Harris}
+\author[a]{Robert Hollebakken}
 \author[a,d]{P. Richard Harrigan}
 \author[c]{R. Brad Jones}
 \author[a,b]{Mark A. Brockman}
@@ -95,16 +96,19 @@ Details of the method are given in the Blind-dating subsection of the Materials 
 \section*{Model validation on simulated data}
 foo
 
-\section*{Results on real patient data}
+\section*{Results on patient data}
 foo
 
-\section*{Stress tests on real patient data}
+\subsection*{Comparison of rooting methods}
+The correlation between the estimated dates for our patient using the different rooting methods --- outgroup rooting (OGR) and root-to-tip regression (RTT) --- was 0.83 (pearson)/0.81 (spearman) and the root mean square deviation was 970 days.
+
+\section*{Stress tests on patient data}
 foo
 
 \section*{Conclusions}
 foo
 
-Most other models of HIV latent reservoirs are dynamical models \cite{Rong09,Pace11}. These models can be complicated, including many components and parametersr
+Most other models of HIV latent reservoirs are dynamical models \cite{Rong09,Pace11}. These models can be complicated, including many components and parameters.
 
 \section*{Figure Legends}
 \figcaption{Reconstructing the time that a viral lineage entered a latent state from with-host sequence variation.
@@ -143,7 +147,7 @@ Finally, we created simulated HIV RNA sequences from these phylogenies with INDE
 \subsection*{Blind-dating}
 We reconstructed the within-host phylogenies of each subject in each data set as maximum likelihood phylogenies reconstructed using RAxML v8.2.4 \cite{raxml} with the GTR model.
 We evaluated two different methods for rooting these trees. 
-The first method was outgroup rooting, in which one or more sequences from taxa outside but sufficiently related to the group of interest are added to the phylogenetic reconstruction \cite{Huelsenbeck02}. and the phylogenetic reconstruction \cite{Huelsenbeck02}.
+The first method was outgroup rooting (OGR), in which one or more sequences from taxa outside but sufficiently related to the group of interest are added to the phylogenetic reconstruction \cite{Huelsenbeck02}. and the phylogenetic reconstruction \cite{Huelsenbeck02}.
 The point at which the branch leading to the outgroup intersects the rest of the tree provides an estimate of the root for the latter.
 We selected the HIV-1 B ancestral sequence reconstruction curated by the LANL HIV sequence database \cite{LosAlamos} as the outgroup sequence.
 The second method was root-to-tip regression (RTT) \cite{Korber00}, which performs an exhaustive search by re-rooting the tree at every branch to find the root that, in our experiments, minimizes the root-mean-squared error between the sample collection dates and the evolutionary distance of tips from the candidate root.
