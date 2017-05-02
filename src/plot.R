@@ -45,11 +45,14 @@ apply.axes <- function(p, flipped, scaled) {
 apply.theme <- function(p, flipped=F, scaled=T) {
 	apply.axes(p + theme_bw() +
 		theme(
-			legend.position=c(.15,.8),
+			legend.position=c(.01, .99),
+			legend.justification=c(0, 1),
+			legend.spacing=unit(5, 'points'),
+			legend.margin=margin(t = 0, r = 0, b = 0, l = 0, unit = "pt"),
 			legend.background=element_blank(),
 			legend.box.background=element_blank(),
-			panel.grid.major = element_blank(),
-		    panel.grid.minor = element_blank()
+			panel.grid.major=element_blank(),
+		    panel.grid.minor=element_blank()
 		) +
 		scale_colour_manual(name="", breaks=type.break, labels=type.label, values=type.value, limits=type.break) +
 		scale_shape_manual(name="", breaks=c(0, 1), labels=c("Training", "Censored"), values=c(16, 18), limits=c(0, 1)) +
@@ -58,7 +61,7 @@ apply.theme <- function(p, flipped=F, scaled=T) {
 		flipped, scaled)
 }
 
-LIK_TOL <- 1e-5
+LIK_TOL <- 1e-1
 
 op <- OptionParser()
 op <- add_option(op, "--tree", type='character')

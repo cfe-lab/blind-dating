@@ -36,11 +36,24 @@ compare.dates.cor <- function(data, ori.data) {
 
 avg.var <- function(data) {
 	dna <- data[[1]][which(data[[1]]$censored == 1), 'label']
-	
+		
 	est.date <- do.call(rbind, lapply(data, function(x) x[match(dna, x$label), 'est.date']))
 		
 	mean(apply(est.date, 1, sd))
 }
+
+avg.good.var <- function(data, stats) {
+	dna <- data[[1]][which(data[[1]]$censored == 1), 'label']
+	good.data <- which(stats$null.AIC - stats$AIC > 10 & stats$Model.Slope > 0)
+		
+	if (length(good.data) > 0) {
+		est.date <- do.call(rbind, lapply(data[good.data], function(x) x[match(dna, x$label), 'est.date']))
+		
+		mean(apply(est.date, 1, sd))
+	} else
+		0
+}
+
 
 args <- commandArgs(T)
 
@@ -56,8 +69,9 @@ ori.data <- read.csv(ori.data.file, col.names=c("label", "type", "censored", "da
 rmses <- unlist(lapply(data, compare.dates.rmse, ori.data))
 cors <- unlist(lapply(data, compare.dates.cor, ori.data))
 avg.vars <- avg.var(data)
+avg.good.vars <- avg.good.var(data, stats)
 
-stats <- as.data.frame(cbind(stats, full.rmse=rmses, full.cor=cors, avg.var=avg.vars))
+stats <- as.data.frame(cbind(stats, full.rmse=rmses, full.cor=cors, avg.var=avg.vars, avg.good.var=avg.good.vars))
 stats.col.names <- c(
 	"Patient",
 	"Training Samples",
@@ -77,11 +91,12 @@ stats.col.names <- c(
 	"p-value",
 	"Model Intercept",
 	"Model Slope",
-	"Estimated Mutation Rate",
+	"Estimated Root Date",
 	"Training RMSE",
 	"Censored RMSD",
 	"Original RMSE",
 	"Original Correlation",
-	"Average Esimated Deviation"
+	"Average Estimated Deviation",
+	"Average Estimated Deviation (Convergent)"
 )
 write.table(stats, output.stats, row.names=F, col.names=stats.col.names, sep=",")
