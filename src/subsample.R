@@ -20,17 +20,7 @@ if (any(grep("--file=", args.all))) {
 
 source(file.path(source.dir, 'read.info.R'), chdir=T)
 
-one.sequence <- function(i) {
-	unlist(lapply(time.points, function(x) sample(which(dates == x), 1)))
-}
-
 get.time.points <- function(i) {
-	s <- sample(time.points, TIME_POINTS)
-	
-	which(dates %in% s)
-}
-
-two.time.points <- function(i) {
 	s <- sampler[, i]
 	
 	which(dates %in% s)
@@ -68,6 +58,8 @@ time.points <- unique(dates)
 n.points <- length(time.points)
 
 method <- if (METHOD == 0) {
+	sampler <- combn(time.points, REPS)
+	s <- sampler[, sample(ncol(sampler), REPS)] 
 	reps <- REPS
 
 	get.time.points
@@ -75,12 +67,12 @@ method <- if (METHOD == 0) {
 	sampler <- combn(time.points, n.points - 1)
 	reps <- ncol(sampler)
 	
-	two.time.points
+	get.time.points
 } else {
 	sampler <- combn(time.points, 2)
 	reps <- ncol(sampler)
 	
-	two.time.points
+	get.time.points
 }
 
 cat("Filtering...\n")
