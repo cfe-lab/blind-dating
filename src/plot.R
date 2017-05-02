@@ -103,6 +103,7 @@ pdf.hist.file <- paste0("plots/", pat.id, ".hist.pdf")
 tree <- ladderize(read.tree(tree.file))
 data <- read.csv(data.file, col.names=c("tip.label", "type", "censored", "date", "dist", "est.date", "date.diff"), stringsAsFactors=F)
 stats <- read.csv(stats.file, stringsAsFactors=F)
+
 if (!is.na(pat.id2)) {
 	data.2 <- read.csv(data.2.file, col.names=c("tip.label", "type", "censored", "date", "dist", "est.date", "date.diff"), stringsAsFactors=F)
 	stats.2 <- read.csv(stats.2.file, stringsAsFactors=F)
@@ -110,12 +111,51 @@ if (!is.na(pat.id2)) {
 	mu <- rep(stats[, "Model.Slope"], nrow(tree$edge))
 	clade <- get.child.edges(tree, getMRCA(tree, data$tip.label[data$censored == -1]))
 	mu[clade] <- stats.2[, "Model.Slope"]
-	clade.tips <- data$edge[clade, 2]
+	clade.tips <- tree$edge[clade, 2]
 	clade.tips <- clade.tips[clade.tips <= length(tree$tip.label)]
 		
+	data.old <- data
 	data[clade.tips, ] <- data.2[clade.tips, ]
-	data$censored[data$censored == -1] <- 0
+	data[data$censored == -1, ] <- data.old[data$censored == -1, ]
+	write.table(data, paste0("stats/", pat.id, ".comb.data.csv"), col.names=c("ID", "Type", "Censored", "Collection Date", "Divergence", "Estimated Date", "Date Difference"), row.names=F, sep=",")
 	
+	stats$Minimum.Time.Point <- min(stats$Mimimum.Time.Point, stats.2$Minimum.Time.Point)
+	stats$Minimum.Training.Time.Point <- min(stats$Mimimum.Training.Time.Point, stats.2$Minimum.Training.Time.Point)
+	stats$Maximum.Time.Point <- min(stats$Maximum.Time.Point, stats.2$Maximum.Time.Point)
+	stats$Maximum.Training.Time.Point <- min(stats$Maximum.Training.Time.Point, stats.2$Maximum.Training.Time.Point)
+	stats$Training.Samples <- stats$Training.Samples + stats.2$Training.Samples
+	stats$Censored.RMSD <- sqrt(sum(data[data$censored == 1, "date.diff"]^2)/sum(data$censored == 1))
+	stats <- as.data.frame(cbind(stats, stats.2[, c("AIC", "null.AIC", "p.value", "Model.Intercept", "Model.Slope", "Training.RMSE")]))
+	stats.col.names <- c(
+		"Patient",
+		"Training Samples",
+		"Censored Samples",
+		"Total Samples",
+		"Training Time Points",
+		"Censored Time Points",
+		"Total Time Points",
+		"Minimum Training Time Point",
+		"Maximum Training Time Point",
+		"Minimum Censored Time Point",
+		"Maximum Censored Time Point",
+		"Minimum Time Point",
+		"Maximum Time Point",
+		"AIC",
+		"null AIC",
+		"p-value",
+		"Model Intercept",
+		"Model Slope",
+		"Estimated Root Date",
+		"Training RMSE",
+		"Censored RMSD",
+		"AIC 2",
+		"null AIC 2",
+		"p-value 2",
+		"Model Intercept 2",
+		"Model Slope 2",
+		"Training RMSE 2"
+	)
+	write.table(stats, paste0("stats/", pat.id, ".comb.stats.csv"), row.names=F, col.names=stats.col.names, sep=",")
 } else
 	mu <- stats[, "Model.Slope"]
 
