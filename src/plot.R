@@ -61,7 +61,7 @@ apply.theme <- function(p, flipped=F, scaled=T) {
 		flipped, scaled)
 }
 
-LIK_TOL <- 1e-1
+LIK_TOL <- 1e-5
 
 op <- OptionParser()
 op <- add_option(op, "--tree", type='character')
