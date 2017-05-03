@@ -25,6 +25,7 @@ args <- commandArgs(trailingOnly = T)
 tree.file <- args[1]
 info.file <- args[2]
 pat.id <- args[3]
+use.date <- if (length(args) >= 4) as.integer(args[4]) else 1
 
 data.file <- paste0("stats/", pat.id, ".data.csv")
 stats.file <- paste0("stats/", pat.id, ".stats.csv")
@@ -33,7 +34,7 @@ tree <- read.tree(tree.file)
 info <- read.info(info.file, tree$tip.label)
 n <- length(tree$tip.label)
 
-data <- data.frame(label=tree$tip.label, type=info$TYPE, censored=info$CENSORED, date=as.numeric(as.Date(info$COLDATE)), dist=node.depth.edgelength(tree)[1:n], stringsAsFactors=F)
+data <- data.frame(label=tree$tip.label, type=info$TYPE, censored=info$CENSORED, date=if (use.date == 1) as.numeric(as.Date(info$COLDATE)) else info$COLDATE, dist=node.depth.edgelength(tree)[1:n], stringsAsFactors=F)
 
 g <- glm(dist ~ date, data=data, subset=censored == 0)
 g.null <- glm(dist ~ 1, data=data, subset=censored == 0)

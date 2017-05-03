@@ -7,8 +7,6 @@
 library(ape)
 library(TreeSim)
 library(NELSI)
-library(Rmpfr)
-#library(phangorn)
 
 #source('../common/rtt.R')
 #source('../common/raxml.R')
@@ -34,9 +32,8 @@ if (any(grep("--file=", args.all))) {
 
 args <- commandArgs(trailingOnly = T)
 
-percent.censored <- as.double(args[1])
-r.seed <- as.integer(args[2])
-indelible.seed <- args[3]
+r.seed <- as.integer(args[1])
+indelible.seed <- args[2]
 
 if (r.seed != 0) {
 	set.seed(r.seed)
@@ -52,172 +49,31 @@ n.replicates <- 1
 n.tips <- 100
 
 # From GLM
-clock.rate <- 6.12e-5
-noise.rate <- 2.79e-6
+clock.rate <- 3.94e-5
+noise.rate <- 2.00e-6
 
 # birth-death model parameters, from BEAST
-lambda <- c(4.74e-3)
-mu <- c(.442) * lambda + c(1.90e-3)
-sampprob <- c(1.90e-3) / mu
+lambda <- 8.87e-3
+mu <- 7.75e-3
+sampprob <- 0.115
 times<-c(0)
 
 sim.params <- list(rate = clock.rate, noise = noise.rate)
 sim.clockmodel <- simulate.clock
 
-trim <- function (x) gsub("^\\s+|\\s+$", "", x)
-extract_dates <- function(x) as.numeric(gsub("(.+)_([0-9\\.]+)$", "\\2", x, perl=T))
-extract_plasm_tag <- function(x) (gsub("(.+)_PLASMA_([0-9\\.]+)$", "\\1", x, perl=T))
-types <- function(x) gsub("(.+)_((PLASMA)|(PBMC))_([0-9\\.]+)'?$", "\\2", x, perl=T)
-extract_dates_pp <- function(x) as.numeric(gsub("(.+)_([0-9\\.]+)'?$", "\\2", x, perl=T))
-
-date.branches <- function(s.tree) {
-	tree <- s.tree$phylogram
-	subsr <- s.tree$tree.data.matrix[,6]
-	times <- s.tree$tree.data.matrix[,7]
-
-	# Calculate the cumulative times
-	tree$edge.length <- times
-	times <- node.depth.edgelength(tree)
-
-	tree$edge.length <- subsr
-
-	dates <- unlist(Map(toString,times))[1:n.tips]
-	tree$tip.label <- paste(tree$tip.label, dates, sep='_')
-	tree
-}
-
-# move choosing tips outside of making tips latent to sync RNG of latent and unlatent methods
-choose.tips <- function(
-	s.tree,
-	percent = 0.5
-) {
-  tr <- s.tree$phylogram
-
-  # #  
-  n.tips <- length(tr$tip.label)
-  n.mod <- as.integer(n.tips*percent)  # number of tips to modify
-  delta <- rep(0, n.tips)
-  types <- rep("PLASMA", n.tips)
- 
-  # #
-  tips <- sort(sample(1:n.tips, n.mod))  # indices of tips to modify
-  
-  # #
-  s.tree.new <- s.tree
-  s.tree.new$latent.tips <- tips
-  
-  s.tree.new
-}
-
-# TO DO: probably do a range of values here
-make.latent <- function(
-	s.tree
-#	percent=0.5
-#	latency.rate=0.0001
-) {
-#  rate = clock.rate
-#  noise = noise.rate
-  tr <- s.tree$phylogram
-
-  # #  
-  n.tips <- length(tr$tip.label)
-#  n.mod <- as.integer(n.tips*percent)  # number of tips to modify
-#  delta <- rep(0, n.tips)
-  types <- rep("PLASMA", n.tips)
- 
-  # #
-  tips <- s.tree$latent.tips
-#  tips <- sort(sample(1:n.tips, n.mod))  # indices of tips to modify
-#  scale <- rbeta(n.mod, 1, 100)  # left-skew (median about 0.006)
-
-  # #
-  edge.length <- s.tree$tree.data.matrix[,7]
-#  edges <- which(tr$edge[,2] %in% tips)  # post-traversal indices of edges to modify
-  edges <- unlist(lapply(tips, function(x) {which(tr$edge[,2] == x)}))  # post-traversal indices of edges to modify (preserves order of tips)
-#  edge.length <- tr$edge.length  # branch lengths in unit time
-  
-  # latency distribution
-  rlatent <- function(sc) {
-    u <- mpfr(rexp(length(sc), unlatency.rate), 20)
-    print(u)
-    t.0 <- (sc - u) * ((sc - u) > 0)
-#   print(t.0)
-    r <- exp(-latency.rate * t.0)-exp(-latency.rate * mpfr(sc, 20))
-#    print(r)
-    x <- mpfr(runif(length(sc)), 20)
-#    print(x)
-    
-    as.double(-log(exp(-latency.rate * t.0) - r * x) / latency.rate)
-  }
-    
-  types[tips] <- "PBMC"
- 
-  edge.mod <- edge.length
-#  edge.mod[edges] <- edge.mod[edges]*scale
-#  print(edge.mod[edges])
-  
-  edge.mod[edges] <- if (latency.rate > 1E-100 && unlatency.rate > 1E-100)
-      rlatent(edge.mod[edges])
-    else 
-      if (latency.rate > 1E-100) {
-        edge.mod[edges] <- edge.mod[edges] - 100
-        bad <- edge.mod[edges] <= 0
-        edge.mod[edges][bad] <- .1 * (edge.mod[edges][bad] + 100)
-        edge.mod[edges]
-      }
-      else
-        edge.mod[edges]
-#  print(edge.mod[edges])
-  
-        
-#  delta <- edge.length - edge.mod
-  write.table(data.frame(id=tr$tip.label[tips], length=edge.length[edges], latency=edge.length[edges]-edge.mod[edges]), "latency.csv", append=T, row.names=F, sep=",")
-  
-  # # 
-  latent <- edge.mod
-  actual <- edge.length 
-  
-  actual.nozero <- actual
-  actual.nozero[actual.nozero == 0] <- 1
-
-  # # .
-  # Assume evolution rate is constant along the last edge
-  latent.evo <- s.tree$tree.data.matrix[,6]*latent/actual.nozero
-  actual.evo <- s.tree$tree.data.matrix[,6]
-#  err <- rnorm(length(tr$edge.length), mean = 0, sd = noise)
-#  latent.evo <- abs(latent * rate + err)  # convert time to exp. sub'ns
-#  actual.evo <- abs(actual * rate + err)
-  
-  # # #
-  tr$edge.length <- latent
-  times.l <- node.depth.edgelength(tr)[1:n.tips]
-  tr$edge.length <- latent.evo
-  evo.l <- node.depth.edgelength(tr)[1:n.tips]
-  
-  tr$edge.length <- actual
-  times.a <- node.depth.edgelength(tr)[1:n.tips]
-  tr$edge.length <- actual.evo
-  evo.a <- node.depth.edgelength(tr)[1:n.tips]
-  
-  # 
-  tr$tip.label <- paste(tr$tip.label, times.l, types, times.a, sep="_")
-  tr$edge.length <- latent.evo
-  
-  tr
-}
+cat("Building trees...\n")
 
 trees <- apply(matrix(rep(n.tips,n.trees)), 1, sim.bdsky.stt, lambdasky=lambda, deathsky=mu, timesky=times, sampprobsky=sampprob, rho=0, timestop=0)
 trees <- lapply(trees, function(x) {unroot(x[[1]])})
 sim.trees <- lapply(trees, sim.clockmodel, params=sim.params)
 
-#if (latent) {
-sim.trees <- lapply(sim.trees, choose.tips)
-trees <- lapply(sim.trees, make.latent)
-#} else {
-#	trees <- lapply(sim.trees, date.branches)
-#}
+suppress <- lapply(1:n.trees, function(i) {data <- data.frame(PATIENT=paste0("SIM_", i), SEQID=trees[[i]]$tip.label, FULLSEQID=trees[[i]]$tip.label, COLDATE=node.depth.edgelength(tree)[1:50], CENSORED=0, KEPT=1, DUPLICATE="", NOTE=""); write.csv(data, paste0("info/SIM_", i, ".csv"), row.names=F)})
 
-print(length(trees))
+tree <- sim.tree$phylogram
+tree$edge.length <- sim.tree$tree.data.matrix[, 6]
+
+
+cat("Preparing INDELible file...\n")
 
 indel_control <- sprintf(
 "
@@ -234,20 +90,19 @@ indel_control <- sprintf(
 , indelible.seed)
 
 
-for(i in 1:n.trees) {
+for (i in 1:n.trees) {
 	tree_dat <- write.tree(trees[[i]])
-	print(tree_dat)
 	indel_control <- paste0(indel_control, sprintf("[TREE] tree_%d %s \n", i, tree_dat))
 }
 
 #index <- sample(1:n.trees, n.partitions, replace = (n.partitions > n.trees))
 index <- 1:n.trees
-for(i in 1:n.partitions) {
+for (i in 1:n.partitions) {
 	indel_control <- paste0(indel_control, sprintf("[PARTITIONS] pHKY_%d [tree_%d HKY_HIV 700] \n", i, index[i]))
 }
 
 indel_control <- paste0(indel_control, "[EVOLVE] \n")
-for(i in 1:n.partitions) {
+for (i in 1:n.partitions) {
 	indel_control <- paste0(indel_control, sprintf("    pHKY_%d %d HIV_%d_out \n", i, n.replicates, i))
 }
 

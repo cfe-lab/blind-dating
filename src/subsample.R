@@ -58,7 +58,7 @@ time.points <- unique(dates)
 n.points <- length(time.points)
 
 method <- if (METHOD == 0) {
-	sampler <- combn(time.points, REPS)
+	sampler <- combn(time.points, TIME_POINTS)
 	s <- sampler[, sample(ncol(sampler), REPS)] 
 	reps <- REPS
 

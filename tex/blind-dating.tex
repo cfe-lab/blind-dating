@@ -85,12 +85,12 @@ Since HIV evolution adheres to the molecular clock hypothesis \cite{Leitner99,Pa
 While under viral latency 
 See \cref{fig:latenttree}.
 
-To recover the linear molecular clock, one can use a generalized linear model (GLM).
-Using the Gamma distribution, our GLM is given by:
+To recover the linear molecular clock, one can use a linear model (LM).
+Our LM is given by:
 \begin{align}
-	T &= s +  \mu^{-1}D,\label{eq:glm}
+	D &= a + \mu T,\label{eq:glm}
 \end{align}
-with response: $T$, the collection date; predictor: $D$, the genetic distance from the root; and parameters: $s$, the date of the root (approximately the date of infection) and $\mu$, the mutation rate.
+with response: $T$, the collection date; predictor: $D$, the genetic distance from the root; and parameters: $\mu$, the mutation rate and $a$, a constant genetic distance.
 Details of the method are given in the Blind-dating subsection of the Materials and Methods.
 
 \section*{Model validation on simulated data}
@@ -134,13 +134,9 @@ For this triplet we kept one sequence from the earlier time point.
 To characterize sources of error in reconstructing dates on tips of a phylogeny, we generated phylogenetic trees by direct simulation.
 We generated phylogenies with 50 tips each under a birth-death model with serial sampling using the sim.bdsky.stt function in the R package TreeSim v2.3 \cite{treesim}.
 We estimated the parameters to use for the birth-death model by fitting the HIV RNA sequences from Patient ***REMOVED*** (except for the sequence from 2015 `viremia blip') to the birth-death serially sampled model in BEAST v1.8.3 \cite{beast} using $10^9$ runs including $10^8$ runs of burn-in.
-This gave us birthrate: $\lambda = 8.87 \times 10^{-7}$ day${}^{-1}$, death rate: $\delta = \times 10^{-3}$ day${}^{-1}$, and sampling proportion: $s = 0.131$.
+This gave us birthrate: $\lambda = 8.87 \times 10^{-7}$ day${}^{-1}$, death rate: $\delta = 7.75 \times 10^{-3}$ day${}^{-1}$, and sampling proportion: $s = 0.115$.
 We applied a molecular clock to the generated phylogenies using the R package NELSI v \cite{nelsi} with mean rate $4.03 \times 10^{5}$ substitutions per base per day and standard deviation $1.84  \times 10^{-6}$ substitutions per base per day.
-These values were obtained from estimated paramater value and standard deviation of $\mu$ in the generalized linear model:
-\begin{align}
-	D &= a + \mu T,\label{eq:glm2}
-\end{align}
-using R \cite{rscript}.
+These values were obtained from estimated paramater value and standard deviation of $\mu$ in the linear model (LM) given in \cref{eq:glm} using R \cite{rscript}.
 Finally, we created simulated HIV RNA sequences from these phylogenies with INDELible v1.03 \cite{indelible}, to create one set of 50 simulated HIV RNA sequences per phylogeny.
 \subsection*{Creation of stress data sets}
 ((Stress testing.))
@@ -150,11 +146,11 @@ We evaluated two different methods for rooting these trees.
 The first method was outgroup rooting (OGR), in which one or more sequences from taxa outside but sufficiently related to the group of interest are added to the phylogenetic reconstruction \cite{Huelsenbeck02}. and the phylogenetic reconstruction \cite{Huelsenbeck02}.
 The point at which the branch leading to the outgroup intersects the rest of the tree provides an estimate of the root for the latter.
 We selected the HIV-1 B ancestral sequence reconstruction curated by the LANL HIV sequence database \cite{LosAlamos} as the outgroup sequence.
-The second method was root-to-tip regression (RTT) \cite{Korber00}, which performs an exhaustive search by re-rooting the tree at every branch to find the root that, in our experiments, minimizes the root-mean-squared error between the sample collection dates and the evolutionary distance of tips from the candidate root.
+The second method was root-to-tip regression (RTT) \cite{Korber00}, which performs an exhaustive search by re-rooting the tree at every branch to find the root that (in our experiments) maximizes the correlation between the sample collection dates and the evolutionary distance of tips from the candidate root.
 Our simulated data were only rooted using RTT; for all real data, both outgroup rooting and RTT were evaluated for rooting the phylogeny.
-For each subject in each data set, we computed the generalized linear model given in \cref{eq:glm} using the R function glm \cite{rscript}.
+For each subject in each data set, we computed the LM given in \cref{eq:glm} using the R function, glm \cite{rscript}.
 \subsection*{Statisical Analysis}
-((stats))
+All statistical calculations were performed using R \cite{rscript}.
 All plots were generated using the ggplot2 and ggtree packages in R \cite{ggplot,ggtree} --- time-scaled versions of the trees were generated using the esimate.dates function of the ape package in R \cite{ape,nodedating}.
 }
 

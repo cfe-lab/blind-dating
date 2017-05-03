@@ -159,7 +159,7 @@ if (!is.na(pat.id2)) {
 } else
 	mu <- stats[, "Model.Slope"]
 
-node.dates <- estimate.dates(tree, data$date, mu, lik.tol=LIK_TOL, show.steps=1000, nsteps=0)
+node.dates <- tryCatch(estimate.dates(tree, data$date, mu, lik.tol=LIK_TOL, show.steps=1000, nsteps=0), error=function(e) 0)
 
 data.all <- as.data.frame(cbind(rbind(data, data.frame(tip.label=paste0("N.", 1:tree$Nnode), type=rep("NODE", tree$Nnode), censored=rep(NA, tree$Nnode), date=rep(NA, tree$Nnode), dist=node.depth.edgelength(tree)[1:tree$Nnode + nrow(data)], est.date=rep(NA, tree$Nnode), date.diff=rep(NA, tree$Nnode))), node.date=node.dates))
 
@@ -175,6 +175,10 @@ if (use.real) {
 		type.break <- c("PLASMA", "PBMC", "PBMC (cultured)", "WHOLE BLOOD")
 		type.label <- c("Plasma RNA", "PBMC DNA", "Cultured PBMC DNA", "Whole Blood DNA")
 		type.value <- c('black', 'red', 'cyan', 'darkgreen')
+	} else if (length(unique(data$type)) == 3) {
+		type.break <- c("PLASMA", "PBMC", "WHOLE BLOOD")
+		type.label <- c("Plasma RNA", "PBMC DNA", "Whole Blood DNA")
+		type.value <- c('black', 'red', 'darkgreen')
 	} else {
 		type.break <- c("PLASMA", "PBMC")
 		type.label <- c("Plasma RNA", "PBMC DNA")
