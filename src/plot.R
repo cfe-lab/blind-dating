@@ -22,8 +22,9 @@ apply.axes <- function(p, flipped, scaled) {
 		p <- p + scale_x_continuous(name="Divergence from root", breaks=seq(0.0, dist.max, by=dist.by), limits=c(dist.min, dist.max))
 		if (scaled) {
 			p <- p + y.scale +
-				geom_abline(intercept=-stats[, "Model.Intercept"] / stats[, "Model.Slope"], slope=1 / stats[, "Model.Slope"], color="#0060b0b0", linetype=2) +
-				geom_hline(yintercept=THERAPY_START, colour="#60600080", linetype=2)
+				geom_abline(intercept=-stats[, "Model.Intercept"] / stats[, "Model.Slope"], slope=1 / stats[, "Model.Slope"], color="#0060b0b0", linetype=2)
+			if (use.real)
+				p <- p + geom_hline(yintercept=THERAPY_START, colour="#60600080", linetype=2)
 			if (!is.na(pat.id2))
 				p <- p + geom_abline(intercept=-stats.2[, "Model.Intercept"] / stats.2[, "Model.Slope"], slope=1 / stats.2[, "Model.Slope"], color="#003058b0", linetype=2)
 		} else
@@ -32,8 +33,9 @@ apply.axes <- function(p, flipped, scaled) {
 		p <- p + scale_y_continuous(name="Divergence from root", breaks=seq(0.0, dist.max, by=dist.by), limits=c(dist.min, dist.max))
 		if (scaled) {
 			p <- p + x.scale +
-				geom_abline(intercept=stats[, "Model.Intercept"], slope=stats[, "Model.Slope"], color="#0060b0b0", linetype=2) +
-				geom_vline(xintercept=THERAPY_START, colour="#60600080", linetype=2)
+				geom_abline(intercept=stats[, "Model.Intercept"], slope=stats[, "Model.Slope"], color="#0060b0b0", linetype=2)
+			if (use.real)
+				p <- p + geom_vline(xintercept=THERAPY_START, colour="#60600080", linetype=2)
 			if (!is.na(pat.id2))
 				p <- p + geom_abline(intercept=stats.2[, "Model.Intercept"], slope=stats.2[, "Model.Slope"], color="#003058b0", linetype=2)
 		} else
@@ -73,6 +75,7 @@ op <- add_option(op, "--distmin", type='double', default=-.01)
 op <- add_option(op, "--distby", type='double')
 op <- add_option(op, "--yearstart", type='character')
 op <- add_option(op, "--yearend", type='character')
+op <- add_option(op, "--yearby", type='double', default=5)
 op <- add_option(op, "--therapy", type='character', default="0000-01-01")
 args <- parse_args(op)
 
@@ -86,8 +89,13 @@ dist.by <- args$distby
 if (use.real) {
 	year.start <- args$yearstart
 	year.end <- args$yearend
+	THERAPY_START <- as.numeric(as.Date(args$therapy))
+} else {
+	year.start <- as.numeric(args$year.start)
+	year.end <- as.numeric(args$year.end)
 }
-THERAPY_START <- as.numeric(as.Date(args$therapy))
+
+year.by <- args$yearby
 
 data.file <- paste0("stats/", pat.id, ".data.csv")
 stats.file <- paste0("stats/", pat.id, ".stats.csv")
@@ -99,6 +107,7 @@ pdf.file <- paste0("plots/", pat.id, ".pdf")
 pdf.disttree.file <- paste0("plots/", pat.id, ".disttree.pdf")
 pdf.tree.file <- paste0("plots/", pat.id, ".tree.pdf")
 pdf.hist.file <- paste0("plots/", pat.id, ".hist.pdf")
+pdf.histdate.file <- paste0("plots/", pat.id, ".histdate.pdf")
 
 tree <- ladderize(read.tree(tree.file))
 data <- read.csv(data.file, col.names=c("tip.label", "type", "censored", "date", "dist", "est.date", "date.diff"), stringsAsFactors=F)
@@ -166,32 +175,31 @@ data.all <- as.data.frame(cbind(rbind(data, data.frame(tip.label=paste0("N.", 1:
 ptree <- phylo4d(tree, all.data=data.all)
 
 if (use.real) {
-	date.ticks <- as.character(seq(floor(as.numeric(year.start) / 5) * 5 + 5, as.numeric(year.end), by=5))
-	
+	date.ticks <- as.character(seq(floor(as.numeric(year.start) / year.by) * year.by + year.by, as.numeric(year.end), by=year.by))
 	x.scale <- scale_x_continuous(name="Year", breaks=as.numeric(as.Date(paste0(date.ticks, "-01-01"))), labels=date.ticks, limits=as.numeric(as.Date(paste0(c(year.start, year.end), "-01-01"))))
 	y.scale <- scale_y_continuous(name="Year", breaks=as.numeric(as.Date(paste0(date.ticks, "-01-01"))), labels=date.ticks, limits=as.numeric(as.Date(paste0(c(year.start, year.end), "-01-01"))))
+	x.scale.hist <- scale_x_continuous(name="Year", breaks=as.numeric(as.Date(paste0(seq(as.numeric(year.start), as.numeric(year.end)), "-01-01"))), labels=as.character(seq(as.numeric(year.start), as.numeric(year.end))))
+	
 	type.guide <- guide_legend(override.aes=list(shape=15, size=5))
-	if (length(unique(data$type)) == 4) {
-		type.break <- c("PLASMA", "PBMC", "PBMC (cultured)", "WHOLE BLOOD")
-		type.label <- c("Plasma RNA", "PBMC DNA", "Cultured PBMC DNA", "Whole Blood DNA")
-		type.value <- c('black', 'red', 'cyan', 'darkgreen')
-	} else if (length(unique(data$type)) == 3) {
-		type.break <- c("PLASMA", "PBMC", "WHOLE BLOOD")
-		type.label <- c("Plasma RNA", "PBMC DNA", "Whole Blood DNA")
-		type.value <- c('black', 'red', 'darkgreen')
-	} else {
-		type.break <- c("PLASMA", "PBMC")
-		type.label <- c("Plasma RNA", "PBMC DNA")
-		type.value <- c('black', 'red')
-	}
+	type.break <- c("PLASMA", "PBMC", "PBMC (cultured)", "WHOLE BLOOD")
+	type.label <- c("Plasma RNA", "PBMC DNA", "Cultured PBMC DNA", "Whole Blood DNA")
+	type.value <- c('black', 'red', 'cyan', 'darkgreen')
 } else {
-	x.scale <- scale_x_continuous(name="Days post simulation")
-	y.scale <- scale_y_continuous(name="Days post simulation")
+	date.ticks <- as.character(seq(floor(year.start / year.by) * year.by + year.by, year.end, by=year.by))
+	x.scale <- scale_x_continuous(name="Days post simulation", breaks=date.ticks, limits=c(year.start, year.end))
+	y.scale <- scale_y_continuous(name="Days post simulation", breaks=date.ticks, limits=c(year.start, year.end))
+	x.scale.hist <- scale_x_continuous(name="Days post simulation")
+	
 	type.guide <- 'legend'
 	type.break <- c("Training", "Censored")
 	type.label <- c("Training", "Censored")
 	type.value <- c('black', 'red')
 }
+
+type.mask <- type.break %in% data$type
+type.break <- type.break[type.mask]
+type.label <- type.label[type.mask]
+type.value <- type.value[type.mask]
 
 pdf(pdf.file)
 apply.theme(ggplot(data) +
@@ -216,6 +224,19 @@ ggplot(subset(data, censored == 1)) +
 	geom_histogram(aes(x=date.diff, fill=factor(type, levels=type.break)), bins=10) +
 	scale_fill_manual(name="", breaks=type.break, labels=type.label, values=type.value, limits=type.break) +
 	scale_x_continuous("Difference in Estimated and Collection Date (days)") +
+	scale_y_continuous("Count") +
+	theme_bw() +
+	theme(
+		panel.grid.major = element_blank(),
+		panel.grid.minor = element_blank()
+	)
+dev.off()
+
+pdf(pdf.histdate.file)
+ggplot(subset(data, censored == 1)) +
+	geom_histogram(aes(x=est.date, fill=factor(type, levels=type.break)), bins=10) +
+	scale_fill_manual(name="", breaks=type.break, labels=type.label, values=type.value, limits=type.break) +
+	x.scale.hist +
 	scale_y_continuous("Count") +
 	theme_bw() +
 	theme(

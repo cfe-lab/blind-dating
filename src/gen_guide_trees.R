@@ -8,9 +8,6 @@ library(ape)
 library(TreeSim)
 library(NELSI)
 
-#source('../common/rtt.R')
-#source('../common/raxml.R')
-#source('../common/queue.R')
 
 args.all <- commandArgs(trailingOnly = F)
 
@@ -39,8 +36,6 @@ if (r.seed != 0) {
 	set.seed(r.seed)
 }
 
-file.remove("latency.csv")
-
 # Number of guide trees to create
 # TO DO: quantify variance
 n.trees <- 50
@@ -62,15 +57,21 @@ sim.params <- list(rate = clock.rate, noise = noise.rate)
 sim.clockmodel <- simulate.clock
 
 cat("Building trees...\n")
-
+ 
 trees <- apply(matrix(rep(n.tips,n.trees)), 1, sim.bdsky.stt, lambdasky=lambda, deathsky=mu, timesky=times, sampprobsky=sampprob, rho=0, timestop=0)
 trees <- lapply(trees, function(x) {unroot(x[[1]])})
 sim.trees <- lapply(trees, sim.clockmodel, params=sim.params)
 
-suppress <- lapply(1:n.trees, function(i) {data <- data.frame(PATIENT=paste0("SIM_", i), SEQID=trees[[i]]$tip.label, FULLSEQID=trees[[i]]$tip.label, COLDATE=node.depth.edgelength(tree)[1:50], CENSORED=0, KEPT=1, DUPLICATE="", NOTE=""); write.csv(data, paste0("info/SIM_", i, ".csv"), row.names=F)})
+suppress <- lapply(1:n.trees, function(i) {
+	data <- data.frame(PATIENT=paste0("SIM_", i), SEQID=trees[[i]]$tip.label, FULLSEQID=trees[[i]]$tip.label, COLDATE=node.depth.edgelength(trees[[i]])[1:50], TYPE="Training", CENSORED=0, KEPT=1, DUPLICATE="", NOTE="")
+	write.csv(data, paste0("info/SIM_", i, ".csv"), row.names=F)
+})
 
-tree <- sim.tree$phylogram
-tree$edge.length <- sim.tree$tree.data.matrix[, 6]
+trees <- lapply(sim.trees, function(stree) {
+	tree <- stree$phylogram
+	tree$edge.length <- stree$tree.data.matrix[, 6]
+	tree
+})
 
 
 cat("Preparing INDELible file...\n")
@@ -89,9 +90,9 @@ indel_control <- sprintf(
 "
 , indelible.seed)
 
-
 for (i in 1:n.trees) {
 	tree_dat <- write.tree(trees[[i]])
+	write.tree(trees[[i]], sprintf("trees.ori/SIM_%d.nwk", i))
 	indel_control <- paste0(indel_control, sprintf("[TREE] tree_%d %s \n", i, tree_dat))
 }
 
@@ -103,7 +104,7 @@ for (i in 1:n.partitions) {
 
 indel_control <- paste0(indel_control, "[EVOLVE] \n")
 for (i in 1:n.partitions) {
-	indel_control <- paste0(indel_control, sprintf("    pHKY_%d %d HIV_%d_out \n", i, n.replicates, i))
+	indel_control <- paste0(indel_control, sprintf("    pHKY_%d %d SIM_%d \n", i, n.replicates, i))
 }
 
 write(indel_control, 'control.unfixed.txt')

@@ -26,7 +26,7 @@ tree.file <- args[1]
 info.file <- args[2]
 rooted.tree.file <- args[3]
 use.rtt <- as.integer(args[4])		# 0 = no, 1 = yes (only plasma), 2 = yes (all)
-use.dates <- if (length(args) >= 5) as.integer(args[5]) else 1
+use.date <- if (length(args) >= 5) as.integer(args[5]) else 1
 
 method <- "correlation"
 	
@@ -46,7 +46,7 @@ tree.read <- function(tr) {
 
 tree <- tree.read(tree.file)
 info <- read.info(info.file, tree$tip.label)
-plasma.dates <-  date=if (use.date == 1) as.numeric(as.Date(info$COLDATE)) else info$COLDATE
+plasma.dates <-  if (use.date == 1) as.numeric(as.Date(info$COLDATE)) else info$COLDATE
 tip.type <- info$CENSORED
 	
 if (use.rtt == 1)
