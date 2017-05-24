@@ -5,6 +5,8 @@ library(phylobase)
 library(ggtree)
 library(optparse)
 
+pdf.options(family="Helvetica", fonts="Helvetica", width=3.15, height=3.15, colormodel='rgb')
+
 get.date <- function(date) {
 	as.character(as.Date(date, origin=as.Date("1970-01-01")))
 }
@@ -22,7 +24,9 @@ apply.axes <- function(p, flipped, scaled) {
 		p <- p + scale_x_continuous(name="Divergence from root", breaks=seq(0.0, dist.max, by=dist.by), limits=c(dist.min, dist.max))
 		if (scaled) {
 			p <- p + y.scale +
-				geom_abline(intercept=-stats[, "Model.Intercept"] / stats[, "Model.Slope"], slope=1 / stats[, "Model.Slope"], color="#0060b0b0", linetype=2)
+				geom_abline(intercept=-stats[, "Model.Intercept"] / stats[, "Model.Slope"], slope=1 / stats[, "Model.Slope"], color="#0060b0b0", linetype=2) +
+				geom_line(aes(y=date, x=ci.high), data=unique(subset(data[, c("type", "date", "ci.high", "ci.low")], type != "NODE")), linetype=3, color="#0060b080") +
+				geom_line(aes(y=date, x=ci.low), data=unique(subset(data[, c("type", "date", "ci.high", "ci.low")], type != "NODE")), linetype=3, color="#0060b080")
 			if (use.real)
 				p <- p + geom_hline(yintercept=THERAPY_START, colour="#60600080", linetype=2)
 			if (!is.na(pat.id2))
@@ -33,7 +37,9 @@ apply.axes <- function(p, flipped, scaled) {
 		p <- p + scale_y_continuous(name="Divergence from root", breaks=seq(0.0, dist.max, by=dist.by), limits=c(dist.min, dist.max))
 		if (scaled) {
 			p <- p + x.scale +
-				geom_abline(intercept=stats[, "Model.Intercept"], slope=stats[, "Model.Slope"], color="#0060b0b0", linetype=2)
+				geom_abline(intercept=stats[, "Model.Intercept"], slope=stats[, "Model.Slope"], color="#0060b0b0", linetype=2) +
+				geom_line(aes(x=date, y=ci.high), data=unique(subset(data[, c("type", "date", "ci.high", "ci.low")], type != "NODE")), linetype=3, color="#0060b080") +
+				geom_line(aes(x=date, y=ci.low), data=unique(subset(data[, c("type", "date", "ci.high", "ci.low")], type != "NODE")), linetype=3, color="#0060b080")
 			if (use.real)
 				p <- p + geom_vline(xintercept=THERAPY_START, colour="#60600080", linetype=2)
 			if (!is.na(pat.id2))
@@ -47,10 +53,12 @@ apply.axes <- function(p, flipped, scaled) {
 apply.theme <- function(p, flipped=F, scaled=T) {
 	apply.axes(p + theme_bw() +
 		theme(
-			legend.position=c(.01, .99),
+			text=element_text(size=10),
+			legend.position=c(.01, .995),
 			legend.justification=c(0, 1),
-			legend.spacing=unit(5, 'points'),
-			legend.margin=margin(t = 0, r = 0, b = 0, l = 0, unit = "pt"),
+			legend.spacing=unit(.1, 'cm'),
+			legend.margin=margin(0, 0, 0, 0, 'cm'),
+			legend.key.size=unit(.28, 'cm'),
 			legend.background=element_blank(),
 			legend.box.background=element_blank(),
 			panel.grid.major=element_blank(),
@@ -58,12 +66,10 @@ apply.theme <- function(p, flipped=F, scaled=T) {
 		) +
 		scale_colour_manual(name="", breaks=type.break, labels=type.label, values=type.value, limits=type.break) +
 		scale_shape_manual(name="", breaks=c(0, 1), labels=c("Training", "Censored"), values=c(16, 18), limits=c(0, 1)) +
-		scale_size_manual(name="", breaks=c(0, 1), labels=c("Training", "Censored"), values=c(2.5, 3), limits=c(0, 1)) +
+		scale_size_manual(name="", breaks=c(0, 1), labels=c("Training", "Censored"), values=c(1.67, 2), limits=c(0, 1)) +
 		guides(colour=type.guide),
 		flipped, scaled)
 }
-
-LIK_TOL <- 1e-5
 
 op <- OptionParser()
 op <- add_option(op, "--tree", type='character')
@@ -77,6 +83,7 @@ op <- add_option(op, "--yearstart", type='character')
 op <- add_option(op, "--yearend", type='character')
 op <- add_option(op, "--yearby", type='double', default=5)
 op <- add_option(op, "--therapy", type='character', default="0000-01-01")
+op <- add_option(op, "--liktol", type='numeric', default=1e-3)
 args <- parse_args(op)
 
 tree.file <- args$tree
@@ -86,13 +93,14 @@ use.real <- args$real # 0 Training/Censored, 1 RNA/DNA
 dist.min <- args$distmin
 dist.max <- args$distmax
 dist.by <- args$distby
+LIK_TOL <- args$liktol
 if (use.real) {
 	year.start <- args$yearstart
 	year.end <- args$yearend
 	THERAPY_START <- as.numeric(as.Date(args$therapy))
 } else {
-	year.start <- as.numeric(args$year.start)
-	year.end <- as.numeric(args$year.end)
+	year.start <- as.numeric(args$yearstart)
+	year.end <- as.numeric(args$yearend)
 }
 
 year.by <- args$yearby
@@ -109,12 +117,12 @@ pdf.tree.file <- paste0("plots/", pat.id, ".tree.pdf")
 pdf.hist.file <- paste0("plots/", pat.id, ".hist.pdf")
 pdf.histdate.file <- paste0("plots/", pat.id, ".histdate.pdf")
 
-tree <- ladderize(read.tree(tree.file))
-data <- read.csv(data.file, col.names=c("tip.label", "type", "censored", "date", "dist", "est.date", "date.diff"), stringsAsFactors=F)
+tree <- ape::ladderize(read.tree(tree.file))
+data <- read.csv(data.file, col.names=c("tip.label", "type", "censored", "date", "dist", "est.date", "date.diff", "ci.low", "ci.high"), stringsAsFactors=F)
 stats <- read.csv(stats.file, stringsAsFactors=F)
 
 if (!is.na(pat.id2)) {
-	data.2 <- read.csv(data.2.file, col.names=c("tip.label", "type", "censored", "date", "dist", "est.date", "date.diff"), stringsAsFactors=F)
+	data.2 <- read.csv(data.2.file, col.names=c("tip.label", "type", "censored", "date", "dist", "est.date", "date.diff", "ci.low", "ci.high"), stringsAsFactors=F)
 	stats.2 <- read.csv(stats.2.file, stringsAsFactors=F)
 		
 	mu <- rep(stats[, "Model.Slope"], nrow(tree$edge))
@@ -170,7 +178,7 @@ if (!is.na(pat.id2)) {
 
 node.dates <- tryCatch(estimate.dates(tree, data$date, mu, lik.tol=LIK_TOL, show.steps=1000, nsteps=0), error=function(e) 0)
 
-data.all <- as.data.frame(cbind(rbind(data, data.frame(tip.label=paste0("N.", 1:tree$Nnode), type=rep("NODE", tree$Nnode), censored=rep(NA, tree$Nnode), date=rep(NA, tree$Nnode), dist=node.depth.edgelength(tree)[1:tree$Nnode + nrow(data)], est.date=rep(NA, tree$Nnode), date.diff=rep(NA, tree$Nnode))), node.date=node.dates))
+data.all <- as.data.frame(cbind(rbind(data, data.frame(tip.label=paste0("N.", 1:tree$Nnode), type="NODE", censored=NA, date=NA, dist=node.depth.edgelength(tree)[1:tree$Nnode + nrow(data)], est.date=NA, date.diff=NA, ci.high=NA, ci.low=NA)), node.date=node.dates))
 
 ptree <- phylo4d(tree, all.data=data.all)
 
@@ -180,7 +188,7 @@ if (use.real) {
 	y.scale <- scale_y_continuous(name="Year", breaks=as.numeric(as.Date(paste0(date.ticks, "-01-01"))), labels=date.ticks, limits=as.numeric(as.Date(paste0(c(year.start, year.end), "-01-01"))))
 	x.scale.hist <- scale_x_continuous(name="Year", breaks=as.numeric(as.Date(paste0(seq(as.numeric(year.start), as.numeric(year.end)), "-01-01"))), labels=as.character(seq(as.numeric(year.start), as.numeric(year.end))))
 	
-	type.guide <- guide_legend(override.aes=list(shape=15, size=5))
+	type.guide <- guide_legend(override.aes=list(shape=15, size=2))
 	type.break <- c("PLASMA", "PBMC", "PBMC (cultured)", "WHOLE BLOOD")
 	type.label <- c("Plasma RNA", "PBMC DNA", "Cultured PBMC DNA", "Whole Blood DNA")
 	type.value <- c('black', 'red', 'cyan', 'darkgreen')
@@ -207,14 +215,14 @@ apply.theme(ggplot(data) +
 dev.off()
 
 pdf(pdf.disttree.file)
-apply.theme(ggtree(ptree, colour="#49494980", size=.5, ladderize=F) +
-	geom_tiplab(colour="#49494980", angle=90, hjust=-.1, size=1.5) + 
+apply.theme(ggtree(ptree, colour="#49494980", size=.3, ladderize=F) +
+	geom_tiplab(colour="#49494980", angle=90, hjust=-.1, size=1) + 
 	geom_tippoint(aes(colour=type, shape=factor(censored), size=factor(censored))) +
 	coord_flip(), flipped=T, scaled=F)
 dev.off()
 
 pdf(pdf.tree.file)
-apply.theme(ggtree(ptree, yscale="node.date", colour="#49494980", size=.3, ladderize=F) +
+apply.theme(ggtree(ptree, yscale="node.date", colour="#49494980", size=.1, ladderize=F) +
 	geom_tippoint(aes(colour=type, shape=factor(censored), size=factor(censored))) +
 	coord_flip(), flipped=T)
 dev.off()

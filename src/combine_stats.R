@@ -62,12 +62,13 @@ ori.data.file <- args[2]
 output.stats <- args[3]
 
 stats <- do.call(rbind, lapply(dir(stats.dir, "*stats*", full.names=T), read.csv, stringsAsFactors=F))
-data <- lapply(dir(stats.dir, "*data*", full.names=T), read.csv, col.names=c("label", "type", "censored", "date", "dist", "est.date", "date.diff"), stringsAsFactors=F)
+data <- lapply(dir(stats.dir, "*data*", full.names=T), read.csv, col.names=c("label", "type", "censored", "date", "dist", "est.date", "date.diff", "ci.low", "ci.high"), stringsAsFactors=F)
 
-ori.data <- read.csv(ori.data.file, col.names=c("label", "type", "censored", "date", "dist", "est.date", "date.diff"), stringsAsFactors=F)
+ori.data <- read.csv(ori.data.file, col.names=c("label", "type", "censored", "date", "dist", "est.date", "date.diff", "ci.low", "ci.high"), stringsAsFactors=F)
 
-rmses <- unlist(lapply(data, compare.dates.rmse, ori.data))
-cors <- unlist(lapply(data, compare.dates.cor, ori.data))
+rmses <- unlist(lapply(data, compare.dates, ori.data, ))
+cors <- unlist(lapply(data, compare.dates, ori.data, cor, method='pearson'))
+cors.s <- unlist(lapply(data, compare.dates, ori.data, cor, method='spearman'))
 avg.vars <- avg.var(data)
 avg.good.vars <- avg.good.var(data, stats)
 
@@ -91,11 +92,13 @@ stats.col.names <- c(
 	"p-value",
 	"Model Intercept",
 	"Model Slope",
+	"Model Error",
 	"Estimated Root Date",
 	"Training RMSE",
 	"Censored RMSD",
 	"Original RMSE",
-	"Original Correlation",
+	"Original Correlation (Pearson)",
+	"Original Correlation (Spearman)",
 	"Average Estimated Deviation",
 	"Average Estimated Deviation (Convergent)"
 )

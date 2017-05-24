@@ -36,14 +36,15 @@ n <- length(tree$tip.label)
 
 data <- data.frame(label=tree$tip.label, type=info$TYPE, censored=info$CENSORED, date=if (use.date == 1) as.numeric(as.Date(info$COLDATE)) else info$COLDATE, dist=node.depth.edgelength(tree)[1:n], stringsAsFactors=F)
 
-g <- glm(dist ~ date, data=data, subset=censored == 0)
-g.null <- glm(dist ~ 1, data=data, subset=censored == 0)
+g <- lm(dist ~ date, data=data, subset=censored == 0)
+g.null <- lm(dist ~ 1, data=data, subset=censored == 0)
 
 a <- coef(g)[[1]]
 b <- coef(g)[[2]]
+p <- predict(g, data, interval="confidence")
 
-data <- as.data.frame(cbind(data, est.date=data$dist/b-a/b, date.diff=data$dist/b-a/b-data$date))
-write.table(data, data.file, col.names=c("ID", "Type", "Censored", "Collection Date", "Divergence", "Estimated Date", "Date Difference"), row.names=F, sep=",")
+data <- as.data.frame(cbind(data, est.date=data$dist/b-a/b, date.diff=data$dist/b-a/b-data$date, cf.low=p[,2], cf.high=p[,3]))
+write.table(data, data.file, col.names=c("ID", "Type", "Censored", "Collection Date", "Divergence", "Estimated Date", "Date Difference", "CI low", "CI high"), row.names=F, sep=",")
 
 stats <- data.frame(
 	pat=pat.id,
@@ -64,6 +65,7 @@ stats <- data.frame(
 	p=1-pchisq(AIC(g.null) - AIC(g) + 2, 1),
 	a=a,
 	b=b,
+	error=0,
 	mu=-a/b,
 	train.RMSE=sqrt(sum(data$date.diff[data$censored == 0]^2)/sum(data$censored == 0)),
 	cens.RMSD=sqrt(sum(data$date.diff[data$censored == 1]^2)/sum(data$censored == 1))
@@ -87,6 +89,7 @@ stats.col.names <- c(
 	"p-value",
 	"Model Intercept",
 	"Model Slope",
+	"Model Error",
 	"Estimated Root Date",
 	"Training RMSE",
 	"Censored RMSD"
