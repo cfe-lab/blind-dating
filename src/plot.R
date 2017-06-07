@@ -21,7 +21,7 @@ get.child.edges <- function(tree, node) {
 
 apply.axes <- function(p, flipped, scaled) {
 	if (flipped) {
-		p <- p + scale_x_continuous(name="Divergence from root", breaks=seq(0.0, dist.max, by=dist.by), limits=c(dist.min, dist.max))
+		p <- p + scale_x_continuous(name="Divergence from root", breaks=seq(0.0, dist.max, by=dist.by)) + coord_flip(xlim=c(dist.min, dist.max))
 		if (scaled) {
 			p <- p + y.scale +
 				geom_abline(intercept=-stats[, "Model.Intercept"] / stats[, "Model.Slope"], slope=1 / stats[, "Model.Slope"], color="#0060b0b0", linetype=2) +
@@ -34,7 +34,7 @@ apply.axes <- function(p, flipped, scaled) {
 		} else
 			p <- p + theme(axis.ticks.x=element_blank(), axis.text.x=element_blank())
 	} else {
-		p <- p + scale_y_continuous(name="Divergence from root", breaks=seq(0.0, dist.max, by=dist.by), limits=c(dist.min, dist.max))
+		p <- p + scale_y_continuous(name="Divergence from root", breaks=seq(0.0, dist.max, by=dist.by)) + coord_cartesian(ylim=c(dist.min, dist.max))
 		if (scaled) {
 			p <- p + x.scale +
 				geom_abline(intercept=stats[, "Model.Intercept"], slope=stats[, "Model.Slope"], color="#0060b0b0", linetype=2) +
@@ -54,9 +54,9 @@ apply.theme <- function(p, flipped=F, scaled=T) {
 	apply.axes(p + theme_bw() +
 		theme(
 			text=element_text(size=10),
-			legend.position=c(.01, .995),
+			legend.position=c(.01, 1),
 			legend.justification=c(0, 1),
-			legend.spacing=unit(.1, 'cm'),
+			legend.spacing=unit(0, 'cm'),
 			legend.margin=margin(0, 0, 0, 0, 'cm'),
 			legend.key.size=unit(.28, 'cm'),
 			legend.background=element_blank(),
@@ -67,7 +67,7 @@ apply.theme <- function(p, flipped=F, scaled=T) {
 		scale_colour_manual(name="", breaks=type.break, labels=type.label, values=type.value, limits=type.break) +
 		scale_shape_manual(name="", breaks=c(0, 1), labels=c("Training", "Censored"), values=c(16, 18), limits=c(0, 1)) +
 		scale_size_manual(name="", breaks=c(0, 1), labels=c("Training", "Censored"), values=c(1.67, 2), limits=c(0, 1)) +
-		guides(colour=type.guide),
+		guides(colour=type.guide, type=guide_legend(order=2)),
 		flipped, scaled)
 }
 
@@ -188,7 +188,7 @@ if (use.real) {
 	y.scale <- scale_y_continuous(name="Year", breaks=as.numeric(as.Date(paste0(date.ticks, "-01-01"))), labels=date.ticks, limits=as.numeric(as.Date(paste0(c(year.start, year.end), "-01-01"))))
 	x.scale.hist <- scale_x_continuous(name="Year", breaks=as.numeric(as.Date(paste0(seq(as.numeric(year.start), as.numeric(year.end)), "-01-01"))), labels=as.character(seq(as.numeric(year.start), as.numeric(year.end))))
 	
-	type.guide <- guide_legend(override.aes=list(shape=15, size=2))
+	type.guide <- guide_legend(override.aes=list(shape=15, size=2), order=1)
 	type.break <- c("PLASMA", "PBMC", "PBMC (cultured)", "WHOLE BLOOD")
 	type.label <- c("Plasma RNA", "PBMC DNA", "Cultured PBMC DNA", "Whole Blood DNA")
 	type.value <- c('black', 'red', 'cyan', 'darkgreen')
@@ -223,8 +223,8 @@ dev.off()
 
 pdf(pdf.tree.file)
 apply.theme(ggtree(ptree, yscale="node.date", colour="#49494980", size=.1, ladderize=F) +
-	geom_tippoint(aes(colour=type, shape=factor(censored), size=factor(censored))) +
-	coord_flip(), flipped=T)
+	geom_tippoint(aes(colour=type, shape=factor(censored), size=factor(censored))),
+	flipped=T)
 dev.off()
 
 pdf(pdf.hist.file)

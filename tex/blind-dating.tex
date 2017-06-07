@@ -55,7 +55,7 @@ London, Canada N6A 5C1}
 \significancestatement{Significance (120 words).}
 
 % Please include corresponding author, author contribution and author declaration information
-\authorcontributions{J.B.J., A.F.Y.P., Z.L.B. concieved and designed the experiments. (P.R.H., Z.L.B.) procured the materials. (N.N.K., R.H., Z.L.B.) prepared the materials. B.R.J., J.H. wrote the software. B.R.J., J.B.J, A.F.Y.P., Z.L.B. performed the analysis. B.R.J., J.B.J, A.F.Y.P., Z.L.B. wrote the maunscript.}
+\authorcontributions{J.B.J., A.F.Y.P., Z.L.B. conceived and designed the experiments. P.R.H., Z.L.B. procured the materials. N.N.K., R.H., Z.L.B. processed the materials. B.R.J., J.H. wrote the software. B.R.J., J.B.J, A.F.Y.P., Z.L.B. performed the analysis. B.R.J., J.B.J, A.F.Y.P., Z.L.B. wrote the maunscript.}
 \authordeclaration{Please declare any conflict of interest here.}
 \equalauthors{\textsuperscript{1}J.B.J.(Jeffrey B. Joy), A.F.Y.P. (Art F. Y. Poon), and Z.L.B (Zabrina L. Brumme) contributed equally to this work.}
 \correspondingauthor{\textsuperscript{2}To whom correspondence should be addressed. Address: Faculty of Health Sciences, Simon Fraser University, 8888 University Drive
@@ -65,7 +65,7 @@ Burnaby, Canada V5A 1S6, Telephone: +1-778-782-8872, Email: zbrumme@sfu.ca}
 \keywords{Human immunodeficiency virus $|$ Viral reservoirs $|$ Phylogenetics $|$ Linear models} 
 
 \begin{abstract}
-Abstract (250 words).
+Here we present a method to recover the insertion dates of integrated proviral human immunodeficiency virus.
 \end{abstract}
 
 \dates{This manuscript was compiled on \today}
@@ -110,7 +110,7 @@ Latent HIV-1 sequences will therefore display a characteristic discordance betwe
 
 We validated our method on simulated phylogenies.
 Then we applied our method to patient data from a patient with longitudinal RNA plasma-derived sequences while treatment-naive and DNA PBMC-derived sequences after the patient recieved anitretroviral theray for 6--10 years.
-We compared results using single-genome amplification and next-generation sequencing of the NEF and V3 regions respectively.
+We compared results of using single-genome amplification and next-generation sequencing of the NEF and V3 regions respectively.
 
 \section*{Reconstructing integration dates}
 Since HIV evolution adheres to the molecular clock hypothesis \cite{Leitner99,Park16}, the genetic distance of virions from the founder virus is linear with respect to time.
@@ -131,23 +131,30 @@ See \cref{fig:latenttree}.
 \label{fig:latenttree}
 \end{figure}
 
-After reconstructing the phylogenetic relationships of sequences in a tree, to recover the linear molecular clock, we use a linear model (LM).
+The model resets on the reconstruction the phylogenetic relationships of longitudinaly-sampled HIV sequences.
+A phylogenetic tree can be created using a variety of methods including neighbour-joining \cite{Saitou87}, maximum likelihood \cite{fasttree,raxml}, Bayesian methods ((possible footnote)) \cite{beast}, \emph{et cetera}.
+After assigning a root to the phylogeneteic tree (using outgroup rooting  \cite{Huelsenbeck02}, root-to-tip regression  \cite{Korber00}, \emph{et cetera}), we recover the linear molecular clock with a linear model (LM).
 Our LM is given by:
 \begin{align}
 	D &= a + \mu T,\label{eq:glm}
 \end{align}
 with response: $D$, the genetic distance from the root of the tree; predictor: $T$, the collection date; and parameters: $\mu$, the mutation rate and $a$, a genetic distance shift.
 First we censor the provial DNA sequences and use the virion RNA sequences to calibrate the LM.
-Next we recover the provial insertion dates by computing $T_x = \frac{D_x - a}{\mu}$, for each proviral DNA sequence.
-Details of the method are given in the Blind-dating subsection of the Materials and Methods.
+Next we recover the provial insertion dates by computing $T(x) = \frac{D(x) - a}{\mu}$, for each proviral DNA sequence, $x$.
+Details of the method are given in the Materials and Methods.
 
 \section*{Model validation on simulated data}
-foo
+To validate our method, we tested its performance on simulated phylogenies --- see the Materials and Methods for details on their construction.
 
-\section*{Results on patient data}
-The blind-dating methods were applied to patient NEF sequences.
+
+\section*{Patient data}
+
+\subsection*{Nef sequences}
+The blind-dating methods were applied to HIV sequences from the NEF region retrived using single-genome amplification.
 
 The correlation between the estimated dates for our patient using the different rooting methods --- outgroup rooting (OGR) and root-to-tip regression (RTT) --- was 0.95 (pearson)/0.94 (spearman) and the root mean square deviation was 540 days.
+RTT optimizes the molecular clock and linear regression, where OGR is more biological motivated, therefore the high correlation is promising.
+See \cref{fig:nefdistvtime} for a comparison of the two rooting methods.
 
 \begin{figure*}
 \includegraphics{nefdistvtime}
@@ -156,28 +163,45 @@ The correlation between the estimated dates for our patient using the different 
 \label{fig:nefdistvtime}
 \end{figure*}
 
-\section*{Results using deep-sequencing}
+\subsection*{V3 sequences}
+The blind-dating methods were also applied to HIV sequences from the V3 region retrived using deep sequencing.
 
-\section*{Sensitivity testing}
+The correlation between the estimated dates for our patient using the different rooting methods --- outgroup rooting (OGR) and root-to-tip regression (RTT) --- was 0.95 (pearson)/0.84 (spearman) and the root mean square deviation was 270 days.
+See \cref{fig:v3distvtime} for a comparison of the two rooting methods.
+
+\begin{figure*}
+\includegraphics{v3distvtime}
+\caption{The distance from the root versus time.
+(A) OGR (B) RTT.}
+\label{fig:v3distvtime}
+\end{figure*}
+
+\subsection*{Sensitivity testing}
 We reduced the patient data set of the NEF data set to quantify the effect of the number of time points used.
 The NEF data set had 14 time points with training RNA sequences.
 We reduced the patient data by selecting a subset of the 14 time points at random.
 From this we generated 550 different data sets with 2--12 time points with training RNA sequences (50 data sets for each number of time points) and all 14 possible data sets with 13 time points of training RNA sequences.
 We applied the blind-dating methodology to each data set.
 
-\section*{Conclusions}
-foo
-
-((Discuss patient viral load.))
-
 \begin{figure*}
-\includegraphics{VL}
-\caption{The viral load of the patient over time.
-Each point indicates a time point included in the data sets for our study.
-The grey shaded region represents when the patient underwent antiretroviral therapy.
-}
-\label{fig:viralload}
+\includegraphics{sensitivity}
+\caption{The root mean squared error.
+(A) OGR (B) RTT.}
+\label{fig:sensrmse}
 \end{figure*}
+
+\section*{Conclusions}
+((Short conclusion)).
+
+((Limitations))
+
+Patient viral load.
+
+Requires longitudinal data.
+
+HIV doesn't strictly follow a molecular clock and evolution under treatment is poorly understood.
+
+((Wrap up))
 
 Most other models of HIV latent reservoirs are dynamical models \cite{Rong09,Pace11}. These models can be complicated, including many components and parameters.
 
@@ -187,7 +211,7 @@ Most other models of HIV latent reservoirs are dynamical models \cite{Rong09,Pac
 \subsection*{Data collection, sequencing and alignment}
 ((Collection/Ethics/Metadata.))
 ((Sequencing.))
-((Check for recombination/supermutation.))
+((Check for recombination/hypermutation.))
 The sequences were aligned using MUSCLE v3.8.31 \cite{muscle} and inspected and cleaned with AliView v1.18 \cite{aliview}.
 For each pair of identical sequences, we retained only one copy.
 There was one instance where there was a triplet of RNA sequences that were collected at two different time points.
@@ -206,7 +230,7 @@ We reconstructed the within-host phylogenies of each subject in each data set as
 We evaluated two different methods for rooting these trees. 
 The first method was outgroup rooting (OGR), in which one or more sequences from taxa outside but sufficiently related to the group of interest are added to the phylogenetic reconstruction \cite{Huelsenbeck02}.
 The point at which the branch leading to the outgroup intersects the rest of the tree provides an estimate of the root for the latter.
-We selected the HIV-1 B ancestral sequence reconstruction curated by the LANL HIV sequence database as the outgroup sequence.
+We selected the HIV-1 B ancestral sequence reconstruction,  curated by the LANL HIV sequence database as the outgroup sequence.
 The second method was root-to-tip regression (RTT) \cite{Korber00}, which performs an exhaustive search by re-rooting the tree at every branch to find the root that (in our experiments) maximizes the correlation between the sample collection dates and the evolutionary distance of tips from the candidate root.
 Our simulated data were only rooted using RTT; for all real data, both outgroup rooting and RTT were evaluated for rooting the phylogeny.
 For each subject in each data set, we computed the LM given in \cref{eq:glm} using the R function, lm \cite{rscript}.

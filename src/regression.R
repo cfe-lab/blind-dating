@@ -68,7 +68,9 @@ stats <- data.frame(
 	error=0,
 	mu=-a/b,
 	train.RMSE=sqrt(sum(data$date.diff[data$censored == 0]^2)/sum(data$censored == 0)),
-	cens.RMSD=sqrt(sum(data$date.diff[data$censored == 1]^2)/sum(data$censored == 1))
+	cens.RMSD=sqrt(sum(data$date.diff[data$censored == 1]^2)/sum(data$censored == 1)),
+	train.MAE=sum(abs(data$date.diff[data$censored == 0]))/sum(data$censored == 0),
+	cens.MAE=sum(abs(data$date.diff[data$censored == 1]))/sum(data$censored == 1)
 )
 stats.col.names <- c(
 	"Patient",
@@ -92,6 +94,8 @@ stats.col.names <- c(
 	"Model Error",
 	"Estimated Root Date",
 	"Training RMSE",
-	"Censored RMSD"
+	"Censored RMSD",
+	"Training MAE",
+	"Censored MAE"
 )
 write.table(stats, stats.file, col.names=stats.col.names, row.names=F, sep=",")

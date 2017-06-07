@@ -18,20 +18,12 @@ if (any(grep("--file=", args.all))) {
 	}
 }
 
-compare.dates.rmse <- function(data, ori.data) {
+compare.dates <- function(data, ori.data, f, ...) {
 	m <- match(data$label, ori.data$label)
 	dna <- which(data$censored == 1)
 	ori.dna <- m[dna]
-	
-	sqrt(sum((data[dna, 'est.date'] - ori.data[ori.dna, 'est.date'])^2 / length(dna)))
-}
 
-compare.dates.cor <- function(data, ori.data) {
-	m <- match(data$label, ori.data$label)
-	dna <- which(data$censored == 1)
-	ori.dna <- m[dna]
-	
-	cor(data[dna, 'est.date'], ori.data[ori.dna, 'est.date'])
+	f(data[dna, 'est.date'], ori.data[ori.dna, 'est.date'], ...)
 }
 
 avg.var <- function(data) {
@@ -66,13 +58,14 @@ data <- lapply(dir(stats.dir, "*data*", full.names=T), read.csv, col.names=c("la
 
 ori.data <- read.csv(ori.data.file, col.names=c("label", "type", "censored", "date", "dist", "est.date", "date.diff", "ci.low", "ci.high"), stringsAsFactors=F)
 
-rmses <- unlist(lapply(data, compare.dates, ori.data, ))
+rmses <- unlist(lapply(data, compare.dates, ori.data, function(x, y) sqrt(sum((x - y)^2)/length(x))))
+maes <- unlist(lapply(data, compare.dates, ori.data, function(x, y) sum(abs(x - y))/length(x)))
 cors <- unlist(lapply(data, compare.dates, ori.data, cor, method='pearson'))
 cors.s <- unlist(lapply(data, compare.dates, ori.data, cor, method='spearman'))
 avg.vars <- avg.var(data)
 avg.good.vars <- avg.good.var(data, stats)
 
-stats <- as.data.frame(cbind(stats, full.rmse=rmses, full.cor=cors, avg.var=avg.vars, avg.good.var=avg.good.vars))
+stats <- as.data.frame(cbind(stats, full.rmse=rmses, full.mae=maes, full.cor=cors, spearman.cor=cors.s, avg.var=avg.vars, avg.good.var=avg.good.vars))
 stats.col.names <- c(
 	"Patient",
 	"Training Samples",
@@ -96,7 +89,10 @@ stats.col.names <- c(
 	"Estimated Root Date",
 	"Training RMSE",
 	"Censored RMSD",
+	"Training MAE",
+	"Censored MAE",
 	"Original RMSE",
+	"Original MAE",
 	"Original Correlation (Pearson)",
 	"Original Correlation (Spearman)",
 	"Average Estimated Deviation",
