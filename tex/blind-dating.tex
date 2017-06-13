@@ -1,4 +1,4 @@
-\documentclass[9pt,twocolumn,twoside,lineno]{pnas-new}
+\documentclass[9pt,twocolumn,twoside]{pnas-new}
 % Use the lineno option to display guide line numbers if required.
 % Note that the use of elements such as single-column equations
 % may affect the guide line number alignment. 
@@ -108,9 +108,9 @@ Consequently, the divergence of descendant lineages from the transmitted/founder
 Upon integration of a given HIV-1 sequence into a host cell genome, evolution of that lineage effectively ceases until a new round of virus replication ensues.
 Latent HIV-1 sequences will therefore display a characteristic discordance between their sampling date and their apparent (younger) age based on sequence divergence from other within-host lineages.
 
-We validated our method on simulated phylogenies.
-Then we applied our method to patient data from a patient with longitudinal RNA plasma-derived sequences while treatment-naive and DNA PBMC-derived sequences after the patient recieved anitretroviral theray for 6--10 years.
-We compared results of using single-genome amplification and next-generation sequencing of the NEF and V3 regions respectively.
+We validated our method by attaempting to recover the collection dates of plasma-derivied RNA sequences.
+Then we applied our method to patient data from a patient with both longitudinal plasma-derived RNA sequences while treatment-naive and PBMC-derived DNA sequences after the patient recieved anitretroviral theray for 6--10 years.
+We compared results of using single-genome amplification of the NEF region and deep sequencing of the V3 region.
 
 \section*{Reconstructing integration dates}
 Since HIV evolution adheres to the molecular clock hypothesis \cite{Leitner99,Park16}, the genetic distance of virions from the founder virus is linear with respect to time.
@@ -143,38 +143,11 @@ First we censor the provial DNA sequences and use the virion RNA sequences to ca
 Next we recover the provial insertion dates by computing $T(x) = \frac{D(x) - a}{\mu}$, for each proviral DNA sequence, $x$.
 Details of the method are given in the Materials and Methods.
 
-\section*{Model validation on simulated data}
-To validate our method, we tested its performance on simulated phylogenies --- see the Materials and Methods for details on their construction.
-
-
-\section*{Patient data}
-
-\subsection*{Nef sequences}
-The blind-dating methods were applied to HIV sequences from the NEF region retrived using single-genome amplification.
-
-The correlation between the estimated dates for our patient using the different rooting methods --- outgroup rooting (OGR) and root-to-tip regression (RTT) --- was 0.95 (pearson)/0.94 (spearman) and the root mean square deviation was 540 days.
-RTT optimizes the molecular clock and linear regression, where OGR is more biological motivated, therefore the high correlation is promising.
-See \cref{fig:nefdistvtime} for a comparison of the two rooting methods.
-
-\begin{figure*}
-\includegraphics{nefdistvtime}
-\caption{The distance from the root versus time.
-(A) OGR (B) RTT.}
-\label{fig:nefdistvtime}
-\end{figure*}
-
-\subsection*{V3 sequences}
-The blind-dating methods were also applied to HIV sequences from the V3 region retrived using deep sequencing.
-
-The correlation between the estimated dates for our patient using the different rooting methods --- outgroup rooting (OGR) and root-to-tip regression (RTT) --- was 0.95 (pearson)/0.84 (spearman) and the root mean square deviation was 270 days.
-See \cref{fig:v3distvtime} for a comparison of the two rooting methods.
-
-\begin{figure*}
-\includegraphics{v3distvtime}
-\caption{The distance from the root versus time.
-(A) OGR (B) RTT.}
-\label{fig:v3distvtime}
-\end{figure*}
+\section*{Model validation}
+\subsection*{Validation on RNA sequences}
+To validate our model, we restricted our NEF data set to the training RNA sequences, which are the plasma-derived RNA squences sampled while the patient was not on therapy.
+We then attempted to recover the collection dates of the sequences by censoring 0, 17, 31, 47, 62, and 78 sequences at random.
+For each number of censored sequences, we ran 50 replicate trials.
 
 \subsection*{Sensitivity testing}
 We reduced the patient data set of the NEF data set to quantify the effect of the number of time points used.
@@ -190,8 +163,37 @@ We applied the blind-dating methodology to each data set.
 \label{fig:sensrmse}
 \end{figure*}
 
+\section*{Results with nef sequences}
+The blind-dating methods were applied to HIV sequences from the NEF region retrived using single-genome amplification.
+
+The correlation between the estimated dates for our patient using the different rooting methods --- outgroup rooting (OGR) and root-to-tip regression (RTT) --- was 0.95 (pearson)/0.94 (spearman) and the root mean square deviation was 540 days.
+RTT optimizes the molecular clock and linear regression, where OGR is more biological motivated, therefore the high correlation is promising.
+See \cref{fig:nefdistvtime} for a comparison of the two rooting methods.
+
+\begin{figure*}
+\includegraphics{nefdistvtime}
+\caption{The distance from the root versus time.
+(A) OGR (B) RTT.}
+\label{fig:nefdistvtime}
+\end{figure*}
+
+\section*{Results with V3 sequences}
+The blind-dating methods were also applied to HIV sequences from the V3 region retrived using deep sequencing.
+
+The correlation between the estimated dates for our patient using the different rooting methods --- outgroup rooting (OGR) and root-to-tip regression (RTT) --- was 0.95 (pearson)/0.84 (spearman) and the root mean square deviation was 270 days.
+See \cref{fig:v3distvtime} for a comparison of the two rooting methods.
+
+\begin{figure*}
+\includegraphics{v3distvtime}
+\caption{The distance from the root versus time.
+(A) OGR (B) RTT.}
+\label{fig:v3distvtime}
+\end{figure*}
+
 \section*{Conclusions}
 ((Short conclusion)).
+
+((V3 data has latent RNA))
 
 ((Limitations))
 
@@ -203,9 +205,9 @@ HIV doesn't strictly follow a molecular clock and evolution under treatment is p
 
 ((Wrap up))
 
-Most other models of HIV latent reservoirs are dynamical models \cite{Rong09,Pace11}. These models can be complicated, including many components and parameters.
-
-
+Most other models of HIV latent reservoirs are dynamical models \cite{Rong09,Pace11}.
+These models can be complicated, including many components and parameters.
+Here we offer a simple and accurate method to recover insertion date of reservoir sequences.
 
 \matmethods{
 \subsection*{Data collection, sequencing and alignment}
@@ -216,15 +218,15 @@ The sequences were aligned using MUSCLE v3.8.31 \cite{muscle} and inspected and 
 For each pair of identical sequences, we retained only one copy.
 There was one instance where there was a triplet of RNA sequences that were collected at two different time points.
 For this triplet we kept one sequence from the earlier time point.
-\subsection*{Simulated data generation}
-To characterize sources of error in reconstructing dates on tips of a phylogeny, we generated phylogenetic trees by direct simulation.
-We generated phylogenies with 50 tips each under a birth-death model with serial sampling using the sim.bdsky.stt function in the R package TreeSim v2.3.
-We estimated the parameters to use for the birth-death model by fitting the HIV RNA sequences from Patient ***REMOVED*** (except for the sequence from 2015 `viremia blip') to the birth-death serially sampled model in BEAST v1.8.3 \cite{beast} using $10^9$ runs including $10^8$ runs of burn-in.
-This gave us birthrate: $\lambda = 8.87 \times 10^{-7}$ day${}^{-1}$, death rate: $\delta = 7.75 \times 10^{-3}$ day${}^{-1}$, and sampling proportion: $s = 0.115$.
-We applied a molecular clock to the generated phylogenies using the R package NELSI v \cite{nelsi} with mean rate $4.03 \times 10^{5}$ substitutions per base per day and standard deviation $1.84  \times 10^{-6}$ substitutions per base per day.
-These values were obtained from estimated paramater value and standard deviation of $\mu$ in the linear model (LM) given in \cref{eq:glm} using R \cite{rscript}.
-Finally, we created simulated HIV RNA sequences from these phylogenies with INDELible v1.03 \cite{indelible}, to create one set of 50 simulated HIV RNA sequences per phylogeny.
-We applied the blind-dating methodology to each simulated data set.
+%\subsection*{Simulated data generation}
+%To characterize sources of error in reconstructing dates on tips of a phylogeny, we generated phylogenetic trees by direct simulation.
+%We generated phylogenies with 50 tips each under a birth-death model with serial sampling using the sim.bdsky.stt function in the R package TreeSim v2.3.
+%We estimated the parameters to use for the birth-death model by fitting the HIV RNA sequences from Patient ***REMOVED*** (except for the sequence from 2015 `viremia blip') to the birth-death serially sampled model in BEAST v1.8.3 \cite{beast} using $10^9$ runs including $10^8$ runs of burn-in.
+%This gave us birthrate: $\lambda = 8.87 \times 10^{-7}$ day${}^{-1}$, death rate: $\delta = 7.75 \times 10^{-3}$ day${}^{-1}$, and sampling proportion: $s = 0.115$.
+%We applied a molecular clock to the generated phylogenies using the R package NELSI v \cite{nelsi} with mean rate $4.03 \times 10^{5}$ substitutions per base per day and standard deviation $1.84  \times 10^{-6}$ substitutions per base per day.
+%These values were obtained from estimated paramater value and standard deviation of $\mu$ in the linear model (LM) given in \cref{eq:glm} using R \cite{rscript}.
+%Finally, we created simulated HIV RNA sequences from these phylogenies with INDELible v1.03 \cite{indelible}, to create one set of 50 simulated HIV RNA sequences per phylogeny.
+%We applied the blind-dating methodology to each simulated data set.
 \subsection*{Blind-dating}
 We reconstructed the within-host phylogenies of each subject in each data set as maximum likelihood phylogenies reconstructed using RAxML v8.2.4 \cite{raxml} with the GTR model.
 We evaluated two different methods for rooting these trees. 

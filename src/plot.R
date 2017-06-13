@@ -235,6 +235,7 @@ ggplot(subset(data, censored == 1)) +
 	scale_y_continuous("Count") +
 	theme_bw() +
 	theme(
+		text=element_text(size=10),
 		panel.grid.major = element_blank(),
 		panel.grid.minor = element_blank()
 	)
@@ -248,6 +249,7 @@ ggplot(subset(data, censored == 1)) +
 	scale_y_continuous("Count") +
 	theme_bw() +
 	theme(
+		text=element_text(size=10),
 		panel.grid.major = element_blank(),
 		panel.grid.minor = element_blank()
 	)
