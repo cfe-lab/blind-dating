@@ -1,4 +1,5 @@
 library(ape)
+library(optparse)
 
 args.all <- commandArgs(trailingOnly = F)
 
@@ -20,31 +21,38 @@ if (any(grep("--file=", args.all))) {
 
 source(file.path(source.dir, 'read.info.R'), chdir=T)
 
-args <- commandArgs(trailingOnly = T)
+op <- OptionParser()
+op <- add_option(op, "--tree", type='character')
+op <- add_option(op, "--info", type='character')
+op <- add_option(op, "--patid", type='character')
+op <- add_option(op, "--real", type='logical', action='store_true', default=F)
+op <- add_option(op, "--usedups", type='logical', action='store_true', default=F)
+args <- parse_args(op)
 
-tree.file <- args[1]
-info.file <- args[2]
-pat.id <- args[3]
-use.date <- if (length(args) >= 4) as.integer(args[4]) else 1
+tree.file <- args$tree
+info.file <- args$info
+pat.id <- args$patid
+use.date <- !args$real
+use.all <- args$usedups
 
 data.file <- paste0("stats/", pat.id, ".data.csv")
 stats.file <- paste0("stats/", pat.id, ".stats.csv")
+regression.file <- paste0("stats/", pat.id, ".regression.rds")
 
 tree <- read.tree(tree.file)
-info <- read.info(info.file, tree$tip.label)
+info <- if (use.all) read.csv(info.file, stringsAsFactors=F) else read.info(info.file, tree$tip.label)
 n <- length(tree$tip.label)
 
-data <- data.frame(label=tree$tip.label, type=info$TYPE, censored=info$CENSORED, date=if (use.date == 1) as.numeric(as.Date(info$COLDATE)) else info$COLDATE, dist=node.depth.edgelength(tree)[1:n], stringsAsFactors=F)
+data <- data.frame(label=info$FULLSEQID, type=info$TYPE, censored=info$CENSORED, date=if (use.date == 1) as.numeric(as.Date(info$COLDATE)) else info$COLDATE, dist=node.depth.edgelength(tree)[if (use.all) match(info$DUPLICATE, tree$tip.label) else 1:n], stringsAsFactors=F)
 
 g <- lm(dist ~ date, data=data, subset=censored == 0)
 g.null <- lm(dist ~ 1, data=data, subset=censored == 0)
 
 a <- coef(g)[[1]]
 b <- coef(g)[[2]]
-p <- predict(g, data, interval="confidence")
 
-data <- as.data.frame(cbind(data, est.date=data$dist/b-a/b, date.diff=data$dist/b-a/b-data$date, cf.low=p[,2], cf.high=p[,3]))
-write.table(data, data.file, col.names=c("ID", "Type", "Censored", "Collection Date", "Divergence", "Estimated Date", "Date Difference", "CI low", "CI high"), row.names=F, sep=",")
+data <- as.data.frame(cbind(data, est.date=data$dist/b-a/b, date.diff=data$dist/b-a/b-data$date))
+write.table(data, data.file, col.names=c("ID", "Type", "Censored", "Collection Date", "Divergence", "Estimated Date", "Date Difference"), row.names=F, sep=",")
 
 stats <- data.frame(
 	pat=pat.id,
@@ -103,3 +111,5 @@ stats.col.names <- c(
 	"Total MAE"
 )
 write.table(stats, stats.file, col.names=stats.col.names, row.names=F, sep=",")
+
+saveRDS(g, regression.file)

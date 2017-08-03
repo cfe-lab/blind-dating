@@ -1,3 +1,4 @@
+library(treeio)
 library(ape)
 
 args.all <- commandArgs(trailingOnly = F)
@@ -29,4 +30,5 @@ threads = as.integer(args[4])
 seed = as.integer(args[5])
 
 tree <- raxml(fasta.file, N=100, threads=threads, executable=exec, parsimony.seed=seed, bootstrap.seed=seed)
-write.tree(tree, tree.file)
+write.tree(tree[[1]], tree.file)
+write.csv(tree[[2]]@data, paste0(tree.file, '.csv'), row.names=F)

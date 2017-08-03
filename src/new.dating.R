@@ -14,7 +14,7 @@ stats.file <- paste0("stats/", pat.id, ".stats.csv")
 time.data.file <- paste0("stats/", pat.id, ".timedata.csv")
 
 tree <- ape::ladderize(read.tree(tree.file))
-data <- read.csv(data.file, col.names=c("tip.label", "type", "censored", "date", "dist", "est.date", "date.diff", "ci.low", "ci.high"), stringsAsFactors=F)
+data <- read.csv(data.file, col.names=c("tip.label", "type", "censored", "date", "dist", "est.date", "date.diff"), stringsAsFactors=F)
 stats <- read.csv(stats.file, stringsAsFactors=F)
 
 mu <- stats$Model.Slope
@@ -57,4 +57,4 @@ time.tree$edge.length <- apply(tree$edge, 1, function(x) new.dates[2] - new.date
 write.tree(time.tree, time.tree.file)
 
 data <- as.data.frame(cbind(data, new.date=new.dates[1:length(tree$tip.label)], new.date.diff=new.dates[1:length(tree$tip.label)]-data$date))
-write.table(data, time.data.file, col.names=c("ID", "Type", "Censored", "Collection Date", "Divergence", "Estimated Date", "Date Difference", "CI low", "CI high", "New Dating", "New Dating Differnce"), row.names=F, sep=",")
+write.table(data, time.data.file, col.names=c("ID", "Type", "Censored", "Collection Date", "Divergence", "Estimated Date", "Date Difference", "New Dating", "New Dating Differnce"), row.names=F, sep=",")

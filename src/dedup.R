@@ -31,10 +31,13 @@ same <- lapply(same, function(x) o[o %in% x])
 dont.keep <- unlist(lapply(same, function(x) x[-1]))
 all.rows <- unlist(same)
 dups <- do.call(c, lapply(same, function(x) lapply(1:length(x), function(y) info$FULLSEQID[x[-y]])))
+rep.dup <- unlist(lapply(same, function(x) rep(info$FULLSEQID[x[1]], length(x))))
 
 info$KEPT <- 1
 info$KEPT[dont.keep] <- 0
-info$DUPLICATE[all.rows] <- unlist(lapply(dups, paste, collapse=";"))
+info$DUPLICATES[all.rows] <- unlist(lapply(dups, paste, collapse=";"))
+info$DUPLICATE[all.rows] <- rep.dup
+info$DUPLICATE[-all.rows] <- info$FULLSEQID[-all.rows]
 
 info <- info[!is.na(info$PATID), ]
 write.csv(info, info.file, row.names=F, na="")

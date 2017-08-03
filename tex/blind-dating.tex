@@ -1,4 +1,4 @@
-\documentclass[9pt,twocolumn,twoside]{pnas-new}
+\documentclass[12pt,onecolumn,twoside]{pnas-new}
 % Use the lineno option to display guide line numbers if required.
 % Note that the use of elements such as single-column equations
 % may affect the guide line number alignment. 
@@ -12,6 +12,7 @@
 \usepackage{comment}
 \usepackage[capitalize]{cleveref}
 \usepackage{graphicx}
+\usepackage{setspace}
 
 \graphicspath{{./}{figures/}}
 
@@ -20,6 +21,7 @@
 
 
 \title{Blind-dating: recovering the integration dates of the latent human immunodeficiency virus reservoir using longitudinal samples}
+% Short title: Blind-dating
 
 % Use letters for affiliations, numbers to show equal authorship (if applicable) and to indicate the corresponding author
 \author[a]{Bradley R. Jones}
@@ -73,6 +75,8 @@ Here we present a method to recover the insertion dates of integrated proviral h
 
 \begin{document}
 
+\doublespacing{}
+
 % Optional adjustment to line up main text (after abstract) of first page with line numbers, when using both lineno and twocolumn options.
 % You should only change this length when you've finalised the article contents.
 \verticaladjustment{-2pt}
@@ -108,9 +112,10 @@ Consequently, the divergence of descendant lineages from the transmitted/founder
 Upon integration of a given HIV-1 sequence into a host cell genome, evolution of that lineage effectively ceases until a new round of virus replication ensues.
 Latent HIV-1 sequences will therefore display a characteristic discordance between their sampling date and their apparent (younger) age based on sequence divergence from other within-host lineages.
 
-We validated our method by attaempting to recover the collection dates of plasma-derivied RNA sequences.
-Then we applied our method to patient data from a patient with both longitudinal plasma-derived RNA sequences while treatment-naive and PBMC-derived DNA sequences after the patient recieved anitretroviral theray for 6--10 years.
-We compared results of using single-genome amplification of the NEF region and deep sequencing of the V3 region.
+We applied our method to patient data from a patient with both longitudinal plasma-derived RNA sequences and peripheral blood mononuclear cell (PBMC) derived DNA sequences after the patient recieved anitretroviral theray for 6--10 years.
+We validated our method by attempting to recover the collection dates of plasma-derivied RNA sequences.
+We then applied our method to the complete data set to estimate the insertion dates of the proviruses into the PBMCs.
+We compared the results of using single-genome amplification of the NEF region and deep sequencing of the V3 region.
 
 \section*{Reconstructing integration dates}
 Since HIV evolution adheres to the molecular clock hypothesis \cite{Leitner99,Park16}, the genetic distance of virions from the founder virus is linear with respect to time.
@@ -131,7 +136,7 @@ See \cref{fig:latenttree}.
 \label{fig:latenttree}
 \end{figure}
 
-The model resets on the reconstruction the phylogenetic relationships of longitudinaly-sampled HIV sequences.
+The model rests on the reconstruction the phylogenetic relationships of longitudinaly-sampled HIV sequences.
 A phylogenetic tree can be created using a variety of methods including neighbour-joining \cite{Saitou87}, maximum likelihood \cite{fasttree,raxml}, Bayesian methods ((possible footnote)) \cite{beast}, \emph{et cetera}.
 After assigning a root to the phylogeneteic tree (using outgroup rooting  \cite{Huelsenbeck02}, root-to-tip regression  \cite{Korber00}, \emph{et cetera}), we recover the linear molecular clock with a linear model (LM).
 Our LM is given by:
@@ -148,13 +153,29 @@ Details of the method are given in the Materials and Methods.
 To validate our model, we restricted our NEF data set to the training RNA sequences, which are the plasma-derived RNA squences sampled while the patient was not on therapy.
 We then attempted to recover the collection dates of the sequences by censoring 0, 17, 31, 47, 62, and 78 sequences at random.
 For each number of censored sequences, we ran 50 replicate trials.
+We applied the blind-dating methodology to each data set using each rooting method (OGR and RTT).
+
+Almost all of the LM fits were successful based on an AIC diference of 10 between the LM and the null model.
+When using RTT all of the LMs fit and when using OGR all of the LMS fit except for 2 of the data sets with 78 censored sequences.
+
+\begin{figure*}
+\includegraphics{{get_rna}}
+\caption{The root mean squared error.
+(A) OGR (B) RTT.}
+\label{fig:validation}
+\end{figure*}
 
 \subsection*{Sensitivity testing}
 We reduced the patient data set of the NEF data set to quantify the effect of the number of time points used.
 The NEF data set had 14 time points with training RNA sequences.
 We reduced the patient data by selecting a subset of the 14 time points at random.
 From this we generated 550 different data sets with 2--12 time points with training RNA sequences (50 data sets for each number of time points) and all 14 possible data sets with 13 time points of training RNA sequences.
-We applied the blind-dating methodology to each data set.
+We applied the blind-dating methodology to each data set using each rooting method (OGR and RTT).
+
+Most of the LM fits were successful based on an AIC diference of 10 between the LM and the null model.
+When 6 or more time points of RNA training sequences were used, both rooting methods always produced LMs that fit.
+36, 46, 47, and 49 of the 50 data sets produced LMs that fit using RTT with 2, 3, 4, and 5 time points of RNA training sequences.
+Similarly, 35, 46, 45, and 49 of the 50 data sets produced LMs that fit using OGR with 2, 3, 4, and 5 time points of RNA training sequences.
 
 \begin{figure*}
 \includegraphics{sensitivity}
@@ -163,10 +184,10 @@ We applied the blind-dating methodology to each data set.
 \label{fig:sensrmse}
 \end{figure*}
 
-\section*{Results with nef sequences}
+\section*{Results with NEF sequences}
 The blind-dating methods were applied to HIV sequences from the NEF region retrived using single-genome amplification.
 
-The correlation between the estimated dates for our patient using the different rooting methods --- outgroup rooting (OGR) and root-to-tip regression (RTT) --- was 0.95 (pearson)/0.94 (spearman) and the root mean square deviation was 540 days.
+The correlation between the estimated dates for our patient using the different rooting methods --- OGR and RTT --- was 0.95 (pearson)/0.94 (spearman) and the root mean square deviation was 540 days.
 RTT optimizes the molecular clock and linear regression, where OGR is more biological motivated, therefore the high correlation is promising.
 See \cref{fig:nefdistvtime} for a comparison of the two rooting methods.
 
@@ -180,8 +201,10 @@ See \cref{fig:nefdistvtime} for a comparison of the two rooting methods.
 \section*{Results with V3 sequences}
 The blind-dating methods were also applied to HIV sequences from the V3 region retrived using deep sequencing.
 
-The correlation between the estimated dates for our patient using the different rooting methods --- outgroup rooting (OGR) and root-to-tip regression (RTT) --- was 0.95 (pearson)/0.84 (spearman) and the root mean square deviation was 270 days.
+The correlation between the estimated dates for our patient using the different rooting methods --- OGR and RTT --- was 0.95 (pearson)/0.84 (spearman) and the root mean square deviation was 270 days.
 See \cref{fig:v3distvtime} for a comparison of the two rooting methods.
+
+A t-test between the estimated dates of the PBMC-derived sequences of the NEF and V3 data sets indicated no significant difference ($p=0.$) between the estimated integration dates of the latent reservoir between the two data sets.
 
 \begin{figure*}
 \includegraphics{v3distvtime}
@@ -232,13 +255,13 @@ We reconstructed the within-host phylogenies of each subject in each data set as
 We evaluated two different methods for rooting these trees. 
 The first method was outgroup rooting (OGR), in which one or more sequences from taxa outside but sufficiently related to the group of interest are added to the phylogenetic reconstruction \cite{Huelsenbeck02}.
 The point at which the branch leading to the outgroup intersects the rest of the tree provides an estimate of the root for the latter.
-We selected the HIV-1 B ancestral sequence reconstruction,  curated by the LANL HIV sequence database as the outgroup sequence.
+We selected the HIV-1 B ancestral sequence reconstruction, HXB2 (accession: K03455), curated by the LANL HIV sequence database, as the outgroup sequence.
 The second method was root-to-tip regression (RTT) \cite{Korber00}, which performs an exhaustive search by re-rooting the tree at every branch to find the root that (in our experiments) maximizes the correlation between the sample collection dates and the evolutionary distance of tips from the candidate root.
 Our simulated data were only rooted using RTT; for all real data, both outgroup rooting and RTT were evaluated for rooting the phylogeny.
 For each subject in each data set, we computed the LM given in \cref{eq:glm} using the R function, lm \cite{rscript}.
 \subsection*{Statisical Analysis}
-((Methods used)).
-All statistical calculations were performed using R \cite{rscript}.
+Error and variation were calculated with root mean squared error (RMSE).
+All statistical calculations were performed using R v3.3.3 \cite{rscript}.
 All plots were generated using the ggplot2 and ggtree packages in R \cite{ggplot,ggtree} --- time-scaled versions of the trees were generated using the esimate.dates function of the ape package in R \cite{ape,nodedating}.
 }
 
@@ -251,7 +274,7 @@ All plots were generated using the ggplot2 and ggtree packages in R \cite{ggplot
 % \pnasbreak splits and balances the columns before the references.
 % If you see unexpected formatting errors, try commenting out this line
 % as it can run into problems with floats and footnotes on the final page.
-\pnasbreak{}
+%\pnasbreak{}
 
 % Bibliography
 \bibliography{blind-dating}

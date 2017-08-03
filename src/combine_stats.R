@@ -54,9 +54,9 @@ ori.data.file <- args[2]
 output.stats <- args[3]
 
 stats <- do.call(rbind, lapply(dir(stats.dir, "*stats*", full.names=T), read.csv, stringsAsFactors=F))
-data <- lapply(dir(stats.dir, "*data*", full.names=T), read.csv, col.names=c("label", "type", "censored", "date", "dist", "est.date", "date.diff", "ci.low", "ci.high"), stringsAsFactors=F)
+data <- lapply(dir(stats.dir, "*data*", full.names=T), read.csv, col.names=c("label", "type", "censored", "date", "dist", "est.date", "date.diff"), stringsAsFactors=F)
 
-ori.data <- read.csv(ori.data.file, col.names=c("label", "type", "censored", "date", "dist", "est.date", "date.diff", "ci.low", "ci.high"), stringsAsFactors=F)
+ori.data <- read.csv(ori.data.file, col.names=c("label", "type", "censored", "date", "dist", "est.date", "date.diff"), stringsAsFactors=F)
 
 rmses <- unlist(lapply(data, compare.dates, ori.data, function(x, y) sqrt(sum((x - y)^2)/length(x))))
 maes <- unlist(lapply(data, compare.dates, ori.data, function(x, y) sum(abs(x - y))/length(x)))
