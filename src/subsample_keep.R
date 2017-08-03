@@ -54,5 +54,5 @@ cat("Writing...\n")
 suppress <- lapply(1:reps, function(i) {
 	info.i <- info
 	info.i$CENSORED[sample] <- 1
-	write.csv(f, names(f), paste0(SUFFIX, i, ".fasta"))
+	write.csv(info.i, paste0(SUFFIX, i, ".csv"), row,names=F)
 })
