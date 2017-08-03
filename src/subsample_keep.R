@@ -53,6 +53,6 @@ filters <- lapply(1:reps, method)
 cat("Writing...\n")
 suppress <- lapply(1:reps, function(i) {
 	info.i <- info
-	info.i$CENSORED[sample] <- 1
+	info.i$CENSORED[filters[[i]]] <- 1
 	write.csv(info.i, paste0(SUFFIX, i, ".csv"), row,names=F)
 })
