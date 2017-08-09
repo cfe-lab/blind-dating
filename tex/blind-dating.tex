@@ -91,7 +91,7 @@ Though the vast majority of infected cells die as a result of viral cytopathic e
 Termed latent HIV-1 reservoirs, such cells represent a major obstacle in curing HIV-1 infection as they can persist for years.
 In the presence of suppressive antiretroviral therapy, for instance, these reservoirs can be re-activated at any point to produce infectious virus, thereby reseeding infection \cite{Richman09,Durand12,Joos08,Katlama13,Pomerantz03,Shen08}. 
 
-Establishment of individual viral reservoirs within a given host  begins within hours or days following infection and continues thereafter \cite{Whitney14,Leford14}.
+Establishment of individual viral reservoirs within a given host begins within hours or days following infection and continues thereafter \cite{Whitney14,Leford14}.
 As within-host HIV-1 populations rapidly accumulate genetic diversity over the course of an infection \cite{Alizon13,Rambaut04,Shankarappa99}, latent viral genomes present during untreated chronic infection should be heterogeneous in terms of age and genetics, ranging from those archived soon after infection (that resemble ancestral viruses within the host) to those that have integrated relatively recently into cellular reservoirs (that resemble contemporary plasma strains).
 The chronology of establishment and genetic distribution of latent HIV-1 lineages within a given host is may be relevant to the development of strategies to eliminate them, as these properties could influence their susceptibility to reactivation and/or immune-mediated clearance.
 For example, while the `oldest' reservoirs within a given individual may be the most inherently refractory to reactivation with latency reversing agents, `younger' reservoirs may be largely refractory to subsequent immune-mediated elimination due to an accumulated burden of immune escape mutations \cite{Deng15}.
@@ -112,10 +112,9 @@ Consequently, the divergence of descendant lineages from the transmitted/founder
 Upon integration of a given HIV-1 sequence into a host cell genome, evolution of that lineage effectively ceases until a new round of virus replication ensues.
 Latent HIV-1 sequences will therefore display a characteristic discordance between their sampling date and their apparent (younger) age based on sequence divergence from other within-host lineages.
 
-We applied our method to patient data from a patient with both longitudinal plasma-derived RNA sequences and peripheral blood mononuclear cell (PBMC) derived DNA sequences after the patient recieved anitretroviral theray for 6--10 years.
-We validated our method by attempting to recover the collection dates of plasma-derivied RNA sequences.
+We applied our method to patient data from a patient with both longitudinal plasma-derived RNA sequences and peripheral blood mononuclear cell (PBMC) derived DNA sequences after the patient received antiretroviral therapy for 6--10 years.
+We validated our method by attempting to recover the collection dates of plasma-derived RNA sequences.
 We then applied our method to the complete data set to estimate the insertion dates of the proviruses into the PBMCs.
-We compared the results of using single-genome amplification of the NEF region and deep sequencing of the V3 region.
 
 \section*{Reconstructing integration dates}
 Since HIV evolution adheres to the molecular clock hypothesis \cite{Leitner99,Park16}, the genetic distance of virions from the founder virus is linear with respect to time.
@@ -146,9 +145,38 @@ Our LM is given by:
 with response: $D$, the genetic distance from the root of the tree; predictor: $T$, the collection date; and parameters: $\mu$, the mutation rate and $a$, a genetic distance shift.
 First we censor the provial DNA sequences and use the virion RNA sequences to calibrate the LM.
 Next we recover the provial insertion dates by computing $T(x) = \frac{D(x) - a}{\mu}$, for each proviral DNA sequence, $x$.
-Details of the method are given in the Materials and Methods.
+More details of the method are given in the Materials and Methods.
 
-\section*{Model validation}
+\section{Validation on simulated data}
+
+We validated the blind-dating methodology using 50 simulated individuals with 100 simulated HIV RNA sequences created using the methods in the Materials and Methods.
+
+
+\section{Validation on RNA sequences from public sources}
+
+\section{Results using DNA sequences from public sources}
+
+\section{Results using recruited patients}
+
+\subsection*{Patient 1}
+((Patient 1 intro))
+
+The blind-dating methods were applied to HIV sequences from the NEF region retrived using single-genome amplification.
+
+The correlation between the estimated dates for our patient using the different rooting methods --- OGR and RTT --- was 0.95 (pearson)/0.94 (spearman) and the root mean square deviation was 540 days.
+RTT optimizes the molecular clock and linear regression, where OGR is more biological motivated, therefore the high correlation is promising.
+See \cref{fig:nefdistvtime} for a comparison of the two rooting methods.
+
+\begin{figure*}
+\includegraphics{nefdistvtime}
+\caption{The distance from the root versus time.
+(A) OGR (B) RTT.}
+\label{fig:nefdistvtime}
+\end{figure*}
+
+\subsection{Patient 2}
+
+
 \subsection*{Validation on RNA sequences}
 To validate our model, we restricted our NEF data set to the training RNA sequences, which are the plasma-derived RNA squences sampled while the patient was not on therapy.
 We then attempted to recover the collection dates of the sequences by censoring 0, 17, 31, 47, 62, and 78 sequences at random.
@@ -184,39 +212,8 @@ Similarly, 35, 46, 45, and 49 of the 50 data sets produced LMs that fit using OG
 \label{fig:sensrmse}
 \end{figure*}
 
-\section*{Results with NEF sequences}
-The blind-dating methods were applied to HIV sequences from the NEF region retrived using single-genome amplification.
-
-The correlation between the estimated dates for our patient using the different rooting methods --- OGR and RTT --- was 0.95 (pearson)/0.94 (spearman) and the root mean square deviation was 540 days.
-RTT optimizes the molecular clock and linear regression, where OGR is more biological motivated, therefore the high correlation is promising.
-See \cref{fig:nefdistvtime} for a comparison of the two rooting methods.
-
-\begin{figure*}
-\includegraphics{nefdistvtime}
-\caption{The distance from the root versus time.
-(A) OGR (B) RTT.}
-\label{fig:nefdistvtime}
-\end{figure*}
-
-\section*{Results with V3 sequences}
-The blind-dating methods were also applied to HIV sequences from the V3 region retrived using deep sequencing.
-
-The correlation between the estimated dates for our patient using the different rooting methods --- OGR and RTT --- was 0.95 (pearson)/0.84 (spearman) and the root mean square deviation was 270 days.
-See \cref{fig:v3distvtime} for a comparison of the two rooting methods.
-
-A t-test between the estimated dates of the PBMC-derived sequences of the NEF and V3 data sets indicated no significant difference ($p=0.$) between the estimated integration dates of the latent reservoir between the two data sets.
-
-\begin{figure*}
-\includegraphics{v3distvtime}
-\caption{The distance from the root versus time.
-(A) OGR (B) RTT.}
-\label{fig:v3distvtime}
-\end{figure*}
-
 \section*{Conclusions}
 ((Short conclusion)).
-
-((V3 data has latent RNA))
 
 ((Limitations))
 
@@ -232,12 +229,49 @@ Most other models of HIV latent reservoirs are dynamical models \cite{Rong09,Pac
 These models can be complicated, including many components and parameters.
 Here we offer a simple and accurate method to recover insertion date of reservoir sequences.
 
+Future work will utilize deep sequencing data.
+
 \matmethods{
-\subsection*{Data collection, sequencing and alignment}
+\subsection*{Simulated data}
+To characterize sources of error in reconstructing dates on tips of a phylogeny, we generated phylogenetic trees by direct simulation. % and from the plasma data sets.
+First, we generated phylogenies with 100 tips each under a birth-death model with serial sampling using the \emph{sim.bdsky.stt} function in the \textit{R} package \textit{TreeSim} \cite{Boskova14}.
+Birth-death models have been applied to studying speciation processes \cite{Nee:2006} and infectious disease epidemics \cite{Stradler13}, but have only recently been used to model the proliferation of virus lineages in cell populations \cite{Hartfield:2015}.
+%% This paragraph needs to be rewritten
+The birth-death model was parametrized by fitting this model to samples from the {\em plasma} dataset.
+%% we may need to provide some justification for using BD
+%To assess the sensitivity of our method, we first simulated HIV sequence data sets without viral latency.
+We used BEAST version 2.3.2 \cite{BEAST2} to estimate the posterior distribution defined by the serial model with a Bayesian skyline \cite{Stadler13}, a strict molecular clock, and the HKY85 \cite{HKY85} model of nucleotide substitution.
+%Using this approach, we generated samples of trees for each sequence alignment in the plasma dataset.
+%From these simulations, we evaluated the accuracy of predicting sample collection times from a strict molecular clock model that was fit to a training subset of these data.
+The lineage birth rate, death rate and sampling probability were estimated to be: $\lambda = 5.12 \times 10^{-2}$ day$^{-1}$, $\delta = 5.01 \times 10^{-2}$ day$^{-1}$, $s = 5.24 \times 10^{-3}$ respectively.
+We used the \textit{R} package, \emph{NELSI} \cite{NELSI}, to assign rates of evolution to these trees by drawing values from a Gaussian distribution with a mean rate $\mu = \ 1.96\times 10^{-4}$ substitutions per generation and standard deviation $\sigma = \ 1.42\times 10^{-5}$. %; Figure \ref{fig:seedtree} for an example).
+To model uncertainty in phylogenetic reconstruction from sequence variation, we simulated sequence evolution along each birth-death tree with INDELible version 1.03 \cite{Indelible09} under an HKY85 \cite{HKY85} model of nucleotide substitution.
+Parameters for the substitution model were set to empirical estimates derived from previously published HIV within-host data sets \cite{McCloskey14}. 
+Specifically, the stationary distribution was set to 0.42, 0.15, 0.15, 0.28 for the nucleotides A, C, G and T, respectively, and the transition bias parameter was set to 8.5.
+Using this approach, we generated a total of 50 replicate subjects
+\subsection*{Data collection from public sources}
+We collected two sets of data from the Los Alamos National Laboratory HIV sequence database (LANL).
+The first we refer to as the {\em plasma} data set, which comprised of sequences derived from viral RNA from longitudinal plasma samples \cite{McCloskey14}. 
+From these data, we selected treatment naive individuals with two or more clonal or single-genome sequences available at each time point, and with a known time-line relative to one of several reference points: HIV infection, seroconversion or presentation of symptomatic seroconversion illness. 
+The baseline samples were collected within 186 days of this reference point, and at least one of the subsequent `follow-up' time points occurred a minimum of 6 months after baseline.
+Individuals who had been classified as `superinfected' were also excluded \cite{McCloskey14}.
+After applying these criteria, we retained 410 HIV RNA sequences from 9 individuals for phylogenetic analysis.
+The purpose of the plasma data set was to provide representative samples of within-host HIV diversity for evaluating the model.
+The second data set, referred to as the {\em mixed} data set, contained sequences from studies in which both plasma HIV RNA and cellular HIV DNA had been collected from the same individual.
+We used the advanced search interface of the Los Alamos National Laboratory (LANL) HIV Sequence Database \cite{LosAlamos} to identify published data sets representing individuals with both HIV RNA and cellular DNA sequences.
+%% what do you mean by "well-characterized"?
+From these results, we manually selected 20 individuals that had well-characterized partial {\em env} sequences and plasma samples from at least 2 RNA time points and 3 DNA time points. 
+%We also required that at least 1 RNA time point fell between 2 DNA time points in each individual
+There were no other selection criteria on the time between sample collection dates. 
+A total of 1,017 partial {\em env} RNA sequences from blood plasma, and 1,799 partial {\em env} DNA sequences from PBMC cells were used in our analysis. 
+We utilized samples from treatment naive individuals from \cite{Shankarappa99, Novitsky09} and samples from individuals that had been intermittently treated via HAART from \cite{Llewellyn06,Fischer04}. 
+See Table \ref{tab:patients} for details on the patients from these data sets.
+\subsection*{Data collection and sequencing of recruited patients}
 ((Collection/Ethics/Metadata.))
 ((Sequencing.))
 ((Check for recombination/hypermutation.))
-The sequences were aligned using MUSCLE v3.8.31 \cite{muscle} and inspected and cleaned with AliView v1.18 \cite{aliview}.
+\subsection*{Alignment}
+The sequences rertueved from LANL and the sequences from the reruited patients were aligned using MUSCLE v3.8.31 \cite{muscle} and inspected and cleaned with AliView v1.18 \cite{aliview}.
 For each pair of identical sequences, we retained only one copy.
 There was one instance where there was a triplet of RNA sequences that were collected at two different time points.
 For this triplet we kept one sequence from the earlier time point.
@@ -251,7 +285,7 @@ For this triplet we kept one sequence from the earlier time point.
 %Finally, we created simulated HIV RNA sequences from these phylogenies with INDELible v1.03 \cite{indelible}, to create one set of 50 simulated HIV RNA sequences per phylogeny.
 %We applied the blind-dating methodology to each simulated data set.
 \subsection*{Blind-dating}
-We reconstructed the within-host phylogenies of each subject in each data set as maximum likelihood phylogenies reconstructed using RAxML v8.2.4 \cite{raxml} with the GTR model.
+We reconstructed the within-host phylogenies of each subject in each data set as maximum likelihood phylogenies reconstructed using RAxML v8.2.4 \cite{raxml} with 100 boostraps and the generalized time reversible (GTR) model.
 We evaluated two different methods for rooting these trees. 
 The first method was outgroup rooting (OGR), in which one or more sequences from taxa outside but sufficiently related to the group of interest are added to the phylogenetic reconstruction \cite{Huelsenbeck02}.
 The point at which the branch leading to the outgroup intersects the rest of the tree provides an estimate of the root for the latter.
