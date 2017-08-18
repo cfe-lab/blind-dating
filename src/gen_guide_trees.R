@@ -31,6 +31,7 @@ args <- commandArgs(trailingOnly = T)
 
 r.seed <- as.integer(args[1])
 indelible.seed <- args[2]
+reference <- args[3]
 
 if (r.seed != 0) {
 	set.seed(r.seed)
@@ -99,7 +100,7 @@ for (i in 1:n.trees) {
 #index <- sample(1:n.trees, n.partitions, replace = (n.partitions > n.trees))
 index <- 1:n.trees
 for (i in 1:n.partitions) {
-	indel_control <- paste0(indel_control, sprintf("[PARTITIONS] pHKY_%d [tree_%d HKY_HIV 700] \n", i, index[i]))
+	indel_control <- paste0(indel_control, sprintf("[PARTITIONS] pHKY_%d [tree_%d HKY_HIV %s] \n", i, index[i], reference))
 }
 
 indel_control <- paste0(indel_control, "[EVOLVE] \n")
@@ -108,3 +109,6 @@ for (i in 1:n.partitions) {
 }
 
 write(indel_control, 'control.unfixed.txt')
+
+
+dat <- lapply(names(trees.labels), function(x) data.frame(PATID=x, SEQID=gsub("(.+?)_.+", "\\1", trees.labels[[x]]), FULLSEQID=trees.labels[[x]], COLDATE=gsub(".+_(.+)", "\\1", trees.labels[[x]]), CENSORED=0, KEPT=1, DUPLICATE="", DUPLICATES="", NA=""))

@@ -13,7 +13,7 @@
 
 
 \usepackage{times}
-\usepackage{lineno}
+%\usepackage{lineno}
 %\usepackage[round]{natbib}
 %\makeatletter
 %\renewcommand{\@biblabel}[1]{#1.}
@@ -48,181 +48,145 @@
  
 \begin{document}
 
-\title{Supplementary Materials, Figures and Tables \\ Blind dating: a phylogenetic approach to determining the ages of HIV-1 reservoir sequences within host}
+\title{Supplementary Materials \\ Blind-dating: recovering the integration dates of the latent human immunodeficiency virus reservoir using longitudinal samples}
 
-\author[1,2]{Bradley R. Jones}
-\author[1,2]{Joshua Horacsek}
-\author[2,3]{Jeffrey B. Joy}
-\author[1,2]{Zabrina L. Brumme}
-\author[1,2,3]{Art F.Y. Poon}
-\affil[1]{Faculty of Health Sciences, Simon Fraser University, Burnaby, V5A 1S6, Canada}
-\affil[2]{BC Centre for Excellence in HIV/AIDS, Vancouver, V6Z 1Y6, Canada}
-\affil[3]{Department of Medicine, University of British Columbia, Vancouver, V5Z 1M9, Canada}
+% Use letters for affiliations, numbers to show equal authorship (if applicable) and to indicate the corresponding author
+\author[a]{Bradley R. Jones}
+\author[b]{Natalie N. Kinoch} 
+\author[a]{Joshua Horacsek}
+\author[b]{Philip Mwimanzi}
+\author[b]{Bemuluyigza Baraki}
+\author[c]{John Huang}
+\author[c]{Ronald Truong}
+\author[a]{Bruce Ganase}
+\author[a]{Marianne Harris}
+\author[a,d]{P. Richard Harrigan}
+\author[c]{R. Brad Jones}
+\author[a,b]{Mark A. Brockman}
+\author[a,d]{Jeffrey B. Joy}
+\author[e]{Art F. Y. Poon}
+\author[b]{Zabrina L. Brumme}
+
+\affil[a]{BC Centre for Excellence in HIV/AIDS, 608-1081 Burrard St Vancouver, Canada V6Z 1Y6}
+\affil[b]{Faculty of Health Sciences, Simon Fraser University, 8888 University Drive
+Burnaby, Canada V5A 1S6}
+\affil[c]{Department of Microbiology, Immunology and Tropical Medicine, George Washington University, Ross Hall 2300 Eye Street, NW, Suite 502 Washington, DC, United States of America 20037}
+\affil[d]{Department of Medicine, University of British Columbia, 2775 Laurel Street, 10th Floor
+Vancouver, Canada V5Z 1M9}
+\affil[e]{Department of Pathology and Laboratory Medicine, Western University, Dental Sciences Building, Rm. 4044
+London, Canada N6A 5C1}
 %%% 1 Simon Fraser University
 %%% 2 BC Centre for Excellence in HIV/AIDS
 %%% 3 University of British Columbia
 \baselineskip 22pt
-\pagewiselinenumbers
+%\pagewiselinenumbers
 
 \date{}
 \maketitle
 
-% Sections
-\begin{comment}
-\section{\emph{simulated (latency 2)} latency model parameter deriviation} \label{sec:latencyparams}
-We derived the values for the parameters, $l$ and $i$, for the \emph{simulated (latency 2)} from the dynamic model of \cite{Kim06}. Their model is as follows:
-\[\frac{da}{dt} = -\omega(a-a_{\text{min}}) \]
-\[\frac{dT^*}{dt} = (1-f)(1-\epsilon )kT_0V + aL - \delta T^*\]
-\[\frac{dL}{dt} = f(1-\epsilon )kT_0V + rL - aL\]
-\[\frac{dV}{dt} = N\delta T^* - cV\]
-where $a$ is the activation rate of the latently-infected T-cells, $T^*$ is the number of actively-infected T-cells, $L$ is the number of latently-infected T-cells and $V$ is the numnber of HIV virions and $t$ is time given in days.
-The parameters of the model are described in Table \ref{tab:modelparams}.
-The values we used for the model parameters are also given in Table \ref{tab:modelparams} and are derived from their paper unless otherwise stated.
-
-We took $l$ to equal their $a_0$, which is the initial value of the activation rate $a$.
-In order for the model to give a realistic solution, \cite{Kim06} require that $a_0 \leq c\frac{V_0}{NL_0}-(1-f)(1-\epsilon)kT_0\frac{V_0}{L_0}$.
-We follow them when they choose $a_0$ to be the maximum such value to get $l = a_0 = 5.8 \times 10^{-3}$ day$^{-1}$.
-We took $i$ to be the infection rate of latently-infected cells: $f(1-\epsilon)k$.
-Using this approach, we get $i = 2.0 \times 10^{-12}$ day$^{-1}$.
-\end{comment}
-
-\section * {Results with outgroup rooting} \label{sec:ogr}
-Table \ref{tab:patientserrorogr} shows the results of the linear model on the data sets using outgroup rooting \cite{Huelsenbeck02} to root the phylogenies.
-Five patients from the \emph{plasma} data set and seven patients from the \emph{mixed} data set were rejected by our screening process when using outgroup rooting.
-Overall, outgroup rooting performed poorer than rooting with root-to-tip regression, in terms of the $p$-values of the linear models and the resulting root mean square distances (RMSDs).
-The total scaled RMSD of the \emph{plasma} data set using outgroup rooting was $0.13$ and the total scaled median difference was $0.030$.
-The total scaled RMSD of the \emph{mixed} data set using outgroup rooting was $0.52$ and the total scaled median difference was $-0.011$.
-The binomial test on the \emph{plasma} data set predicted that there was no latency ($p = 0.7869$).
-On the \emph{mixed} data set, the same test predicted that there was latency, but with marginal signifciance ($p = 0.0452$).
-Also included in the Supplementary Materials are the corresponding figures of the real data from the primary work using outgroup rooting instead of root-to-tip regression (Figures S2--S4).
-
-
-\bibliographystyle{retro}
-\bibliography{blind-dating}
-
-% Figures
-
-\begin{figure}[ht]
-	\centering
-	\includegraphics[width=12cm]{figures/simulated_extreme.pdf}
-	\caption[Simulated Data]{Plot from the \emph{simulated (extreme latency)} data set of the evolutionary distance vs time. The dotted line is the linear regression.}
-%	Patient: HIV_12
-	\label{fig:resultsextreme}
-\end{figure}
-
-\begin{figure}[ht]
-	\centering
-	\begin{subfigure}[ht]{8cm}
-		\includegraphics[width=8cm]{{figures/ancre.ogr}.pdf}
-		\caption{Patient 2658 from the \emph{plasma} data set}
-		\label{fig:resultsancreogr}
-	\end{subfigure}
-%	Patient: patient_1
-	\begin{subfigure}[ht]{8cm}
-		\includegraphics[width=8cm]{{figures/lanl.ogr}.pdf}
-		\caption{Patient 13889 from the \emph{mixed} data set}
-		\label{fig:resultslanlogr}
-	\end{subfigure}
-	\caption[Examples]{As Figure 4 from the primary work, except using outgroup rooting.}
-	\label{fig:results2ogr}
-\end{figure}
-
-\begin{figure}[ht]
-	\centering
-	\begin{subfigure}[ht]{8cm}
-		\centering
-		\includegraphics[width=8cm]{{figures/ancre.hist.ogr}.pdf}
-		\caption{Density of the scaled difference of the \emph{plasma} data set with a solid line representing the density of the difference of the simulated data set without latency.}
-		\label{fig:densityancreogr}
-	\end{subfigure}
-	\begin{subfigure}[ht]{8cm}
-		\centering
-		\includegraphics[width=8cm]{{figures/lanl.hist1.ogr}.pdf}
-		\caption{Density of the scaled difference of the \emph{plasma} data set with a solid line representing the density of the scaled difference of the first set of simulated data set with latency.}
-		\label{fig:densitylanlogr}
-	\end{subfigure}
-	\caption[Difference Density]{Real data with outgroup rooting. As Figure 5 from the primary work, except using outgroup rooting.}
-	\label{fig:density}
-\end{figure}
-
-\begin{figure}[ht]
-	\centering
-	\includegraphics[width=12cm]{{figures/patient_16617.ogr}.pdf}
-	\caption{Patient 16617 with outgroup rooting. As Figure 6 from the primary work, except using outgroup rooting}
-	\label{fig:treatment}
-\end{figure}
-
-% Tables
-\begin{comment}
-\begin{table}[!ht]
+\begin{table*}
+\caption{Summary of all the patient data collected from the LANL HIV sequence database \cite{LosAlamos} in the data sets from public sources.\label{tab:patients}}
 \def\arraystretch{1.3}%
 \begin{center}
-\begin{tabular}{llr}
-Parameter & Description & Value \\
+\begin{tabular}{llrrrrrrr} 
+
+Reference & Patient ID & \multicolumn{3}{c}{Sequences} & \multicolumn{3}{c}{Time points} \\
+ &  & Plasma & PBMC & Total & Plasma & PBMC & Total\\
 \hline
-$\omega$ & Decay rate of the activation rate & \\
-$a_{\text{min}}$ & Minimum of the activation rate & \\
-$f$ & Proportion of infected cells that become latent & $3. \times 10^{-6}$ \\
-$\epsilon$ & Drug efficacy & $0.7$ \\
-$k$ & Viral infectivity & $2.248 \times 10^{-6}$ $\mu$l/day \\
-$T_0$ & Inital concentration of uninfected T-cells & $565$ $\mu$l$^{-1}$ \\
-$\delta$ & Actively-infected T-cell death rate & \\
-$r$ & Latently-infected T-cell regeneration rate & \\
-$N$ & Number of virions produced by a single infected T-cell & $2. \times 10^4$  \\
-$c$ & Virion clearance rate & $23$ day$^{-1}$ \\
-$V_0$ & Inital number of virions & $7.5 \times 10^5$ \\
-$L_0$ & Inital number of latently-infected cells & $1.0 \times 10^5$ \\
+\cite{McCloskey14} & 825 & 53 & & 53 & 6 & & 6 \\
+& 2658 & 85 & & 85 & 5 & & 5 \\
+& 7259 & 29 & & 29 & 4 & & 4 \\
+& 7263 & 15 & & 15 & 3 & & 3 \\
+& 7265 & 22 & & 22 & 3 & & 3 \\
+& 13333 & 40 & & 40 & 4 & & 4 \\
+& 13334 & 39 & & 39 & 5 & & 5 \\
+& 13336 & 43 & & 43 & 4 & & 4 \\
+& 35566 & 93 & & 93 & 2 & & 2 \\
+\hline
+\cite{Shankarappa99} & 820 &       50 &       87 &      137 &        5 &       10 &       15  \\
+& 821 &      76 &      192 &      268 &        7 &       17 &       17 \\ 
+& 822 &      32 &       98 &      130 &        3 &       10 &       10 \\ 
+& 824 &     100 &      107 &      207 &        7 &        9 &       13 \\
+& 10137 &     24 &      106 &      130 &        2 &       10 &       12 \\
+& 10138 &     82 &      119 &      201 &        6 &       13 &       16 \\
+& 10586 &     16 &      121 &      137 &        2 &       12 &       14  \\ 
+& 13889 &    151 &      132 &      283 &       13 &       14 &       18 \\
+\cite{Novitsky09}% & 34382 &     37 &        5 &       42 &        3 &        1 &        4  \\ 
+& 34391 &     13 &       38 &       51 &        3 &        5 &        6 \\
+& 34393 &     25 &       74 &       99 &        2 &        6 &        7 \\
+& 34396 &      23 &       46 &       69 &        2 &        5 &        5 \\
+%& 34397 &      26 &       25 &       51 &        2 &        2 &        4  \\ 
+& 34399 &      61 &       88 &      149 &        5 &        9 &       12 \\
+%& 34400 &      54 &       23 &       77 &        4 &        1 &        5  \\ 
+%& 34405 &      27 &       29 &       56 &        3 &        2 &        4  \\ 
+& 34408 &       5 &       73 &       78 &        2 &        8 &        8 \\
+& 34410 &      35 &       60 &       95 &        2 &        6 &        6 \\
+& 34411 &      25 &       43 &       68 &        3 &        3 &        6   \\
+\cite{Fischer04} & 10769 &    229 &       96 &      325 &       10 &        4 &       11 \\ 
+%& 10770 &    190 &       31 &      221 &       11 &        2 &       11  \\ 
+\cite{Llewellyn06} & 16616 &     16 &       95 &      111 &        2 &        5 &        5 \\
+& 16617 &     16 &       89 &      105 &        2 &        5 &        5 \\
+& 16618 &     25 &       75 &      100 &        2 &        5 &        6 \\
+& 16619 &     13 &       60 &       73 &        2 &        6 &        6 \\
 \hline
 \end{tabular}
 \end{center}
-\caption{The parameters and their values for the dynamic model from \cite{Kim06}.
-Parameters unused in our analysis are given no value.}
-\label{tab:modelparams}
-\end{table}
-\end{comment}
-
-\begin{table*}[!ht]
-\def\arraystretch{1.3}%
-\begin{center}
-\begin{tabular}{+l^r^r^r^r} 
-Patient ID & $p$-value & Median Difference (days) & RMSD (days) & Scaled RMSD \\ 
-\hline
-\badpat 825 & 0.52 & $\mathbf{1.1 \times 10^3}$ & $\mathbf{6.8 \times 10^3}$ & 2.3 \\
-2658 & $< 2.2 \times 10^{-15}$  & -67. & 380 & 0.20 \\
-\badpat 7259 & 0.285 & -7.70 & $\mathbf{1.2 \times 10^{3}}$ & 1.3 \\
-\badpat 7263 & 0.074 & -25. & 200 & 0.78 \\
-\badpat 7265 & 0.030 & -110 & 320 & 1.2 \\
-13333 & $2.4 \times 10^{-8}$ & 28. & 160 & 0.31 \\
-13334 & $5.8 \times 10^{-10}$ & 22. & 210 & 0.29 \\
-13336 & $9.9 \times 10^{-3}$ & 220 & 470 & 0.63 \\
-\badpat 35566 & 0.016 & 75. & 320 & 1.2 \\
-\hline
-820 & $4.8 \times 10^{-4}$ & $-1.3 \times 10^{3}$ & $1.7 \times 10^{3}$ & 0.56 \\
-821 & $< 2.2 \times 10^{-15}$ & -120. & 550 & 0.23 \\
-822 & $2.0 \times 10^{-15}$ & 130 & 690 & 0.32 \\
-824 & $< 2.2 \times 10^{-15}$ & -9.1 & 600 & 0.19 \\
-\badpat 10137 & 0.031 & 810 & 900 & 0.32 \\
-10138 & $< 2.2 \times 10^{-15}$ & -72. & 610 & 0.18 \\
-\badpat 10586 & 0.45 & $\mathbf{5.2 \times 10^3}$ & $\mathbf{7.8 \times 10^{3}}$ & 1.7 \\
-13889 & $< 2.2 \times 10^{-15}$ & -150 & 640 & 0.13 \\
-\badpat 34391 & 0.056 & -33 & 280 & 0.76 \\
-\badpat 34393 & 0.47 & 340 & 400 & 1.1 \\
-\badpat 34396 & 0.59 & -690 & 970 & 2.9 \\
-34399 & $< 2.2 \times 10^{-15}$ & 29 & 250 & 0.17 \\
-\badpat 34408 & 0.75 & $\mathbf{-2.1 \times 10^{3}}$ & $\mathbf{1.1 \times 10^{4}}$ & 21. \\
-34410 & $2.3 \times 10^{-3}$ & -16. & 590 & 1.3 \\
-\badpat 34411 & 0.39 & 210. & 410 & 0.89 \\
-10769 & $4.3 \times 10^{-5}$ & -530 & $2.5 \times 10^3$ & 1.3 \\
-16616 & $1.9 \times 10^{-6}$ & -100 & 800 & 0.31 \\
-16617 & $1.0 \times 10^{-7}$ & 75. & 550 & 0.22 \\
-16618 & $7.7 \times 10^{-12}$ & 180 & 350 & 0.15 \\
-16619 & $5.5 \times 10^{-4}$ & 480 & 730 & 0.36 \\
-\hline
-\end{tabular}
-\end{center}
-  \caption{Details of the linear models applied to the real data sets using outgroup rooting. RMSD is the root mean squared deviance. Patients where we were unable to reject the null hypothesis are marked in bold.
-   }\label{tab:patientserrorogr} 
+   Patient ID corresponds to the anonymized patient identifiers in the database.
 \end{table*}
+
+\pagebreak{}
+
+\begin{table*}
+\caption{Details of the linear models applied to the real data sets.\label{tab:patientserror} }
+%\tabletitle{Linear model details}
+\def\arraystretch{1.3}%
+\begin{center}
+\begin{tabular}{+l^r^r} 
+Patient ID & Model AIC & Null AIC \\ 
+\hline
+825 & $2.3 \times 10^{-11}$ & \\
+2658 & $2.4 \times 10^{-15}$ &\\
+\badpat 7259 & 0.085 &  \\
+\badpat 7263 & 1.00 & \\
+7265 & $0.0098$ &  \\
+13333 & $9.3 \times 10^{-10}$ &  \\
+13334 & $2.7 \times 10^{-4}$ &  \\
+13336 & $1.9 \times 10^{-12}$ &  \\
+35566 & $2.7 \times 10^{-5}$ &  \\
+\hline
+820 & -334 & -324 \\
+821 & -331 & -168 \\
+822 & -200 & -115 \\
+824 & -371 & -289 \\
+\badpat 10137 & -100 & -97.4 \\
+10138 & -364 & -253 \\
+\badpat 10586 & -80.1 & -81.6 \\
+13889 & -617 & -352 \\
+\badpat 34391 & -96.0 & -94.4 \\
+34393 & -242 & -215 \\
+\badpat 34396 & -209 & -208 \\
+34399 & -299 & -228 \\
+\badpat 34408 & -52.6 & -54.5 \\
+\badpat 34410 & -349 & -341 \\
+34411 & -231 & -200 \\
+10769 & -1090 & -1080 \\
+16616 & -91.2 & -66.4 \\
+16617 & -88.2 & -61.9 \\
+16618 & -164 & -119 \\
+\badpat 16619 & -139 & -129 \\
+\hline
+\end{tabular}
+\end{center}
+	Model AIC is the Akaike Information Criterionn (AIC) \cite{Akaike74} of the linear model and Null AIC is the AIC of the null model.
+	Median Difference is the median of the difference between predicted and actual value of the sequences from the validation set.
+	RMSD is the root mean squared deviation of the predicted and actual value of the sequences from the validation set.
+	Patients for whom we were unable to reject the null hypothesis based on a AIC difference less than 10 are marked in bold.
+\end{table*}
+
+\pagebreak{}
+
+\bibliographystyle{pnas-new}
+\bibliography{blind-dating}
 
 \end{document}
 

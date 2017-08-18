@@ -238,9 +238,9 @@ if (use.real) {
 	y.scale <- scale_y_continuous(name="Year", breaks=as.numeric(as.Date(paste0(date.ticks, "-01-01"))), labels=date.ticks, limits=as.numeric(as.Date(paste0(c(year.start, year.end), "-01-01"))))
 	x.scale.hist <- scale_x_continuous(name="Year", breaks=as.numeric(as.Date(paste0(seq(as.numeric(year.start), as.numeric(year.end)), "-01-01"))), labels=as.character(seq(as.numeric(year.start), as.numeric(year.end))))
 	
-	type.break <- c("PLASMA", "PBMC", "PBMC (cultured)", "WHOLE BLOOD")
-	type.label <- c("RNA", "DNA", "DNA", "DNA")
-	type.value <- c(16, 18, 18, 18)
+	type.break <- c("PLASMA", "PBMC", "PBMC (cultured)", "WHOLE BLOOD", "PBMC (REACTIVE)", "PBMC (CULTURE)")
+	type.label <- c("RNA", "DNA", "DNA", "DNA", "RNA", "DNA")
+	type.value <- c(16, 18, 18, 18, 16, 18)
 } else {
 	date.ticks <- as.character(seq(floor(year.start / year.by) * year.by + year.by, year.end, by=year.by))
 	x.scale <- scale_x_continuous(name="Days post simulation", breaks=date.ticks, limits=c(year.start, year.end))

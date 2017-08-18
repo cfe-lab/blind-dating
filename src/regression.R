@@ -43,7 +43,7 @@ tree <- read.tree(tree.file)
 info <- if (use.all) read.csv(info.file, stringsAsFactors=F) else read.info(info.file, tree$tip.label)
 n <- length(tree$tip.label)
 
-data <- data.frame(label=info$FULLSEQID, type=info$TYPE, censored=info$CENSORED, date=if (use.date == 1) as.numeric(as.Date(info$COLDATE)) else info$COLDATE, dist=node.depth.edgelength(tree)[if (use.all) match(info$DUPLICATE, tree$tip.label) else 1:n], stringsAsFactors=F)
+data <- data.frame(label=info$FULLSEQID, type=info$TYPE, censored=info$CENSORED, date=if (use.date == 1) as.numeric(as.Date(info$COLDATE)) else as.numeric(info$COLDATE), dist=node.depth.edgelength(tree)[if (use.all) match(info$DUPLICATE, tree$tip.label) else 1:n], stringsAsFactors=F)
 
 g <- lm(dist ~ date, data=data, subset=censored == 0)
 g.null <- lm(dist ~ 1, data=data, subset=censored == 0)

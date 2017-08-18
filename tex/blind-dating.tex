@@ -33,7 +33,6 @@
 \author[c]{Ronald Truong}
 \author[a]{Bruce Ganase}
 \author[a]{Marianne Harris}
-\author[a]{Robert Hollebakken}
 \author[a,d]{P. Richard Harrigan}
 \author[c]{R. Brad Jones}
 \author[a,b]{Mark A. Brockman}
@@ -143,6 +142,11 @@ Our LM is given by:
 	D &= a + \mu T,\label{eq:glm}
 \end{align}
 with response: $D$, the genetic distance from the root of the tree; predictor: $T$, the collection date; and parameters: $\mu$, the mutation rate and $a$, a genetic distance shift.
+We compare our LM with the null model:
+\begin{align}
+	D &= a,\label{eq:null}
+\end{align}
+to ensure that the data adequately adhere's to a molecular clock by computing the difference of the models' Akaike Information Criteria (AICs) \cite{Akaike74}.
 First we censor the provial DNA sequences and use the virion RNA sequences to calibrate the LM.
 Next we recover the provial insertion dates by computing $T(x) = \frac{D(x) - a}{\mu}$, for each proviral DNA sequence, $x$.
 More details of the method are given in the Materials and Methods.
@@ -154,31 +158,40 @@ We validated the blind-dating methodology using 50 simulated individuals with 10
 
 \section{Validation on RNA sequences from public sources}
 
+Along with validating on simulated data, we also validated using real data.
+We collected HIV \emph{env} sequences from on the Los Alamos National Laboratory HIV Database (LANL).
+
 \section{Results using DNA sequences from public sources}
+
+Next we applied our methodology to publically available data on the Los Alamos National Laboratory HIV Database (LANL) with longitudinal RNA sequences and DNA sequences.
+
 
 \section{Results using recruited patients}
 
 \subsection*{Patient 1}
-((Patient 1 intro))
+((Patient R1 intro))
 
-The blind-dating methods were applied to HIV sequences from the NEF region retrived using single-genome amplification.
+The blind-dating methods were applied to HIV sequences from the NEF region of Patient R1 retrieved using single-genome amplification.
 
 The correlation between the estimated dates for our patient using the different rooting methods --- OGR and RTT --- was 0.95 (pearson)/0.94 (spearman) and the root mean square deviation was 540 days.
 RTT optimizes the molecular clock and linear regression, where OGR is more biological motivated, therefore the high correlation is promising.
-See \cref{fig:nefdistvtime} for a comparison of the two rooting methods.
+See \cref{fig:pat1} for a comparison of the two rooting methods.
 
 \begin{figure*}
 \includegraphics{nefdistvtime}
-\caption{The distance from the root versus time.
+\caption{The genetic distance from the root versus time of the sequences collected from Patient R1.
+The dashed blue line represents blind dating's regression line and the dashed lines border its 95\% confidence interval.
+The grey shaded region indicates the time period that the patient was on HAART.
+The brown lines show the phylogenetic relationship of the sequences.
 (A) OGR (B) RTT.}
-\label{fig:nefdistvtime}
+\label{fig:pat1}
 \end{figure*}
 
 \subsection{Patient 2}
 
 
 \subsection*{Validation on RNA sequences}
-To validate our model, we restricted our NEF data set to the training RNA sequences, which are the plasma-derived RNA squences sampled while the patient was not on therapy.
+To validate our model, we restricted our Patient R1 data set to the training RNA sequences, which are the plasma-derived RNA squences sampled while the patient was not on therapy.
 We then attempted to recover the collection dates of the sequences by censoring 0, 17, 31, 47, 62, and 78 sequences at random.
 For each number of censored sequences, we ran 50 replicate trials.
 We applied the blind-dating methodology to each data set using each rooting method (OGR and RTT).
@@ -194,8 +207,8 @@ When using RTT all of the LMs fit and when using OGR all of the LMS fit except f
 \end{figure*}
 
 \subsection*{Sensitivity testing}
-We reduced the patient data set of the NEF data set to quantify the effect of the number of time points used.
-The NEF data set had 14 time points with training RNA sequences.
+We reduced the patient data set of the Patient R1 data set to quantify the effect of the number of time points used.
+The Patient R1 data set had 14 time points with training RNA sequences.
 We reduced the patient data by selecting a subset of the 14 time points at random.
 From this we generated 550 different data sets with 2--12 time points with training RNA sequences (50 data sets for each number of time points) and all 14 possible data sets with 13 time points of training RNA sequences.
 We applied the blind-dating methodology to each data set using each rooting method (OGR and RTT).
@@ -292,7 +305,7 @@ The point at which the branch leading to the outgroup intersects the rest of the
 We selected the HIV-1 B ancestral sequence reconstruction, HXB2 (accession: K03455), curated by the LANL HIV sequence database, as the outgroup sequence.
 The second method was root-to-tip regression (RTT) \cite{Korber00}, which performs an exhaustive search by re-rooting the tree at every branch to find the root that (in our experiments) maximizes the correlation between the sample collection dates and the evolutionary distance of tips from the candidate root.
 Our simulated data were only rooted using RTT; for all real data, both outgroup rooting and RTT were evaluated for rooting the phylogeny.
-For each subject in each data set, we computed the LM given in \cref{eq:glm} using the R function, lm \cite{rscript}.
+For each subject in each data set, we computed the LM given in \cref{eq:glm} and the null model using the R function, lm \cite{rscript}.
 \subsection*{Statisical Analysis}
 Error and variation were calculated with root mean squared error (RMSE).
 All statistical calculations were performed using R v3.3.3 \cite{rscript}.

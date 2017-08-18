@@ -1,4 +1,3 @@
-library(treeio)
 library(ape)
 
 raxml <- function(dnafile, parsimony.seed=NULL, bootstrap.seed=NULL, executable='raxmlHPC', threads=10, N=10, name='raxml', clear=TRUE, model="GTRGAMMA", tmp=TRUE) {
@@ -46,7 +45,6 @@ raxml <- function(dnafile, parsimony.seed=NULL, bootstrap.seed=NULL, executable=
 	system(cmd3)
 
 	tr <- read.tree(sprintf('RAxML_bipartitions.%s', name))
-	best.tree <- read.raxml(sprintf('RAXML_bipartitionsBranchLabels.%s', name))
 	
 	if(clear) {
 		cwd <- dir()
@@ -58,5 +56,5 @@ raxml <- function(dnafile, parsimony.seed=NULL, bootstrap.seed=NULL, executable=
 			unlink(new.wd)
 	}
 	
-	list(tr, best.tree)
+	tr
 }
