@@ -21,6 +21,16 @@ if (any(grep("--file=", args.all))) {
 
 source(file.path(source.dir, 'read.info.R'), chdir=T)
 
+concord <- function(x, y) {
+	mu.x <- sum(x) / length(x)
+	mu.y <- sum(y) / length(y)
+	s.x <- sum((x - mu.x)^2) / length(x) 
+	s.y <-  sum((y - mu.y)^2) / length(y)
+	s.xy <- sum((x - mu.x) * (y - mu.y)) / length(y)
+	
+	2 * s.xy / (s.x + s.y - (mu.x - mu.y)^2)
+}
+
 op <- OptionParser()
 op <- add_option(op, "--tree", type='character')
 op <- add_option(op, "--info", type='character')
@@ -80,7 +90,8 @@ stats <- data.frame(
 	cens.RMSD=sqrt(sum(data$date.diff^2)/nrow(data)),
 	train.MAE=sum(abs(data$date.diff[data$censored == 0]))/sum(data$censored == 0),
 	cens.MAE=sum(abs(data$date.diff[data$censored == 1]))/sum(data$censored == 1),
-	tot.MAE=sum(abs(data$date.diff))/nrow(data)
+	tot.MAE=sum(abs(data$date.diff))/nrow(data),
+	tot.concord=concord(data$date, data$est.date)
 )
 stats.col.names <- c(
 	"Patient",
@@ -108,7 +119,8 @@ stats.col.names <- c(
 	"Total RMSD",
 	"Training MAE",
 	"Censored MAE",
-	"Total MAE"
+	"Total MAE",
+	"Total Concordance"
 )
 write.table(stats, stats.file, col.names=stats.col.names, row.names=F, sep=",")
 

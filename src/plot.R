@@ -24,6 +24,14 @@ get.child.edges <- function(tree, node) {
 		NULL
 }
 
+get.parent.edges <- function(tree, node) {
+	e <- which(tree$edge[, 2] %in% node)
+	if (length(e) > 0)
+		c(e, get.child.edges(tree, tree$edge[e, 1]))
+	else
+		NULL
+}
+
 apply.axes <- function(p, flipped, scaled) {
 	if (scaled) {
 		if (flipped) {
@@ -36,7 +44,7 @@ apply.axes <- function(p, flipped, scaled) {
 #				geom_path(aes(y=date, x=ci.low), data=data.ci, linetype=3, colour="#0060b080")
 			if (use.real) {
 				if (is.na(therapy2))
-					p$layers <- c(geom_rect(ymin=as.numeric(THERAPY_START), ymax=Inf, xmin=-Inf, xmax=Inf, fill=THERAPY.COL, linetype=2), p$layers)
+					p$layers <- c(geom_rect(ymin=as.numeric(THERAPY_START), ymax=Inf, xmin=-Inf, xmax=Inf, fill="#80808010", linetype=2), p$layers)
 				else {
 					p$layers <- c(
 						geom_rect(ymin=as.numeric(THERAPY_START), ymax=as.numeric(therapy2), xmin=-Inf, xmax=Inf, fill="#a0a0a010", linetype=0),
@@ -95,7 +103,7 @@ apply.theme <- function(p, flipped=F, scaled=T) {
 		    panel.grid.minor=element_blank()
 		) +
 		scale_shape_manual(name="", breaks=type.label, labels=type.label, values=type.value, limits=type.label) +
-		scale_colour_manual(name="", breaks=c(0, 1), labels=c("Training", "Censored"), values=c('black', 'red'), limits=c(0, 1)) +
+		scale_colour_manual(name="", breaks=c(0, -1, 1), labels=c("Training", "Training 2", "Censored"), values=c('black', 'darkblue', 'red'), limits=c(0, -1, 1)) +
 #		scale_size_manual(name="", breaks=c(0, 1), labels=c("Training", "Censored"), values=c(1.67, 2), limits=c(0, 1)) +
 		guides(shape=guide_legend(order=2), colour=guide_legend(override.aes=list(shape=15, size=2), order=1)),
 		flipped, scaled)
@@ -176,15 +184,20 @@ if (!is.na(pat.id2)) {
 	p.2 <- predict(g.2, data.frame(date=ci.dates), interval='confidence')
 	data.ci <- as.data.frame(cbind(data.ci, ci.low.2=p.2[,2], ci.high.2=p.2[,3]))
 	
-	mu <- rep(stats[, "Model.Slope"], nrow(tree$edge))
+	mu <- rep(stats.2[, "Model.Slope"], nrow(tree$edge))
+	first.edges <- unique(unlist(lapply(which(data$censored == 0), get.parent.edges, tree=tree)))
+	mu[first.edges] <- stats[, "Model.Slope"]
+	
+#	mu <- rep(stats[, "Model.Slope"], nrow(tree$edge))
 	clade <- get.child.edges(tree, getMRCA(tree, data$tip.label[data$censored == -1]))
-	mu[clade] <- stats.2[, "Model.Slope"]
+#	mu[clade] <- stats.2[, "Model.Slope"]
 	clade.tips <- tree$edge[clade, 2]
 	clade.tips <- clade.tips[clade.tips <= length(tree$tip.label)]
 		
 	data.old <- data
 	data[clade.tips, ] <- data.2[clade.tips, ]
-	data[data$censored == -1, ] <- data.old[data$censored == -1, ]
+	data[data.old$censored == -1, "censored"] <- -1
+	data[data.old$censored == 0, ] <- data.old[data.old$censored == 0, ]
 	write.table(data, paste0("stats/", pat.id, ".comb.data.csv"), col.names=c("ID", "Type", "Censored", "Collection Date", "Divergence", "Estimated Date", "Date Difference"), row.names=F, sep=",")
 	
 	stats$Minimum.Time.Point <- min(stats$Mimimum.Time.Point, stats.2$Minimum.Time.Point)
@@ -240,7 +253,7 @@ if (use.real) {
 	
 	type.break <- c("PLASMA", "PBMC", "PBMC (cultured)", "WHOLE BLOOD", "PBMC (REACTIVE)", "PBMC (CULTURE)")
 	type.label <- c("RNA", "DNA", "DNA", "DNA", "RNA", "DNA")
-	type.value <- c(16, 18, 18, 18, 16, 18)
+	type.value <- c(16, 5, 5, 5, 16, 5)
 } else {
 	date.ticks <- as.character(seq(floor(year.start / year.by) * year.by + year.by, year.end, by=year.by))
 	x.scale <- scale_x_continuous(name="Days post simulation", breaks=date.ticks, limits=c(year.start, year.end))
@@ -249,7 +262,7 @@ if (use.real) {
 	
 	type.break <- c("Training", "Censored")
 	type.label <- c("Training", "Censored")
-	type.value <- c('black', 'red')
+	type.value <- c(16, 5)
 }
 
 data$type <- type.label[match(data$type, type.break)]
@@ -258,7 +271,7 @@ type.mask <- type.label %in% data$type
 type.label <- unique(type.label[type.mask])
 type.value <- unique(type.value[type.mask])
 
-node.dates <- estimate.dates(tree, c(data$date, stats$Estimated.Root.Date, rep(NA, tree$Nnode - 1)), mu, node.mask=length(tree$tip.label) + 1, lik.tol=0, nsteps=100, show.steps=100, opt.tol=1e-16)
+node.dates <- estimate.dates(tree, c(data$date, stats$Estimated.Root.Date, rep(NA, tree$Nnode - 1)), mu, node.mask=length(tree$tip.label) + 1, lik.tol=0, nsteps=1000, show.steps=100, opt.tol=1e-16)
 
 data.all <- as.data.frame(cbind(rbind(data, data.frame(tip.label=paste0("N.", 1:tree$Nnode), type="NODE", censored=NA, date=NA, dist=node.depth.edgelength(tree)[1:tree$Nnode + nrow(data)], est.date=NA, date.diff=NA)), node.date=node.dates))
 

@@ -153,8 +153,8 @@ More details of the method are given in the Materials and Methods.
 
 \section{Validation on simulated data}
 
-We validated the blind-dating methodology using 50 simulated individuals with 100 simulated HIV RNA sequences created using the methods in the Materials and Methods.
-
+We validated the blind-dating methodology using 50 simulated individuals with 100 simulated HIV RNA sequences.
+Details are in the Supplementary Materials.
 
 \section{Validation on RNA sequences from public sources}
 
@@ -190,13 +190,13 @@ The brown lines show the phylogenetic relationship of the sequences.
 \subsection{Patient 2}
 
 
-\subsection*{Validation on RNA sequences}
+\subsection*{Sensitivity testing}
 To validate our model, we restricted our Patient R1 data set to the training RNA sequences, which are the plasma-derived RNA squences sampled while the patient was not on therapy.
 We then attempted to recover the collection dates of the sequences by censoring 0, 17, 31, 47, 62, and 78 sequences at random.
 For each number of censored sequences, we ran 50 replicate trials.
 We applied the blind-dating methodology to each data set using each rooting method (OGR and RTT).
 
-Almost all of the LM fits were successful based on an AIC diference of 10 between the LM and the null model.
+Almost all of the LM fits were successful based on an AIC diference of 5 between the LM and the null model.
 When using RTT all of the LMs fit and when using OGR all of the LMS fit except for 2 of the data sets with 78 censored sequences.
 
 \begin{figure*}
@@ -206,14 +206,13 @@ When using RTT all of the LMs fit and when using OGR all of the LMS fit except f
 \label{fig:validation}
 \end{figure*}
 
-\subsection*{Sensitivity testing}
 We reduced the patient data set of the Patient R1 data set to quantify the effect of the number of time points used.
 The Patient R1 data set had 14 time points with training RNA sequences.
 We reduced the patient data by selecting a subset of the 14 time points at random.
 From this we generated 550 different data sets with 2--12 time points with training RNA sequences (50 data sets for each number of time points) and all 14 possible data sets with 13 time points of training RNA sequences.
 We applied the blind-dating methodology to each data set using each rooting method (OGR and RTT).
 
-Most of the LM fits were successful based on an AIC diference of 10 between the LM and the null model.
+Most of the LM fits were successful based on an AIC diference of 5 between the LM and the null model.
 When 6 or more time points of RNA training sequences were used, both rooting methods always produced LMs that fit.
 36, 46, 47, and 49 of the 50 data sets produced LMs that fit using RTT with 2, 3, 4, and 5 time points of RNA training sequences.
 Similarly, 35, 46, 45, and 49 of the 50 data sets produced LMs that fit using OGR with 2, 3, 4, and 5 time points of RNA training sequences. 

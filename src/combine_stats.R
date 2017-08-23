@@ -18,7 +18,13 @@ if (any(grep("--file=", args.all))) {
 	}
 }
 
-compare.dates <- function(data, ori.data, f, ...) {
+compare.dates <- function(data, ori.data, censor, f, ...) {
+	if (censored) {
+
+		data <- subset(data, censored == 1)
+		ori.data <- subset(ori.data, censored == 1)
+	}
+
 	m <- match(data$label, ori.data$label)
 	dna <- which(data$censored == 1)
 	ori.dna <- m[dna]
@@ -26,46 +32,41 @@ compare.dates <- function(data, ori.data, f, ...) {
 	f(data[dna, 'est.date'], ori.data[ori.dna, 'est.date'], ...)
 }
 
-avg.var <- function(data) {
-	dna <- data[[1]][which(data[[1]]$censored == 1), 'label']
-		
-	est.date <- do.call(rbind, lapply(data, function(x) x[match(dna, x$label), 'est.date']))
-		
-	mean(apply(est.date, 1, sd))
+concord <- function(x, y) {
+	mu.x <- sum(x) / length(x)
+	mu.y <- sum(y) / length(y)
+	s.x <- sum((x - mu.x)^2) / length(x) 
+	s.y <-  sum((y - mu.y)^2) / length(y)
+	s.xy <- sum((x - mu.x) * (y - mu.y)) / length(y)
+	
+	2 * s.xy / (s.x + s.y - (mu.x - mu.y)^2)
 }
-
-avg.good.var <- function(data, stats) {
-	dna <- data[[1]][which(data[[1]]$censored == 1), 'label']
-	good.data <- which(stats$null.AIC - stats$AIC > 10 & stats$Model.Slope > 0)
-		
-	if (length(good.data) > 0) {
-		est.date <- do.call(rbind, lapply(data[good.data], function(x) x[match(dna, x$label), 'est.date']))
-		
-		mean(apply(est.date, 1, sd))
-	} else
-		0
-}
-
 
 args <- commandArgs(T)
 
 stats.dir <- args[1]
 ori.data.file <- args[2]
 output.stats <- args[3]
+filt <- args[4]
 
-stats <- do.call(rbind, lapply(dir(stats.dir, "*stats*", full.names=T), read.csv, stringsAsFactors=F))
-data <- lapply(dir(stats.dir, "*data*", full.names=T), read.csv, col.names=c("label", "type", "censored", "date", "dist", "est.date", "date.diff"), stringsAsFactors=F)
+files <- dir(stats.dir, filt, full.names=T)
+stats <- do.call(rbind, lapply(files, read.csv, stringsAsFactors=F))
+data <- lapply(gsub("stats\\.", "data.", files), read.csv, col.names=c("label", "type", "censored", "date", "dist", "est.date", "date.diff", "ci.low", "ci.high"), stringsAsFactors=F)
 
-ori.data <- read.csv(ori.data.file, col.names=c("label", "type", "censored", "date", "dist", "est.date", "date.diff"), stringsAsFactors=F)
+ori.data <- read.csv(ori.data.file, col.names=c("label", "type", "censored", "date", "dist", "est.date", "date.diff", "ci.low", "ci.high"), stringsAsFactors=F)
 
-rmses <- unlist(lapply(data, compare.dates, ori.data, function(x, y) sqrt(sum((x - y)^2)/length(x))))
-maes <- unlist(lapply(data, compare.dates, ori.data, function(x, y) sum(abs(x - y))/length(x)))
-cors <- unlist(lapply(data, compare.dates, ori.data, cor, method='pearson'))
-cors.s <- unlist(lapply(data, compare.dates, ori.data, cor, method='spearman'))
-avg.vars <- avg.var(data)
-avg.good.vars <- avg.good.var(data, stats)
+#rmses <- tryCatch(unlist(lapply(data, compare.dates, ori.data, F, function(x, y) sqrt(sum((x - y)^2)/length(x)))), exception=function(e) NA)
+#maes <- tryCatch(unlist(lapply(data, compare.dates, ori.data, F, function(x, y) sum(abs(x - y))/length(x))), exception=function(e) NA)
+#cors <- tryCatch(unlist(lapply(data, compare.dates, ori.data, F, cor, method='pearson')), exception=function(e) NA)
+#cors.s <- tryCatch(unlist(lapply(data, compare.dates, ori.data, F, cor, method='spearman')), exception=function(e) NA)
+#concord <- tryCatch(unlist(lapply(data, compare.dates, ori.data, F, concord)), exception=function(e) NA)
+rmses.cens <- tryCatch(unlist(lapply(data, compare.dates, ori.data, T, function(x, y) sqrt(sum((x - y)^2)/length(x)))), exception=function(e) NA)
+maes.cens <- tryCatch(unlist(lapply(data, compare.dates, ori.data, T, function(x, y) sum(abs(x - y))/length(x))), exception=function(e) NA)
+cors.cens <- tryCatch(unlist(lapply(data, compare.dates, ori.data, T, cor, method='pearson')), exception=function(e) NA)
+cors.s.cens <- tryCatch(unlist(lapply(data, compare.dates, ori.data, T, cor, method='spearman')), exception=function(e) NA)
+concord.cens <- tryCatch(unlist(lapply(data, compare.dates, ori.data, T, concord)), exception=function(e) NA)
 
-stats <- as.data.frame(cbind(stats, full.rmse=rmses, full.mae=maes, full.cor=cors, spearman.cor=cors.s, avg.var=avg.vars, avg.good.var=avg.good.vars))
+stats <- as.data.frame(cbind(stats, full.rmse.cens=rmses.cens, full.mae.cens=maes.cens, full.cor.cens=cors.cens, spearman.cor.cens=cors.s.cens, concord.cens=concord.cens), stringsAsFactors=F)
 stats.col.names <- c(
 	"Patient",
 	"Training Samples",
@@ -89,13 +90,15 @@ stats.col.names <- c(
 	"Estimated Root Date",
 	"Training RMSE",
 	"Censored RMSD",
+	"Total RMSD"
 	"Training MAE",
 	"Censored MAE",
-	"Original RMSE",
-	"Original MAE",
-	"Original Correlation (Pearson)",
-	"Original Correlation (Spearman)",
-	"Average Estimated Deviation",
-	"Average Estimated Deviation (Convergent)"
+	"Total MAE",
+	"Total Concordance"
+	"Original RMSE (Censored)",
+	"Original MAE (Censored)",
+	"Original Correlation (Pearson, Censored)",
+	"Original Correlation (Spearman, Censored)",
+	"Original Concordance (Lin, Censored)"
 )
 write.table(stats, output.stats, row.names=F, col.names=stats.col.names, sep=",")
