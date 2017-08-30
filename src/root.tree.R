@@ -33,7 +33,7 @@ method <- "correlation"
 tree.read <- function(tr) {	
 	tree <- read.tree(paste(tr, sep='/'))
 		
-	if (sum("REFERENCE" == tree$tip.label) > 0) {
+	if (any("REFERENCE" == tree$tip.label)) {
 		if (use.rtt)			
 			drop.tip(tree, "REFERENCE")
 		else
@@ -45,9 +45,12 @@ tree.read <- function(tr) {
 }
 
 tree <- tree.read(tree.file)
-info <- read.info(info.file, tree$tip.label)
-plasma.dates <-  if (use.date == 1) as.numeric(as.Date(info$COLDATE)) else info$COLDATE
-tip.type <- info$CENSORED
+
+if (use.rtt) {
+	info <- read.info(info.file, tree$tip.label)
+	plasma.dates <-  if (use.date == 1) as.numeric(as.Date(info$COLDATE)) else info$COLDATE
+	tip.type <- info$CENSORED
+}
 	
 if (use.rtt == 1)
 	plasma.dates[tip.type != 0] <- NA

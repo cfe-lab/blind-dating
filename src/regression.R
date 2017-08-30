@@ -28,7 +28,7 @@ concord <- function(x, y) {
 	s.y <-  sum((y - mu.y)^2) / length(y)
 	s.xy <- sum((x - mu.x) * (y - mu.y)) / length(y)
 	
-	2 * s.xy / (s.x + s.y - (mu.x - mu.y)^2)
+	2 * s.xy / (s.x + s.y + (mu.x - mu.y)^2)
 }
 
 op <- OptionParser()

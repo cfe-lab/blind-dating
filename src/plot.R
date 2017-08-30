@@ -8,9 +8,10 @@ library(optparse)
 source("~/git/node.dating/src/node.dating.R")
 
 
-THERAPY.COL <- "#80808010"
+THERAPY_COLOUR <- "#a0a0a010"
+THERAPY_COLOUR2 <- "#c0c0c010"
 
-pdf.options(family="Helvetica", fonts="Helvetica", width=3.15, height=3.15, colormodel='rgb')
+pdf.options(family="Helvetica", fonts="Helvetica", width=7, height=7, colormodel='rgb')
 
 get.date <- function(date) {
 	as.character(as.Date(date, origin=as.Date("1970-01-01")))
@@ -44,11 +45,11 @@ apply.axes <- function(p, flipped, scaled) {
 #				geom_path(aes(y=date, x=ci.low), data=data.ci, linetype=3, colour="#0060b080")
 			if (use.real) {
 				if (is.na(therapy2))
-					p$layers <- c(geom_rect(ymin=as.numeric(THERAPY_START), ymax=Inf, xmin=-Inf, xmax=Inf, fill="#80808010", linetype=2), p$layers)
+					p$layers <- c(geom_rect(ymin=as.numeric(THERAPY_START), ymax=Inf, xmin=-Inf, xmax=Inf, fill=THERAPY_COLOUR, linetype=2), p$layers)
 				else {
 					p$layers <- c(
-						geom_rect(ymin=as.numeric(THERAPY_START), ymax=as.numeric(therapy2), xmin=-Inf, xmax=Inf, fill="#a0a0a010", linetype=0),
-						geom_rect(ymin=as.numeric(therapy2), ymax=Inf, xmin=-Inf, xmax=Inf, fill="#80808010", linetype=0),
+						geom_rect(ymin=as.numeric(THERAPY_START), ymax=as.numeric(therapyend), xmin=-Inf, xmax=Inf, fill=if (therapyend == therapy2) THERAPY_COLOUR2 else THERAPY_COLOUR, linetype=0),
+						geom_rect(ymin=as.numeric(therapy2), ymax=Inf, xmin=-Inf, xmax=Inf, fill=THERAPY_COLOUR, linetype=0),
 						p$layers
 					)
 				}
@@ -67,11 +68,11 @@ apply.axes <- function(p, flipped, scaled) {
 #				geom_path(aes(x=date, y=ci.low), data=data.ci, linetype=3, colour="#0060b080")
 			if (use.real) {
 				if (is.na(therapy2))
-					p$layers <- c(geom_rect(xmin=as.numeric(THERAPY_START), xmax=Inf, ymin=-Inf, ymax=Inf, fill="#80808010", linetype=0), p$layers)
+					p$layers <- c(geom_rect(xmin=as.numeric(THERAPY_START), xmax=Inf, ymin=-Inf, ymax=Inf, fill=THERAPY_COLOUR, linetype=0), p$layers)
 				else {
 					p$layers <- c(
-						geom_rect(xmin=as.numeric(THERAPY_START), xmax=as.numeric(therapy2), ymin=-Inf, ymax=Inf, fill="#a0a0a010", linetype=0),
-						geom_rect(xmin=as.numeric(therapy2), xmax=Inf, ymin=-Inf, ymax=Inf, fill="#80808010", linetype=0),
+						geom_rect(xmin=as.numeric(THERAPY_START), xmax=as.numeric(therapyend), ymin=-Inf, ymax=Inf, fill=if (therapyend == therapy2) THERAPY_COLOUR2 else THERAPY_COLOUR, linetype=0),
+						geom_rect(xmin=as.numeric(therapy2), xmax=Inf, ymin=-Inf, ymax=Inf, fill=THERAPY_COLOUR, linetype=0),
 						p$layers
 					)
 				}
@@ -89,23 +90,24 @@ apply.axes <- function(p, flipped, scaled) {
 apply.theme <- function(p, flipped=F, scaled=T) {
 	apply.axes(p + theme_bw() +
 		theme(
-			text=element_text(size=10),
-			axis.text=element_text(size=10),
-			legend.text=element_text(size=10),
-			legend.position=c(.02, 1),
+			text=element_text(size=40),
+			axis.text=element_text(size=35, colour='black'),
+			legend.text=element_text(size=35),
+			legend.position=c(.02, 1.05),
 			legend.justification=c(0, 1),
 			legend.spacing=unit(0, 'cm'),
 			legend.margin=margin(0, 0, 0, 0, 'cm'),
-			legend.key.size=unit(.35, 'cm'),
+			legend.key.size=unit(1.2, 'cm'),
+			legend.key=element_rect(fill="#00000000", colour="#00000000"),
 			legend.background=element_blank(),
 			legend.box.background=element_blank(),
 			panel.grid.major=element_blank(),
 		    panel.grid.minor=element_blank()
 		) +
 		scale_shape_manual(name="", breaks=type.label, labels=type.label, values=type.value, limits=type.label) +
-		scale_colour_manual(name="", breaks=c(0, -1, 1), labels=c("Training", "Training 2", "Censored"), values=c('black', 'darkblue', 'red'), limits=c(0, -1, 1)) +
+		scale_colour_manual(name="", breaks=colour.break, labels=colour.label, values=colour.value, limits=colour.break) +
 #		scale_size_manual(name="", breaks=c(0, 1), labels=c("Training", "Censored"), values=c(1.67, 2), limits=c(0, 1)) +
-		guides(shape=guide_legend(order=2), colour=guide_legend(override.aes=list(shape=15, size=2), order=1)),
+		guides(shape=guide_legend(order=2), colour=guide_legend(override.aes=list(shape=15, size=10), order=1)),
 		flipped, scaled)
 }
 
@@ -122,6 +124,7 @@ op <- add_option(op, "--yearend", type='character')
 op <- add_option(op, "--yearby", type='double', default=5)
 op <- add_option(op, "--therapy", type='character', default="0000-01-01")
 op <- add_option(op, "--therapy2", type='character', default=NA)
+op <- add_option(op, "--therapyend", type='character', default=NA)
 op <- add_option(op, "--liktol", type='numeric', default=1e-3)
 op <- add_option(op, "--usedups", type='logical', action='store_true', default=F)
 args <- parse_args(op)
@@ -135,6 +138,7 @@ dist.max <- args$distmax
 dist.by <- args$distby
 LIK_TOL <- args$liktol
 therapy2 <- args$therapy2
+therapyend <- args$therapyend
 if (use.real) {
 	year.start <- args$yearstart
 	year.end <- args$yearend
@@ -146,7 +150,11 @@ if (use.real) {
 if (!is.na(therapy2)) {
 	therapy2 <- as.Date(therapy2)
 }
-
+if (is.na(therapyend)) {
+	therapyend <- therapy2
+} else {
+	therapyend <- as.Date(therapyend)
+}
 year.by <- args$yearby
 
 data.file <- paste0("stats/", pat.id, ".data.csv")
@@ -242,8 +250,17 @@ if (!is.na(pat.id2)) {
 		"Training RMSE 2"
 	)
 	write.table(stats, paste0("stats/", pat.id, ".comb.stats.csv"), row.names=F, col.names=stats.col.names, sep=",")
-} else
+
+	colour.break <- c(0, -1, 1)
+	colour.label <- c("Training", "Training 2", "Censored")
+	colour.value <- c('black', 'darkblue', 'red')
+} else {
 	mu <- stats[, "Model.Slope"]
+
+	colour.break <- c(0, 1)
+	colour.label <- c("Training", "Censored")
+	colour.value <- c('black', 'red')
+}
 
 if (use.real) {
 	date.ticks <- as.character(seq(floor(as.numeric(year.start) / year.by) * year.by + year.by, as.numeric(year.end), by=year.by))
@@ -279,18 +296,18 @@ ptree <- phylo4d(tree, all.data=data.all)
 
 pdf(pdf.file)
 apply.theme(ggplot(data) +
-	geom_point(aes(x=date, y=dist, colour=factor(censored), shape=type)))
+	geom_point(aes(x=date, y=dist, colour=factor(censored), shape=type), size=6))
 dev.off()
 
 pdf(pdf.disttree.file)
-apply.theme(ggtree(ptree, colour="#49494980", size=.3, ladderize=T) +
+apply.theme(ggtree(ptree, colour="#49494980", size=.6, ladderize=T) +
 #	geom_tiplab(colour="#49494980", angle=90, hjust=-.1, size=1) + 
-	geom_tippoint(aes(colour=factor(censored), shape=type)), flipped=F, scaled=F)
+	geom_tippoint(aes(colour=factor(censored), shape=type), size=6), flipped=F, scaled=F)
 dev.off()
 
 pdf(pdf.tree.file)
-apply.theme(ggtree(ptree, yscale="node.date", colour="#70301580", size=.1, ladderize=F) +
-	geom_tippoint(aes(colour=factor(censored), shape=type)),
+apply.theme(ggtree(ptree, yscale="node.date", colour="#6d4d4180", size=.4, ladderize=F) +
+	geom_tippoint(aes(colour=factor(censored), shape=type), size=6),
 	flipped=T)
 dev.off()
 

@@ -151,14 +151,12 @@ First we censor the provial DNA sequences and use the virion RNA sequences to ca
 Next we recover the provial insertion dates by computing $T(x) = \frac{D(x) - a}{\mu}$, for each proviral DNA sequence, $x$.
 More details of the method are given in the Materials and Methods.
 
-\section{Validation on simulated data}
+\section{Validation}
 
-We validated the blind-dating methodology using 50 simulated individuals with 100 simulated HIV RNA sequences.
-Details are in the Supplementary Materials.
+First, we validated our methodology using simulated data.
+Our method performed very well on the simulated data, details are in the Supplementary materials.
 
-\section{Validation on RNA sequences from public sources}
-
-Along with validating on simulated data, we also validated using real data.
+New we validated using real data.
 We collected HIV \emph{env} sequences from on the Los Alamos National Laboratory HIV Database (LANL).
 
 \section{Results using DNA sequences from public sources}
@@ -244,23 +242,6 @@ Here we offer a simple and accurate method to recover insertion date of reservoi
 Future work will utilize deep sequencing data.
 
 \matmethods{
-\subsection*{Simulated data}
-To characterize sources of error in reconstructing dates on tips of a phylogeny, we generated phylogenetic trees by direct simulation. % and from the plasma data sets.
-First, we generated phylogenies with 100 tips each under a birth-death model with serial sampling using the \emph{sim.bdsky.stt} function in the \textit{R} package \textit{TreeSim} \cite{Boskova14}.
-Birth-death models have been applied to studying speciation processes \cite{Nee:2006} and infectious disease epidemics \cite{Stradler13}, but have only recently been used to model the proliferation of virus lineages in cell populations \cite{Hartfield:2015}.
-%% This paragraph needs to be rewritten
-The birth-death model was parametrized by fitting this model to samples from the {\em plasma} dataset.
-%% we may need to provide some justification for using BD
-%To assess the sensitivity of our method, we first simulated HIV sequence data sets without viral latency.
-We used BEAST version 2.3.2 \cite{BEAST2} to estimate the posterior distribution defined by the serial model with a Bayesian skyline \cite{Stadler13}, a strict molecular clock, and the HKY85 \cite{HKY85} model of nucleotide substitution.
-%Using this approach, we generated samples of trees for each sequence alignment in the plasma dataset.
-%From these simulations, we evaluated the accuracy of predicting sample collection times from a strict molecular clock model that was fit to a training subset of these data.
-The lineage birth rate, death rate and sampling probability were estimated to be: $\lambda = 5.12 \times 10^{-2}$ day$^{-1}$, $\delta = 5.01 \times 10^{-2}$ day$^{-1}$, $s = 5.24 \times 10^{-3}$ respectively.
-We used the \textit{R} package, \emph{NELSI} \cite{NELSI}, to assign rates of evolution to these trees by drawing values from a Gaussian distribution with a mean rate $\mu = \ 1.96\times 10^{-4}$ substitutions per generation and standard deviation $\sigma = \ 1.42\times 10^{-5}$. %; Figure \ref{fig:seedtree} for an example).
-To model uncertainty in phylogenetic reconstruction from sequence variation, we simulated sequence evolution along each birth-death tree with INDELible version 1.03 \cite{Indelible09} under an HKY85 \cite{HKY85} model of nucleotide substitution.
-Parameters for the substitution model were set to empirical estimates derived from previously published HIV within-host data sets \cite{McCloskey14}. 
-Specifically, the stationary distribution was set to 0.42, 0.15, 0.15, 0.28 for the nucleotides A, C, G and T, respectively, and the transition bias parameter was set to 8.5.
-Using this approach, we generated a total of 50 replicate subjects
 \subsection*{Data collection from public sources}
 We collected two sets of data from the Los Alamos National Laboratory HIV sequence database (LANL).
 The first we refer to as the {\em plasma} data set, which comprised of sequences derived from viral RNA from longitudinal plasma samples \cite{McCloskey14}. 
@@ -272,10 +253,10 @@ The purpose of the plasma data set was to provide representative samples of with
 The second data set, referred to as the {\em mixed} data set, contained sequences from studies in which both plasma HIV RNA and cellular HIV DNA had been collected from the same individual.
 We used the advanced search interface of the Los Alamos National Laboratory (LANL) HIV Sequence Database \cite{LosAlamos} to identify published data sets representing individuals with both HIV RNA and cellular DNA sequences.
 %% what do you mean by "well-characterized"?
-From these results, we manually selected 20 individuals that had well-characterized partial {\em env} sequences and plasma samples from at least 2 RNA time points and 3 DNA time points. 
+From these results, we manually selected 19 individuals that had well-characterized partial {\em env} sequences and plasma samples from at least 2 RNA time points and 3 DNA time points. 
 %We also required that at least 1 RNA time point fell between 2 DNA time points in each individual
 There were no other selection criteria on the time between sample collection dates. 
-A total of 1,017 partial {\em env} RNA sequences from blood plasma, and 1,799 partial {\em env} DNA sequences from PBMC cells were used in our analysis. 
+A total of 1,012 partial {\em env} RNA sequences from blood plasma, and 1,726 partial {\em env} DNA sequences from PBMC cells were used in our analysis. 
 We utilized samples from treatment naive individuals from \cite{Shankarappa99, Novitsky09} and samples from individuals that had been intermittently treated via HAART from \cite{Llewellyn06,Fischer04}. 
 See Table \ref{tab:patients} for details on the patients from these data sets.
 \subsection*{Data collection and sequencing of recruited patients}
@@ -283,10 +264,9 @@ See Table \ref{tab:patients} for details on the patients from these data sets.
 ((Sequencing.))
 ((Check for recombination/hypermutation.))
 \subsection*{Alignment}
-The sequences rertueved from LANL and the sequences from the reruited patients were aligned using MUSCLE v3.8.31 \cite{muscle} and inspected and cleaned with AliView v1.18 \cite{aliview}.
-For each pair of identical sequences, we retained only one copy.
-There was one instance where there was a triplet of RNA sequences that were collected at two different time points.
-For this triplet we kept one sequence from the earlier time point.
+The sequences retrieved from LANL and the sequences from the reruited patients were aligned using MUSCLE v3.8.31 \cite{muscle} and inspected and cleaned with AliView v1.18 \cite{aliview}.
+For each group of identical sequences, we chose one sequence as a representative.
+These reprwsentatives were chosen among the the earliest collected plasma-derived sequences or earliest collected sequence is there were no plasma-derived sequences in the group.
 %\subsection*{Simulated data generation}
 %To characterize sources of error in reconstructing dates on tips of a phylogeny, we generated phylogenetic trees by direct simulation.
 %We generated phylogenies with 50 tips each under a birth-death model with serial sampling using the sim.bdsky.stt function in the R package TreeSim v2.3.

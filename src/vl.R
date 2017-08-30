@@ -1,72 +1,117 @@
-pdf.options(family="Helvetica", fonts="Helvetica", width=7, height=3.15, colormodel='rgb')
+pdf.options(family="Helvetica", fonts="Helvetica", width=14, height=6, colormodel='rgb')
+
+THERAPY_COLOUR <- "#a0a0a010"
+THERAPY_COLOUR2 <- "#c0c0c010"
 
 p <- ggplot(data, aes(x=Date, y=VL))
-p <- p + geom_rect(xmin=as.numeric(as.Date("2006-08-01"), origin="1970-01-01"), xmax=Inf, ymin=-Inf, ymax=Inf, fill="#80808010")
+p <- p + geom_rect(xmin=as.numeric(as.Date("1997-08-01"), origin="1970-01-01"), xmax=as.numeric(as.Date("1997-11-01"), origin="1970-01-01"), ymin=-Inf, ymax=Inf, fill=THERAPY_COLOUR)
+p <- p + geom_rect(xmin=as.numeric(as.Date("2006-08-01"), origin="1970-01-01"), xmax=Inf, ymin=-Inf, ymax=Inf, fill=THERAPY_COLOUR)
 p <- p + geom_line(size=.5) 
-p <- p + scale_y_log10(name="Viral load", breaks=10^(1:5), labels=sapply(1:5, function(x) bquote(''*10^{.(x)}*'')))
-p <- p + scale_x_date(name="Year", breaks=as.Date(paste0(seq(1992, 2017, by=4), "-01-01")), labels=seq(1992, 2017, by=4))
+p <- p + scale_y_log10(name="Viral load", breaks=10^c(1, 3, 5), labels=c("10", "1000", "100000")) #sapply(c(1, 3, 5), function(x) bquote(''*10^{.(x)}*''))
+p <- p + scale_x_date(name="Collection Year", breaks=as.Date(paste0(seq(1990, 2017, by=5), "-01-01")), labels=seq(1990, 2017, by=5))
 p <- p + coord_cartesian(ylim=c(10, 100000), xlim=as.Date(c("1997-01-01", "2017-01-01")))
 p <- p + theme_bw()
-p <- p + geom_point(aes(colour=factor(Censored), shape=Type), data=subset(data, Used != ""), size=2.5)
+p <- p + geom_point(aes(colour=factor(Censored), shape=Type), data=subset(data, Used != ""), size=8)
 p <- p + theme(
 	legend.justification=c(1, 1),
-	legend.position=c(.98,.98),
-	legend.spacing=unit(.25, 'cm'),
-	legend.margin=margin(.05, .05, .05, .05, 'cm'),
-	legend.key.size=unit(.25, 'cm'),
-	legend.box.background=element_rect(fill="white", colour="white"),	
-	text=element_text(size=10),
-	axis.text=element_text(size=9),
-	panel.grid=element_blank()
+	legend.position=c(.98,1),
+	legend.spacing=unit(0, 'cm'),
+	legend.margin=margin(.0, .0, .0, .0, 'cm'),
+	legend.box.background=element_blank(),
+	text=element_text(size=40),
+	legend.key.size=unit(1.5, 'cm'),
+	axis.text=element_text(size=35, colour='black'),
+	legend.text=element_text(size=40),
+	panel.grid=element_blank(),
+	legend.background=element_blank(),
+	legend.key=element_rect(fill="#00000000", colour="#00000000")
 )
-p <- p + scale_colour_manual(name=c("Data set"), breaks=c(0, 1), limits=c(0, 1), labels=c("Training", "Censored"), values=c('black', 'red'))
-p <- p + scale_shape_manual(name="Type", breaks=c("RNA", "DNA"), limits=c("RNA", "DNA"), labels=c("RNA", "DNA"), values=c(16, 18))
+p <- p + scale_colour_manual(name="", breaks=c(0, 1), limits=c(0, 1), labels=c("Training", "Censored"), values=c('black', 'red'))
+p <- p + scale_shape_manual(name="", breaks=c("RNA", "DNA"), limits=c("RNA", "DNA"), labels=c("RNA", "DNA"), values=c(16, 5))
+p <- p + guides(shape=guide_legend(order=2), colour=guide_legend(override.aes=list(shape=15, size=10), order=1))
 p
 
 
 
-pdf.options(family="Helvetica", fonts="Helvetica", width=7, height=3.15, colormodel='rgb')
+pdf.options(family="Helvetica", fonts="Helvetica", width=14, height=6, colormodel='rgb')
+
+THERAPY_COLOUR <- "#a0a0a010"
+THERAPY_COLOUR2 <- "#c0c0c010"
 
 p <- ggplot(data, aes(x=Date, y=VL))
-p <- p + geom_rect(xmin=as.numeric(as.Date("2000-08-01"), origin="1970-01-01"), xmax=as.numeric(as.Date("2006-09-01"), origin="1970-01-01"), ymin=-Inf, ymax=Inf, fill="#a0a0a010")
-p <- p + geom_rect(xmin=as.numeric(as.Date("2006-09-01"), origin="1970-01-01"), xmax=Inf, ymin=-Inf, ymax=Inf, fill="#80808010")
+p <- p + geom_rect(xmin=as.numeric(as.Date("2000-08-01"), origin="1970-01-01"), xmax=as.numeric(as.Date("2006-09-01"), origin="1970-01-01"), ymin=-Inf, ymax=Inf, fill=THERAPY_COLOUR2)
+p <- p + geom_rect(xmin=as.numeric(as.Date("2006-09-01"), origin="1970-01-01"), xmax=Inf, ymin=-Inf, ymax=Inf, fill=THERAPY_COLOUR)
 p <- p + geom_line(size=.5) 
-p <- p + scale_y_log10(name="Viral load", breaks=10^(1:5), labels=sapply(1:5, function(x) bquote(''*10^{.(x)}*'')))
-p <- p + scale_x_date(name="Year", breaks=as.Date(paste0(seq(1996, 2017, by=4), "-01-01")), labels=seq(1996, 2017, by=4))
+p <- p + scale_y_log10(name="Viral load", breaks=10^c(1, 3, 5), labels=c("10", "1000", "100000"))
+p <- p + scale_x_date(name="Collection Year", breaks=as.Date(paste0(seq(1995, 2017, by=5), "-01-01")), labels=seq(1995, 2017, by=5))
 p <- p + coord_cartesian(ylim=c(10, 1000000), xlim=as.Date(c("1997-01-01", "2017-01-01")))
 p <- p + theme_bw()
-p <- p + geom_point(aes(colour=factor(Censored), shape=Type), data=subset(data, Used != ""), size=2.5)
+p <- p + geom_point(aes(colour=factor(Censored), shape=Type), data=subset(data, Used != ""), size=8)
 p <- p + theme(
 	legend.justification=c(1, 1),
-	legend.position=c(.98,.98),
-	legend.spacing=unit(.25, 'cm'),
-	legend.margin=margin(.05, .05, .05, .05, 'cm'),
-	legend.key.size=unit(.25, 'cm'),
-	legend.box.background=element_rect(fill="white", colour="white"),	
-	text=element_text(size=10),
-	axis.text=element_text(size=9),
-	panel.grid=element_blank()
+	legend.position=c(.98,1),
+	legend.spacing=unit(0.5, 'cm'),
+	legend.margin=margin(.0, .0, .0, .0, 'cm'),
+	legend.box.background=element_blank(),
+	text=element_text(size=40),
+	legend.key.size=unit(1.5, 'cm'),
+	axis.text=element_text(size=35, colour='black'),
+	legend.text=element_text(size=40),
+	panel.grid=element_blank(),
+	legend.background=element_blank(),
+	legend.key=element_rect(fill="#00000000", colour="#00000000"),
+	legend.box='horizontal'
 )
-p <- p + scale_colour_manual(name=c("Data set"), breaks=c(0, 1), limits=c(0, 1), labels=c("Training", "Censored"), values=c('black', 'red'))
-p <- p + scale_shape_manual(name="Type", breaks=c("RNA", "DNA"), limits=c("RNA", "DNA"), labels=c("RNA", "DNA"), values=c(16, 18))
+p <- p + scale_colour_manual(name="", breaks=c(0, -1, 1), limits=c(0, -1, 1), labels=c("Training", "Training 2", "Censored"), values=c('black', 'darkblue', 'red'))
+p <- p + scale_shape_manual(name="", breaks=c("RNA", "DNA"), limits=c("RNA", "DNA"), labels=c("RNA", "DNA"), values=c(16, 5))
+p <- p + guides(shape=guide_legend(order=2), colour=guide_legend(override.aes=list(shape=15, size=8), order=1))
 p
 
 
 
 
+pdf.options(family="Helvetica", fonts="Helvetica", width=14, height=6, colormodel='rgb')
 
+p <- ggplot(subset(data, Censored == 1), aes(x=Estimated.Date, fill=factor(as.Date(Collection.Date, origin="1970-01-01"), levels=c("2007-09-20", "2011-07-19", "2015-09-30", "2016-06-29")))) +
+	geom_histogram(breaks=as.numeric(as.Date(paste0(seq(1994, 2011, by=1), "-01-01")))) +
+	scale_fill_manual(name="Collection Date", values=c("#FF9999", "#ff4a4a", "#DD0000", "#a30000"), labels=c("Sep. 2007", "Jul. 2011", "Sep. 2015", "Jun. 2016")) +
+	scale_x_continuous(name="Estimated integration date (year)", breaks=as.numeric(as.Date(paste0(seq(1990, 2015, by=5), "-01-01"))), labels=seq(1990, 2015, by=5)) +
+	scale_y_continuous(name="Frequency", breaks=c(0, 2, 4, 6)) +
+	theme_bw() +
+	theme(
+		text=element_text(size=40),
+		axis.text=element_text(size=35, colour='black'),
+		legend.text=element_text(size=40),
+		legend.position=c(.01, .98),
+		legend.justification=c(0, 1),
+		legend.spacing=unit(0, 'cm'),
+		legend.margin=margin(0, 0, 0, 0, 'cm'),
+		legend.key.size=unit(1.5, 'cm'),
+		legend.background=element_blank(),
+		legend.box.background=element_blank(),
+		panel.grid.major=element_blank(),
+	    panel.grid.minor=element_blank()
+	)
+		
+pdf.options(family="Helvetica", fonts="Helvetica", width=14, height=6, colormodel='rgb')		
 
-p <- ggplot(data, aes(x=Estimated.Date, fill=factor(as.Date(Collection.Date, origin="1970-01-01")))) + geom_histogram(bins=10) + scale_fill_manual(name="Collection Date", values=c("#FF9999", "#ff4a4a", "#DD0000", "#a30000"), labels=c("Sep. 2007", "July 2011", "Sep. 2015", "June 2016")) + scale_x_continuous(name="Estimated integration date (year)", breaks=as.numeric(as.Date(paste0(seq(1992, 2017, by=4), "-01-01"))), labels=seq(1992, 2017, by=4)) + scale_y_continuous(name="Frequency", breaks=c(0, 4, 8)) + theme_bw() + theme(
-			text=element_text(size=10),
-			axis.text=element_text(size=10),
-			legend.text=element_text(size=10),
-			legend.position=c(.02, .98),
-			legend.justification=c(0, 1),
-			legend.spacing=unit(0, 'cm'),
-			legend.margin=margin(0, 0, 0, 0, 'cm'),
-			legend.key.size=unit(.35, 'cm'),
-			legend.background=element_blank(),
-			legend.box.background=element_blank(),
-			panel.grid.major=element_blank(),
-		    panel.grid.minor=element_blank()
-		)
+p <- ggplot(subset(data, Censored == 1), aes(x=Estimated.Date, fill=factor(as.Date(Collection.Date, origin="1970-01-01"), levels=c("2013-03-15", "2016-08-15")))) +
+	geom_histogram(breaks=as.numeric(as.Date(paste0(seq(1991, 2010, by=1), "-01-01")))) +
+	scale_fill_manual(name="Collection Date", values=c("#ff4a4a", "#a30000"), labels=c("Mar. 2013", "Aug. 2016")) +
+	scale_x_continuous(name="Estimated integration date (year)", breaks=as.numeric(as.Date(paste0(seq(1990, 2010, by=5), "-01-01"))), labels=seq(1990, 2010, by=5)) +
+	scale_y_continuous(name="Frequency", breaks=c(0, 1, 2, 3)) +
+	theme_bw() +
+	theme(
+		text=element_text(size=40),
+		axis.text=element_text(size=35, colour='black'),
+		legend.text=element_text(size=40),
+		legend.position=c(.99, .98),
+		legend.justification=c(1, 1),
+		legend.spacing=unit(0, 'cm'),
+		legend.margin=margin(0, 0, 0, 0, 'cm'),
+		legend.key.size=unit(1.5, 'cm'),
+		legend.background=element_blank(),
+		legend.box.background=element_blank(),
+		panel.grid.major=element_blank(),
+	    panel.grid.minor=element_blank()
+	)

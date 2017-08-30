@@ -19,17 +19,14 @@ if (any(grep("--file=", args.all))) {
 }
 
 compare.dates <- function(data, ori.data, censor, f, ...) {
-	if (censored) {
-
+	if (censor) {
 		data <- subset(data, censored == 1)
 		ori.data <- subset(ori.data, censored == 1)
 	}
 
 	m <- match(data$label, ori.data$label)
-	dna <- which(data$censored == 1)
-	ori.dna <- m[dna]
 
-	f(data[dna, 'est.date'], ori.data[ori.dna, 'est.date'], ...)
+	f(data[, 'est.date'], ori.data[m, 'est.date'], ...)
 }
 
 concord <- function(x, y) {
@@ -39,7 +36,7 @@ concord <- function(x, y) {
 	s.y <-  sum((y - mu.y)^2) / length(y)
 	s.xy <- sum((x - mu.x) * (y - mu.y)) / length(y)
 	
-	2 * s.xy / (s.x + s.y - (mu.x - mu.y)^2)
+	2 * s.xy / (s.x + s.y + (mu.x - mu.y)^2)
 }
 
 args <- commandArgs(T)
@@ -51,20 +48,20 @@ filt <- args[4]
 
 files <- dir(stats.dir, filt, full.names=T)
 stats <- do.call(rbind, lapply(files, read.csv, stringsAsFactors=F))
-data <- lapply(gsub("stats\\.", "data.", files), read.csv, col.names=c("label", "type", "censored", "date", "dist", "est.date", "date.diff", "ci.low", "ci.high"), stringsAsFactors=F)
+data <- lapply(gsub("stats\\.", "data.", files), read.csv, col.names=c("label", "type", "censored", "date", "dist", "est.date", "date.diff"), stringsAsFactors=F)
 
-ori.data <- read.csv(ori.data.file, col.names=c("label", "type", "censored", "date", "dist", "est.date", "date.diff", "ci.low", "ci.high"), stringsAsFactors=F)
+ori.data <- read.csv(ori.data.file, col.names=c("label", "type", "censored", "date", "dist", "est.date", "date.diff"), stringsAsFactors=F)
 
 #rmses <- tryCatch(unlist(lapply(data, compare.dates, ori.data, F, function(x, y) sqrt(sum((x - y)^2)/length(x)))), exception=function(e) NA)
 #maes <- tryCatch(unlist(lapply(data, compare.dates, ori.data, F, function(x, y) sum(abs(x - y))/length(x))), exception=function(e) NA)
 #cors <- tryCatch(unlist(lapply(data, compare.dates, ori.data, F, cor, method='pearson')), exception=function(e) NA)
 #cors.s <- tryCatch(unlist(lapply(data, compare.dates, ori.data, F, cor, method='spearman')), exception=function(e) NA)
 #concord <- tryCatch(unlist(lapply(data, compare.dates, ori.data, F, concord)), exception=function(e) NA)
-rmses.cens <- tryCatch(unlist(lapply(data, compare.dates, ori.data, T, function(x, y) sqrt(sum((x - y)^2)/length(x)))), exception=function(e) NA)
-maes.cens <- tryCatch(unlist(lapply(data, compare.dates, ori.data, T, function(x, y) sum(abs(x - y))/length(x))), exception=function(e) NA)
-cors.cens <- tryCatch(unlist(lapply(data, compare.dates, ori.data, T, cor, method='pearson')), exception=function(e) NA)
-cors.s.cens <- tryCatch(unlist(lapply(data, compare.dates, ori.data, T, cor, method='spearman')), exception=function(e) NA)
-concord.cens <- tryCatch(unlist(lapply(data, compare.dates, ori.data, T, concord)), exception=function(e) NA)
+rmses.cens <- unlist(lapply(data, compare.dates, ori.data, T, function(x, y) sqrt(sum((x - y)^2)/length(x))))
+maes.cens <- unlist(lapply(data, compare.dates, ori.data, T, function(x, y) sum(abs(x - y))/length(x)))
+cors.cens <- unlist(lapply(data, compare.dates, ori.data, T, cor, method='pearson'))
+cors.s.cens <- unlist(lapply(data, compare.dates, ori.data, T, cor, method='spearman'))
+concord.cens <- unlist(lapply(data, compare.dates, ori.data, T, concord))
 
 stats <- as.data.frame(cbind(stats, full.rmse.cens=rmses.cens, full.mae.cens=maes.cens, full.cor.cens=cors.cens, spearman.cor.cens=cors.s.cens, concord.cens=concord.cens), stringsAsFactors=F)
 stats.col.names <- c(
@@ -90,15 +87,15 @@ stats.col.names <- c(
 	"Estimated Root Date",
 	"Training RMSE",
 	"Censored RMSD",
-	"Total RMSD"
+	"Total RMSD",
 	"Training MAE",
 	"Censored MAE",
 	"Total MAE",
-	"Total Concordance"
-	"Original RMSE (Censored)",
-	"Original MAE (Censored)",
-	"Original Correlation (Pearson, Censored)",
-	"Original Correlation (Spearman, Censored)",
-	"Original Concordance (Lin, Censored)"
+	"Total Concordance",
+	"Original RMSE",
+	"Original MAE",
+	"Original Correlation",
+	"Original Correlation",
+	"Original Concordance"
 )
 write.table(stats, output.stats, row.names=F, col.names=stats.col.names, sep=",")
