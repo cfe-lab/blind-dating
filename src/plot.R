@@ -90,10 +90,10 @@ apply.axes <- function(p, flipped, scaled) {
 apply.theme <- function(p, flipped=F, scaled=T) {
 	apply.axes(p + theme_bw() +
 		theme(
-			text=element_text(size=40),
-			axis.text=element_text(size=35, colour='black'),
-			legend.text=element_text(size=35),
-			legend.position=c(.02, 1.05),
+			text=element_text(size=35),
+			axis.text=element_text(size=30, colour='black'),
+			legend.text=element_text(size=30),
+			legend.position=0,
 			legend.justification=c(0, 1),
 			legend.spacing=unit(0, 'cm'),
 			legend.margin=margin(0, 0, 0, 0, 'cm'),
@@ -107,7 +107,7 @@ apply.theme <- function(p, flipped=F, scaled=T) {
 		scale_shape_manual(name="", breaks=type.label, labels=type.label, values=type.value, limits=type.label) +
 		scale_colour_manual(name="", breaks=colour.break, labels=colour.label, values=colour.value, limits=colour.break) +
 #		scale_size_manual(name="", breaks=c(0, 1), labels=c("Training", "Censored"), values=c(1.67, 2), limits=c(0, 1)) +
-		guides(shape=guide_legend(order=2), colour=guide_legend(override.aes=list(shape=15, size=10), order=1)),
+		guides(shape=guide_legend(order=2), colour=guide_legend(override.aes=list(shape=15, size=8), order=1)),
 		flipped, scaled)
 }
 
@@ -296,7 +296,8 @@ ptree <- phylo4d(tree, all.data=data.all)
 
 pdf(pdf.file)
 apply.theme(ggplot(data) +
-	geom_point(aes(x=date, y=dist, colour=factor(censored), shape=type), size=6))
+	geom_point(aes(x=date, y=dist, colour=factor(censored), shape=type), size=6)) +
+	theme(legend.position=c(0.2, .98))
 dev.off()
 
 pdf(pdf.disttree.file)
