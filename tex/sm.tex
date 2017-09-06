@@ -88,7 +88,7 @@ London, Canada N6A 5C1}
 
 Small intro
 
-\subsection{Methods}
+\subsection*{Methods}
 \subsection*{Simulated data}
 To characterize sources of error in reconstructing dates on tips of a phylogeny, we generated phylogenetic trees by direct simulation. % and from the plasma data sets.
 First, we generated phylogenies with 100 tips each under a birth-death model with serial sampling using the \emph{sim.bdsky.stt} function in the \textit{R} package \textit{TreeSim} \cite{Boskova14}.
@@ -107,8 +107,23 @@ Parameters for the substitution model were set to empirical estimates derived fr
 Specifically, the stationary distribution was set to 0.42, 0.15, 0.15, 0.28 for the nucleotides A, C, G and T, respectively, and the transition bias parameter was set to 8.5.
 Using this approach, we generated a total of 50 replicate subjects.
 
-\subsection{Results}
+\subsection*{Results}
 
+\section{Outgroup rooting}
+In addition to root-to-tip regression (RTT) we also evaluated using out group rooting (OGR), in which one or more sequences from taxa outside but sufficiently related to the group of interest are added to the phylogenetic reconstruction \cite{Huelsenbeck02}, in order to root the maximum likelihood (ML) phylogenies.
+The point at which the branch leading to the outgroup intersects the rest of the ML phylogeny provides an estimate of the root for the latter.
+We selected the HIV-1 B ancestral sequence reconstruction, HXB2 (accession: K03455), curated by the LANL HIV sequence database, as the outgroup sequence.
+
+\subsection*{Results with simulations and public data sources}
+
+\subsection*{Results recruited patients}
+
+\subsection*{Comparison to rooting with root-to-tip regression}
+OGR performed well, but inferiorly compared to RTT.
+Results in all data sets showed higher RMSEs for the training sets and more variable RMSEs and concordance in the validation studies.
+Nonetheless the concordance between RTT and OGR was very high.
+There was a 0.934 concordance \cite{Lin89} between the estimated dates of the DNA sequences in the LANL patients using RTT versus using OGR (see Supplementary Figure \ref{fig:lanlconcord}).
+The concordance in the recruited patients was also high with a 0.899 concordance in patient 1 and a 0.911 concordance in patient 2 (see Supplementary Figure \ref{fig:concord}).
 
 \begin{table*}
 \caption{Summary of all the patient data collected from the LANL HIV sequence database \cite{LosAlamos} in the data sets from public sources.\label{tab:patients}}

@@ -242,6 +242,7 @@ if (!is.na(pat.id2)) {
 		"Training MAE",
 		"Censored MAE",
 		"Total MAE",
+		"Total Concordance",
 		"AIC 2",
 		"null AIC 2",
 		"p-value 2",
@@ -263,10 +264,10 @@ if (!is.na(pat.id2)) {
 }
 
 if (use.real) {
-	date.ticks <- as.character(seq(floor(as.numeric(year.start) / year.by) * year.by + year.by, as.numeric(year.end), by=year.by))
-	x.scale <- scale_x_continuous(name="Year", breaks=as.numeric(as.Date(paste0(date.ticks, "-01-01"))), labels=date.ticks, limits=as.numeric(as.Date(paste0(c(year.start, year.end), "-01-01"))))
-	y.scale <- scale_y_continuous(name="Year", breaks=as.numeric(as.Date(paste0(date.ticks, "-01-01"))), labels=date.ticks, limits=as.numeric(as.Date(paste0(c(year.start, year.end), "-01-01"))))
-	x.scale.hist <- scale_x_continuous(name="Year", breaks=as.numeric(as.Date(paste0(seq(as.numeric(year.start), as.numeric(year.end)), "-01-01"))), labels=as.character(seq(as.numeric(year.start), as.numeric(year.end))))
+	date.ticks <- as.character(seq(floor(as.numeric(year.start) / year.by) * year.by - year.by, as.numeric(year.end), by=year.by))
+	x.scale <- scale_x_continuous(name="Collection Year", breaks=as.numeric(as.Date(paste0(date.ticks, "-01-01"))), labels=date.ticks, limits=as.numeric(as.Date(paste0(c(year.start, year.end), "-01-01"))))
+	y.scale <- scale_y_continuous(name="Collection Year", breaks=as.numeric(as.Date(paste0(date.ticks, "-01-01"))), labels=date.ticks, limits=as.numeric(as.Date(paste0(c(year.start, year.end), "-01-01"))))
+	x.scale.hist <- scale_x_continuous(name="Collection Year", breaks=as.numeric(as.Date(paste0(seq(as.numeric(year.start), as.numeric(year.end)), "-01-01"))), labels=as.character(seq(as.numeric(year.start), as.numeric(year.end))))
 	
 	type.break <- c("PLASMA", "PBMC", "PBMC (cultured)", "WHOLE BLOOD", "PBMC (REACTIVE)", "PBMC (CULTURE)")
 	type.label <- c("RNA", "DNA", "DNA", "DNA", "RNA", "DNA")
@@ -297,13 +298,14 @@ ptree <- phylo4d(tree, all.data=data.all)
 pdf(pdf.file)
 apply.theme(ggplot(data) +
 	geom_point(aes(x=date, y=dist, colour=factor(censored), shape=type), size=6)) +
-	theme(legend.position=c(0.2, .98))
+	theme(legend.position=c(0.02, .98))
 dev.off()
 
 pdf(pdf.disttree.file)
 apply.theme(ggtree(ptree, colour="#49494980", size=.6, ladderize=T) +
 #	geom_tiplab(colour="#49494980", angle=90, hjust=-.1, size=1) + 
-	geom_tippoint(aes(colour=factor(censored), shape=type), size=6), flipped=F, scaled=F)
+	geom_tippoint(aes(colour=factor(censored), shape=type), size=6) +
+	geom_treescale(width=0.02, offset=2), flipped=F, scaled=F)
 dev.off()
 
 pdf(pdf.tree.file)
