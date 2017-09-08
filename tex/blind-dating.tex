@@ -1,4 +1,4 @@
-\documentclass[10pt,twocolumn,twoside]{pnas-new}
+\documentclass[12pt,onecolumn,twoside]{pnas-new}
 % Use the lineno option to display guide line numbers if required.
 % Note that the use of elements such as single-column equations
 % may affect the guide line number alignment. 
@@ -84,13 +84,15 @@ Here we present a method to recover the insertion dates of integrated proviral h
 \thispagestyle{firststyle}
 \ifthenelse{\boolean{shortarticle}}{\ifthenelse{\boolean{singlecolumn}}{\abscontentformatted}{\abscontent}}{}
 
+((The following is the introduction from the previous submission.))
+
 % If your first paragraph (i.e. with the \dropcap) contains a list environment (quote, quotation, theorem, definition, enumerate, itemize...), the line after the list may have some extra indentation. If this is the case, add \parshape=0 to the end of the list environment.
 \dropcap{H}IV-1, like all retroviruses, integrates its genome into the chromosome of the infected host cell during the viral life cycle.
 Though the vast majority of infected cells die as a result of viral cytopathic effects or immune-mediated elimination, a small minority (broadly estimated as one in every million resting CD4+ T-cells \cite{Chun97,Finzi97}) harbour integrated HIV DNA in a state of near or complete transcriptional quiescence over long time periods \cite{Archin14,Pace11,Richman09}.
 Termed latent HIV-1 reservoirs, such cells represent a major obstacle in curing HIV-1 infection as they can persist for years.
-In the presence of suppressive antiretroviral therapy, for instance, these reservoirs can be re-activated at any point to produce infectious virus, thereby reseeding infection \cite{Richman09,Durand12,Joos08,Katlama13,Pomerantz03,Shen08}. 
+In the presence of suppressive antiretroviral therapy, for instance, these reservoirs can be re-activated at any point to produce infectious virus, thereby reseeding infection \cite{Durand12,Joos08,Katlama13,Pomerantz03,Richman09,Shen08}. 
 
-Establishment of individual viral reservoirs within a given host begins within hours or days following infection and continues thereafter \cite{Whitney14,Leford14}.
+Establishment of individual viral reservoirs within a given host begins within hours or days following infection and continues thereafter \cite{Leford14,Whitney14}.
 As within-host HIV-1 populations rapidly accumulate genetic diversity over the course of an infection \cite{Alizon13,Rambaut04,Shankarappa99}, latent viral genomes present during untreated chronic infection should be heterogeneous in terms of age and genetics, ranging from those archived soon after infection (that resemble ancestral viruses within the host) to those that have integrated relatively recently into cellular reservoirs (that resemble contemporary plasma strains).
 The chronology of establishment and genetic distribution of latent HIV-1 lineages within a given host is may be relevant to the development of strategies to eliminate them, as these properties could influence their susceptibility to reactivation and/or immune-mediated clearance.
 For example, while the `oldest' reservoirs within a given individual may be the most inherently refractory to reactivation with latency reversing agents, `younger' reservoirs may be largely refractory to subsequent immune-mediated elimination due to an accumulated burden of immune escape mutations \cite{Deng15}.
@@ -111,11 +113,9 @@ Consequently, the divergence of descendant lineages from the transmitted/founder
 Upon integration of a given HIV-1 sequence into a host cell genome, evolution of that lineage effectively ceases until a new round of virus replication ensues.
 Latent HIV-1 sequences will therefore display a characteristic discordance between their sampling date and their apparent (younger) age based on sequence divergence from other within-host lineages.
 
-We applied our method to patient data from a patient with both longitudinal plasma-derived RNA sequences and peripheral blood mononuclear cell (PBMC) derived DNA sequences after the patient received antiretroviral therapy for 6--10 years.
-We validated our method by attempting to recover the collection dates of plasma-derived RNA sequences.
-We then applied our method to the complete data set to estimate the insertion dates of the proviruses into the PBMCs.
-
 \section*{Reconstructing integration dates}
+((I think that having a section like this will highlight the fact that this is a methods paper and may make it an easier read))
+
 Since HIV evolution adheres to the molecular clock hypothesis \cite{Leitner99,Park16}, the genetic distance of virions from the founder virus is linear with respect to time.
 However, while under viral latency, the virus does not replicate and hence does not evolve, essentially stopping the molecular clock.
 Hence, the date of the insertion of provirial insertion is when the molecular clock stops and is linearly related to the genetic distance of the proviral sequence to the founder virus.
@@ -135,8 +135,8 @@ See \cref{fig:latenttree}.
 \end{figure}
 
 The model rests on the reconstruction the phylogenetic relationships of longitudinaly-sampled HIV sequences.
-A phylogenetic tree can be created using a variety of methods including neighbour-joining \cite{Saitou87}, maximum likelihood \cite{fasttree,raxml}, Bayesian methods ((possible footnote)) \cite{beast}, \emph{et cetera}.
-After assigning a root to the phylogeneteic tree (using outgroup rooting  \cite{Huelsenbeck02}, root-to-tip regression  \cite{Korber00}, \emph{et cetera}), we recover the linear molecular clock with a linear model (LM).
+A phylogenetic tree can be created using a variety of methods including neighbour-joining \cite{Saitou87}, maximum likelihood \cite{fasttree,raxml}, Bayesian methods ((possible footnote)) \cite{beast,MRBAYES}, \emph{et cetera}.
+After assigning a root to the phylogenetic tree (using outgroup rooting  \cite{Huelsenbeck02}, root-to-tip regression  \cite{Korber00}, \emph{et cetera}), we recover the linear molecular clock with a linear model (LM).
 Our LM is given by:
 \begin{align}
 	D &= a + \mu T,\label{eq:glm}
@@ -146,41 +146,45 @@ We compare our LM with the null model:
 \begin{align}
 	D &= a,\label{eq:null}
 \end{align}
-to ensure that the data adequately adhere's to a molecular clock by computing the difference of the models' Akaike Information Criteria (AICs) \cite{Akaike74}.
+to ensure that the data adequately adheres to a molecular clock by computing the difference of the models' Akaike Information Criteria (AICs) \cite{Akaike74}.
+Here, we reject the model if this difference is less than 10.
+
 First we censor the provial DNA sequences and use the virion RNA sequences to calibrate the LM.
 Next we recover the provial insertion dates by computing $T(x) = \frac{D(x) - a}{\mu}$, for each proviral DNA sequence, $x$.
 More details of the method are given in the Materials and Methods.
 
-\section{Results using simulations and public data}
+\section*{Results using simulations and public data}
 
-\subsection{Simulated data}
+\subsection*{Simulated data}
 
 First, we validated our methodology using simulated data.
 Our method performed very well on the simulated data, details are in the Supplementary materials.
 
-\subsection{Validation on data with only RNA sequences.}
+\subsection*{Validation on data with only RNA sequences.}
 
 Next we validated using real data.
 We collected longitudinal HIV \emph{env} sequences from 9 patients on the Los Alamos National Laboratory HIV Database (LANL).
-For each patient, we censored 50\% of the seqences at random and then fit the linear model (LM) of \label{eq:glm} to the remaining sequences and attempted to recover the collection dates of the censored RNA sequences.
+For each patient, we censored 50\% of the seqences at random and then fit the linear model (LM) to the remaining sequences and attempted to recover the collection dates of the censored RNA sequences.
 
+The LM fit for 6 of the 9 patients.
 
-
-\subsection{Data with DNA sequences}
+\subsection*{Data with DNA sequences}
 
 Finally we applied our methodology to publically available data on the Los Alamos National Laboratory HIV Database (LANL) with longitudinal RNA sequences and DNA sequences from 19 patients.
-For each patient, we fit the linear model (LM) of \label{eq:glm} to the RNA sequences of \label{eq:}
+For each patient, we fit the linear model (LM) to the RNA sequences and then used the LM to estimate the integration dates of the DNA sequences.
 
-\section{Results using recruited patients}
+The LM fit for 15 of the 19 patients.
+
+\section*{Results using recruited patients}
+
+The main purpose of this study was to capture the integration date of reservoir sequences.
+((Draw back of LANL data))
+Therefore, we recruited two patients with longitudinal plasma samples collected over 10 years and 2--4 timepoints of samples collected while the patients were on highly active anitiretroviral therapy (HAART).
+At least one time point from each patient contained HIV proviral DNA extracted directly from host cells.
 
 \subsection*{Patient 1}
-((Patient R1 intro))
 
-The blind-dating methods were applied to HIV sequences from the NEF region of Patient R1 retrieved using single-genome amplification.
-
-The correlation between the estimated dates for our patient using the different rooting methods --- OGR and RTT --- was 0.95 (pearson)/0.94 (spearman) and the root mean square deviation was 540 days.
-RTT optimizes the molecular clock and linear regression, where OGR is more biological motivated, therefore the high correlation is promising.
-See \cref{fig:pat1} for a comparison of the two rooting methods.
+The blind-dating methods were applied to HIV sequences from the \emph{nef} region of Patient 1 retrieved using single-genome amplification. See \cref{fig:pat1}.
 
 \begin{figure*}
 \includegraphics[width=\textwidth{}]{{patient_***REMOVED***}.pdf}
@@ -199,8 +203,13 @@ In figures A, C and D the grey-shaded indicate when the patient was on highly ac
 \label{fig:pat1}
 \end{figure*}
 
+The linear model (LM) fit well to the data, with an Akaike Information Criterion (AIC) of -476, compared to the AIC of the null model: -305.
+The root mean squared error (RMSE) of the training data was 524 days.
+The estimated mutation rate was $3.5 \times 10^{-5}$ substitutions per base per day and the estimated year of the root of the ML phylogeny (analogous to the infection date) was 1995.
+
 \subsection*{Patient 2}
 
+The blind-dating methods were applied to HIV sequences from the \emph{nef} region of Patient 1 retrieved using single-genome amplification. See \cref{fig:pat2}.
 
 \begin{figure*}
 \includegraphics[width=\textwidth{}]{{patient_***REMOVED***}.pdf}
@@ -214,61 +223,66 @@ The dotted blue line represents the regression line of the linear model and the 
 D) A histogram of the integration date of the censored HIV sequences into the reservoir.
 The vertical black line indicates the time of our first plasma sampling.
 In figures A--C closed circles represent HIV RNA sequences and open diamonds represent HIV DNA sequences; while the black points represent sequences used for training the first linear model, blue points represent sequences used for training the second linear model, and red points represent sequences that were censored from the model.
-In figures A, C and D the grey-shaded indicate when the patient was on highly active antiretrovial therapy (HAART).
+In figures A, C and D the darker grey-shaded indicate when the patient was on highly active antiretrovial therapy (HAART) and the lighter grey-shaded indicate when the patient was on dual therapy.
 }
 \label{fig:pat2}
 \end{figure*}
 
-\subsection*{Sensitivity testing}
-To validate our model, we restricted our Patient R1 data set to the training RNA sequences, which are the plasma-derived RNA squences sampled while the patient was not on therapy.
+The linear models (LMs) fit well to the data.
+The first LM, which only used the sequences collected during treatment na\:ivity, had an Akaike Information Criterion (AIC) of -288 compared to a null model AIC of -273.
+The root mean squared error (RMSE) of the training data on the first LM was 543 days.
+The first LM, which used the sequences collected whilethe patient was on dual therapy, had an Akaike Information Criterion (AIC) of -642 compared to a null model AIC of -628.
+The root mean squared error (RMSE) of the training data on the first LM was 1420 days.
+
+The estimated mutation rate while not on therapy was $1.0 \times 10^{-5}$ substitutions per base per day and the estimated mutation while on dual therapy was $3.1 \times 10^{-6}$ substitutions per base per day.
+The estimated year of the root of the ML phylogeny (analogous to the infection date) was 1992 .
+
+\subsection*{Validation}
+
+To validate our model, we restricted our Patient 1 data set to the training RNA sequences, which are the plasma-derived RNA squences sampled while the patient was not on therapy.
 We then attempted to recover the collection dates of the sequences by censoring 0, 17, 31, 47, 62, and 78 sequences at random.
 For each number of censored sequences, we ran 50 replicate trials.
-We applied the blind-dating methodology to each data set using each rooting method (OGR and RTT).
-
-Almost all of the LM fits were successful based on an AIC diference of 5 between the LM and the null model.
-When using RTT all of the LMs fit and when using OGR all of the LMS fit except for 2 of the data sets with 78 censored sequences.
+See \cref{fig:validationrna}.
 
 \begin{figure*}
-\includegraphics{{get_rna}}
-\caption{The root mean squared error.
-(A) OGR (B) RTT.}
-\label{fig:validation}
+\includegraphics[width=\textwidth{}]{{get_rna}}
+\caption{Validation of recovering censored RNA collection dates from Patient 1.
+A) The proportion of data sets where the linear model (LM) fit.
+B) Box plots of the root mean squared error (RMSE) of the dates estimated by the LM all RNA sequences (training and censored) compared against the collection dates.
+}
+\label{fig:validationrna}
 \end{figure*}
 
-We reduced the patient data set of the Patient R1 data set to quantify the effect of the number of time points used.
-The Patient R1 data set had 14 time points with training RNA sequences.
+We reduced the patient data set of the Patient 1 data set to quantify the effect of the number of time points used.
+The Patient 1 data set had 14 time points with training RNA sequences.
 We reduced the patient data by selecting a subset of the 14 time points at random.
 From this we generated 550 different data sets with 2--12 time points with training RNA sequences (50 data sets for each number of time points) and all 14 possible data sets with 13 time points of training RNA sequences.
-We applied the blind-dating methodology to each data set using each rooting method (OGR and RTT).
-
-Most of the LM fits were successful based on an AIC diference of 5 between the LM and the null model.
-When 6 or more time points of RNA training sequences were used, both rooting methods always produced LMs that fit.
-36, 46, 47, and 49 of the 50 data sets produced LMs that fit using RTT with 2, 3, 4, and 5 time points of RNA training sequences.
-Similarly, 35, 46, 45, and 49 of the 50 data sets produced LMs that fit using OGR with 2, 3, 4, and 5 time points of RNA training sequences. 
+See \cref{fig:validationdna}.
 
 \begin{figure*}
-\includegraphics{sensitivity}
-\caption{The root mean squared error.
-(A) OGR (B) RTT.}
-\label{fig:sensrmse}
+\includegraphics[width=\textwidth{}]{sensitivity}
+\caption{Validation of Patient 1 removing the training RNA sequences from specific time points from the data set and then applying the blind dating methodology to compute the estimated integration dates of the reservoir sequernces.
+A) The proportion of data sets where the linear model (LM) fit.
+B) Box plots of the root mean squared error (RMSE) of the estimated integration dates of the reservoir sequences compared against the estimated integration dates using all of RNA training sequences.}
+\label{fig:validationdna}
 \end{figure*}
+
+The results of these validations were compared against the results when using outgroup rooting to root the ML phylogenies (see Supllementary Materials).
 
 \section*{Conclusions}
 ((Short conclusion)).
 
 ((Limitations))
-
 Patient viral load.
-
 Requires longitudinal data.
-
 HIV doesn't strictly follow a molecular clock and evolution under treatment is poorly understood.
+Important to place the root correctly.
 
 ((Wrap up))
 
 Most other models of HIV latent reservoirs are dynamical models \cite{Rong09,Pace11}.
 These models can be complicated, including many components and parameters.
-Here we offer a simple and accurate method to recover insertion date of reservoir sequences.
+Here we offer a simple and accurate method to recover insertion dates of reservoir sequences.
 
 Future work will utilize deep sequencing data.
 
@@ -289,7 +303,7 @@ From these results, we manually selected 19 individuals that had well-characteri
 There were no other selection criteria on the time between sample collection dates. 
 A total of 1,012 partial {\em env} RNA sequences from blood plasma, and 1,726 partial {\em env} DNA sequences from PBMC cells were used in our analysis. 
 We utilized samples from treatment naive individuals from \cite{Shankarappa99, Novitsky09} and samples from individuals that had been intermittently treated via HAART from \cite{Llewellyn06,Fischer04}. 
-See Table \ref{tab:patients} for details on the patients from these data sets.
+See Supplementary Table \ref{tab:patients} for details on the patients from these data sets.
 \subsection*{Data collection and sequencing of recruited patients}
 ((Collection/Ethics/Metadata.))
 ((Sequencing.))
@@ -312,7 +326,7 @@ We reconstructed the within-host phylogenies of each subject in each data set as
 We rooted the ML phylogenies with root-to-tip regression (RTT) \cite{Korber00}, which performs an exhaustive search by re-rooting the tree at every branch to find the root that (in our experiments) maximizes the correlation between the sample collection dates and the evolutionary distance of tips from the candidate root.
 Our simulated data were only rooted using RTT; for all real data, both outgroup rooting and RTT were evaluated for rooting the phylogeny.
 We also evaluated using outgroup rooting (OGR) to root the ML phylogenies (shown in the Supplementary Materials).
-For each subject in each data set, we computed the linear model (LM) given in \cref{eq:glm} and the null model using the R function, lm \cite{rscript}.
+For each subject in each data set, we computed the linear model (LM) given in \cref{eq:glm} and the null model giveb in \cref{eq:null} using the R function, lm \cite{rscript}.
 \subsection*{Statisical Analysis}
 Error and variation were calculated with root mean squared error (RMSE).
 All statistical calculations were performed using R v3.3.3 \cite{rscript}.

@@ -101,7 +101,7 @@ We used BEAST version 2.3.2 \cite{BEAST2} to estimate the posterior distribution
 %Using this approach, we generated samples of trees for each sequence alignment in the plasma dataset.
 %From these simulations, we evaluated the accuracy of predicting sample collection times from a strict molecular clock model that was fit to a training subset of these data.
 The lineage birth rate, death rate and sampling probability were estimated to be: $\lambda = 5.12 \times 10^{-2}$ day$^{-1}$, $\delta = 5.01 \times 10^{-2}$ day$^{-1}$, $s = 5.24 \times 10^{-3}$ respectively.
-We used the \textit{R} package, \emph{NELSI} \cite{NELSI}, to assign rates of evolution to these trees by drawing values from a Gaussian distribution with a mean rate $\mu = \ 1.96\times 10^{-4}$ substitutions per generation and standard deviation $\sigma = \ 1.42\times 10^{-5}$. %; Figure \ref{fig:seedtree} for an example).
+We used the \textit{R} package, \emph{NELSI} \cite{NELSI}, to assign rates of evolution to these trees by drawing values from a Gaussian distribution with a mean rate $\mu = \ 1.96\times 10^{-4}$ substitutions per generation andstandard deviation $\sigma = \ 1.42\times 10^{-5}$. %; Figure \ref{fig:seedtree} for an example).
 To model uncertainty in phylogenetic reconstruction from sequence variation, we simulated sequence evolution along each birth-death tree with INDELible version 1.03 \cite{Indelible} under an HKY85 \cite{HKY85} model of nucleotide substitution.
 Parameters for the substitution model were set to empirical estimates derived from previously published HIV within-host data sets \cite{McCloskey14}. 
 Specifically, the stationary distribution was set to 0.42, 0.15, 0.15, 0.28 for the nucleotides A, C, G and T, respectively, and the transition bias parameter was set to 8.5.
@@ -172,7 +172,7 @@ Reference & Patient ID & \multicolumn{3}{c}{Sequences} & \multicolumn{3}{c}{Time
 \hline
 \end{tabular}
 \end{center}
-   Patient ID corresponds to the anonymized patient identifiers in the database.
+	Patient ID corresponds to the anonymized patient identifiers in the LANL database.
 \end{table*}
 
 \pagebreak{}
@@ -185,15 +185,15 @@ Reference & Patient ID & \multicolumn{3}{c}{Sequences} & \multicolumn{3}{c}{Time
 \begin{tabular}{+l^r^r} 
 Patient ID & Model AIC & Null AIC \\ 
 \hline
-825 & & \\
-2658 & & \\
-\badpat 7259 & & \\
-\badpat 7263 & & \\
-7265 & & \\
-13333 & & \\
-13334 & & \\
-13336 & & \\
-35566 & & \\
+825 & -144 & -85.4 \\
+2658 & -151 & -82.3 \\
+7259 & -97.3 & -86.0 \\
+\badpat 7263 & -41.3 & -41.1 \\
+\badpat 7265 & -44.7 & -41.2 \\
+13333 & -133 & -115 \\
+13334 & -127 & -116 \\
+13336 & -91.6 & -63.1 \\
+\badpat 35566 & - & \\
 \hline
 820 & -289 & -270 \\ %x
 821 & -317 & -126 \\
@@ -217,9 +217,8 @@ Patient ID & Model AIC & Null AIC \\
 \hline
 \end{tabular}
 \end{center}
-	Model AIC is the Akaike Information Criterionn (AIC) \cite{Akaike74} of the linear model and Null AIC is the AIC of the null model.
-	Median Difference is the median of the difference between predicted and actual value of the sequences from the validation set.
-	RMSD is the root mean squared deviation of the predicted and actual value of the sequences from the validation set.
+	Patient ID corresponds to the anonymized patient identifiers in the LANL database.
+	Model AIC is the Akaike Information Criterion (AIC) \cite{Akaike74} of the linear model and Null AIC is the AIC of the null model.
 	Patients for whom we were unable to reject the null hypothesis based on a AIC difference less than 10 are marked in bold.
 \end{table*}
 
