@@ -29,56 +29,22 @@ if (any(grep("--file=", args.all))) {
 
 args <- commandArgs(trailingOnly = T)
 
-r.seed <- as.integer(args[1])
-indelible.seed <- args[2]
-reference <- args[3]
+suffix <- args[1]
+r.seed <- as.integer(args[2])
+indelible.seed <- args[3]
+reference <- args[4]
 
 if (r.seed != 0) {
 	set.seed(r.seed)
 }
 
-# Number of guide trees to create
-# TO DO: quantify variance
-n.trees <- 50
-n.partitions <- n.trees
-n.replicates <- 1
-n.tips <- 100
+indel_control <- ""
 
-# From GLM
-clock.rate <- 3.94e-5
-noise.rate <- 2.00e-6
+if (suffix == "" || suffix == "head") {
+	cat("Preparing INDELible file...\n")
 
-# birth-death model parameters, from BEAST
-lambda <- 8.87e-3
-mu <- 7.75e-3
-sampprob <- 0.115
-times<-c(0)
-
-sim.params <- list(rate = clock.rate, noise = noise.rate)
-sim.clockmodel <- simulate.clock
-
-cat("Building trees...\n")
- 
-trees <- apply(matrix(rep(n.tips,n.trees)), 1, sim.bdsky.stt, lambdasky=lambda, deathsky=mu, timesky=times, sampprobsky=sampprob, rho=0, timestop=0)
-trees <- lapply(trees, function(x) {unroot(x[[1]])})
-sim.trees <- lapply(trees, sim.clockmodel, params=sim.params)
-
-suppress <- lapply(1:n.trees, function(i) {
-	data <- data.frame(PATIENT=paste0("SIM_", i), SEQID=trees[[i]]$tip.label, FULLSEQID=trees[[i]]$tip.label, COLDATE=node.depth.edgelength(trees[[i]])[1:50], TYPE="Training", CENSORED=0, KEPT=1, DUPLICATE="", NOTE="")
-	write.csv(data, paste0("info/SIM_", i, ".csv"), row.names=F)
-})
-
-trees <- lapply(sim.trees, function(stree) {
-	tree <- stree$phylogram
-	tree$edge.length <- stree$tree.data.matrix[, 6]
-	tree
-})
-
-
-cat("Preparing INDELible file...\n")
-
-indel_control <- sprintf(
-"
+	indel_control <- sprintf(
+	"
 [TYPE] NUCLEOTIDE 2
 
 [SETTINGS]
@@ -88,27 +54,57 @@ indel_control <- sprintf(
 [MODEL]    HKY_HIV
   [submodel] HKY 8.5               
   [statefreq] 0.42 0.15 0.15 0.28
+  
+trees
+
+partitions
+
+[EVOLVE]
+evolves
 "
-, indelible.seed)
-
-for (i in 1:n.trees) {
-	tree_dat <- write.tree(trees[[i]])
-	write.tree(trees[[i]], sprintf("trees.ori/SIM_%d.nwk", i))
-	indel_control <- paste0(indel_control, sprintf("[TREE] tree_%d %s \n", i, tree_dat))
+	, indelible.seed)
 }
 
-#index <- sample(1:n.trees, n.partitions, replace = (n.partitions > n.trees))
-index <- 1:n.trees
-for (i in 1:n.partitions) {
-	indel_control <- paste0(indel_control, sprintf("[PARTITIONS] pHKY_%d [tree_%d HKY_HIV %s] \n", i, index[i], reference))
+if (suffix != "head") {
+# Number of guide trees to create
+# TO DO: quantify variance
+n.tips <- 100
+
+# From GLM
+clock.rate <- 1.96e-4
+noise.rate <- 1.42e-5
+
+# birth-death model parameters, from BEAST
+lambda <- 5.12e-2
+mu <- 5.01e-2
+sampprob <- 5.12e-3
+times<-c(0)
+
+sim.params <- list(rate = clock.rate, noise = noise.rate)
+sim.clockmodel <- simulate.clock
+
+cat("Building tree...\n")
+ 
+tree <- sim.bdsky.stt(n.tips, lambdasky=lambda, deathsky=mu, timesky=times, sampprobsky=sampprob, rho=0, timestop=0)
+tree <- unroot(tree[[1]])
+stree <- sim.clockmodel(tree, params=sim.params)
+
+data <- data.frame(PATIENT=paste0("SIM_", suffix), SEQID=tree$tip.label, FULLSEQID=tree$tip.label, COLDATE=node.depth.edgelength(tree)[1:50], TYPE="Training", CENSORED=0, KEPT=1, DUPLICATE="", NOTE="")
+write.csv(data, paste0("info/SIM_", suffix, ".csv"), row.names=F)
+
+tree <- stree$phylogram
+tree$edge.length <- stree$tree.data.matrix[, 6]
+
+cat("Writing tree to file...\n")
+
+tree_dat <- write.tree(tree)
+write.tree(tree, sprintf("trees.ori/SIM_%s.nwk", suffix))
+indel_control <- paste0(indel_control, sprintf("[TREE] tree_%s %s \n", suffix, tree_dat))
+
+indel_control <- paste0(indel_control, sprintf("[PARTITIONS] pHKY_%s [tree_%s HKY_HIV %s] \n", suffix, suffix, reference))
+
+
+indel_control <- paste0(indel_control, sprintf("    pHKY_%s %d SIM_%s \n", suffix, 1, suffix))
 }
 
-indel_control <- paste0(indel_control, "[EVOLVE] \n")
-for (i in 1:n.partitions) {
-	indel_control <- paste0(indel_control, sprintf("    pHKY_%d %d SIM_%d \n", i, n.replicates, i))
-}
-
-write(indel_control, 'control.unfixed.txt')
-
-
-dat <- lapply(names(trees.labels), function(x) data.frame(PATID=x, SEQID=gsub("(.+?)_.+", "\\1", trees.labels[[x]]), FULLSEQID=trees.labels[[x]], COLDATE=gsub(".+_(.+)", "\\1", trees.labels[[x]]), CENSORED=0, KEPT=1, DUPLICATE="", DUPLICATES="", NA=""))
+write(indel_control, sprintf('control.unfixed.%s.txt', suffix))
