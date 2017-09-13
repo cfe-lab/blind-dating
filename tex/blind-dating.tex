@@ -19,6 +19,16 @@
 \newcommand{\figcaption}[1]{\refstepcounter{figure} \subsection*{Fig. \thefigure{}} #1}
 \newcommand{\tabcaption}[1]{\refstepcounter{table}}
 
+% subfigure labels
+\newcounter{mysubfigure}[figure]
+\newcounter{mysubfiguresmall}[figure]
+\newcommand{\sublabel}[1]{\refstepcounter{mysubfigure}\label{#1}\refstepcounter{mysubfiguresmall}\label{#1small}}
+\renewcommand{\themysubfigure}{\thefigure \Alph{mysubfigure}}
+\renewcommand{\themysubfiguresmall}{\alph{mysubfiguresmall}}
+\newcommand{\mysubref}[1]{\ref{#1small}}
+\crefname{mysubfigure}{Figure}{Figures}
+\crefname{mysubfirguresmall}{}{}
+
 
 \title{Blind-dating: recovering the integration dates of the latent human immunodeficiency virus reservoir using longitudinal samples}
 % Short title: Blind-dating
@@ -160,7 +170,7 @@ More details of the method are given in the Materials and Methods.
 First, we validated our methodology using simulated data.
 Our method performed very well on the simulated data, details are in the Supplementary materials.
 
-\subsection*{Validation on data with only RNA sequences.}
+\subsection*{Validation on data with RNA sequences}
 
 Next we validated using real data.
 We collected longitudinal HIV \emph{env} sequences from 9 patients on the Los Alamos National Laboratory HIV Database (LANL).
@@ -178,16 +188,19 @@ The LM fit for 15 of the 19 patients.
 \section*{Results using recruited patients}
 
 The main purpose of this study was to capture the integration date of reservoir sequences.
-((Draw back of LANL data))
-Therefore, we recruited two patients with longitudinal plasma samples collected over 10 years and 2--4 timepoints of samples collected while the patients were on highly active anitiretroviral therapy (HAART).
+((Drawback of LANL data))
+Therefore, we recruited two patients with longitudinal plasma samples collected over more than 10 years and 2--4 timepoints of samples collected while the patients were on highly active anitiretroviral therapy (HAART).
 At least one time point from each patient contained HIV proviral DNA extracted directly from host cells.
 
 \subsection*{Patient 1}
 
-The blind-dating methods were applied to HIV sequences from the \emph{nef} region of Patient 1 retrieved using single-genome amplification. See \cref{fig:pat1}.
+X RNA sequences from 16 time points and Y DNA sequences from 2 time points were collected from a recruited HIV-positive individual, we denote as Patient 1.
+14 of the RNA time points were when the patient was not on treatment and the other time the patient was on highly active antiretroviral therapy (HAART). 
+\cref{fig:pat1vl} shows the time points when samples were collected as well as the viral load history of Patient 1.
+Patient was on a regimen of zidovudine/lamivudine/IND for 6 months early in the collection of RNA sampling as indicated by the grey bar in \cref{fig:pat1vl}.
 
-\begin{figure*}
-\includegraphics[width=\textwidth{}]{{patient_***REMOVED***}.pdf}
+\begin{figure}
+\includegraphics[width=.48\textwidth{}]{{patient_***REMOVED***}.pdf}
 \caption{Patient 1.
 A) The history of the patient's viral load in copies per ml of plasma.
 Marked points indicate time points when we sampled HIV sequences.
@@ -201,18 +214,24 @@ In figures A--C closed circles represent HIV RNA sequences and open diamonds rep
 In figures A, C and D the grey-shaded indicate when the patient was on highly active antiretrovial therapy (HAART).
 }
 \label{fig:pat1}
-\end{figure*}
+\sublabel{fig:pat1vl}
+\sublabel{fig:pat1tree}
+\sublabel{fig:pat1distvtime}
+\sublabel{fig:pat1hist}
+\end{figure}
 
+The blind-dating method was applied to the HIV sequences of Patient 1.
 The linear model (LM) fit well to the data, with an Akaike Information Criterion (AIC) of -476, compared to the AIC of the null model: -305.
 The root mean squared error (RMSE) of the training data was 524 days.
 The estimated mutation rate was $3.5 \times 10^{-5}$ substitutions per base per day and the estimated year of the root of the ML phylogeny (analogous to the infection date) was 1995.
+See \cref{fig:pat1} for details.
 
 \subsection*{Patient 2}
 
 The blind-dating methods were applied to HIV sequences from the \emph{nef} region of Patient 1 retrieved using single-genome amplification. See \cref{fig:pat2}.
 
-\begin{figure*}
-\includegraphics[width=\textwidth{}]{{patient_***REMOVED***}.pdf}
+\begin{figure}
+\includegraphics[width=.48\textwidth{}]{{patient_***REMOVED***}.pdf}
 \caption{Patient 2.
 A) The history of the patient's viral load in copies per ml of plasma.
 Marked points indicate time points when we sampled HIV sequences.
@@ -226,13 +245,17 @@ In figures A--C closed circles represent HIV RNA sequences and open diamonds rep
 In figures A, C and D the darker grey-shaded indicate when the patient was on highly active antiretrovial therapy (HAART) and the lighter grey-shaded indicate when the patient was on dual therapy.
 }
 \label{fig:pat2}
-\end{figure*}
+\sublabel{fig:pat2vl}
+\sublabel{fig:pat2tree}
+\sublabel{fig:pat2distvtime}
+\sublabel{fig:pat2hist}
+\end{figure}
 
 The linear models (LMs) fit well to the data.
 The first LM, which only used the sequences collected during treatment na\:ivity, had an Akaike Information Criterion (AIC) of -288 compared to a null model AIC of -273.
 The root mean squared error (RMSE) of the training data on the first LM was 543 days.
-The first LM, which used the sequences collected whilethe patient was on dual therapy, had an Akaike Information Criterion (AIC) of -642 compared to a null model AIC of -628.
-The root mean squared error (RMSE) of the training data on the first LM was 1420 days.
+The first LM, which used the sequences collected while the patient was on dual therapy, had an Akaike Information Criterion (AIC) of -642 compared to a null model AIC of -628.
+The RMSE of the training data on the second LM was 1420 days.
 
 The estimated mutation rate while not on therapy was $1.0 \times 10^{-5}$ substitutions per base per day and the estimated mutation while on dual therapy was $3.1 \times 10^{-6}$ substitutions per base per day.
 The estimated year of the root of the ML phylogeny (analogous to the infection date) was 1992 .
@@ -240,32 +263,36 @@ The estimated year of the root of the ML phylogeny (analogous to the infection d
 \subsection*{Validation}
 
 To validate our model, we restricted our Patient 1 data set to the training RNA sequences, which are the plasma-derived RNA squences sampled while the patient was not on therapy.
-We then attempted to recover the collection dates of the sequences by censoring 0, 17, 31, 47, 62, and 78 sequences at random.
-For each number of censored sequences, we ran 50 replicate trials.
+We then attempted to recover the collection dates of the sequences, censoring 2--13 timepoints worth of sequences.
+For each number of time points censored, we ran 50 trials censored different time points; except when we censored 2 timepoints we used all 14 possibilities.
 See \cref{fig:validationrna}.
 
-\begin{figure*}
-\includegraphics[width=\textwidth{}]{{get_rna}}
+\begin{figure}
+\includegraphics[width=.48\textwidth{}]{{get_rna}}
 \caption{Validation of recovering censored RNA collection dates from Patient 1.
 A) The proportion of data sets where the linear model (LM) fit.
 B) Box plots of the root mean squared error (RMSE) of the dates estimated by the LM all RNA sequences (training and censored) compared against the collection dates.
 }
 \label{fig:validationrna}
-\end{figure*}
+\sublabel{fig:valrnafit}
+\sublabel{fig:valrnarmse}
+\end{figure}
 
 We reduced the patient data set of the Patient 1 data set to quantify the effect of the number of time points used.
 The Patient 1 data set had 14 time points with training RNA sequences.
 We reduced the patient data by selecting a subset of the 14 time points at random.
-From this we generated 550 different data sets with 2--12 time points with training RNA sequences (50 data sets for each number of time points) and all 14 possible data sets with 13 time points of training RNA sequences.
+From this we generated different data sets with 2--13 time points with training RNA sequences (50 data sets for each number of time points) and all 14 possible data sets with 13 time points of training RNA sequences.
 See \cref{fig:validationdna}.
 
-\begin{figure*}
-\includegraphics[width=\textwidth{}]{sensitivity}
+\begin{figure}
+\includegraphics[width=.48\textwidth{}]{sensitivity}
 \caption{Validation of Patient 1 removing the training RNA sequences from specific time points from the data set and then applying the blind dating methodology to compute the estimated integration dates of the reservoir sequernces.
 A) The proportion of data sets where the linear model (LM) fit.
 B) Box plots of the root mean squared error (RMSE) of the estimated integration dates of the reservoir sequences compared against the estimated integration dates using all of RNA training sequences.}
 \label{fig:validationdna}
-\end{figure*}
+\sublabel{fig:valdnafit}
+\sublabel{fig:valdnarmse}
+\end{figure}
 
 The results of these validations were compared against the results when using outgroup rooting to root the ML phylogenies (see Supllementary Materials).
 
