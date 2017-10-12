@@ -20,8 +20,8 @@ if (any(grep("--file=", args.all))) {
 
 compare.dates <- function(data, ori.data, censor, f, ...) {
 	if (censor) {
-		data <- subset(data, censored == 1)
-		ori.data <- subset(ori.data, censored == 1)
+		data <- subset(data, censored > 0)
+		ori.data <- subset(ori.data, censored > 0)
 	}
 
 	m <- match(data$label, ori.data$label)

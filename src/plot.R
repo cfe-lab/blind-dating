@@ -8,8 +8,16 @@ library(optparse)
 source("~/git/node.dating/src/node.dating.R")
 
 
-THERAPY_COLOUR <- "#a0a0a010"
-THERAPY_COLOUR2 <- "#c0c0c010"
+THERAPY_COLOUR <- "#a0a0a0"
+THERAPY_COLOUR2 <- "#c0c0c0"
+
+TRAINING_COLOUR <- 'black'
+TRAINING_COLOUR2 <- 'darkblue'
+CENSORED_COLOUR <- 'red'
+CENSORED_COLOUR2 <- "#ff8000"
+
+REGRESS_COLOUR <- "#001878b0"
+REGRESS_COLOUR2 <- "#006090b0"
 
 pdf.options(family="Helvetica", fonts="Helvetica", width=7, height=7, colormodel='rgb')
 
@@ -38,12 +46,12 @@ apply.axes <- function(p, flipped, scaled) {
 		if (flipped) {
 			p <- p + 
 				y.scale +
-				scale_x_continuous(name="Divergence from root", breaks=seq(0.0, dist.max, by=dist.by)) + 
+				x.div + 
 				coord_flip(xlim=c(dist.min, dist.max)) +
-				geom_abline(intercept=-stats[, "Model.Intercept"] / stats[, "Model.Slope"], slope=1 / stats[, "Model.Slope"], colour="#0050b0b0", linetype=2)
+				geom_abline(intercept=-stats[, "Model.Intercept"] / stats[, "Model.Slope"], slope=1 / stats[, "Model.Slope"], colour=REGRESS_COLOUR, linetype=2)
 #				geom_path(aes(y=date, x=ci.high), data=data.ci, linetype=3, colour="#0060b080") +
 #				geom_path(aes(y=date, x=ci.low), data=data.ci, linetype=3, colour="#0060b080")
-			if (use.real) {
+			if (!is.na(THERAPY_START)) {
 				if (is.na(therapy2))
 					p$layers <- c(geom_rect(ymin=as.numeric(THERAPY_START), ymax=Inf, xmin=-Inf, xmax=Inf, fill=THERAPY_COLOUR, linetype=2), p$layers)
 				else {
@@ -55,18 +63,18 @@ apply.axes <- function(p, flipped, scaled) {
 				}
 			}
 			if (!is.na(pat.id2))
-				p <- p + geom_abline(intercept=-stats.2[, "Model.Intercept"] / stats.2[, "Model.Slope"], slope=1 / stats.2[, "Model.Slope"], colour="#003058b0", linetype=2)
+				p <- p + geom_abline(intercept=-stats.2[, "Model.Intercept"] / stats.2[, "Model.Slope"], slope=1 / stats.2[, "Model.Slope"], colour=REGRESS_COLOUR2, linetype=2)
 #					geom_path(aes(y=date, x=ci.high.2), data=data.ci, linetype=3, colour="#00305880") +
 #					geom_path(aes(y=date, x=ci.low.2), data=data.ci, linetype=3, colour="#00305880")
 		} else {
 			p <- p + 
 				x.scale +
-				scale_y_continuous(name="Divergence from root", breaks=seq(0.0, dist.max, by=dist.by)) +
+				y.div +
 				coord_cartesian(ylim=c(dist.min, dist.max)) +
-				geom_abline(intercept=stats[, "Model.Intercept"], slope=stats[, "Model.Slope"], colour="#0050b0b0", linetype=2)
+				geom_abline(intercept=stats[, "Model.Intercept"], slope=stats[, "Model.Slope"], colour=REGRESS_COLOUR, linetype=2)
 #				geom_path(aes(x=date, y=ci.high), data=data.ci, linetype=3, colour="#0060b080") +
 #				geom_path(aes(x=date, y=ci.low), data=data.ci, linetype=3, colour="#0060b080")
-			if (use.real) {
+			if (!is.na(THERAPY_START)) {
 				if (is.na(therapy2))
 					p$layers <- c(geom_rect(xmin=as.numeric(THERAPY_START), xmax=Inf, ymin=-Inf, ymax=Inf, fill=THERAPY_COLOUR, linetype=0), p$layers)
 				else {
@@ -78,7 +86,7 @@ apply.axes <- function(p, flipped, scaled) {
 				}
 			}
 			if (!is.na(pat.id2))
-				p <- p + geom_abline(intercept=stats.2[, "Model.Intercept"], slope=stats.2[, "Model.Slope"], colour="#003058b0", linetype=2)
+				p <- p + geom_abline(intercept=stats.2[, "Model.Intercept"], slope=stats.2[, "Model.Slope"], colour=REGRESS_COLOUR2, linetype=2)
 #					geom_path(aes(x=date, y=ci.high.2), data=data.ci, linetype=3, colour="#00305880") +
 #					geom_path(aes(x=date, y=ci.low.2), data=data.ci, linetype=3, colour="#00305880")
 		}
@@ -94,6 +102,7 @@ apply.theme <- function(p, flipped=F, scaled=T) {
 			axis.text=element_text(size=30, colour='black'),
 			legend.text=element_text(size=30),
 			legend.position=0,
+			axis.text.x=element_text(angle=60, hjust=1),
 			legend.justification=c(0, 1),
 			legend.spacing=unit(0, 'cm'),
 			legend.margin=margin(0, 0, 0, 0, 'cm'),
@@ -117,16 +126,17 @@ op <- add_option(op, "--patid", type='character')
 op <- add_option(op, "--patid2", type='character')
 op <- add_option(op, "--real", type='logical', action='store_true', default=F)
 op <- add_option(op, "--distmax", type='double')
-op <- add_option(op, "--distmin", type='double', default=-.01)
+op <- add_option(op, "--distmin", type='double', default=NA)
 op <- add_option(op, "--distby", type='double')
 op <- add_option(op, "--yearstart", type='character')
 op <- add_option(op, "--yearend", type='character')
-op <- add_option(op, "--yearby", type='double', default=5)
-op <- add_option(op, "--therapy", type='character', default="0000-01-01")
+op <- add_option(op, "--yearby", type='double', default=NA)
+op <- add_option(op, "--therapy", type='character', default=NA)
 op <- add_option(op, "--therapy2", type='character', default=NA)
 op <- add_option(op, "--therapyend", type='character', default=NA)
 op <- add_option(op, "--liktol", type='numeric', default=1e-3)
 op <- add_option(op, "--usedups", type='logical', action='store_true', default=F)
+op <- add_option(op, "--cartoon", type='logical', action='store_true', default=F)
 args <- parse_args(op)
 
 tree.file <- args$tree
@@ -139,6 +149,7 @@ dist.by <- args$distby
 LIK_TOL <- args$liktol
 therapy2 <- args$therapy2
 therapyend <- args$therapyend
+cartoon <- args$cartoon
 if (use.real) {
 	year.start <- args$yearstart
 	year.end <- args$yearend
@@ -146,6 +157,7 @@ if (use.real) {
 } else {
 	year.start <- as.numeric(args$yearstart)
 	year.end <- as.numeric(args$yearend)
+	THERAPY_START <- as.numeric(args$therapy)
 }
 if (!is.na(therapy2)) {
 	therapy2 <- as.Date(therapy2)
@@ -189,6 +201,10 @@ if (!is.na(pat.id2)) {
 	stats.2 <- read.csv(stats.2.file, stringsAsFactors=F)
 	g.2 <- readRDS(regression.2.file)
 	
+	data.2$LM <- 2
+	data$LM <- 1
+	data.2$censored[data.2$censored == 1] <- 2
+	
 	p.2 <- predict(g.2, data.frame(date=ci.dates), interval='confidence')
 	data.ci <- as.data.frame(cbind(data.ci, ci.low.2=p.2[,2], ci.high.2=p.2[,3]))
 	
@@ -206,14 +222,15 @@ if (!is.na(pat.id2)) {
 	data[clade.tips, ] <- data.2[clade.tips, ]
 	data[data.old$censored == -1, "censored"] <- -1
 	data[data.old$censored == 0, ] <- data.old[data.old$censored == 0, ]
-	write.table(data, paste0("stats/", pat.id, ".comb.data.csv"), col.names=c("ID", "Type", "Censored", "Collection Date", "Divergence", "Estimated Date", "Date Difference"), row.names=F, sep=",")
+	write.table(data, paste0("stats/", pat.id, ".comb.data.csv"), col.names=c("ID", "Type", "Censored", "Collection Date", "Divergence", "Estimated Date", "Date Difference", "LM"), row.names=F, sep=",")
+	data <- data[, -8]
 	
 	stats$Minimum.Time.Point <- min(stats$Mimimum.Time.Point, stats.2$Minimum.Time.Point)
 	stats$Minimum.Training.Time.Point <- min(stats$Mimimum.Training.Time.Point, stats.2$Minimum.Training.Time.Point)
 	stats$Maximum.Time.Point <- min(stats$Maximum.Time.Point, stats.2$Maximum.Time.Point)
 	stats$Maximum.Training.Time.Point <- min(stats$Maximum.Training.Time.Point, stats.2$Maximum.Training.Time.Point)
 	stats$Training.Samples <- stats$Training.Samples + stats.2$Training.Samples
-	stats$Censored.RMSD <- sqrt(sum(data[data$censored == 1, "date.diff"]^2)/sum(data$censored == 1))
+	stats$Censored.RMSD <- sqrt(sum(data[data$censored > 0, "date.diff"]^2)/sum(data$censored > 0))
 	stats <- as.data.frame(cbind(stats, stats.2[, c("AIC", "null.AIC", "p.value", "Model.Intercept", "Model.Slope", "Training.RMSE")]))
 	stats.col.names <- c(
 		"Patient",
@@ -252,15 +269,15 @@ if (!is.na(pat.id2)) {
 	)
 	write.table(stats, paste0("stats/", pat.id, ".comb.stats.csv"), row.names=F, col.names=stats.col.names, sep=",")
 
-	colour.break <- c(0, -1, 1)
-	colour.label <- c("Training", "Training 2", "Censored")
-	colour.value <- c('black', 'darkblue', 'red')
+	colour.break <- c(0, -1, 1, 2)
+	colour.label <- c("Training", "Training 2", "Censored", "Censored 2")
+	colour.value <- c(TRAINING_COLOUR, TRAINING_COLOUR2, CENSORED_COLOUR, CENSORED_COLOUR2)
 } else {
 	mu <- stats[, "Model.Slope"]
 
 	colour.break <- c(0, 1)
 	colour.label <- c("Training", "Censored")
-	colour.value <- c('black', 'red')
+	colour.value <- c(TRAINING_COLOUR, CENSORED_COLOUR)
 }
 
 if (use.real) {
@@ -273,14 +290,27 @@ if (use.real) {
 	type.label <- c("RNA", "DNA", "DNA", "DNA", "RNA", "DNA")
 	type.value <- c(16, 5, 5, 5, 16, 5)
 } else {
-	date.ticks <- as.character(seq(floor(year.start / year.by) * year.by + year.by, year.end, by=year.by))
-	x.scale <- scale_x_continuous(name="Days post simulation", breaks=date.ticks, limits=c(year.start, year.end))
-	y.scale <- scale_y_continuous(name="Days post simulation", breaks=date.ticks, limits=c(year.start, year.end))
-	x.scale.hist <- scale_x_continuous(name="Days post simulation")
+	if (cartoon) {
+		x.scale <- scale_x_continuous(name="Collection Time", breaks=NULL, limits=c(year.start, year.end))
+		y.scale <- scale_y_continuous(name="Collection Time", breaks=NULL, limits=c(year.start, year.end))
+	} else {
+		date.ticks <- seq(floor(year.start / year.by) * year.by + year.by, year.end, by=year.by)
+		x.scale <- scale_x_continuous(name="Days post simulation", breaks=date.ticks, labels=date.ticks, limits=c(year.start, year.end))
+		y.scale <- scale_y_continuous(name="Days post simulation", breaks=date.ticks, labels=date.ticks, limits=c(year.start, year.end))
+		x.scale.hist <- scale_x_continuous(name="Days post simulation")
+	}
 	
-	type.break <- c("Training", "Censored")
-	type.label <- c("Training", "Censored")
+	type.break <- c("PLASMA", "PBMC")
+	type.label <- c("RNA", "DNA")
 	type.value <- c(16, 5)
+}
+
+if (cartoon) {
+	x.div <- scale_x_continuous(name="Divergence from root", breaks=NULL)
+	y.div <- scale_y_continuous(name="Divergence from root", breaks=NULL)
+} else {
+	x.div <- scale_x_continuous(name="Divergence from root", breaks=seq(0.0, dist.max, by=dist.by))
+	y.div <- scale_y_continuous(name="Divergence from root", breaks=seq(0.0, dist.max, by=dist.by))
 }
 
 data$type <- type.label[match(data$type, type.break)]
@@ -295,22 +325,34 @@ data.all <- as.data.frame(cbind(rbind(data, data.frame(tip.label=paste0("N.", 1:
 
 ptree <- phylo4d(tree, all.data=data.all)
 
+if (F) {
 pdf(pdf.file)
 apply.theme(ggplot(data) +
 	geom_point(aes(x=date, y=dist, colour=factor(censored), shape=type), size=6)) +
 	theme(legend.position=c(0.02, .98))
 dev.off()
+}
+
+if (cartoon) {
+	point.size <- 8
+	dist.tree.size <- 1
+	tree.size <- 1
+} else {
+	point.size <- 6
+	dist.tree.size <- .6
+	tree.size <- .4
+}	
 
 pdf(pdf.disttree.file)
-apply.theme(ggtree(ptree, colour="#49494980", size=.6, ladderize=T) +
+apply.theme(ggtree(ptree, colour="#49494980", size=dist.tree.size, ladderize=T) +
 #	geom_tiplab(colour="#49494980", angle=90, hjust=-.1, size=1) + 
-	geom_tippoint(aes(colour=factor(censored), shape=type), size=6) +
+	geom_tippoint(aes(colour=factor(censored), shape=type), size=point.size) +
 	geom_treescale(width=0.02, offset=2), flipped=F, scaled=F)
 dev.off()
 
 pdf(pdf.tree.file)
-apply.theme(ggtree(ptree, yscale="node.date", colour="#6d4d4180", size=.4, ladderize=F) +
-	geom_tippoint(aes(colour=factor(censored), shape=type), size=6),
+apply.theme(ggtree(ptree, yscale="node.date", colour="#6d4d4180", size=tree.size, ladderize=F) +
+	geom_tippoint(aes(colour=factor(censored), shape=type), size=point.size),
 	flipped=T)
 dev.off()
 

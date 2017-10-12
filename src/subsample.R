@@ -31,7 +31,7 @@ args <- commandArgs(trailingOnly = T)
 FASTA_FILE <- args[1]
 INFO_FILE <- args[2]
 SUFFIX <- args[3]
-METHOD <- as.integer(args[4]) # 0: N RNA time points 1: all but 1 time point, 2: 2 RNA time points
+METHOD <- as.integer(args[4]) # 0: N RNA time points 1: all but 1 time point, 2: 2 RNA time points, -2: all but 2 time points
 REPS <- as.integer(args[5]) # number of replicates generated for method 0
 TIME_POINTS <- as.integer(args[6]) # number of time points, N, for method 0
 SEED <- as.integer(args[7])
@@ -68,8 +68,13 @@ method <- if (METHOD == 0) {
 	reps <- ncol(sampler)
 	
 	get.time.points
-} else {
+} else if (METHOD == 2) {
 	sampler <- combn(time.points, 2)
+	reps <- ncol(sampler)
+	
+	get.time.points
+} else {
+	sampler <- combn(time.points, n.points - 2)
 	reps <- ncol(sampler)
 	
 	get.time.points
