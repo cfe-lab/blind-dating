@@ -48,7 +48,7 @@ apply.axes <- function(p, flipped, scaled) {
 				y.scale +
 				x.div + 
 				coord_flip(xlim=c(dist.min, dist.max)) +
-				geom_abline(intercept=-stats[, "Model.Intercept"] / stats[, "Model.Slope"], slope=1 / stats[, "Model.Slope"], colour=REGRESS_COLOUR, linetype=2)
+				geom_abline(intercept=-stats[, "Model.Intercept"] / stats[, "Model.Slope"], slope=1 / stats[, "Model.Slope"], colour=REGRESS_COLOUR, linetype=regression.size)
 #				geom_path(aes(y=date, x=ci.high), data=data.ci, linetype=3, colour="#0060b080") +
 #				geom_path(aes(y=date, x=ci.low), data=data.ci, linetype=3, colour="#0060b080")
 			if (!is.na(THERAPY_START)) {
@@ -63,7 +63,7 @@ apply.axes <- function(p, flipped, scaled) {
 				}
 			}
 			if (!is.na(pat.id2))
-				p <- p + geom_abline(intercept=-stats.2[, "Model.Intercept"] / stats.2[, "Model.Slope"], slope=1 / stats.2[, "Model.Slope"], colour=REGRESS_COLOUR2, linetype=2)
+				p <- p + geom_abline(intercept=-stats.2[, "Model.Intercept"] / stats.2[, "Model.Slope"], slope=1 / stats.2[, "Model.Slope"], colour=REGRESS_COLOUR2, linetype=regression.size)
 #					geom_path(aes(y=date, x=ci.high.2), data=data.ci, linetype=3, colour="#00305880") +
 #					geom_path(aes(y=date, x=ci.low.2), data=data.ci, linetype=3, colour="#00305880")
 		} else {
@@ -71,7 +71,7 @@ apply.axes <- function(p, flipped, scaled) {
 				x.scale +
 				y.div +
 				coord_cartesian(ylim=c(dist.min, dist.max)) +
-				geom_abline(intercept=stats[, "Model.Intercept"], slope=stats[, "Model.Slope"], colour=REGRESS_COLOUR, linetype=2)
+				geom_abline(intercept=stats[, "Model.Intercept"], slope=stats[, "Model.Slope"], colour=REGRESS_COLOUR, linetype=regression.size)
 #				geom_path(aes(x=date, y=ci.high), data=data.ci, linetype=3, colour="#0060b080") +
 #				geom_path(aes(x=date, y=ci.low), data=data.ci, linetype=3, colour="#0060b080")
 			if (!is.na(THERAPY_START)) {
@@ -86,7 +86,7 @@ apply.axes <- function(p, flipped, scaled) {
 				}
 			}
 			if (!is.na(pat.id2))
-				p <- p + geom_abline(intercept=stats.2[, "Model.Intercept"], slope=stats.2[, "Model.Slope"], colour=REGRESS_COLOUR2, linetype=2)
+				p <- p + geom_abline(intercept=stats.2[, "Model.Intercept"], slope=stats.2[, "Model.Slope"], colour=REGRESS_COLOUR2, linetype=regression.size)
 #					geom_path(aes(x=date, y=ci.high.2), data=data.ci, linetype=3, colour="#00305880") +
 #					geom_path(aes(x=date, y=ci.low.2), data=data.ci, linetype=3, colour="#00305880")
 		}
@@ -291,8 +291,9 @@ if (use.real) {
 	type.value <- c(16, 5, 5, 5, 16, 5)
 } else {
 	if (cartoon) {
-		x.scale <- scale_x_continuous(name="Collection Time", breaks=NULL, limits=c(year.start, year.end))
-		y.scale <- scale_y_continuous(name="Collection Time", breaks=NULL, limits=c(year.start, year.end))
+		date.ticks <- seq(floor(year.start / year.by) * year.by + year.by, year.end, by=year.by)
+		x.scale <- scale_x_continuous(name="Years since first collection", breaks=date.ticks, limits=c(year.start, year.end))
+		y.scale <- scale_y_continuous(name="Years since first collection", breaks=date.ticks, limits=c(year.start, year.end))
 	} else {
 		date.ticks <- seq(floor(year.start / year.by) * year.by + year.by, year.end, by=year.by)
 		x.scale <- scale_x_continuous(name="Days post simulation", breaks=date.ticks, labels=date.ticks, limits=c(year.start, year.end))
@@ -305,13 +306,9 @@ if (use.real) {
 	type.value <- c(16, 5)
 }
 
-if (cartoon) {
-	x.div <- scale_x_continuous(name="Divergence from root", breaks=NULL)
-	y.div <- scale_y_continuous(name="Divergence from root", breaks=NULL)
-} else {
-	x.div <- scale_x_continuous(name="Divergence from root", breaks=seq(0.0, dist.max, by=dist.by))
-	y.div <- scale_y_continuous(name="Divergence from root", breaks=seq(0.0, dist.max, by=dist.by))
-}
+
+x.div <- scale_x_continuous(name="Divergence from root", breaks=seq(0.0, dist.max, by=dist.by))
+y.div <- scale_y_continuous(name="Divergence from root", breaks=seq(0.0, dist.max, by=dist.by))
 
 data$type <- type.label[match(data$type, type.break)]
 
@@ -337,17 +334,21 @@ if (cartoon) {
 	point.size <- 8
 	dist.tree.size <- 1
 	tree.size <- 1
+	scale.offset <- 0.3
+	regression.size <- 5
 } else {
 	point.size <- 6
 	dist.tree.size <- .6
 	tree.size <- .4
+	scale.offset <- 2
+	regression.size <- 2
 }	
 
 pdf(pdf.disttree.file)
 apply.theme(ggtree(ptree, colour="#49494980", size=dist.tree.size, ladderize=T) +
 #	geom_tiplab(colour="#49494980", angle=90, hjust=-.1, size=1) + 
 	geom_tippoint(aes(colour=factor(censored), shape=type), size=point.size) +
-	geom_treescale(width=0.02, offset=2), flipped=F, scaled=F)
+	geom_treescale(width=0.02, fontsize=7, offset=scale.offset), flipped=F, scaled=F)
 dev.off()
 
 pdf(pdf.tree.file)
