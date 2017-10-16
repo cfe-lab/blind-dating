@@ -340,7 +340,7 @@ if (cartoon) {
 	point.size <- 6
 	dist.tree.size <- .6
 	tree.size <- .4
-	scale.offset <- 2
+	scale.offset <- 3
 	regression.size <- 2
 }	
 
