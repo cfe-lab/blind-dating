@@ -5,9 +5,9 @@ Phylogenetic dating of HIV latency
 # Papers
 
 # Conference Abstracts
-Jones, BR, Kinloch2, NN, Horacsek, J, Mwimanzi, P, Huang, J, Truong, R, Ganase, B, Harris, M, Harrigan, PR, Jones, RB, Brockman, MA, Joy, JB, Poon, A Brumme, ZL. Heterogeneous age and genetic distribution of within-host HIV-1 reservoirs revealed by a novel phylogenetic dating strategy. 9th IAS Conference on HIV Science (2017, Paris, France) abstract MOPEA0004.
+Jones, BR, Kinloch, NN, Horacsek, J, Mwimanzi, P, Huang, J, Truong, R, Ganase, B, Harris, M, Harrigan, PR, Jones, RB, Brockman, MA, Joy, JB, Poon, A Brumme, ZL. Heterogeneous age and genetic distribution of within-host HIV-1 reservoirs revealed by a novel phylogenetic dating strategy. 9th IAS Conference on HIV Science (2017, Paris, France) abstract MOPEA0004.
 
-Jones, BR, Kinloch2, NN, Horacsek, J, Mwimanzi, P, Huang, J, Truong, R, Ganase, B, Harris, M, Harrigan, PR, Jones, RB, Brockman, MA, Joy, JB, Poon, A Brumme, ZL. The HIV reservoir as a genetically heterogeneous archive of within-host viral evolution: implications for immunotherapeutic cure strategies (2017, Paris, France) abstract P22.
+Jones, BR, Kinloch, NN, Horacsek, J, Mwimanzi, P, Huang, J, Truong, R, Ganase, B, Harris, M, Harrigan, PR, Jones, RB, Brockman, MA, Joy, JB, Poon, A Brumme, ZL. The HIV reservoir as a genetically heterogeneous archive of within-host viral evolution: implications for immunotherapeutic cure strategies (2017, Paris, France) abstract P22.
 
 Jones, BR, Horacsek, J, Joy, JB, Brumme, ZL, Poon, AFY. Blind-dating: using phlylogeny to find the ages of latent HIV-1 sequences within host. 24th Conference on Rettroviruses and Opportunistic Infections (2017, Seattle, United States of America) abstract 196.
 
