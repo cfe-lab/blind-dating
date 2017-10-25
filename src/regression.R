@@ -42,7 +42,7 @@ args <- parse_args(op)
 tree.file <- args$tree
 info.file <- args$info
 pat.id <- args$patid
-use.date <- !args$real
+use.date <- args$real
 use.all <- args$usedups
 
 data.file <- paste0("stats/", pat.id, ".data.csv")
