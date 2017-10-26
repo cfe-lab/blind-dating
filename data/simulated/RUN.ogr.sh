@@ -9,7 +9,7 @@ raxml=raxmlHPC-PTHREADS-AVX
 cpus=$SLURM_CPUS_PER_TASK
 
 echo "Building"
-R --slave --silent -f ${src}/build.tree.R --args simulated/${pat_id}_TRUE.fas trees/${pat_id}.nwk ${raxml} ${cpus} ${rep}
+R --slave --silent -f ${src}/build.tree.R --args simulated/${pat_id}_TRUE.fasta trees/${pat_id}.nwk ${raxml} ${cpus} ${rep}
 echo "Rooting"
 R --slave --silent -f ${src}/root.tree.R --args trees/${pat_id}.nwk info/${pat_id}.csv trees.rooted/${pat_id}.ogr.nwk 1 0
 echo "Regressing"
