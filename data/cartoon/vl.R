@@ -19,18 +19,19 @@ panel.grid.minor=element_blank()
 )
 
 THERAPY_COLOUR <- "#a0a0a0"
+THERAPY <- 4.4666666
 data <- read.csv("stats/cartoon.data.csv")
 data <- subset(data, Censored == 1)
 
 pdf.options(family="Helvetica", fonts="Helvetica", width=7, height=4.2, colormodel='rgb')
 pdf("plots/cartoon.hist.pdf")
 ggplot(data, aes(x=Estimated.Date)) +
-	geom_rect(xmin=2.1, xmax=Inf, ymin=0, ymax=2, fill=THERAPY_COLOUR) +
-	geom_histogram(breaks=c(-1, 0, 1, 2, 3), fill='red') +
+	geom_rect(xmin=THERAPY, xmax=Inf, ymin=0, ymax=2, fill=THERAPY_COLOUR) +
+	geom_histogram(breaks=seq(-2, 5, by=1), fill='red') +
 	geom_segment(x=0, xend=0, y=2, yend=1.5, arrow=arrow(length = unit(0.5, "cm")))  +
 	theme_bw() +
 	my.theme +
-	scale_x_continuous(name="Years since first collection") +
+	scale_x_continuous(name="Years since first collection", breaks=seq(-2, 5, by=1)) +
 	scale_y_continuous(name="Frequency", breaks=c(0, 1, 2))
 dev.off()
 
@@ -56,13 +57,13 @@ data <- read.csv("VL.cartoon.csv")
 pdf.options(family="Helvetica", fonts="Helvetica", width=7, height=4.2, colormodel='rgb')
 pdf("plots/VL.cartoon.pdf")
 ggplot(data, aes(x=Date, y=VL)) +
-	geom_rect(xmin=2.1, xmax=Inf, ymin=-Inf, ymax=Inf, fill=THERAPY_COLOUR) +
+	geom_rect(xmin=THERAPY, xmax=Inf, ymin=-Inf, ymax=Inf, fill=THERAPY_COLOUR) +
 	geom_line(size=1) +
 	theme_bw() +
 	my.theme +
-	coord_cartesian(ylim=c(10, 120000), xlim=c(0, 4)) +
+	coord_cartesian(ylim=c(10, 120000), xlim=c(0, 8)) +
 	scale_y_log10(name="Viral load", breaks=10^c(1, 3, 5), labels=sapply(c(1, 3, 5), function(x) bquote(''*10^{.(x)}*''))) +
-	scale_x_continuous(name="Years since first collection", breaks=c(0, 1, 2, 3, 4)) +
+	scale_x_continuous(name="Years since first collection", breaks=seq(0, 8)) +
 	geom_point(aes(colour=factor(Censored), shape=Type), data=subset(data, Used != ""), size=8) +
 	scale_colour_manual(name="", breaks=c(0, 1), limits=c(0, 1), labels=c("Training", "Censored"), values=c('black', 'red')) + scale_shape_manual(name="", breaks=c("RNA", "DNA"), limits=c("RNA", "DNA"), labels=c("RNA", "DNA"), values=c(16, 5))
 dev.off()

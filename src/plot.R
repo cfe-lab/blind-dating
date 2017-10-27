@@ -48,7 +48,7 @@ apply.axes <- function(p, flipped, scaled) {
 				y.scale +
 				x.div + 
 				coord_flip(xlim=c(dist.min, dist.max)) +
-				geom_abline(intercept=-stats[, "Model.Intercept"] / stats[, "Model.Slope"], slope=1 / stats[, "Model.Slope"], colour=REGRESS_COLOUR, linetype=regression.size)
+				geom_abline(intercept=-stats[, "Model.Intercept"] / stats[, "Model.Slope"], slope=1 / stats[, "Model.Slope"], colour=REGRESS_COLOUR, linetype=2, size=regression.size)
 #				geom_path(aes(y=date, x=ci.high), data=data.ci, linetype=3, colour="#0060b080") +
 #				geom_path(aes(y=date, x=ci.low), data=data.ci, linetype=3, colour="#0060b080")
 			if (!is.na(THERAPY_START)) {
@@ -63,7 +63,7 @@ apply.axes <- function(p, flipped, scaled) {
 				}
 			}
 			if (!is.na(pat.id2))
-				p <- p + geom_abline(intercept=-stats.2[, "Model.Intercept"] / stats.2[, "Model.Slope"], slope=1 / stats.2[, "Model.Slope"], colour=REGRESS_COLOUR2, linetype=regression.size)
+				p <- p + geom_abline(intercept=-stats.2[, "Model.Intercept"] / stats.2[, "Model.Slope"], slope=1 / stats.2[, "Model.Slope"], colour=REGRESS_COLOUR2, linetype=2, size=regression.size)
 #					geom_path(aes(y=date, x=ci.high.2), data=data.ci, linetype=3, colour="#00305880") +
 #					geom_path(aes(y=date, x=ci.low.2), data=data.ci, linetype=3, colour="#00305880")
 		} else {
@@ -71,7 +71,7 @@ apply.axes <- function(p, flipped, scaled) {
 				x.scale +
 				y.div +
 				coord_cartesian(ylim=c(dist.min, dist.max)) +
-				geom_abline(intercept=stats[, "Model.Intercept"], slope=stats[, "Model.Slope"], colour=REGRESS_COLOUR, linetype=regression.size)
+				geom_abline(intercept=stats[, "Model.Intercept"], slope=stats[, "Model.Slope"], colour=REGRESS_COLOUR, linetype=2, size=regression.size)
 #				geom_path(aes(x=date, y=ci.high), data=data.ci, linetype=3, colour="#0060b080") +
 #				geom_path(aes(x=date, y=ci.low), data=data.ci, linetype=3, colour="#0060b080")
 			if (!is.na(THERAPY_START)) {
@@ -86,7 +86,7 @@ apply.axes <- function(p, flipped, scaled) {
 				}
 			}
 			if (!is.na(pat.id2))
-				p <- p + geom_abline(intercept=stats.2[, "Model.Intercept"], slope=stats.2[, "Model.Slope"], colour=REGRESS_COLOUR2, linetype=regression.size)
+				p <- p + geom_abline(intercept=stats.2[, "Model.Intercept"], slope=stats.2[, "Model.Slope"], colour=REGRESS_COLOUR2, linetype=2, size=regression.size)
 #					geom_path(aes(x=date, y=ci.high.2), data=data.ci, linetype=3, colour="#00305880") +
 #					geom_path(aes(x=date, y=ci.low.2), data=data.ci, linetype=3, colour="#00305880")
 		}
@@ -335,13 +335,13 @@ if (cartoon) {
 	dist.tree.size <- 1
 	tree.size <- 1
 	scale.offset <- 0.3
-	regression.size <- 5
+	regression.size <- 2
 } else {
 	point.size <- 6
 	dist.tree.size <- .6
 	tree.size <- .4
 	scale.offset <- 3
-	regression.size <- 2
+	regression.size <- 1
 }	
 
 pdf(pdf.disttree.file)
