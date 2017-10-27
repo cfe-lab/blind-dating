@@ -35,13 +35,15 @@ args <- commandArgs(trailing=T)
 
 fasta.file <- args[1]
 info.file <- args[2]
+use.date <- if (length(args) >= 3) as.integer(args[3]) else 1
 
 hyper.fasta.file <- gsub(".fasta", ".hyper.fasta", fasta.file)
 
 fasta <- read.fasta(fasta.file)
 info <- read.info(info.file, names(fasta))
 
-info$COLDATE <- as.Date(info$COLDATE)
+if (use.date == 1)
+	info$COLDATE <- as.Date(info$COLDATE)
 first <- fasta[info$COLDATE == min(info$COLDATE)]
 
 f.hyper <- list(REF=sapply(1:length(first[[1]]), function(i) get.mode(sapply(first, function(x) x[[i]]), multi='N')))
