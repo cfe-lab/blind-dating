@@ -34,7 +34,7 @@ tree.read <- function(tr) {
 	tree <- read.tree(paste(tr, sep='/'))
 		
 	if (any("REFERENCE" == tree$tip.label)) {
-		if (use.rtt)			
+		if (use.rtt > 0)			
 			drop.tip(tree, "REFERENCE")
 		else
 			drop.tip(root(tree, "REFERENCE"), "REFERENCE")
@@ -46,7 +46,7 @@ tree.read <- function(tr) {
 
 tree <- tree.read(tree.file)
 
-if (use.rtt) {
+if (use.rtt > 0) {
 	info <- read.info(info.file, tree$tip.label)
 	plasma.dates <-  if (use.date == 1) as.numeric(as.Date(info$COLDATE)) else info$COLDATE
 	tip.type <- info$CENSORED
