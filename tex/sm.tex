@@ -134,10 +134,10 @@ The concordance in the recruited patients was also high with a 0.899 concordance
 Reference & Patient ID & \multicolumn{3}{c}{Sequences} & \multicolumn{3}{c}{Time points} \\
  &  & Plasma & PBMC & Total & Plasma & PBMC & Total\\
 \hline
-\cite{Shankarappa99} & 825 & 49 (52) & & 49 (52) & 6 & & 6 \\
 \cite{Simmonds91} & 2658 & 69 (84) & & 69 (84) & 5 & & 5 \\
+\cite{Shankarappa99} & 825 & 49 (52) & & 49 (52) & 6 & & 6 \\
 \cite{Edwards06} & 7259 & 28 & & 28 & 4 & & 4 \\
-& 7263 & 12 (14) & & 12 (14) & 3 & & 3 \\
+%& 7263 & 12 (14) & & 12 (14) & 3 & & 3 \\	% bad before censoring
 & 7265 & 40 (21) & & 40 (21) & 3 & & 3 \\
 & 13333 & 38 (39) & & 38 (39) & 4 & & 4 \\
 & 13334 & 36 (38) & & 36 (38) & 5 & & 5 \\
@@ -152,6 +152,12 @@ Reference & Patient ID & \multicolumn{3}{c}{Sequences} & \multicolumn{3}{c}{Time
 & 10138 & 64 (82) & 112 (119) & 176 (201) & 6 & 13 & 16 \\
 & 10586 & 11 (16) & 65 (121) & 76 (137) & 2 & 12 & 14 \\ 
 & 13889 & 77 (151) & 65 (132) & 142 (283) & 13 & 14 & 18 \\
+\cite{Fischer04} & 10769 & 108 (229) & 56 (96) & 164 (325) & 10 & 4 & 11 \\ 
+%& 10770 &    190 &       31 &      221 &       11 &        2 &       11  \\ 
+\cite{Llewellyn06} & 16616 & 16 & 64 (95) & 80 (111) & 2 & 5 & 5 \\
+%& 16617 & 7 (16) & 62 (89) & 69 (105) & 1 (2) & 5 & 5 \\
+& 16618 & 18 (25) & 45 (75) & 63 (100) & 2 & 5 & 6 \\
+& 16619 & 9 (13) & 45 (60) & 54 (73) & 2 & 6 & 6 \\
 \cite{Novitsky09}% & 34382 &     37 &        5 &       42 &        3 &        1 &        4  \\ 
 & 34391 & 12 (13) & 35 (38) & 52 (51) & 3 & 5 & 6 \\
 & 34393 & 21 (25) & 31 (74) & 47 (99) & 2 & 5 (6) & 7 (6) \\
@@ -163,12 +169,6 @@ Reference & Patient ID & \multicolumn{3}{c}{Sequences} & \multicolumn{3}{c}{Time
 %& 34408 &       5 &       73 &       78 &        2 &        8 &        8 \\
 & 34410 & 22 (35) & 56 (60) & 78 (95) & 2 & 6 & 6 \\
 & 34411 & 14 (25) & 19 (42) & 33 (67) & 3 & 3 & 6 \\
-\cite{Fischer04} & 10769 & 108 (229) & 56 (96) & 164 (325) & 10 & 4 & 11 \\ 
-%& 10770 &    190 &       31 &      221 &       11 &        2 &       11  \\ 
-\cite{Llewellyn06} & 16616 & 16 & 64 (95) & 80 (111) & 2 & 5 & 5 \\
-%& 16617 & 7 (16) & 62 (89) & 69 (105) & 1 (2) & 5 & 5 \\
-& 16618 & 18 (25) & 45 (75) & 63 (100) & 2 & 5 & 6 \\
-& 16619 & 9 (13) & 45 (60) & 54 (73) & 2 & 6 & 6 \\
 \hline
 \end{tabular}
 \end{center}
@@ -183,44 +183,45 @@ Reference & Patient ID & \multicolumn{3}{c}{Sequences} & \multicolumn{3}{c}{Time
 %\tabletitle{Linear model details}
 \def\arraystretch{1.3}%
 \begin{center}
-\begin{tabular}{+l^r^r} 
-Patient ID & Model AIC & Null AIC \\ 
+\begin{tabular}{+l^r^r^r^r} 
+Patient ID & Model AIC & Null AIC & MA(E/D) & SMA(E/D) \\ 
 \hline
-825 & -144 & -85.4 \\
-2658 & -151 & -82.3 \\
-7259 & -97.3 & -86.0 \\
-\badpat 7263 & -41.3 & -41.1 \\
-\badpat 7265 & -44.7 & -41.2 \\
-13333 & -133 & -115 \\
-13334 & -127 & -116 \\
-13336 & -91.6 & -63.1 \\
-\badpat 35566 & - & \\
+2658 & -185 & -121 & 234 & 0.124 \\
+825 & -150 & -89.6 & 325 & 0.108 \\
+\badpat 7259 & -97.6 & -87.8 & 224 & 0.253 \\
+%\badpat 7263 & -42.7 & -41.8 & 136 & 0.541 \\ % bad before censoring
+\badpat 7265 & -50.7 & -42.2 & 122 & 0.444 \\
+13333 & -133 & -115 & 111 & 0.219 \\
+13334 & -127 & -116 & 160 & 0.218 \\
+13336 & -91.6 & -63.1 & 123 & 0.166 \\
+35566 & -351 & -338 & 155 & 0.596 \\
 \hline
-820 & -289 & -270 \\ %x
-821 & -317 & -126 \\
-822 & -190 & -120 \\
-824 & -334 & -231 \\
-\badpat 10137 & -67.8 & -65.8 \\ %x
-10138 & -327 & -197 \\
-\badpat 10586 & -50.2 & -51.3 \\ %x
-13889 & -536 & -260 \\
-34391 & -119 & -96.1 \\ %x
-34393 & -196 & -176 \\ 
-34396 & -198 & -182 \\ %x
-34399 & -292 & -212 \\
-34410 & -192 & -178 \\ %x
-34411 & -161 & -136 \\
-\badpat 10769 & -416 & -410 \\ %x
-16616 & -98.2 & -54.1 \\
-16617 & -91.7 & -45.7 \\
-16618 & -147 & -101 \\
-\badpat 16619 & -94.5 & -88.5 \\ %x
+820 & -289 & -270 & 2,980 & 0.960 \\
+821 & -303 & -122 & 286 & 0.120 \\
+822 & -190 & -120 & 325 & 0.153 \\
+824 & -279 & -155 & 476 & 0.152 \\
+\badpat 10137 & -39.0 & -37.2 & 1,150 & 0.411 \\
+10138 & -199 & -119 & 444 & 0.133 \\
+10586 & -67.8 & -52.1 & 3,700 & 0.784 \\
+13889 & -305 & -175 & 640 & 0.132 \\
+\badpat 10769 & -435 & -429 & 2,770 & 1.40 \\
+16616 & -111 & -55.1 & 677 & 0.259 \\
+%16617 & -91.7 & -45.7 \\
+16618 & -110 & -83.5 & 642 & 0.282 \\
+\badpat 16619 & -94.5 & -88.5 & 796 & 0.393 \\
+34391 & -108 & -87.8 & 88.9 & 0.244 \\
+34393 & -202 & -179 & 76.6 & 0.212 \\ 
+34396 & -199 & -182 & 67.6 & 0.198 \\
+34399 & -289 & -210 & 231 & 0.157 \\
+34410 & -192 & -178 & 142 & 0.321 \\
+34411 & -131 & -109 & 90.7 & 0.196 \\
 \hline
 \end{tabular}
 \end{center}
 	Patient ID corresponds to the anonymized patient identifiers in the LANL database.
 	Model AIC is the Akaike Information Criterion (AIC) \cite{Akaike74} of the linear model and Null AIC is the AIC of the null model.
 	Patients for whom we were unable to reject the null hypothesis based on a AIC difference less than 10 are marked in bold.
+	MAE is mean absolute error, MAD is mean absolute difference (between collection date and estimated date ), SMAE is scaled mean absolute error and SMAD is scaled mean absolute difference.
 \end{table*}
 
 \pagebreak{}
