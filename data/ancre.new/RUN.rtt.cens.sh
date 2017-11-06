@@ -2,10 +2,11 @@
 #SBATCH --mem=2G
 #SBATCH --cpus-per-task=4
 
+
 raxml=raxmlHPC-PTHREADS-AVX
 pat_id_tree=$SLURM_JOB_NAME
 pat_id=${SLURM_JOB_NAME}.cens
-src=~/blind-dating/src
+src=~/working/blind-dating/src
 rep=1989
 cpus=$SLURM_CPUS_PER_TASK
 
@@ -19,5 +20,5 @@ echo "Rooting"
 Rscript ${src}/root.tree.R trees/${pat_id_tree}.nwk info/${pat_id}.csv trees.rooted/${pat_id}.rtt.nwk 1 0
 echo "Regressing"
 Rscript ${src}/regression.R --tree=trees.rooted/${pat_id}.rtt.nwk --info=info/${pat_id}.csv --patid=${pat_id}
-#echo "Plotting"
-#Rscript ${src}/plot.R --tree=trees.rooted/${pat_id}.ogr.nwk --patid=${pat_id} --real --distmax=0.27 --distby=.04 --yearstart=1993 --yearend=2018 --therapy="2006-08-01"
+echo "Plotting"
+Rscript ${src}/plot.R --tree=trees.rooted/${pat_id}.ogr.nwk 
