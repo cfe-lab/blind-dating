@@ -37,6 +37,7 @@ op <- add_option(op, "--info", type='character')
 op <- add_option(op, "--patid", type='character')
 op <- add_option(op, "--real", type='logical', action='store_true', default=F)
 op <- add_option(op, "--usedups", type='logical', action='store_true', default=F)
+op <- add_option(op, "--seed", type="numeric", default=1989)
 args <- parse_args(op)
 
 tree.file <- args$tree
@@ -44,6 +45,8 @@ info.file <- args$info
 pat.id <- args$patid
 use.date <- args$real
 use.all <- args$usedups
+
+set.seed(args$seed)
 
 data.file <- paste0("stats/", pat.id, ".data.csv")
 stats.file <- paste0("stats/", pat.id, ".stats.csv")
