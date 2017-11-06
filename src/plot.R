@@ -125,11 +125,11 @@ op <- add_option(op, "--tree", type='character')
 op <- add_option(op, "--patid", type='character')
 op <- add_option(op, "--patid2", type='character')
 op <- add_option(op, "--real", type='logical', action='store_true', default=F)
-op <- add_option(op, "--distmax", type='double')
+op <- add_option(op, "--distmax", type='double', default=NA)
 op <- add_option(op, "--distmin", type='double', default=NA)
-op <- add_option(op, "--distby", type='double')
-op <- add_option(op, "--yearstart", type='character')
-op <- add_option(op, "--yearend", type='character')
+op <- add_option(op, "--distby", type='double', default=NA)
+op <- add_option(op, "--yearstart", type='character', default=NA)
+op <- add_option(op, "--yearend", type='character', default=NA)
 op <- add_option(op, "--yearby", type='double', default=NA)
 op <- add_option(op, "--therapy", type='character', default=NA)
 op <- add_option(op, "--therapy2", type='character', default=NA)
@@ -188,14 +188,6 @@ data <- read.csv(data.file, col.names=c("tip.label", "type", "censored", "date",
 stats <- read.csv(stats.file, stringsAsFactors=F)
 g <- readRDS(regression.file)
 
-ci.dates <- if (use.real) {
-	seq(as.numeric(as.Date(paste0(year.start, "-01-01"))), as.numeric(as.Date(paste0(year.end, "-01-01"))), length.out=1000)
-} else {
-		seq(as.numeric(year.start), as.numeric(year.end), length.out=1000)
-}
-p <- predict(g, data.frame(date=ci.dates), interval='confidence')
-data.ci <- data.frame(date=ci.dates, ci.low=p[,2], ci.high=p[,3])
-
 if (!is.na(pat.id2)) {
 	data.2 <- read.csv(data.2.file, col.names=c("tip.label", "type", "censored", "date", "dist", "est.date", "date.diff"), stringsAsFactors=F)
 	stats.2 <- read.csv(stats.2.file, stringsAsFactors=F)
@@ -204,9 +196,6 @@ if (!is.na(pat.id2)) {
 	data.2$LM <- 2
 	data$LM <- 1
 	data.2$censored[data.2$censored == 1] <- 2
-	
-	p.2 <- predict(g.2, data.frame(date=ci.dates), interval='confidence')
-	data.ci <- as.data.frame(cbind(data.ci, ci.low.2=p.2[,2], ci.high.2=p.2[,3]))
 	
 	mu <- rep(stats.2[, "Model.Slope"], nrow(tree$edge))
 	first.edges <- unique(unlist(lapply(which(data$censored == 0), get.parent.edges, tree=tree)))
@@ -280,6 +269,23 @@ if (!is.na(pat.id2)) {
 	colour.value <- c(TRAINING_COLOUR, CENSORED_COLOUR)
 }
 
+node.dates <- tryCatch(estimate.dates(tree, c(data$date, stats$Estimated.Root.Date, rep(NA, tree$Nnode - 1)), mu, node.mask=length(tree$tip.label) + 1, lik.tol=0, nsteps=1000, show.steps=100, opt.tol=1e-16), error=function(e) estimate.dates(tree, data$date, mu, lik.tol=0, nsteps=1000, show.steps=100, opt.tol=1e-16))
+
+if (is.na(dist.min))
+	dist.min <- - max(data$dist) * 0.01
+if (is.na(dist.max))
+	dist.max <- max(data$dist) * 1.01
+if (is.na(dist.by))
+	dist.by <- 2 * 10^(floor(log10((dist.max - dist.min) / 10)))
+if (is.na(year.start) || is.na(year.end))
+	year.padding <- (max(node.dates) - min(node.dates)) / 20
+if (is.na(year.start))
+	year.start <- min(node.dates) - year.padding
+if (is.na(year.end))
+	year.end <- max(node.dates) + year.padding
+if (is.na(year.by))
+	year.by <- 2 * 10^(floor(log10((year.end - year.start) / 10)))
+
 if (use.real) {
 	date.ticks <- as.character(seq(floor(as.numeric(year.start) / year.by) * year.by - year.by, as.numeric(year.end), by=year.by))
 	x.scale <- scale_x_continuous(name="Collection Year", breaks=as.numeric(as.Date(paste0(date.ticks, "-01-01"))), labels=date.ticks, limits=as.numeric(as.Date(paste0(c(year.start, year.end), "-01-01"))))
@@ -315,8 +321,6 @@ data$type <- type.label[match(data$type, type.break)]
 type.mask <- type.label %in% data$type
 type.label <- unique(type.label[type.mask])
 type.value <- unique(type.value[type.mask])
-
-node.dates <- estimate.dates(tree, c(data$date, stats$Estimated.Root.Date, rep(NA, tree$Nnode - 1)), mu, node.mask=length(tree$tip.label) + 1, lik.tol=0, nsteps=1000, show.steps=100, opt.tol=1e-16)
 
 data.all <- as.data.frame(cbind(rbind(data, data.frame(tip.label=paste0("N.", 1:tree$Nnode), type="NODE", censored=NA, date=NA, dist=node.depth.edgelength(tree)[1:tree$Nnode + nrow(data)], est.date=NA, date.diff=NA)), node.date=node.dates))
 
