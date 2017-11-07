@@ -20,4 +20,4 @@ Rscript ${src}/root.tree.R trees/${pat_id}.nwk info/${pat_id}.csv trees.rooted/$
 echo "Regressing"
 Rscript ${src}/regression.R --tree=trees.rooted/${pat_id_full}.rtt.nwk --info=info/${pat_id}.csv --patid="${pat_id_full}"
 echo "Plotting"
-Rscript ${src}/plot.R --tree=trees.rooted/${pat_id}.ogr.nwk --patid=${pat_id} 
+Rscript ${src}/plot.R --tree=trees.rooted/${pat_id_full}.rtt.nwk --patid=${pat_id_full} 

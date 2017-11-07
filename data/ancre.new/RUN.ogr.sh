@@ -6,7 +6,7 @@
 raxml=raxmlHPC-PTHREADS-AVX
 pat_id_short=${SLURM_JOB_NAME}
 pat_id=${pat_id_short}-with_ref
-src=~/working/blind-dating/src
+src=~/blind-dating/src
 rep=1989
 cpus=$SLURM_CPUS_PER_TASK
 

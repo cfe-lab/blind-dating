@@ -5,8 +5,8 @@
 
 raxml=raxmlHPC-PTHREADS-AVX
 pat_id_short=$SLURM_JOB_NAME
-pat_id=$SLURM_JOB_NAME
-src=~/working/blind-dating/src
+pat_id=${SLURM_JOB_NAME}-rms
+src=~/blind-dating/src
 rep=1989
 cpus=$SLURM_CPUS_PER_TASK
 
@@ -21,4 +21,4 @@ Rscript ${src}/root.tree.R trees/${pat_id_short}.nwk info/${pat_id_short}.csv tr
 echo "Regressing"
 Rscript ${src}/regression.R --tree=trees.rooted/${pat_id}.rtt.nwk --info=info/${pat_id_short}.csv --patid=${pat_id}
 echo "Plotting"
-Rscript ${src}/plot.R --tree=trees.rooted/${pat_id}.ogr.nwk --patid=${pat_id} 
+Rscript ${src}/plot.R --tree=trees.rooted/${pat_id}.rtt.nwk --patid=${pat_id} 

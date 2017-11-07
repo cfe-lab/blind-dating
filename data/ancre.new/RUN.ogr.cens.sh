@@ -4,17 +4,22 @@
 
 
 raxml=raxmlHPC-PTHREADS-AVX
-pat_id_short=${SLURM_JOB_NAME}
-pat_id_tree=${pat_id_short}-with_ref
+pat_id_tree=${SLURM_JOB_NAME}-with_ref
 pat_id_short=${SLURM_JOB_NAME}.cens
 pat_id=${pat_id_short}-with_ref
-src=~/working/blind-dating/src
+src=~/blind-dating/src
 rep=1989
 cpus=$SLURM_CPUS_PER_TASK
+
+echo $pat_id_tree
+echo $pat_id_short
+echo $pat_id
+echo trees.rooted/${pat_id}.ogr.nwk
 
 if [ ! -e trees ]; then mkdir trees; fi
 if [ ! -e trees.rooted ]; then mkdir trees.rooted; fi
 if [ ! -e stats ]; then mkdir stats; fi
+if [ ! -e plots ]; then mkdir plots; fi
 
 #echo "Building Tree"
 #R --slave --silent -f ${src}/build.tree.R --args aligned/${pat_id}.fasta trees/${pat_id}.nwk ${raxml} $cpus ${rep}
