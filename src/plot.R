@@ -276,7 +276,7 @@ if (is.na(dist.min))
 if (is.na(dist.max))
 	dist.max <- max(data$dist) * 1.01
 if (is.na(dist.by))
-	dist.by <- 2 * 10^(floor(log10((dist.max - dist.min) / 10)))
+	dist.by <- 10^(floor(log10((dist.max - dist.min))))
 if (is.na(year.start) || is.na(year.end))
 	year.padding <- (max(node.dates) - min(node.dates)) / 20
 if (is.na(year.start))
@@ -284,7 +284,7 @@ if (is.na(year.start))
 if (is.na(year.end))
 	year.end <- max(node.dates) + year.padding
 if (is.na(year.by))
-	year.by <- 2 * 10^(floor(log10((year.end - year.start) / 10)))
+	year.by <- 10^(floor(log10((year.end - year.start))))
 
 if (use.real) {
 	date.ticks <- as.character(seq(floor(as.numeric(year.start) / year.by) * year.by - year.by, as.numeric(year.end), by=year.by))
