@@ -26,7 +26,7 @@ data <- subset(data, Censored == 1)
 pdf.options(family="Helvetica", fonts="Helvetica", width=7, height=4.2, colormodel='rgb')
 pdf("plots/cartoon.hist.pdf")
 ggplot(data, aes(x=Estimated.Date)) +
-	geom_rect(xmin=THERAPY, xmax=Inf, ymin=0, ymax=2, fill=THERAPY_COLOUR) +
+	geom_rect(xmin=THERAPY, xmax=Inf, ymin=-Inf, ymax=Inf, fill=THERAPY_COLOUR) +
 	geom_histogram(breaks=seq(-2, 5, by=1), fill='red') +
 	geom_segment(x=0, xend=0, y=2, yend=1.5, arrow=arrow(length = unit(0.5, "cm")))  +
 	theme_bw() +
