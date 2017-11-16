@@ -21,13 +21,13 @@ cat("Reading...\n")
 info <- read.csv(INFO_FILE, stringsAsFactors=F)
 types <- info$CENSORED
 dates <- info$COLDATE
-time.points <- unique(dates)
+time.points <- sort(unique(dates))
 n.points <- length(time.points)
 
 cat("Choosing...\n")
 method <- if (METHOD == 0) {
-	sampler <- combn(time.points, TIME_POINTS)
-	s <- sampler[, sample(ncol(sampler), REPS)] 
+	full.sampler <- combn(time.points, TIME_POINTS)
+	sampler <- full.sampler[, sample(ncol(full.sampler), REPS)] 
 	reps <- REPS
 
 	get.time.points

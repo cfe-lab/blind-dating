@@ -54,12 +54,12 @@ fasta.dna <- fasta[which(types == 1)]
 fasta.names <- names(fasta.rna)
 
 dates <- info$COLDATE[types == 0]
-time.points <- unique(dates)
+time.points <- sort(unique(dates))
 n.points <- length(time.points)
 
 method <- if (METHOD == 0) {
-	sampler <- combn(time.points, TIME_POINTS)
-	s <- sampler[, sample(ncol(sampler), REPS)] 
+	full.sampler <- combn(time.points, TIME_POINTS)
+	sampler <- full.sampler[, sample(ncol(full.sampler), REPS)] 
 	reps <- REPS
 
 	get.time.points
