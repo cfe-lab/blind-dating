@@ -38,6 +38,16 @@ my.theme2 <- theme(
  panel.grid.minor=element_blank()
 )
 
+concord <- function(x, y) {
+	mu.x <- sum(x) / length(x)
+	mu.y <- sum(y) / length(y)
+	s.x <- sum((x - mu.x)^2) / length(x) 
+	s.y <-  sum((y - mu.y)^2) / length(y)
+	s.xy <- sum((x - mu.x) * (y - mu.y)) / length(y)
+	
+	2 * s.xy / (s.x + s.y + (mu.x - mu.y)^2)
+}
+
 data.rtt <- lapply(dir("stats", "[0-9].data", full.names=T), read.csv)
 stats.rtt <- do.call(rbind, lapply(dir("stats", "[0-9].stats", full.names=T), read.csv))
 
@@ -53,7 +63,7 @@ for (x in data.rtt) {
 }
 
 pdf("lanl.density.rtt.pdf")
-g + scale_x_continuous(name="Scaled Date Differnce") + scale_y_continuous(name="Density")
+g + scale_x_continuous(name="Scaled Date Difference", limits=c(-1.01, 1.01)) + scale_y_continuous(name="Density", limits=c(0, 4.1))
 dev.off()
 
 data.ogr <- lapply(dir("stats", "with_ref.data", full.names=T), read.csv)
@@ -71,7 +81,7 @@ for (x in data.ogr) {
 }
 
 pdf("lanl.density.ogr.pdf")
-g + scale_x_continuous(name="Scaled Date Differnce") + scale_y_continuous(name="Density")
+g + scale_x_continuous(name="Scaled Date Difference", limits=c(-1.01, 1.01)) + scale_y_continuous(name="Density", limits=c(0, 4.1))
 dev.off()
 
 data.rtt <- lapply(dir("stats", "[0-9].data", full.names=T), read.csv)
@@ -85,3 +95,7 @@ data.all <- subset(data.all, Censored == 1)
 pdf("lanl.comp.pdf")
 ggplot(data.all) + geom_abline() + geom_point(aes(x=Estimated.Date.rtt, y=Estimated.Date.ogr, colour=Patient), show.legend=F) + scale_colour_brewer(name="", palette='Dark2') + scale_x_continuous(name="Estimated Date RTT (days after first sampling)", limits=c(-1500, 5000)) + scale_y_continuous(name="Estimated Date OGR (days after first sampling)", limits=c(-1500, 5000)) + theme_bw() + my.theme
 dev.off()
+
+cat("Concordance:\n")
+sup <- lapply(unique(data.all$Patient), function(x) cat(x, "; ", with(subset(data.all, Patient == x), concord(Estimated.Date.rtt, Estimated.Date.ogr)), "\n", sep=""))
+cat("Total: ", with(data.all, concord(Estimated.Date.rtt, Estimated.Date.ogr)), "\n", sep="")
