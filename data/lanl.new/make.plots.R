@@ -1,0 +1,87 @@
+#!/usr/bin/Rscript
+
+library(ggplot2)
+
+pdf.options(family="Helvetica", fonts="Helvetica", width=7, height=7, colormodel='rgb')
+
+my.theme <- theme(
+	text=element_text(size=20),
+	axis.text=element_text(size=15, colour='black'),
+	legend.text=element_text(size=15),
+	legend.position=0,
+	axis.text.x=element_text(angle=90, vjust=0.5, hjust=1),
+	legend.justification=c(0, 1),
+	legend.spacing=unit(0, 'cm'),
+	legend.margin=margin(0, 0, 0, 0, 'cm'),
+	legend.key.size=unit(1.2, 'cm'),
+	legend.key=element_rect(fill="#00000000", colour="#00000000"),
+	legend.background=element_blank(),
+	legend.box.background=element_blank(),
+	panel.grid.major=element_blank(),
+	panel.grid.minor=element_blank()
+) 
+
+my.theme2 <- theme(
+ text=element_text(size=35),
+ axis.text=element_text(size=30, colour='black'),
+ legend.text=element_text(size=25),
+ legend.position=c(.99, .99),
+ legend.justification=c(1, 1),
+ legend.spacing=unit(0, 'cm'),
+ legend.box='horizontal',
+ legend.margin=margin(0.01, 0.01, 0.01, 0.01, 'cm'),
+ legend.key.size=unit(1.2, 'cm'),
+ legend.key=element_rect(fill="#00000000", colour="#00000000"),
+ legend.background=element_blank(),
+ legend.box.background=element_blank(),
+ panel.grid.major=element_blank(),
+ panel.grid.minor=element_blank()
+)
+
+data.rtt <- lapply(dir("stats", "[0-9].data", full.names=T), read.csv)
+stats.rtt <- do.call(rbind, lapply(dir("stats", "[0-9].stats", full.names=T), read.csv))
+
+good.rtt <- with(stats.rtt, null.AIC - AIC > 10 & Estimated.Root.Date < 0)
+data.rtt <- data.rtt[good.rtt]
+
+data.rtt <- lapply(data.rtt, function(x) {x$Scaled.Difference <- x$Date.Difference / (max(x$Collection.Date) - min(x$Collection.Date)); subset(x, x$Censored == 1)})
+
+g <- ggplot() + theme_bw() + my.theme2
+
+for (x in data.rtt) {
+	g <- g + geom_density(aes(x=Scaled.Difference), data=x, fill='purple', alpha=1/length(data.rtt), color="#00000000")
+}
+
+pdf("lanl.density.rtt.pdf")
+g + scale_x_continuous(name="Scaled Date Differnce") + scale_y_continuous(name="Density")
+dev.off()
+
+data.ogr <- lapply(dir("stats", "with_ref.data", full.names=T), read.csv)
+stats.ogr <- do.call(rbind, lapply(dir("stats", "with_ref.stats", full.names=T), read.csv))
+
+good.ogr <- with(stats.ogr, null.AIC - AIC > 10 & Estimated.Root.Date < 0)
+data.ogr <- data.ogr[good.ogr]
+
+data.ogr <- lapply(data.ogr, function(x) {x$Scaled.Difference <- x$Date.Difference / (max(x$Collection.Date) - min(x$Collection.Date)); subset(x, x$Censored == 1)})
+
+g <- ggplot() + theme_bw() + my.theme2
+
+for (x in data.ogr) {
+	g <- g + geom_density(aes(x=Scaled.Difference), data=x, fill='purple', alpha=1/length(data.ogr), color="#00000000")
+}
+
+pdf("lanl.density.ogr.pdf")
+g + scale_x_continuous(name="Scaled Date Differnce") + scale_y_continuous(name="Density")
+dev.off()
+
+data.rtt <- lapply(dir("stats", "[0-9].data", full.names=T), read.csv)
+data.rtt <- data.rtt[good.ogr & good.rtt]
+data.ogr <- lapply(dir("stats", "with_ref.data", full.names=T), read.csv)
+data.ogr <- data.ogr[good.ogr & good.rtt]
+
+data.all <- do.call(rbind, lapply(1:length(data.rtt), function(i) cbind(Patient=stats.rtt[good.ogr & good.rtt, "Patient"][i], merge(data.rtt[[i]], data.ogr[[i]], by=c("ID", "Type", "Censored", "Collection.Date"), suffixes=c(".rtt", ".ogr")))))
+data.all <- subset(data.all, Censored == 1)
+
+pdf("lanl.comp.pdf")
+ggplot(data.all) + geom_abline() + geom_point(aes(x=Estimated.Date.rtt, y=Estimated.Date.ogr, colour=Patient), show.legend=F) + scale_colour_brewer(name="", palette='Dark2') + scale_x_continuous(name="Estimated Date RTT (days after first sampling)", limits=c(-1500, 5000)) + scale_y_continuous(name="Estimated Date OGR (days after first sampling)", limits=c(-1500, 5000)) + theme_bw() + my.theme
+dev.off()
