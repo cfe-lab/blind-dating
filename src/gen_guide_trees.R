@@ -89,7 +89,7 @@ tree <- sim.bdsky.stt(n.tips, lambdasky=lambda, deathsky=mu, timesky=times, samp
 tree <- unroot(tree[[1]])
 stree <- sim.clockmodel(tree, params=sim.params)
 
-data <- data.frame(PATIENT=paste0("SIM_", suffix), SEQID=tree$tip.label, FULLSEQID=tree$tip.label, COLDATE=node.depth.edgelength(tree)[1:50], TYPE="Training", CENSORED=0, KEPT=1, DUPLICATE="", NOTE="")
+data <- data.frame(PATIENT=paste0("SIM_", suffix), SEQID=tree$tip.label, FULLSEQID=tree$tip.label, COLDATE=node.depth.edgelength(tree)[1:50], TYPE="PLASMA", CENSORED=0, KEPT=1, DUPLICATE="", NOTE="")
 write.csv(data, paste0("info/SIM_", suffix, ".csv"), row.names=F)
 
 tree <- stree$phylogram
