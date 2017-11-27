@@ -27,7 +27,7 @@ info.file <- args[2]
 rooted.tree.file <- args[3]
 use.rtt <- as.integer(args[4])		# 0 = no, 1 = yes (only plasma), 2 = yes (all)
 use.date <- if (length(args) >= 5) as.integer(args[5]) else 1
-method <- if (length(args) >= 6) args[6] else 'correlation'
+method <- if (length(args) >= 6) args[6] else 'correlation'		# 'correlation', 'rms' or 'rsquared'
 	
 tree.read <- function(tr) {	
 	tree <- read.tree(paste(tr, sep='/'))

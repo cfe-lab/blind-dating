@@ -36,8 +36,6 @@ REPS <- as.integer(args[5]) # number of replicates generated for method 0
 TIME_POINTS <- as.integer(args[6]) # number of time points, N, for method 0
 SEED <- as.integer(args[7])
 
-set.seed(SEED)
-
 cat("Reading...\n")
 
 fasta <- read.fasta(FASTA_FILE)
@@ -59,6 +57,7 @@ n.points <- length(time.points)
 
 method <- if (METHOD == 0) {
 	full.sampler <- combn(time.points, TIME_POINTS)
+	set.seed(SEED)
 	sampler <- full.sampler[, sample(ncol(full.sampler), REPS)] 
 	reps <- REPS
 
@@ -87,3 +86,8 @@ suppress <- lapply(1:reps, function(i) {
 	f <- c(fasta.rna[filters[[i]]], fasta.dna)
 	write.fasta(f, names(f), paste0(SUFFIX, i, ".fasta"))
 })
+
+
+quit()
+
+

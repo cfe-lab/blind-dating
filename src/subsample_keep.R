@@ -15,8 +15,6 @@ REPS <- as.integer(args[4]) # number of replicates generated for method 0
 TIME_POINTS <- as.integer(args[5]) # number of time points, N, for method 0
 SEED <- as.integer(args[6])
 
-set.seed(SEED)
-
 cat("Reading...\n")
 info <- read.csv(INFO_FILE, stringsAsFactors=F)
 types <- info$CENSORED
@@ -27,6 +25,7 @@ n.points <- length(time.points)
 cat("Choosing...\n")
 method <- if (METHOD == 0) {
 	full.sampler <- combn(time.points, TIME_POINTS)
+	set.seed(SEED)
 	sampler <- full.sampler[, sample(ncol(full.sampler), REPS)] 
 	reps <- REPS
 
