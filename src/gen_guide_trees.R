@@ -101,7 +101,7 @@ indel_control <- paste0(indel_control, sprintf("[TREE] tree_%s %s \n", suffix, t
 indel_control <- paste0(indel_control, sprintf("[PARTITIONS] pHKY_%s [tree_%s HKY_HIV %s] \n", suffix, suffix, reference))
 
 
-indel_control <- paste0(indel_control, sprintf("    pHKY_%s %d SIM_%s \n", suffix, 1, suffix))
+indel_control <- paste0(indel_control, sprintf("    pHKY_%s %d simulated/SIM_%s \n", suffix, 1, suffix))
 }
 
 write(indel_control, sprintf('control.unfixed.%s.txt', suffix))
