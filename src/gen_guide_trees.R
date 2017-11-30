@@ -6,7 +6,7 @@
 
 library(ape)
 library(TreeSim)
-library(NELSI)
+#library(NELSI)
 
 
 args.all <- commandArgs(trailingOnly = F)
@@ -87,15 +87,16 @@ cat("Building tree...\n")
  
 rooted.tree <- sim.bdsky.stt(n.tips, lambdasky=lambda, deathsky=mu, timesky=times, sampprobsky=sampprob, rho=0, timestop=0)[[1]]
 tree <- unroot(rooted.tree)
-stree <- sim.clockmodel(tree, params=sim.params)
+#stree <- sim.clockmodel(tree, params=sim.params)
 
 data <- data.frame(PATIENT=paste0("SIM_", suffix), SEQID=tree$tip.label, FULLSEQID=tree$tip.label, COLDATE=node.depth.edgelength(tree)[1:50], TYPE="PLASMA", CENSORED=0, KEPT=1, DUPLICATE="", NOTE="")
 write.csv(data, paste0("info/SIM_", suffix, ".csv"), row.names=F)
 
 write.tree(tree, sprintf("trees.ori/SIM_%s.time.nwk", suffix))
 
-tree <- stree$phylogram
-tree$edge.length <- stree$tree.data.matrix[, 6]
+#tree <- stree$phylogram
+#tree$edge.length <- stree$tree.data.matrix[, 6]
+tree$edge.length <- tree$edge.length * clock.rate
 
 cat("Writing tree to file...\n")
 
