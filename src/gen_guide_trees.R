@@ -80,8 +80,8 @@ mu <- 5.01e-2
 sampprob <- 5.24e-3
 times<-c(0)
 
-sim.params <- list(rate = clock.rate, noise = noise.rate)
-sim.clockmodel <- simulate.clock
+#sim.params <- list(rate = clock.rate, noise = noise.rate)
+#sim.clockmodel <- simulate.clock
 
 cat("Building tree...\n")
  
