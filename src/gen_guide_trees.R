@@ -54,13 +54,7 @@ if (suffix == "" || suffix == "head") {
 [MODEL]    HKY_HIV
   [submodel] HKY 8.5               
   [statefreq] 0.42 0.15 0.15 0.28
-  
-trees
 
-partitions
-
-[EVOLVE]
-evolves
 "
 	, indelible.seed)
 }
