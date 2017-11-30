@@ -105,7 +105,7 @@ stats <- data.frame(
 	b=b,
 	error=0,
 	root.date=-a / b,
-	fit=as.numeric(null.AIC - AIC > 10 && ci$lwr < cutoff && b > 0)
+	fit=as.numeric(null.AIC - AIC > 10 && ci$lwr < cutoff && b > 0),
 	train.RMSE=sqrt(sum(data$date.diff[data$censored == 0]^2)/sum(data$censored == 0)),
 	cens.RMSD=sqrt(sum(data$date.diff[data$censored == 1]^2)/sum(data$censored == 1)),
 	cens.RMSD=sqrt(sum(data$date.diff^2)/nrow(data)),
