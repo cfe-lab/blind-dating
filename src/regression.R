@@ -38,6 +38,7 @@ op <- add_option(op, "--patid", type='character')
 op <- add_option(op, "--real", type='logical', action='store_true', default=F)
 op <- add_option(op, "--usedups", type='logical', action='store_true', default=F)
 op <- add_option(op, "--seed", type="numeric", default=1989)
+op <- add_option(op, "--cutoff", type="character", default=NA)
 args <- parse_args(op)
 
 tree.file <- args$tree
@@ -45,6 +46,7 @@ info.file <- args$info
 pat.id <- args$patid
 use.date <- args$real
 use.all <- args$usedups
+cutoff <- args$cutoff
 
 set.seed(args$seed)
 
@@ -67,6 +69,21 @@ b <- coef(g)[[2]]
 data <- as.data.frame(cbind(data, est.date=data$dist/b-a/b, date.diff=data$dist/b-a/b-data$date))
 write.table(data, data.file, col.names=c("ID", "Type", "Censored", "Collection Date", "Divergence", "Estimated Date", "Date Difference"), row.names=F, sep=",")
 
+
+cutoff  <- if (is.na(cutoff)) {
+	min(data$date)
+} else {
+	if (use.date)
+		as.numeric(as.Date(cutoff))
+	else
+		as.numeric(cutoff)
+}
+
+ci <- predict(g, newdata=data.frame(date=-a / b), interval='confidence')
+rownames(ci) <- NULL
+ci <- as.data.frame(ci)	
+ci$lwr <- ci$lwr / b - a / b
+
 stats <- data.frame(
 	pat=pat.id,
 	samples.rna=sum(data$censored == 0),
@@ -87,7 +104,8 @@ stats <- data.frame(
 	a=a,
 	b=b,
 	error=0,
-	mu=-a/b,
+	root.date=-a / b,
+	fit=as.numeric(null.AIC - AIC > 10 && ci$lwr < cutoff && b > 0)
 	train.RMSE=sqrt(sum(data$date.diff[data$censored == 0]^2)/sum(data$censored == 0)),
 	cens.RMSD=sqrt(sum(data$date.diff[data$censored == 1]^2)/sum(data$censored == 1)),
 	cens.RMSD=sqrt(sum(data$date.diff^2)/nrow(data)),
@@ -117,6 +135,7 @@ stats.col.names <- c(
 	"Model Slope",
 	"Model Error",
 	"Estimated Root Date",
+	"Model Fit",
 	"Training RMSE",
 	"Censored RMSD",
 	"Total RMSD",
