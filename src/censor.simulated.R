@@ -3,15 +3,13 @@
 args <- commandArgs(trailingOnly=T)
 
 info.path <- args[1]
-count <- as.integer(args[2])
-censor <- as.integer(args[3])
+censor <- as.numeric(args[2])
 seed <- as.numeric(args[3])
 
 set.seed(seed)
 
-info.ori <- read.csv(info.path, stringsAsFactors=T)
-info.ori <- info.ori[with(info.ori, CENSORED == 0 & KEPT == 1), ]
+info.files <- dir(info.path, full.names=T)
+info <- lapply(info.files, read.csv)
+info <- lapply(info, function(x) {y <- info.ori; y[sample.int(nrow(info.ori), censor), 'CENSORED'] <- 1; y})
 
-info <- lapply(1:count, function(x) {y <- info.ori; y[sample.int(nrow(info.ori), censor, replace=F), 'CENSORED'] <- 1; y})
-
-suppress <- lapply(1:length(info), function(i) write.csv(info[[i]], paste0("info/SIM_", i, ".csv"), row.names=F))
+suppress <- lapply(1:length(info), function(i) write.csv(info[[i]], gsub(".csv", "cens.csv", info.files[[i]]), row.names=F))
