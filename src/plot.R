@@ -185,11 +185,15 @@ pdf.histdate.file <- paste0("plots/", pat.id, ".histdate.pdf")
 
 tree <- ape::ladderize(read.tree(tree.file))
 data <- read.csv(data.file, col.names=c("tip.label", "type", "censored", "date", "dist", "est.date", "date.diff"), stringsAsFactors=F)
+data <- data[match(tree$tip.label, data$tip.label), ]
+rownames(data) <- NULL
 stats <- read.csv(stats.file, stringsAsFactors=F)
 g <- readRDS(regression.file)
 
 if (!is.na(pat.id2)) {
 	data.2 <- read.csv(data.2.file, col.names=c("tip.label", "type", "censored", "date", "dist", "est.date", "date.diff"), stringsAsFactors=F)
+	data.2 <- data.2[match(tree$tip.label, data.2$tip.label), ]
+	rownames(data.2) <- NULL
 	stats.2 <- read.csv(stats.2.file, stringsAsFactors=F)
 	g.2 <- readRDS(regression.2.file)
 	
@@ -360,33 +364,3 @@ apply.theme(ggtree(ptree, yscale="node.date", colour="#6d4d4180", size=tree.size
 	geom_tippoint(aes(colour=factor(censored), shape=type), size=point.size),
 	flipped=T)
 dev.off()
-
-if (F) {
-pdf(pdf.hist.file)
-ggplot(subset(data, censored == 1)) +
-	geom_histogram(aes(x=date.diff, fill=factor(type, levels=type.break)), bins=10) +
-	scale_fill_manual(name="", breaks=type.break, labels=type.label, values=type.value, limits=type.break) +
-	scale_x_continuous("Difference in Estimated and Collection Date (days)") +
-	scale_y_continuous("Count") +
-	theme_bw() +
-	theme(
-		text=element_text(size=10),
-		panel.grid.major = element_blank(),
-		panel.grid.minor = element_blank()
-	)
-dev.off()
-
-pdf(pdf.histdate.file)
-ggplot(subset(data, censored == 1)) +
-	geom_histogram(aes(x=est.date, fill=factor(type, levels=type.break)), bins=10) +
-	scale_fill_manual(name="", breaks=type.break, labels=type.label, values=type.value, limits=type.break) +
-	x.scale.hist +
-	scale_y_continuous("Count") +
-	theme_bw() +
-	theme(
-		text=element_text(size=10),
-		panel.grid.major = element_blank(),
-		panel.grid.minor = element_blank()
-	)
-dev.off()
-}

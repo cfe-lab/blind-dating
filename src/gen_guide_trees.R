@@ -74,8 +74,8 @@ mu <- 5.01e-2
 sampprob <- 5.24e-3
 times<-c(0)
 
-#sim.params <- list(rate = clock.rate, noise = noise.rate)
-#sim.clockmodel <- simulate.clock
+sim.params <- list(rate = clock.rate, noise = noise.rate)
+sim.clockmodel <- simulate.clock
 
 cat("Building tree...\n")
  
@@ -83,7 +83,7 @@ rooted.tree <- sim.bdsky.stt(n.tips, lambdasky=lambda, deathsky=mu, timesky=time
 tree <- unroot(rooted.tree)
 #stree <- sim.clockmodel(tree, params=sim.params)
 
-data <- data.frame(PATIENT=paste0("SIM_", suffix), SEQID=tree$tip.label, FULLSEQID=tree$tip.label, COLDATE=node.depth.edgelength(tree)[1:50], TYPE="PLASMA", CENSORED=0, KEPT=1, DUPLICATE="", NOTE="")
+data <- data.frame(PATIENT=paste0("SIM_", suffix), SEQID=tree$tip.label, FULLSEQID=tree$tip.label, COLDATE=node.depth.edgelength(tree)[1:n.tips], TYPE="PLASMA", CENSORED=0, KEPT=1, DUPLICATE="", NOTE="")
 write.csv(data, paste0("info/SIM_", suffix, ".csv"), row.names=F)
 
 write.tree(tree, sprintf("trees.ori/SIM_%s.time.nwk", suffix))
