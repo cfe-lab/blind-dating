@@ -6,7 +6,7 @@
 
 library(ape)
 library(TreeSim)
-#library(NELSI)
+library(NELSI)
 
 
 args.all <- commandArgs(trailingOnly = F)
@@ -90,7 +90,6 @@ write.tree(tree, sprintf("trees.ori/SIM_%s.time.nwk", suffix))
 
 tree <- stree$phylogram
 tree$edge.length <- stree$tree.data.matrix[, 6]
-#tree$edge.length <- tree$edge.length * clock.rate
 
 cat("Writing tree to file...\n")
 
