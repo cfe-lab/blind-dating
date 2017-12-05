@@ -1,7 +1,6 @@
 *.bbl
 *.log
 *.out
-*.pdf
 *.gz
 bin/
 data/454/
