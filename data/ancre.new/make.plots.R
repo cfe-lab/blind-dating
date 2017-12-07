@@ -48,6 +48,40 @@ concord <- function(x, y) {
 	2 * s.xy / (s.x + s.y + (mu.x - mu.y)^2)
 }
 
+my.theme.hist <- theme(
+text=element_text(size=35),
+axis.text=element_text(size=30, colour='black'),
+axis.text.x=element_text(angle=90, hjust=1, vjust=0.5, size=20),
+legend.text=element_text(size=30),
+legend.title=element_text(size=30),
+legend.position=c(.98, .98),
+legend.justification=c(1, 1),
+legend.spacing=unit(0, 'cm'),
+legend.margin=margin(0, 0, 0, 0, 'cm'),
+legend.key.size=unit(1.2, 'cm'),
+legend.background=element_blank(),
+legend.box.background=element_blank(),
+panel.grid.major=element_blank(),
+panel.grid.minor=element_blank()
+)
+
+THERAPY_COLOUR <- "#a0a0a0"
+THERAPY <- 1795
+data <- read.csv("stats/patient_13334.cens.data.csv")
+data <- subset(data, Censored == 1)
+
+pdf.options(family="Helvetica", fonts="Helvetica", width=7, height=4.2, colormodel='rgb')
+pdf("plots/patient_13334.cens.hist.pdf")
+ggplot(data, aes(x=Estimated.Date)) +
+#	geom_rect(xmin=THERAPY, xmax=Inf, ymin=-Inf, ymax=Inf, fill=THERAPY_COLOUR) +
+	geom_histogram(breaks=seq(min(floor(data$Estimated.Date / 365.25)) * 365.25, max(floor(data$Estimated.Date / 365.25) + 1) * 365.25, by=365.25), fill='red') +
+	geom_segment(x=0, xend=0, y=8, yend=7, arrow=arrow(length = unit(0.5, "cm")))  +
+	theme_bw() +
+	my.theme.hist +
+	scale_x_continuous(name="Years since first collection", breaks=seq(min(floor(data$Estimated.Date / 365.25)) * 365.25, max(floor(data$Estimated.Date / 365.25) + 1) * 365.25, by=365.25), labels=seq(-1, 3)) +
+	scale_y_continuous(name="Frequency")
+dev.off()
+
 files <- dir("info", "cens.csv")
 
 data.files.rtt <- paste0("stats/", gsub(".csv", ".data.csv", files))
