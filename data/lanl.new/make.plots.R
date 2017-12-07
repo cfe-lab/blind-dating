@@ -69,7 +69,7 @@ for (x in data.rtt) {
 }
 
 pdf("lanl.density.rtt.pdf")
-g + scale_x_continuous(name="Scaled Date Difference", limits=c(-1.01, 1.01)) + scale_y_continuous(name="Density", limits=c(0, 4.2))
+g + scale_x_continuous(name="Scaled Date Difference", limits=c(-1.6, 1.6)) + scale_y_continuous(name="Density", limits=c(0, 4.2))
 dev.off()
 
 data.files.ogr <- paste0("stats/", gsub(".csv", "-with_ref.data.csv", files))
@@ -89,7 +89,7 @@ for (x in data.ogr) {
 }
 
 pdf("lanl.density.ogr.pdf")
-g + scale_x_continuous(name="Scaled Date Difference", limits=c(-1.01, 1.01)) + scale_y_continuous(name="Density", limits=c(0, 4.2))
+g + scale_x_continuous(name="Scaled Date Difference", limits=c(-1.6, 1.6)) + scale_y_continuous(name="Density", limits=c(0, 4.2))
 dev.off()
 
 data.rtt <- lapply(data.files.rtt, read.csv.2)
