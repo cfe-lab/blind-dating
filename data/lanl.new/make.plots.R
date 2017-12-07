@@ -48,10 +48,16 @@ concord <- function(x, y) {
 	2 * s.xy / (s.x + s.y + (mu.x - mu.y)^2)
 }
 
-data.rtt <- lapply(dir("stats", "[0-9].data", full.names=T), read.csv)
-stats.rtt <- do.call(rbind, lapply(dir("stats", "[0-9].stats", full.names=T), read.csv))
+read.csv.2 <- function(x) if (file.exists(x)) read.csv(x) else NA
 
-good.rtt <- with(stats.rtt, null.AIC - AIC > 10 & Estimated.Root.Date < 0)
+files <- dir("info", "[0-9].csv")
+
+data.files.rtt <- paste0("stats/", gsub(".csv", ".data.csv", files))
+stats.files.rtt <- paste0("stats/", gsub(".csv", ".stats.csv", files))
+data.rtt <- lapply(data.files.rtt, read.csv.2)
+stats.rtt <- do.call(rbind, lapply(stats.files.rtt, read.csv.2))
+
+good.rtt <- with(stats.rtt, !is.na(Model.Fit) & Model.Fit == 1)
 data.rtt <- data.rtt[good.rtt]
 
 data.rtt <- lapply(data.rtt, function(x) {x$Scaled.Difference <- x$Date.Difference / (max(x$Collection.Date) - min(x$Collection.Date)); subset(x, x$Censored == 1)})
@@ -66,10 +72,12 @@ pdf("lanl.density.rtt.pdf")
 g + scale_x_continuous(name="Scaled Date Difference", limits=c(-1.01, 1.01)) + scale_y_continuous(name="Density", limits=c(0, 4.2))
 dev.off()
 
-data.ogr <- lapply(dir("stats", "with_ref.data", full.names=T), read.csv)
-stats.ogr <- do.call(rbind, lapply(dir("stats", "with_ref.stats", full.names=T), read.csv))
+data.files.ogr <- paste0("stats/", gsub(".csv", "-with_ref.data.csv", files))
+stats.files.ogr <- paste0("stats/", gsub(".csv", "-with_ref.stats.csv", files))
+data.ogr <- lapply(data.files.ogr, read.csv.2)
+stats.ogr <- do.call(rbind, lapply(stats.files.ogr, read.csv.2))
 
-good.ogr <- with(stats.ogr, null.AIC - AIC > 10 & Estimated.Root.Date < 0)
+good.ogr <- with(stats.ogr, !is.na(Model.Fit) & Model.Fit == 1)
 data.ogr <- data.ogr[good.ogr]
 
 data.ogr <- lapply(data.ogr, function(x) {x$Scaled.Difference <- x$Date.Difference / (max(x$Collection.Date) - min(x$Collection.Date)); subset(x, x$Censored == 1)})
@@ -84,9 +92,9 @@ pdf("lanl.density.ogr.pdf")
 g + scale_x_continuous(name="Scaled Date Difference", limits=c(-1.01, 1.01)) + scale_y_continuous(name="Density", limits=c(0, 4.2))
 dev.off()
 
-data.rtt <- lapply(dir("stats", "[0-9].data", full.names=T), read.csv)
+data.rtt <- lapply(data.files.rtt, read.csv.2)
 data.rtt <- data.rtt[good.ogr & good.rtt]
-data.ogr <- lapply(dir("stats", "with_ref.data", full.names=T), read.csv)
+data.ogr <- lapply(data.files.ogr, read.csv.2)
 data.ogr <- data.ogr[good.ogr & good.rtt]
 
 data.all <- do.call(rbind, lapply(1:length(data.rtt), function(i) cbind(Patient=stats.rtt[good.ogr & good.rtt, "Patient"][i], merge(data.rtt[[i]], data.ogr[[i]], by=c("ID", "Type", "Censored", "Collection.Date"), suffixes=c(".rtt", ".ogr")))))
