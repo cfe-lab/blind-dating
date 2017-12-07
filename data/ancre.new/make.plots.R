@@ -82,6 +82,8 @@ ggplot(data, aes(x=Estimated.Date)) +
 	scale_y_continuous(name="Frequency")
 dev.off()
 
+pdf.options(family="Helvetica", fonts="Helvetica", width=7, height=7, colormodel='rgb')
+
 files <- dir("info", "cens.csv")
 
 data.files.rtt <- paste0("stats/", gsub(".csv", ".data.csv", files))
