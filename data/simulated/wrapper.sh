@@ -16,7 +16,8 @@ raxml=raxmlHPC-PTHREADS-AVX
 cpus=$SLURM_CPUS_PER_TASK
 
 source ${name} && \
-new_inst=$(expr "$inst" + "$END") && \
+new_inst=$(expr "$inst" + "$INCR") && \
+echo "next: "$new_inst && \
 if [[ $new_inst -le $END ]]; then
   echo sbatch --get-user-env --mail-type=FAIL --mail-user=bjones@cfenet.ubc.ca --partition=slow --array=$new_inst --job-name=$name wrapper.sh
   sbatch --get-user-env --mail-type=FAIL --mail-user=bjones@cfenet.ubc.ca --partition=slow --array=$new_inst --job-name=$name wrapper.sh
