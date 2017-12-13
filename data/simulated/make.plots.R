@@ -105,13 +105,11 @@ for (x in data.rtt[1:100]) {
 }
 
 pdf("sim.density.rtt.pdf")
-g + scale_x_continuous(name="Scaled Date Difference", limits=c(-1, 1)) + scale_y_continuous(name="Density", limits=c(0, NA))
+g + scale_x_continuous(name="Scaled Date Difference", limits=c(-1, 1)) + scale_y_continuous(name="Density", limits=c(0, 30))
 dev.off()
 
-quit()
-
-data.files.ogr <- paste0("stats/", gsub(".csv", "-with_ref.data.csv", files))
-stats.files.ogr <- paste0("stats/", gsub(".csv", "-with_ref.stats.csv", files))
+data.files.ogr <- paste0("stats/", gsub(".cens.csv", "-with_ref.data.csv", files))
+stats.files.ogr <- paste0("stats/", gsub(".cens.csv", "-with_ref.stats.csv", files))
 data.ogr <- lapply(data.files.ogr, read.csv.2)
 stats.ogr <- do.call(rbind, lapply(stats.files.ogr, read.csv.2))
 
@@ -122,12 +120,12 @@ data.ogr <- lapply(data.ogr, function(x) {x$Scaled.Difference <- x$Date.Differen
 
 g <- ggplot() + theme_bw() + my.theme2
 
-for (x in data.ogr) {
-	g <- g + geom_density(aes(x=Scaled.Difference), data=x, fill='purple', alpha=1/length(data.ogr), color="#00000000")
+for (x in data.ogr[1:100]) {
+	g <- g + geom_density(aes(x=Scaled.Difference), data=x, fill='purple', alpha=1/100, color="#00000000")
 }
 
-pdf("lanl.density.ogr.pdf")
-g + scale_x_continuous(name="Scaled Date Difference", limits=c(-1.6, 1.6)) + scale_y_continuous(name="Density", limits=c(0, 4.2))
+pdf("sim.density.ogr.pdf")
+g + scale_x_continuous(name="Scaled Date Difference", limits=c(-1, 1)) + scale_y_continuous(name="Density", limits=c(0, 30))
 dev.off()
 
 data.rtt <- lapply(data.files.rtt, read.csv.2)
@@ -138,10 +136,10 @@ data.ogr <- data.ogr[good.ogr & good.rtt]
 data.all <- do.call(rbind, lapply(1:length(data.rtt), function(i) cbind(Patient=stats.rtt[good.ogr & good.rtt, "Patient"][i], merge(data.rtt[[i]], data.ogr[[i]], by=c("ID", "Type", "Censored", "Collection.Date"), suffixes=c(".rtt", ".ogr")))))
 data.all <- subset(data.all, Censored == 1)
 
-pdf("lanl.comp.pdf")
-ggplot(data.all) + geom_abline() + geom_point(aes(x=Estimated.Date.rtt, y=Estimated.Date.ogr, colour=Patient), show.legend=F) + scale_colour_brewer(name="", palette='Dark2') + scale_x_continuous(name="Estimated Date RTT (days after first sampling)", limits=c(-1500, 5000)) + scale_y_continuous(name="Estimated Date OGR (days after first sampling)", limits=c(-1500, 5000)) + theme_bw() + my.theme
+pdf("sim.comp.pdf")
+ggplot(data.all) + geom_abline() + geom_point(aes(x=Estimated.Date.rtt / 365.25, y=Estimated.Date.ogr / 365.25, colour=as.numeric(gsub(".+_", "", Patient))), show.legend=F) + scale_colour_gradient2(name="", low='red', high='blue', mid='green') + scale_x_continuous(name="Estimated Date RTT (years since simulation start)", limits=c(-1, 20)) + scale_y_continuous(name="Estimated Date OGR (years since simulation start)", limits=c(-1, 20)) + theme_bw() + my.theme
 dev.off()
 
 cat("Concordance:\n")
-sup <- lapply(unique(data.all$Patient), function(x) cat(x, "; ", with(subset(data.all, Patient == x), concord(Estimated.Date.rtt, Estimated.Date.ogr)), "\n", sep=""))
+#sup <- lapply(unique(data.all$Patient), function(x) cat(x, "; ", with(subset(data.all, Patient == x), concord(Estimated.Date.rtt, Estimated.Date.ogr)), "\n", sep=""))
 cat("Total: ", with(data.all, concord(Estimated.Date.rtt, Estimated.Date.ogr)), "\n", sep="")
