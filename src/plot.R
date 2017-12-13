@@ -137,6 +137,7 @@ op <- add_option(op, "--therapyend", type='character', default=NA)
 op <- add_option(op, "--liktol", type='numeric', default=1e-3)
 op <- add_option(op, "--usedups", type='logical', action='store_true', default=F)
 op <- add_option(op, "--cartoon", type='logical', action='store_true', default=F)
+op <- add_option(op, "--xtitle", type='character', default="Years since first collection")
 args <- parse_args(op)
 
 tree.file <- args$tree
@@ -150,6 +151,7 @@ LIK_TOL <- args$liktol
 therapy2 <- args$therapy2
 therapyend <- args$therapyend
 cartoon <- args$cartoon
+xtitle <- args$xtitle
 if (use.real) {
 	year.start <- args$yearstart
 	year.end <- args$yearend
@@ -281,14 +283,12 @@ if (is.na(dist.max))
 	dist.max <- max(data$dist) * 1.01
 if (is.na(dist.by))
 	dist.by <- 10^(floor(log10((dist.max - dist.min))))
-if (is.na(year.start) || is.na(year.end))
-	year.padding <- (max(node.dates) - min(node.dates)) / 20
-if (is.na(year.start))
-	year.start <- min(node.dates) - year.padding
-if (is.na(year.end))
-	year.end <- max(node.dates) + year.padding
 if (is.na(year.by))
-	year.by <- 10^(floor(log10((year.end - year.start))))
+	year.by <- 365.25
+if (is.na(year.start))
+	year.start <- floor(min(node.dates) / year.by) * year.by
+if (is.na(year.end))
+	year.end <- ceiling(max(node.dates) / year.by) * year.by
 
 if (use.real) {
 	date.ticks <- as.character(seq(floor(as.numeric(year.start) / year.by) * year.by - year.by, as.numeric(year.end), by=year.by))
@@ -301,14 +301,13 @@ if (use.real) {
 	type.value <- c(16, 5, 5, 5, 16, 5)
 } else {
 	if (cartoon) {
-		date.ticks <- seq(floor(year.start / year.by) * year.by + year.by, year.end, by=year.by)
+		date.ticks <- seq(floor(year.start / year.by) * year.by, year.end, by=year.by)
 		x.scale <- scale_x_continuous(name="Years since first collection", breaks=date.ticks, limits=c(year.start, year.end))
 		y.scale <- scale_y_continuous(name="Years since first collection", breaks=date.ticks, limits=c(year.start, year.end))
 	} else {
-		date.ticks <- seq(floor(year.start / year.by) * year.by + year.by, year.end, by=year.by)
-		x.scale <- scale_x_continuous(name="Days post simulation", breaks=date.ticks, labels=date.ticks, limits=c(year.start, year.end))
-		y.scale <- scale_y_continuous(name="Days post simulation", breaks=date.ticks, labels=date.ticks, limits=c(year.start, year.end))
-		x.scale.hist <- scale_x_continuous(name="Days post simulation")
+		date.ticks <- seq(floor(year.start / year.by) * year.by, year.end, by=year.by)
+		x.scale <- scale_x_continuous(name=xtitle, breaks=date.ticks, labels=as.integer(date.ticks / 365.25), limits=c(year.start, year.end))
+		y.scale <- scale_y_continuous(name=xtitle, breaks=date.ticks, labels=as.integer(date.ticks / 365.25), limits=c(year.start, year.end))
 	}
 	
 	type.break <- c("PLASMA", "PBMC")
