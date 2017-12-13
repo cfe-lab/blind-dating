@@ -134,7 +134,7 @@ data.all <- do.call(rbind, lapply(1:length(data.rtt), function(i) cbind(Patient=
 data.all <- subset(data.all, Censored == 1)
 
 pdf("ancre.comp.pdf")
-ggplot(data.all) + geom_abline() + geom_point(aes(x=Estimated.Date.rtt, y=Estimated.Date.ogr, colour=Patient), show.legend=F) + scale_colour_brewer(name="", palette='Dark2') + scale_x_continuous(name="Estimated Date RTT (days after first sampling)") + scale_y_continuous(name="Estimated Date OGR (days after first sampling)") + theme_bw() + my.theme
+ggplot(data.all) + geom_abline() + geom_point(aes(x=Estimated.Date.rtt / 365.25, y=Estimated.Date.ogr / 365.25, colour=Patient), show.legend=F) + scale_colour_brewer(name="", palette='Dark2') + scale_x_continuous(name="Estimated Date RTT (years since first collection)", limits=c(-1, 6)) + scale_y_continuous(name="Estimated Date OGR (years since first collection)", limits=c(-1, 6)) + theme_bw() + my.theme
 dev.off()
 
 cat("Concordance:\n")

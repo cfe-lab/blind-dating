@@ -137,9 +137,14 @@ data.all <- do.call(rbind, lapply(1:length(data.rtt), function(i) cbind(Patient=
 data.all <- subset(data.all, Censored == 1)
 
 pdf("sim.comp.pdf")
-ggplot(data.all) + geom_abline() + geom_point(aes(x=Estimated.Date.rtt / 365.25, y=Estimated.Date.ogr / 365.25, colour=as.numeric(gsub(".+_", "", Patient))), show.legend=F) + scale_colour_gradient2(name="", low='red', high='blue', mid='green') + scale_x_continuous(name="Estimated Date RTT (years since simulation start)", limits=c(-1, 20)) + scale_y_continuous(name="Estimated Date OGR (years since simulation start)", limits=c(-1, 20)) + theme_bw() + my.theme
+ggplot(data.all) + geom_abline() + geom_point(aes(x=Estimated.Date.rtt / 365.25, y=Estimated.Date.ogr / 365.25, colour=as.numeric(gsub(".+_", "", Patient))), alpha=0.1, show.legend=F) + scale_colour_gradient2(name="", low='red', high='blue', mid='green') + scale_x_continuous(name="Estimated Date RTT (years since simulation start)", limits=c(-1, 20)) + scale_y_continuous(name="Estimated Date OGR (years since simulation start)", limits=c(-1, 20)) + theme_bw() + my.theme
+dev.off()
+
+con.stats <- sapply(unique(data.all$Patient), function(x) with(subset(data.all, Patient == x), concord(Estimated.Date.rtt, Estimated.Date.ogr)))
+
+pdf("sim.conc.pdf")
+ggplot(data.frame(con=con.stats)) + geom_histogram(aes(x=con), breaks=seq(0, 1, length.out=21)) + theme_bw() + my.theme2 + scale_y_continuous(name="Frequency")
 dev.off()
 
 cat("Concordance:\n")
-#sup <- lapply(unique(data.all$Patient), function(x) cat(x, "; ", with(subset(data.all, Patient == x), concord(Estimated.Date.rtt, Estimated.Date.ogr)), "\n", sep=""))
 cat("Total: ", with(data.all, concord(Estimated.Date.rtt, Estimated.Date.ogr)), "\n", sep="")
