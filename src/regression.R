@@ -112,7 +112,7 @@ stats <- data.frame(
 	train.MAE=sum(abs(data$date.diff[data$censored == 0]))/sum(data$censored == 0),
 	cens.MAE=sum(abs(data$date.diff[data$censored == 1]))/sum(data$censored == 1),
 	tot.MAE=sum(abs(data$date.diff))/nrow(data),
-	tot.concord=concord(data$date, data$est.date)
+	tot.concord=concord(data$date, data$est.date),
 	bin.test=t.test(data$Date.Difference, alternative='greater')$p.value
 )
 stats.col.names <- c(
