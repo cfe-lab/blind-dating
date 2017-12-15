@@ -111,6 +111,7 @@ args <- commandArgs(T)
 tree.file <- args[1]
 info.file <- args[2]
 plot.file <- args[3]
+arrow.length <- as.numeric(args[4]) # 0.01 for pat 1, 0.005 for pat 2
 
 tree <- read.tree(tree.file)
 info <- read.csv(info.file, stringsAsFactors=F)
@@ -176,5 +177,5 @@ apply.theme(ggtree(ptree, colour="#49494980", size=dist.tree.size, ladderize=T) 
 	geom_tippoint(aes(colour=factor(CENSORED), shape=TYPE, alpha=DUPLICATE == FULLSEQID), size=point.size) +
 	geom_treescale(width=0.02, fontsize=7, offset=scale.offset) +
 	scale_alpha_manual(name="", breaks=c(F, T), limits=c(F, T), values=c(0.5, 1)) +
-	geom_segment2(mapping=aes(subset=COLDATE != DUPCOLDATE, xend=x + 0.002, yend=y), nudge_x=0.01, arrow=arrow(length=unit(0.2, 'cm'))), flipped=F, scaled=F)
+	geom_segment2(mapping=aes(subset=COLDATE != DUPCOLDATE, xend=x + 0.2 * arrow.length, yend=y), nudge_x=arrow.length, arrow=arrow(length=unit(0.2, 'cm'))), flipped=F, scaled=F)
 dev.off()
