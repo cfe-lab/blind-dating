@@ -144,6 +144,8 @@ if (-1 %in% dups$CENSORED) {
 	dups$CENSORED[clade.tips] <- 2
 }
 
+dups$DUPCOLDATE <- dups[match(dups$DUPLICATE, dups$FULLSEQID), "COLDATE"]
+
 type.break <- c("PLASMA", "PBMC", "PBMC (cultured)", "WHOLE BLOOD", "PBMC (REACTIVE)", "PBMC (CULTURE)")
 type.label <- c("RNA", "DNA", "DNA", "DNA", "RNA", "DNA")
 type.value <- c(16, 5, 5, 5, 16, 5)
@@ -171,7 +173,8 @@ ptree <- phylo4d(tree, tip.data=dups)
 
 pdf(plot.file)
 apply.theme(ggtree(ptree, colour="#49494980", size=dist.tree.size, ladderize=T) +
-	geom_tippoint(aes(colour=factor(CENSORED), shape=TYPE, alpha=DUPLICATE==FULLSEQID), size=point.size) +
+	geom_tippoint(aes(colour=factor(CENSORED), shape=TYPE, alpha=DUPLICATE == FULLSEQID), size=point.size) +
 	geom_treescale(width=0.02, fontsize=7, offset=scale.offset) +
-	scale_alpha_manual(name="", breaks=c(F, T), limits=c(F, T), values=c(0.5, 1)), flipped=F, scaled=F)
+	scale_alpha_manual(name="", breaks=c(F, T), limits=c(F, T), values=c(0.5, 1)) +
+	geom_segment2(mapping=aes(subset=COLDATE != DUPCOLDATE, xend=x + 0.002, yend=y), nudge_x=0.01, arrow=arrow(length=unit(0.2, 'cm'))), flipped=F, scaled=F)
 dev.off()
