@@ -93,10 +93,11 @@ stats.col.names <- c(
 	"Censored MAE",
 	"Total MAE",
 	"Total Concordance",
+	"Bin Test",
 	"Original RMSE",
 	"Original MAE",
 	"Original Correlation",
 	"Original Correlation",
-	"Original Concordance"
+	"Original Concordance",
 )
 write.table(stats, output.stats, row.names=F, col.names=stats.col.names, sep=",")
