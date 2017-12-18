@@ -94,6 +94,7 @@ stats.col.names <- c(
 	"Total MAE",
 	"Total Concordance",
 	"Bin Test",
+	"T-Test",
 	"Original RMSE",
 	"Original MAE",
 	"Original Correlation",

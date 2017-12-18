@@ -113,7 +113,8 @@ stats <- data.frame(
 	cens.MAE=sum(abs(data$date.diff[data$censored == 1]))/sum(data$censored == 1),
 	tot.MAE=sum(abs(data$date.diff))/nrow(data),
 	tot.concord=concord(data$date, data$est.date),
-	bin.test=binom.test(sum(data[data$censored == 1, "date.diff"] > 0), sum(data$censored == 1), alternative='greater')$p.value
+	bin.test=binom.test(sum(data[data$censored == 1, "date.diff"] > 0), sum(data$censored == 1), alternative='greater')$p.value,
+	t.test=t.test(data[data$censored == 1, "date.diff"], alternative='greater')
 )
 stats.col.names <- c(
 	"Patient",
@@ -144,7 +145,8 @@ stats.col.names <- c(
 	"Censored MAE",
 	"Total MAE",
 	"Total Concordance",
-	"Bin Test"
+	"Bin Test",
+	"T-Test"
 )
 write.table(stats, stats.file, col.names=stats.col.names, row.names=F, sep=",")
 
