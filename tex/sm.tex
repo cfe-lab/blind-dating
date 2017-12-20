@@ -79,57 +79,7 @@ London, Canada N6A 5C1}
 %%% 1 Simon Fraser University
 %%% 2 BC Centre for Excellence in HIV/AIDS
 %%% 3 University of British Columbia
-\baselineskip 22pt
-%\pagewiselinenumbers
 
-\date{}
-\maketitle
-
-\section{Simulations}
-
-Small intro
-
-\subsection*{Methods}
-\subsection*{Simulated data}
-To characterize sources of error in reconstructing dates on tips of a phylogeny, we generated phylogenetic trees by direct simulation. % and from the plasma data sets.
-First, we generated phylogenies with 100 tips each under a birth-death model with serial sampling using the \emph{sim.bdsky.stt} function in the \textit{R} package \textit{TreeSim} \cite{Boskova14}.
-Birth-death models have been applied to studying speciation processes \cite{Nee06} and infectious disease epidemics \cite{Stradler13}, but have only recently been used to model the proliferation of virus lineages in cell populations \cite{Hartfield15}.
-%% This paragraph needs to be rewritten
-The birth-death model was parametrized by fitting this model to samples from the {\em plasma} dataset.
-%% we may need to provide some justification for using BD
-%To assess the sensitivity of our method, we first simulated HIV sequence data sets without viral latency.
-We used BEAST version 2.3.2 \cite{BEAST2} to estimate the posterior distribution defined by the serial model with a Bayesian skyline \cite{Stadler13}, a strict molecular clock, and the HKY85 \cite{HKY85} model of nucleotide substitution.
-%Using this approach, we generated samples of trees for each sequence alignment in the plasma dataset.
-%From these simulations, we evaluated the accuracy of predicting sample collection times from a strict molecular clock model that was fit to a training subset of these data.
-The lineage birth rate, death rate and sampling probability were estimated to be: $\lambda = 5.12 \times 10^{-2}$ day$^{-1}$, $\delta = 5.01 \times 10^{-2}$ day$^{-1}$, $s = 5.24 \times 10^{-3}$ respectively.
-We used the \textit{R} package, \emph{NELSI} \cite{NELSI}, to assign rates of evolution to these trees by drawing values from a Gaussian distribution with a mean rate $\mu = \ 1.96\times 10^{-4}$ substitutions per generation andstandard deviation $\sigma = \ 1.42\times 10^{-5}$. %; Figure \ref{fig:seedtree} for an example).
-To model uncertainty in phylogenetic reconstruction from sequence variation, we simulated sequence evolution along each birth-death tree with INDELible version 1.03 \cite{Indelible} under an HKY85 \cite{HKY85} model of nucleotide substitution.
-Parameters for the substitution model were set to empirical estimates derived from previously published HIV within-host data sets \cite{McCloskey14}. 
-Specifically, the stationary distribution was set to 0.42, 0.15, 0.15, 0.28 for the nucleotides A, C, G and T, respectively, and the transition bias parameter was set to 8.5.
-Using this approach, we generated a total of 50 replicate subjects.
-
-\subsection*{Results}
-
-\section{Outgroup rooting}
-In addition to root-to-tip regression (RTT) we also evaluated using out group rooting (OGR), in which one or more sequences from taxa outside but sufficiently related to the group of interest are added to the phylogenetic reconstruction \cite{Huelsenbeck02}, in order to root the maximum likelihood (ML) phylogenies.
-The point at which the branch leading to the outgroup intersects the rest of the ML phylogeny provides an estimate of the root for the latter.
-We selected the HIV-1 B ancestral sequence reconstruction, HXB2 (accession: K03455), curated by the LANL HIV sequence database, as the outgroup sequence.
-
-\subsection*{Results with simulations and public data sources}
-
-\subsection*{Results recruited patients}
-
-\subsection*{Comparison to rooting with root-to-tip regression}
-OGR performed well, but inferiorly compared to RTT.
-Results in all data sets showed higher RMSEs for the training sets and more variable RMSEs and concordance in the validation studies.
-Nonetheless the concordance between RTT and OGR was very high.
-There was a 0.934 concordance \cite{Lin89} between the estimated dates of the DNA sequences in the LANL patients using RTT versus using OGR (see Supplementary Figure \ref{fig:lanlconcord}).
-The concordance in the recruited patients was also high with a 0.899 concordance in patient 1 and a 0.911 concordance in patient 2 (see Supplementary Figure \ref{fig:concord}).
-
-\bibliographystyle{pnas-new}
-\bibliography{blind-dating}
-
-\pagebreak
 
 \begin{sidewaystable}
 \caption{Summary of the patient data collected from the LANL HIV sequence database \cite{LosAlamos} in the data sets from public sources.\label{tab:patients}}
@@ -188,6 +138,9 @@ Reference & Patient ID & \multicolumn{3}{c}{Sequences} & \multicolumn{3}{c}{Time
 	Scaled MAE(D) is the MAE(D) divided by the time span of the training data.
 	The model fail to be calibrated for bold rows.
 \end{sidewaystable}
+
+\bibliographystyle{pnas-new}
+\bibliography{blind-dating}
 
 \end{document}
 
