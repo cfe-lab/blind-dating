@@ -28,5 +28,7 @@ exec = args[3]
 threads = as.integer(args[4])
 seed = as.integer(args[5])
 
-tree <- raxml(fasta.file, N=100, threads=threads, executable=exec, parsimony.seed=seed, bootstrap.seed=seed)
+x <- raxml(fasta.file, N=100, threads=threads, executable=exec, parsimony.seed=seed, bootstrap.seed=seed)
+tree <- x$tr
+tree.raxml <- x$tree.raxml
 write.tree(tree, tree.file)
