@@ -5,7 +5,7 @@ Phylogenetic dating of HIV latency
 # Papers
 
 # Conference Abstracts
-Jones, BR, Kinloch, NN, Horacsek, J, Ganase, B, Harris, M, Jones, RB, Harrigan, PR, Brockman, MA, Joy, JB, Poon, A, Brumme, ZL. The latent reservoir as a genetically diverse archive recapitulating within-host HIV evolutionary history. HIV Persistance during Therapy 8th Edition (2017, Miami, United States of America) abstract .
+Jones, BR, Kinloch, NN, Horacsek, J, Ganase, B, Harris, M, Jones, RB, Harrigan, PR, Brockman, MA, Joy, JB, Poon, A, Brumme, ZL. The latent reservoir as a genetically diverse archive recapitulating within-host HIV evolutionary history. HIV Persistance during Therapy 8th Edition (2017, Miami, United States of America) abstract 00035.
 
 Jones, BR, Kinloch, NN, Horacsek, J, Mwimanzi, P, Huang, J, Truong, R, Ganase, B, Harris, M, Harrigan, PR, Jones, RB, Brockman, MA, Joy, JB, Poon, A Brumme, ZL. Heterogeneous age and genetic distribution of within-host HIV-1 reservoirs revealed by a novel phylogenetic dating strategy. 9th IAS Conference on HIV Science (2017, Paris, France) abstract MOPEA0004.
 
