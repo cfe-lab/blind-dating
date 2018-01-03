@@ -27,8 +27,11 @@ tree.file = args[2]
 exec = args[3]
 threads = as.integer(args[4])
 seed = as.integer(args[5])
+tmp.dir <- if (length(args) > 5) args[6] else NULL
 
-x <- raxml(fasta.file, N=100, threads=threads, executable=exec, parsimony.seed=seed, bootstrap.seed=seed)
+tmp <- !is.null(tmp.dir)
+
+x <- raxml(fasta.file, N=100, threads=threads, executable=exec, parsimony.seed=seed, bootstrap.seed=seed, clear=!tmp, tmp.dir=if(tmp) tmp.dir else tempdir())
 tree <- x$tr
 tree.raxml <- x$tree.raxml
 write.tree(tree, tree.file)
