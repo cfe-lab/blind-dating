@@ -83,6 +83,7 @@ ci <- predict(g, newdata=data.frame(date=-a / b), interval='confidence')
 rownames(ci) <- NULL
 ci <- as.data.frame(ci)	
 ci$lwr <- ci$lwr / b - a / b
+ci$upr <- ci$upr / b - a / b
 
 stats <- data.frame(
 	pat=pat.id,
@@ -105,6 +106,8 @@ stats <- data.frame(
 	b=b,
 	error=0,
 	root.date=-a / b,
+	ci.lwr=ci$lwr,
+	ci.upr=ci$upr,
 	fit=as.numeric(AIC(g.null) - AIC(g) > 10 && ci$lwr < cutoff && b > 0),
 	train.RMSE=sqrt(sum(data$date.diff[data$censored == 0]^2)/sum(data$censored == 0)),
 	cens.RMSD=sqrt(sum(data$date.diff[data$censored == 1]^2)/sum(data$censored == 1)),
@@ -137,6 +140,8 @@ stats.col.names <- c(
 	"Model Slope",
 	"Model Error",
 	"Estimated Root Date",
+	"ERD CI low",
+	"ERD CI high",
 	"Model Fit",
 	"Training RMSE",
 	"Censored RMSD",

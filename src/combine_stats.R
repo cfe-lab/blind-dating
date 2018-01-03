@@ -85,6 +85,8 @@ stats.col.names <- c(
 	"Model Slope",
 	"Model Error",
 	"Estimated Root Date",
+	"ERD CI low",
+	"ERD CI high",
 	"Model Fit",
 	"Training RMSE",
 	"Censored RMSD",
