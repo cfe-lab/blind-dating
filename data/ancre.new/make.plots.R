@@ -84,7 +84,7 @@ dev.off()
 
 pdf.options(family="Helvetica", fonts="Helvetica", width=7, height=7, colormodel='rgb')
 
-files <- dir("info", "cens.csv")
+files <- paste0("patient_", c(2658, 825, 7259, 7265, 13333, 13334, 13336), ".cens.csv")
 
 data.files.rtt <- paste0("stats/", gsub(".csv", ".data.csv", files))
 stats.files.rtt <- paste0("stats/", gsub(".csv", ".stats.csv", files))
@@ -96,7 +96,7 @@ data.rtt <- data.rtt[good.rtt]
 
 data.rtt <- lapply(data.rtt, function(x) {x$Scaled.Difference <- x$Date.Difference / (max(x$Collection.Date) - min(x$Collection.Date)); subset(x, x$Censored == 1)})
 
-g <- ggplot() + theme_bw() + my.theme2
+g <- ggplot() + theme_bw() + my.theme2 + geom_vline(xintercept=0, linetype='dashed', colour='grey')
 
 for (x in data.rtt) {
 	g <- g + geom_density(aes(x=Scaled.Difference), data=x, fill='purple', alpha=1/length(data.rtt), color="#00000000")
@@ -116,7 +116,7 @@ data.ogr <- data.ogr[good.ogr]
 
 data.ogr <- lapply(data.ogr, function(x) {x$Scaled.Difference <- x$Date.Difference / (max(x$Collection.Date) - min(x$Collection.Date)); subset(x, x$Censored == 1)})
 
-g <- ggplot() + theme_bw() + my.theme2
+g <- ggplot() + theme_bw() + my.theme2 + geom_vline(xintercept=0, linetype='dashed', colour='grey')
 for (x in data.ogr) {
 	g <- g + geom_density(aes(x=Scaled.Difference), data=x, fill='purple', alpha=1/length(data.ogr), color="#00000000")
 }
