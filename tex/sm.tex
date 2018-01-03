@@ -87,8 +87,8 @@ London, Canada N6A 5C1}
 \small{
 \begin{center}
 \begin{tabular}{+l^l*{14}{^r}} 
-Reference & Patient ID & \multicolumn{3}{c}{Sequences} & \multicolumn{3}{c}{Time points} &  \multicolumn{1}{c}{Time span} & $\Delta$AIC & Root & \multicolumn{2}{c}{MAE} & \multicolumn{2}{c}{MAD} \\
- &  & Plasma & PBMC & Total & Plasma & PBMC & Total & Plasma & & & Years & Scaled & Years & Scaled \\
+Reference & ID & \multicolumn{3}{c}{Sequences} & \multicolumn{3}{c}{Time points} &  \multicolumn{1}{c}{Time span} & \multicolumn{2}{c}{Linear Model} & \multicolumn{2}{c}{Mean Absolute Error} & \multicolumn{2}{c}{Mean Absolute Difference} \\
+ &  & Plasma & PBMC & Total & Plasma & PBMC & Total & Plasma & $\Delta$AIC & Root & Years & Scaled & Years & Scaled \\
 \hline
 \cite{Simmonds91} & 2658 & 69 & & 69 & 5 & & 5 & 5.2 & 64 & -1.2 & 0.42 & 0.081 & 0.64 & 0.12 \\
 \cite{Shankarappa99} & 825 & 49 & & 49 & 6 & & 6 & 8.2 & 60 & 0.11 & 0.73 & 0.089 & 0.89 & 0.11 \\
@@ -133,10 +133,10 @@ Reference & Patient ID & \multicolumn{3}{c}{Sequences} & \multicolumn{3}{c}{Time
 	Time span is in years.
 	$\Delta$AIC is the Akaike Information Criterion (AIC) \cite{Akaike74} of the null model minus the AIC of the linear model.
 	Root is the estimate of the root time in years by the linear model with respect to the time of the first sample.
-	MAE is the mean absolute error (between collection date and estimated date) of the training data.
-	MAD is mean absolute difference (between collection date and estimated date) of the censored data.
-	Scaled MAE(D) is the MAE(D) divided by the time span of the training data.
-	The model fail to be calibrated for bold rows.
+	Mean Absolute Error is between collection date and estimated date of the training data.
+	Mean Absolute Difference is between collection date and estimated date) of the censored data.
+	Scaled Mean Absolute Error/Difference is the mean absolute error/difference divided by the time span of the training data.
+	The model failed to be calibrated for bold rows.
 \end{sidewaystable}
 
 \pagebreak{}
