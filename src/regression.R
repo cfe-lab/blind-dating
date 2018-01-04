@@ -85,6 +85,9 @@ ci <- as.data.frame(ci)
 ci$lwr <- ci$lwr / b - a / b
 ci$upr <- ci$upr / b - a / b
 
+bin.test=binom.test(sum(data[data$censored == 1, "date.diff"] < 0), sum(data$censored == 1), alternative='two.sided')
+T.test <- t.test(data[data$censored == 1, "date.diff"], alternative='two.sided')
+
 stats <- data.frame(
 	pat=pat.id,
 	samples.rna=sum(data$censored == 0),
@@ -116,8 +119,10 @@ stats <- data.frame(
 	cens.MAE=sum(abs(data$date.diff[data$censored == 1]))/sum(data$censored == 1),
 	tot.MAE=sum(abs(data$date.diff))/nrow(data),
 	tot.concord=concord(data$date, data$est.date),
-	bin.test=binom.test(sum(data[data$censored == 1, "date.diff"] >= 0), sum(data$censored == 1), alternative='two.sided')$p.value,
-	t.test=t.test(data[data$censored == 1, "date.diff"], alternative='two.sided')$p.value
+	bin.test=bin.test$p.value,
+	bin.mean=bin.test$estimate,
+	t.test=T.test$p.value,
+	t.mean=T.test$estimate
 )
 stats.col.names <- c(
 	"Patient",
@@ -150,8 +155,10 @@ stats.col.names <- c(
 	"Censored MAE",
 	"Total MAE",
 	"Total Concordance",
-	"Bin Test",
-	"T-Test"
+	"Bin Test (p)",
+	"Bin Test (mean)",
+	"T-Test (p)",
+	"T-Test (mean)"
 )
 write.table(stats, stats.file, col.names=stats.col.names, row.names=F, sep=",")
 
