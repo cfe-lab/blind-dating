@@ -96,14 +96,21 @@ data.rtt <- data.rtt[good.rtt]
 
 data.rtt <- lapply(data.rtt, function(x) {x$Scaled.Difference <- x$Date.Difference / (max(x$Collection.Date) - min(x$Collection.Date)); subset(x, x$Censored == 1)})
 
-g <- ggplot() + theme_bw() + my.theme2 + geom_vline(xintercept=0, linetype='dashed', colour='grey')
+g <- ggplot() + theme_bw() + my.theme2
 
+i <- 1
 for (x in data.rtt) {
-	g <- g + geom_density(aes(x=Scaled.Difference), data=x, fill='purple', alpha=1/length(data.rtt), color="#00000000")
+	g <- g + geom_density(aes(x=Scaled.Difference), data=x, fill='red', alpha=1/length(data.rtt), color="#00000000")
+	
+	pdf(paste0("plots/", gsub(".csv", ".dens.pdf", files[i])))
+	print(ggplot() + theme_bw() + my.theme2 +  geom_density(aes(x=Scaled.Difference), data=x, fill='red', color="#00000000") + geom_vline(xintercept=0, linetype='dashed', colour='grey') + scale_x_continuous(name="Scaled Date Difference", limits=c(-1.6, 1.6)) + scale_y_continuous(name="Density", limits=c(0, 3)))
+	dev.off()
+
+	i <- i + 1
 }
 
 pdf("ancre.density.rtt.pdf")
-g + scale_x_continuous(name="Scaled Date Difference", limits=c(-1.6, 1.6)) + scale_y_continuous(name="Density", limits=c(0, 3))
+g + geom_vline(xintercept=0, linetype='dashed', size=1, colour='black') + scale_x_continuous(name="Scaled Date Difference", limits=c(-1.6, 1.6)) + scale_y_continuous(name="Density", limits=c(0, 3))
 dev.off()
 
 data.files.ogr <- paste0("stats/", gsub(".csv", "-with_ref.data.csv", files))
@@ -117,8 +124,15 @@ data.ogr <- data.ogr[good.ogr]
 data.ogr <- lapply(data.ogr, function(x) {x$Scaled.Difference <- x$Date.Difference / (max(x$Collection.Date) - min(x$Collection.Date)); subset(x, x$Censored == 1)})
 
 g <- ggplot() + theme_bw() + my.theme2 + geom_vline(xintercept=0, linetype='dashed', colour='grey')
+i <- 1
 for (x in data.ogr) {
 	g <- g + geom_density(aes(x=Scaled.Difference), data=x, fill='purple', alpha=1/length(data.ogr), color="#00000000")
+	
+	pdf(paste0("plots/", gsub(".csv", "-with_ref.dens.pdf", files[i])))
+	print(ggplot() + theme_bw() + my.theme2 + geom_density(aes(x=Scaled.Difference), data=x, fill='purple', color="#00000000") + geom_vline(xintercept=0, linetype='dashed', colour='grey') + scale_x_continuous(name="Scaled Date Difference", limits=c(-1.6, 1.6)) + scale_y_continuous(name="Density", limits=c(0, 3)))
+	dev.off()
+	
+	i <- i + 1
 }
 
 pdf("ancre.density.ogr.pdf")
