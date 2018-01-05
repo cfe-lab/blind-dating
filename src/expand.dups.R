@@ -111,71 +111,71 @@ args <- commandArgs(T)
 tree.file <- args[1]
 info.file <- args[2]
 plot.file <- args[3]
-arrow.length <- as.numeric(args[4]) # 0.01 for pat 1, 0.005 for pat 2
+dot.spread <- as.numeric(args[4]) # 0.0045 for pat 1, 0.0012 for pat 2
 
 tree <- read.tree(tree.file)
 info <- read.csv(info.file, stringsAsFactors=F)
 
 info <- subset(info, KEPTDUP == 1)
+info$COLDATE <- as.numeric(as.Date(info$COLDATE))
 
-dups <- lapply(tree$tip.label, function(x) info[info$DUPLICATE == x,])
+ftree <- fortify(tree, colour="#49494980", size=dist.tree.size, ladderize=T)
 
-for (i in 1:length(tree$tip.label)) {
-	d <- dups[[i]]
-
-	if (nrow(d) > 1) {
-		node <- which(tree$tip.label == d$DUPLICATE[1])
-		clade <- list(tip.label=d$FULLSEQID, edge=matrix(c(rep(nrow(d) + 1, nrow(d)), seq(1, nrow(d))), ncol=2), edge.length=rep(0, nrow(d)), Nnode=1)
-		class(clade) <- 'phylo'
+tip.points <- apply(ftree[1:length(tree$tip.label), ], 1, function (x) {
+	dups <- subset(info, DUPLICATE == x[["label"]])
+	dups <- dups[order(with(dups, COLDATE + max(COLDATE) * as.numeric(DUPLICATE != FULLSEQID))), ]
+	dups$x <- as.numeric(x[["x"]]) + (0:(nrow(dups) - 1)) * dot.spread
+	dups$y <- as.numeric(x[["y"]])
 		
-		tree <- bind.tree(tree, clade, where=node)
-	}
-}
+	bars <- dups[which(dups$COLDATE[1:(nrow(dups) - 1)] != dups$COLDATE[2:nrow(dups)]), ]
+	if (nrow(bars) > 0) {
+		bars$x <- bars$x + dot.spread / 2
+		bars$TYPE <- 'BAR'
+		bars$CENSORED <- -100
+		bars$FULLSEQID <- 'BAR'
+		bars$DUPLICATE <- 'BAR'
+				
+		rbind(dups, bars)
+	} else
+		dups
+})
 
-dups <- do.call(rbind, dups)
-dups <- dups[match(tree$tip.label, dups$FULLSEQID), ]
-row.names(dups) <- 1:nrow(dups)
-
-
-if (-1 %in% dups$CENSORED) {
-	clade <- get.child.edges(tree, getMRCA(tree, tree$tip.label[dups$CENSORED == -1 & dups$KEPT == 1]))
+if (-1 %in% info$CENSORED) {
+	clade <- get.child.edges(tree, getMRCA(tree, which(unlist(lapply(tip.points, function(x) x[1, 'CENSORED'] == -1)))))
 	clade.tips <- tree$edge[clade, 2]
-	clade.tips <- clade.tips[clade.tips <= length(tree$tip.label) & dups$CENSORED[clade.tips] == 1]
-		
-	dups$CENSORED[clade.tips] <- 2
+	clade.tips <- clade.tips[clade.tips <= length(tree$tip.label)]
+	
+	tip.points[clade.tips] <- lapply(tip.points[clade.tips], function(x) {x$CENSORED[x$CENSORED == 1] <- 2; x})
 }
 
-dups$DUPCOLDATE <- dups[match(dups$DUPLICATE, dups$FULLSEQID), "COLDATE"]
+tip.points <- do.call(rbind, tip.points)
 
-type.break <- c("PLASMA", "PBMC", "PBMC (cultured)", "WHOLE BLOOD", "PBMC (REACTIVE)", "PBMC (CULTURE)")
-type.label <- c("RNA", "DNA", "DNA", "DNA", "RNA", "DNA")
-type.value <- c(16, 5, 5, 5, 16, 5)
-point.size <- 3
+type.break <- c("PLASMA", "PBMC", "PBMC (cultured)", "WHOLE BLOOD", "PBMC (REACTIVE)", "PBMC (CULTURE)", "BAR")
+type.label <- c("RNA", "DNA", "DNA", "DNA", "RNA", "DNA", "BAR")
+type.value <- c(16, 5, 5, 5, 16, 5, 124)
+point.size <- 2.5
 dist.tree.size <- .6
 tree.size <- .4
 scale.offset <- 3
 regression.size <- 1
-colour.break <- c(0, -1, 1, 2)
-colour.label <- c("Training", "Training 2", "Censored", "Censored 2")
-colour.value <- c(TRAINING_COLOUR, TRAINING_COLOUR2, CENSORED_COLOUR, CENSORED_COLOUR2)
+colour.break <- c(0, -1, 1, 2, -100)
+colour.label <- c("Training", "Training 2", "Censored", "Censored 2", "BAR")
+colour.value <- c(TRAINING_COLOUR, TRAINING_COLOUR2, CENSORED_COLOUR, CENSORED_COLOUR2, 'black')
 
-dups$TYPE <- type.label[match(dups$TYPE, type.break)]
+tip.points$TYPE <- type.label[match(tip.points$TYPE, type.break)]
 
-type.mask <- type.label %in% dups$TYPE
+type.mask <- type.label %in% tip.points$TYPE
 type.label <- unique(type.label[type.mask])
 type.value <- unique(type.value[type.mask])
 
-colour.mask <- colour.break %in% dups$CENSORED
+colour.mask <- colour.break %in% tip.points$CENSORED
 colour.label <- colour.label[colour.mask]
 colour.value <- colour.value[colour.mask]
 colour.break <- colour.break[colour.mask]
 
-ptree <- phylo4d(tree, tip.data=dups)
-
 pdf(plot.file)
-apply.theme(ggtree(ptree, colour="#49494980", size=dist.tree.size, ladderize=T) +
-	geom_tippoint(aes(colour=factor(CENSORED), shape=TYPE, alpha=DUPLICATE == FULLSEQID), size=point.size) +
+apply.theme(ggtree(ftree, colour="#49494980", size=dist.tree.size) +
+	geom_point(aes(x=x, y=y, colour=factor(CENSORED), shape=TYPE, alpha=DUPLICATE == FULLSEQID), data=tip.points, size=point.size) +
 	geom_treescale(width=0.02, fontsize=7, offset=scale.offset) +
-	scale_alpha_manual(name="", breaks=c(F, T), limits=c(F, T), values=c(0.5, 1)) +
-	geom_segment2(mapping=aes(subset=COLDATE != DUPCOLDATE, xend=x + 0.2 * arrow.length, yend=y), nudge_x=arrow.length, arrow=arrow(length=unit(0.2, 'cm'))), flipped=F, scaled=F)
+	scale_alpha_manual(name="", breaks=c(F, T), limits=c(F, T), values=c(0.5, 1)), flipped=F, scaled=F)
 dev.off()
