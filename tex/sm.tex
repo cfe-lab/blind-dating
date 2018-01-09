@@ -87,7 +87,7 @@ London, Canada N6A 5C1}
 \small{
 \begin{center}
 \begin{tabular}{+l^l*{15}{^l}} 
-Reference & ID & \multicolumn{3}{c}{Sequences} & \multicolumn{3}{c}{Time points} &  \multicolumn{1}{c}{Time span} & \multicolumn{2}{c}{Linear Model} & \multicolumn{2}{c}{MAE} & \multicolumn{2}{c}{MAD} & p-value \\
+Reference & ID & \multicolumn{3}{c}{Sequences} & \multicolumn{3}{c}{Time points} &  \multicolumn{1}{c}{Time span} & \multicolumn{2}{c}{Linear Model} & \multicolumn{2}{c}{MAE} & \multicolumn{2}{c}{MAD} & p-Latency \\
  &  & Plasma & PBMC & Total & Plasma & PBMC & Total & Plasma & $\Delta$AIC & Root & Years & Scaled & Years & Scaled & \\
 \hline
 \cite{Simmonds91} & 2658 & 69 & & 69 & 5 & & 5 & 5.2 & 64 & -1.2 (-2.0, -0.46) & 0.42 & 0.081 & 0.64 & 0.12 & 0.23 \\
@@ -133,9 +133,9 @@ Reference & ID & \multicolumn{3}{c}{Sequences} & \multicolumn{3}{c}{Time points}
 	Time span is in years.
 	$\Delta$AIC is the Akaike Information Criterion (AIC) \cite{Akaike74} of the null model minus the AIC of the linear model.
 	Root is the estimate of the root time in years by the linear model with respect to the time of the first sample.
-	Mean Absolute Error is between collection date and estimated date of the training data.
-	Mean Absolute Difference is between collection date and estimated date) of the censored data.
-	Scaled Mean Absolute Error/Difference is the mean absolute error/difference divided by the time span of the training data.
+	MAE is Mean Absolute Error between collection date and estimated date of the training data.
+	MAD is Mean Absolute Difference is between collection date and estimated date) of the censored data.
+	Scaled MAE/D is the mean absolute error/difference divided by the time span of the training data.
 	The model failed to be calibrated for bold rows.
 \end{sidewaystable}
 
