@@ -104,7 +104,7 @@ for (x in data.rtt[1:100]) {
 }
 
 pdf("sim.density.rtt.pdf")
-g + scale_x_continuous(name="Scaled Date Difference", limits=c(-1, 1)) + scale_y_continuous(name="Density", limits=c(0, 30))
+g + geom_vline(xintercept=0, linetype='dashed', size=1, colour='black') + scale_x_continuous(name="Scaled Date Difference", limits=c(-1, 1)) + scale_y_continuous(name="Density", limits=c(0, 30))
 dev.off()
 
 data.files.ogr <- paste0("stats/", gsub(".cens.csv", "-with_ref.data.csv", files))
