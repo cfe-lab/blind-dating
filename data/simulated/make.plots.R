@@ -76,7 +76,7 @@ pdf.options(family="Helvetica", fonts="Helvetica", width=7, height=4.2, colormod
 pdf("plots/SIM_1.hist.pdf")
 ggplot(data, aes(x=Estimated.Date)) +
 	geom_histogram(breaks=seq(min(floor(data$Estimated.Date / 365.25)) * 365.25, max(floor(data$Estimated.Date / 365.25) + 1) * 365.25, by=365.25), fill='red') +
-	geom_segment(x=0, xend=0, y=66, yend=58, arrow=arrow(length = unit(0.5, "cm")))  +
+	geom_segment(x=59.86173, xend=59.86173, y=27, yend=23, arrow=arrow(length = unit(0.5, "cm")))  +
 	theme_bw() +
 	my.theme.hist +
 	scale_x_continuous(name="Years since simulation start", breaks=seq(min(floor(data$Estimated.Date / 365.25)) * 365.25, max(floor(data$Estimated.Date / 365.25) + 1) * 365.25, by=365.25), labels=seq(0, 7)) +
@@ -100,7 +100,7 @@ data.rtt <- lapply(data.rtt, function(x) {x$Scaled.Difference <- x$Date.Differen
 g <- ggplot() + theme_bw() + my.theme2
 
 for (x in data.rtt[1:100]) {
-	g <- g + geom_density(aes(x=Scaled.Difference), data=x, fill='purple', alpha=1/100, color="#00000000")
+	g <- g + geom_density(aes(x=Scaled.Difference), data=x, fill='red', alpha=1/100, color="#00000000")
 }
 
 pdf("sim.density.rtt.pdf")
@@ -120,7 +120,7 @@ data.ogr <- lapply(data.ogr, function(x) {x$Scaled.Difference <- x$Date.Differen
 g <- ggplot() + theme_bw() + my.theme2
 
 for (x in data.ogr[1:100]) {
-	g <- g + geom_density(aes(x=Scaled.Difference), data=x, fill='purple', alpha=1/100, color="#00000000")
+	g <- g + geom_density(aes(x=Scaled.Difference), data=x, fill='red', alpha=1/100, color="#00000000")
 }
 
 pdf("sim.density.ogr.pdf")
