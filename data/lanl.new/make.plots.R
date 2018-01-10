@@ -75,7 +75,6 @@ data <- subset(data, Censored == 1)
 pdf.options(family="Helvetica", fonts="Helvetica", width=7, height=4.2, colormodel='rgb')
 pdf("plots/patient_821.hist.pdf")
 ggplot(data, aes(x=Estimated.Date)) +
-	geom_rect(xmin=THERAPY, xmax=Inf, ymin=-Inf, ymax=Inf, fill=THERAPY_COLOUR) +
 	geom_histogram(breaks=seq(min(floor(data$Estimated.Date / 365.25)) * 365.25, max(floor(data$Estimated.Date / 365.25) + 1) * 365.25, by=365.25), fill='red') +
 	geom_segment(x=0, xend=0, y=66, yend=58, arrow=arrow(length = unit(0.5, "cm")))  +
 	theme_bw() +
