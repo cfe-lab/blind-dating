@@ -8,12 +8,12 @@ my.theme <- theme(
 	text=element_text(size=20),
 	axis.text=element_text(size=15, colour='black'),
 	legend.text=element_text(size=15),
-	legend.position=0,
+	legend.position=c(0.01, 1),
 	axis.text.x=element_text(angle=90, vjust=0.5, hjust=1),
 	legend.justification=c(0, 1),
 	legend.spacing=unit(0, 'cm'),
 	legend.margin=margin(0, 0, 0, 0, 'cm'),
-	legend.key.size=unit(1.2, 'cm'),
+	legend.key.size=unit(0.8, 'cm'),
 	legend.key=element_rect(fill="#00000000", colour="#00000000"),
 	legend.background=element_blank(),
 	legend.box.background=element_blank(),
@@ -147,8 +147,11 @@ data.ogr <- data.ogr[good.ogr & good.rtt]
 data.all <- do.call(rbind, lapply(1:length(data.rtt), function(i) cbind(Patient=stats.rtt[good.ogr & good.rtt, "Patient"][i], merge(data.rtt[[i]], data.ogr[[i]], by=c("ID", "Type", "Censored", "Collection.Date"), suffixes=c(".rtt", ".ogr")))))
 data.all <- subset(data.all, Censored == 1)
 
+data.all$Patient <- as.factor(data.all$Patient)
+pat_levels <- levels(data.all$Patient)
+
 pdf("ancre.comp.pdf")
-ggplot(data.all) + geom_abline() + geom_point(aes(x=Estimated.Date.rtt / 365.25, y=Estimated.Date.ogr / 365.25, colour=Patient), show.legend=F) + annotate("text", x=6, y=-1, label=sprintf("Concordance: %.2f", with(data.all, concord(Estimated.Date.rtt, Estimated.Date.ogr))), vjust=0, hjust=1, size=8) + scale_colour_brewer(name="", palette='Dark2') + scale_x_continuous(name="Estimated Date RTT (years since first collection)", limits=c(-1, 6)) + scale_y_continuous(name="Estimated Date OGR (years since first collection)", limits=c(-1, 6)) + theme_bw() + my.theme
+ggplot(data.all) + geom_abline() + geom_point(aes(x=Estimated.Date.rtt / 365.25, y=Estimated.Date.ogr / 365.25, colour=Patient), size=2) + annotate("text", x=6, y=-1, label=sprintf("Concordance: %.2f", with(data.all, concord(Estimated.Date.rtt, Estimated.Date.ogr))), vjust=0, hjust=1, size=8) + scale_colour_brewer(name="", palette='Dark2', label=gsub("_", " ", gsub("p", "P", pat_levels))) + scale_x_continuous(name="Estimated Date RTT (years since first collection)", limits=c(-1, 6)) + scale_y_continuous(name="Estimated Date OGR (years since first collection)", limits=c(-1, 6)) + theme_bw() + my.theme + guides(colour=guide_legend(override.aes=list(size=5)))
 dev.off()
 
 cat("Concordance:\n")
