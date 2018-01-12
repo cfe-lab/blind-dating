@@ -227,7 +227,7 @@ if (!is.na(pat.id2)) {
 	stats$Training.Samples <- stats$Training.Samples + stats.2$Training.Samples
 	stats$Censored.RMSD <- sqrt(sum(data[data$censored > 0, "date.diff"]^2)/sum(data$censored > 0))
 	stats$Censored.MAE <- sum(abs(data[data$censored > 0, "date.diff"]))/sum(data$censored > 0)
-	stats <- as.data.frame(cbind(stats, stats.2[, c("AIC", "null.AIC", "p.value", "Model.Intercept", "Model.Slope", "Training.RMSE", "Training.MAE", "Training.Concordance")]))
+	stats <- as.data.frame(cbind(stats, stats.2[, c("AIC", "null.AIC", "p.value", "Model.Intercept", "Model.Slope", "Training.RMSE", "Training.MAE")]))
 	stats.col.names <- c(
 	"Patient",
 	"Training Samples",
@@ -269,8 +269,7 @@ if (!is.na(pat.id2)) {
 		"Model Intercept 2",
 		"Model Slope 2",
 		"Training RMSE 2",
-		"Training MAE 2",
-		"Training Concordance 2",
+		"Training MAE 2"
 	)
 	write.table(stats, paste0("stats/", pat.id, ".comb.stats.csv"), row.names=F, col.names=stats.col.names, sep=",")
 
