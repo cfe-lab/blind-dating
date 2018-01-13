@@ -153,7 +153,9 @@ data.all$Patient <- as.factor(data.all$Patient)
 pat_levels <- levels(data.all$Patient)
 
 pdf("lanl.comp.pdf")
-ggplot(data.all) + geom_abline() + geom_point(aes(x=Estimated.Date.rtt / 365.25, y=Estimated.Date.ogr / 365.25, colour=Patient), size=2) + annotate("text", x=15, y=-5, label=sprintf("Concordance: %.2f", with(data.all, concord(Estimated.Date.rtt, Estimated.Date.ogr))), vjust=0, hjust=1, size=8) + scale_colour_brewer(name="", palette='Dark2', label=gsub("_", " ", gsub("p", "P", pat_levels))) + scale_x_continuous(name="Estimated Date RTT (years since first collection)", limits=c(-5, 15)) + scale_y_continuous(name="Estimated Date OGR (years since first collection)", limits=c(-5, 15)) + theme_bw() + my.theme + guides(colour=guide_legend(override.aes=list(size=5)))
+p <- ggplot(data.all) + geom_abline() + geom_point(aes(x=Estimated.Date.rtt / 365.25, y=Estimated.Date.ogr / 365.25, colour=Patient), size=2) + annotate("text", x=15, y=-5, label=sprintf("Concordance: %.2f", with(data.all, concord(Estimated.Date.rtt, Estimated.Date.ogr))), vjust=0, hjust=1, size=8) + scale_colour_brewer(name="", palette='Dark2', label=gsub("_", " ", gsub("p", "P", pat_levels))) + scale_x_continuous(name="Estimated Date RTT (years since first collection)", limits=c(-5, 15)) + scale_y_continuous(name="Estimated Date OGR (years since first collection)", limits=c(-5, 15)) + theme_bw() + my.theme + guides(colour=guide_legend(override.aes=list(size=5)))
+saveRDS(p, "lanl.comp.rds")
+p
 dev.off()
 
 cat("Concordance:\n")
