@@ -1,7 +1,7 @@
 library(treeio)
 library(ape)
 
-raxml <- function(dnafile, parsimony.seed=NULL, bootstrap.seed=NULL, executable='raxmlHPC', threads=10, N=10, name='raxml', clear=TRUE, model="GTRGAMMA", tmp=TRUE, tmp.dir <- if (tmp) tempdir() else NULL) {
+raxml <- function(dnafile, parsimony.seed=NULL, bootstrap.seed=NULL, executable='raxmlHPC', threads=10, N=10, name='raxml', clear=TRUE, model="GTRGAMMA", tmp=TRUE, tmp.dir=if (tmp) tempdir() else NULL) {
 	if(is.null(parsimony.seed)) {
 		parsimony.seed <- as.integer(sample(2**31,1))
 		warning(sprintf('parsimony.seed should be fixed for debugging!\nSetting to %d!', parsimony.seed))
