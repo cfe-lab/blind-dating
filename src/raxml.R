@@ -46,7 +46,6 @@ raxml <- function(dnafile, parsimony.seed=NULL, bootstrap.seed=NULL, executable=
 	system(cmd3)
 
 	tr <- read.tree(sprintf('RAxML_bipartitions.%s', name))
-	tr.raxml <- read.raxml(sprintf('RAxML_bipartitions.%s', name))
 	
 	if(clear) {
 		cwd <- dir()
@@ -58,5 +57,5 @@ raxml <- function(dnafile, parsimony.seed=NULL, bootstrap.seed=NULL, executable=
 			unlink(new.wd)
 	}
 	
-	list(tr=tr, tr.raxml=tr.raxml)
+	tr
 }
