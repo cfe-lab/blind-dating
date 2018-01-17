@@ -6,7 +6,7 @@ pdf.options(family="Helvetica", fonts="Helvetica", width=7, height=7, colormodel
 
 my.theme <- theme(
 	text=element_text(size=20),
-	axis.text=element_text(size=15, colour='black'),
+	axis.text=element_text(size=13, colour='black'),
 	legend.text=element_text(size=15),
 	legend.position=c(0.01, 1),
 	axis.text.x=element_text(angle=90, vjust=0.5, hjust=1),
