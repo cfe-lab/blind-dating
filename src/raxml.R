@@ -1,4 +1,3 @@
-library(treeio)
 library(ape)
 
 raxml <- function(dnafile, parsimony.seed=NULL, bootstrap.seed=NULL, executable='raxmlHPC', threads=10, N=10, name='raxml', clear=TRUE, model="GTRGAMMA", tmp=TRUE, tmp.dir=if (tmp) tempdir() else NULL) {
