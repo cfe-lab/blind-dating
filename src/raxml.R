@@ -15,6 +15,8 @@ raxml <- function(dnafile, parsimony.seed=NULL, bootstrap.seed=NULL, executable=
 	dnafile <- normalizePath(dnafile)
 
 	if (tmp) {
+		if (!file.exists(tmp.dir))
+			dir.create(tmp.dir)
 		old.wd = normalizePath(getwd())
 		new.wd = tmp.dir
 		setwd(new.wd)
