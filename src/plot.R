@@ -287,17 +287,28 @@ if (!is.na(pat.id2)) {
 node.dates <- tryCatch(estimate.dates(tree, c(data$date, stats$Estimated.Root.Date, rep(NA, tree$Nnode - 1)), mu, node.mask=length(tree$tip.label) + 1, lik.tol=0, nsteps=1000, show.steps=100, opt.tol=1e-16), error=function(e) estimate.dates(tree, data$date, mu, lik.tol=0, nsteps=1000, show.steps=100, opt.tol=1e-16))
 
 if (is.na(dist.min))
-	dist.min <- - max(data$dist) * 0.01
+	dist.min <- -0.01
 if (is.na(dist.max))
 	dist.max <- max(data$dist) * 1.01
 if (is.na(dist.by))
 	dist.by <- 10^(floor(log10((dist.max - dist.min))))
-if (is.na(year.by))
-	year.by <- 365.25
-if (is.na(year.start))
-	year.start <- floor(min(node.dates) / year.by) * year.by
-if (is.na(year.end))
-	year.end <- ceiling(max(node.dates) / year.by) * year.by
+if (use.real) {
+	node.years <- as.numeric(as.character(as.Date(node.dates, origin="1970-01-01"), format="%Y"))
+
+	if (is.na(year.by))
+		year.by <- 2
+	if (is.na(year.start))
+		year.start <- floor(min(node.years) / year.by) * year.by
+	if (is.na(year.end))
+		year.end <- floor(max(node.years) / year.by + 1) * year.by
+} else {
+	if (is.na(year.by))
+		year.by <- 365.25
+	if (is.na(year.start))
+		year.start <- floor(min(node.dates) / year.by) * year.by
+	if (is.na(year.end))
+		year.end <- floor(max(node.dates) / year.by + 1) * year.by
+}
 
 if (use.real) {
 	date.ticks <- as.character(seq(floor(as.numeric(year.start) / year.by) * year.by - year.by, as.numeric(year.end), by=year.by))
