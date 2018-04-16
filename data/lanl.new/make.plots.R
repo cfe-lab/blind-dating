@@ -157,7 +157,7 @@ colours <- colours[1:length(pat_levels)]
 
 pdf("lanl.comp.pdf")
 p <- ggplot(data.all) + geom_abline() + geom_point(aes(x=Estimated.Date.rtt / 365.25, y=Estimated.Date.ogr / 365.25, colour=Patient), size=2) + annotate("text", x=15, y=-5, label=sprintf("Concordance: %.2f", with(data.all, concord(Estimated.Date.rtt, Estimated.Date.ogr))), vjust=0, hjust=1, size=8) + scale_colour_manual(name="", values=colours, label=gsub("_", " ", gsub("p", "P", pat_levels))) + scale_x_continuous(name="Estimated Date RTT (years since first collection)", limits=c(-5, 15)) + scale_y_continuous(name="Estimated Date OGR (years since first collection)", limits=c(-5, 15)) + theme_bw() + my.theme + guides(colour=guide_legend(override.aes=list(size=5)))
-saveRDS(p, "lanl.comp.rds")
+saveRDS(list(p$p, colours$colours), "lanl.comp.rds")
 p
 dev.off()
 
