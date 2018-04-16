@@ -2,6 +2,7 @@
 
 library(ape)
 library(phylobase)
+library(ggplot2)
 library(ggtree)
 library(optparse)
 
@@ -53,7 +54,7 @@ apply.axes <- function(p, flipped, scaled) {
 #				geom_path(aes(y=date, x=ci.low), data=data.ci, linetype=3, colour="#0060b080")
 			if (!is.na(THERAPY_START)) {
 				if (is.na(therapy2))
-					p$layers <- c(geom_rect(ymin=as.numeric(THERAPY_START), ymax=Inf, xmin=-Inf, xmax=Inf, fill=THERAPY_COLOUR, linetype=2), p$layers)
+					p$layers <- c(geom_rect(ymin=as.numeric(THERAPY_START), ymax=as.numeric(therapyend), xmin=-Inf, xmax=Inf, fill=THERAPY_COLOUR, linetype=2), p$layers)
 				else {
 					p$layers <- c(
 						geom_rect(ymin=as.numeric(THERAPY_START), ymax=as.numeric(therapyend), xmin=-Inf, xmax=Inf, fill=if (therapyend == therapy2) THERAPY_COLOUR2 else THERAPY_COLOUR, linetype=0),
@@ -76,7 +77,7 @@ apply.axes <- function(p, flipped, scaled) {
 #				geom_path(aes(x=date, y=ci.low), data=data.ci, linetype=3, colour="#0060b080")
 			if (!is.na(THERAPY_START)) {
 				if (is.na(therapy2))
-					p$layers <- c(geom_rect(xmin=as.numeric(THERAPY_START), xmax=Inf, ymin=-Inf, ymax=Inf, fill=THERAPY_COLOUR, linetype=0), p$layers)
+					p$layers <- c(geom_rect(xmin=as.numeric(THERAPY_START), xmax=as.numeric(therapyend), ymin=-Inf, ymax=Inf, fill=THERAPY_COLOUR, linetype=0), p$layers)
 				else {
 					p$layers <- c(
 						geom_rect(xmin=as.numeric(THERAPY_START), xmax=as.numeric(therapyend), ymin=-Inf, ymax=Inf, fill=if (therapyend == therapy2) THERAPY_COLOUR2 else THERAPY_COLOUR, linetype=0),
@@ -95,7 +96,7 @@ apply.axes <- function(p, flipped, scaled) {
 	p
 }
 
-apply.theme <- function(p, flipped=F, scaled=T) {
+apply.theme <- function(p, flipped=F, scaled=T, type.label.=type.label, type.value.=type.value, colour.break.=colour.break, colour.label.=colour.label, colour.value.=colour.value) {
 	apply.axes(p + theme_bw() +
 		theme(
 			text=element_text(size=35),
@@ -113,8 +114,8 @@ apply.theme <- function(p, flipped=F, scaled=T) {
 			panel.grid.major=element_blank(),
 		    panel.grid.minor=element_blank()
 		) +
-		scale_shape_manual(name="", breaks=type.label, labels=type.label, values=type.value, limits=type.label) +
-		scale_colour_manual(name="", breaks=colour.break, labels=colour.label, values=colour.value, limits=colour.break) +
+		scale_shape_manual(name="", breaks=type.label., labels=type.label., values=type.value., limits=type.label.) +
+		scale_colour_manual(name="", breaks=colour.break., labels=colour.label., values=colour.value., limits=colour.break.) +
 #		scale_size_manual(name="", breaks=c(0, 1), labels=c("Training", "Censored"), values=c(1.67, 2), limits=c(0, 1)) +
 		guides(shape=guide_legend(order=2), colour=guide_legend(override.aes=list(shape=15, size=8), order=1)),
 		flipped, scaled)
@@ -160,14 +161,20 @@ if (use.real) {
 	year.start <- as.numeric(args$yearstart)
 	year.end <- as.numeric(args$yearend)
 	THERAPY_START <- as.numeric(args$therapy)
-}
-if (!is.na(therapy2)) {
-	therapy2 <- as.Date(therapy2)
+	
+	if (!is.na(therapy2)) {
+		therapy2 <- as.Date(therapy2)
+	}
+	
+	if (!is.na(therapyend)) {
+		therapyend <- as.Date(therapyend)
+	}
 }
 if (is.na(therapyend)) {
 	therapyend <- therapy2
-} else {
-	therapyend <- as.Date(therapyend)
+	if (is.na(therapyend))  {
+		therapyend <- Inf
+	}
 }
 year.by <- args$yearby
 
@@ -181,6 +188,7 @@ if (!is.na(pat.id2)) {
 }
 pdf.file <- paste0("plots/", pat.id, ".pdf")
 pdf.disttree.file <- paste0("plots/", pat.id, ".disttree.pdf")
+pdf.colour.disttree.file <- paste0("plots/", pat.id, ".colour.disttree.pdf")
 pdf.tree.file <- paste0("plots/", pat.id, ".tree.pdf")
 pdf.hist.file <- paste0("plots/", pat.id, ".hist.pdf")
 pdf.histdate.file <- paste0("plots/", pat.id, ".histdate.pdf")
@@ -221,9 +229,9 @@ if (!is.na(pat.id2)) {
 	data <- data[, -8]
 	
 	stats$Minimum.Time.Point <- min(stats$Mimimum.Time.Point, stats.2$Minimum.Time.Point)
-	stats$Minimum.Training.Time.Point <- min(stats$Mimimum.Training.Time.Point, stats.2$Minimum.Training.Time.Point)
-	stats$Maximum.Time.Point <- min(stats$Maximum.Time.Point, stats.2$Maximum.Time.Point)
-	stats$Maximum.Training.Time.Point <- min(stats$Maximum.Training.Time.Point, stats.2$Maximum.Training.Time.Point)
+	stats$Minimum.Training.Time.Point <- min(stats$Minimum.Training.Time.Point, stats.2$Minimum.Training.Time.Point)
+	stats$Maximum.Time.Point <- max(stats$Maximum.Time.Point, stats.2$Maximum.Time.Point)
+	stats$Maximum.Training.Time.Point <- max(stats$Maximum.Training.Time.Point, stats.2$Maximum.Training.Time.Point)
 	stats$Training.Samples <- stats$Training.Samples + stats.2$Training.Samples
 	stats$Censored.RMSD <- sqrt(sum(data[data$censored > 0, "date.diff"]^2)/sum(data$censored > 0))
 	stats$Censored.MAE <- sum(abs(data[data$censored > 0, "date.diff"]))/sum(data$censored > 0)
@@ -345,7 +353,14 @@ type.mask <- type.label %in% data$type
 type.label <- unique(type.label[type.mask])
 type.value <- unique(type.value[type.mask])
 
-data.all <- as.data.frame(cbind(rbind(data, data.frame(tip.label=paste0("N.", 1:tree$Nnode), type="NODE", censored=NA, date=NA, dist=node.depth.edgelength(tree)[1:tree$Nnode + nrow(data)], est.date=NA, date.diff=NA)), node.date=node.dates))
+data$my.colour <- data$date
+data$my.colour[data$censored > 0] <- "censored"
+my.colour.break <- unique(data$my.colour)
+my.colour.filter <- suppressWarnings(!is.na(as.numeric(my.colour.break)))
+my.colour.value <- rep('darkgray', length(my.colour.break))
+my.colour.value[my.colour.filter] <- hsv((as.numeric(my.colour.break[my.colour.filter]) - stats$Minimum.Training.Time.Point) / (stats$Maximum.Training.Time.Point - stats$Minimum.Training.Time.Point) * .75, 0.5, 0.5)
+
+data.all <- as.data.frame(cbind(rbind(data, data.frame(tip.label=paste0("N.", 1:tree$Nnode), type="NODE", censored=NA, date=NA, dist=node.depth.edgelength(tree)[1:tree$Nnode + nrow(data)], est.date=NA, date.diff=NA, my.colour=NA)), node.date=node.dates))
 
 ptree <- phylo4d(tree, all.data=data.all)
 
@@ -378,8 +393,88 @@ apply.theme(ggtree(ptree, colour="#49494980", size=dist.tree.size, ladderize=T) 
 	geom_treescale(width=0.02, fontsize=7, offset=scale.offset), flipped=F, scaled=F)
 dev.off()
 
+pdf(pdf.colour.disttree.file)
+apply.theme(ggtree(ptree, colour="#49494980", size=dist.tree.size, ladderize=T) +
+	geom_tippoint(aes(colour=my.colour, shape=type), size=point.size) +
+	geom_treescale(width=0.02, fontsize=7, offset=scale.offset), flipped=F, scaled=F, colour.value=my.colour.value, colour.label=my.colour.break, colour.break=my.colour.break)
+dev.off()
+
 pdf(pdf.tree.file)
 apply.theme(ggtree(ptree, yscale="node.date", colour="#6d4d4180", size=tree.size, ladderize=F) +
 	geom_tippoint(aes(colour=factor(censored), shape=type), size=point.size),
 	flipped=T)
+dev.off()
+
+data.hist <- subset(data, censored == 1)
+
+date.levels <- sort(unique(data.hist$date))
+
+if (use.real) {
+	m <- as.numeric(gsub("(.+)-.+-.+", "\\1", as.Date(min(c(data.hist$est.date, data$date)), origin="1970-01-01")))
+	M <- as.numeric(gsub("(.+)-.+-.+", "\\1", as.Date(max(data.hist$est.date), origin="1970-01-01"))) + 1
+	breaks <- as.numeric(as.Date(paste0(seq(m, M), "-01-01")))
+	m <- breaks[1]
+	M <- breaks[length(breaks[1])]
+	date.vals <-  if (length(date.levels) == 4) c("#FF9999", "#ff4a4a", "#DD0000", "#a30000") else if (length(date.levels) == 2) c("#ff4a4a", "#a30000") else 'red'
+	date.labs <- as.character(as.Date(date.levels, origin="1970-01-01"), format="%b. %Y")
+} else {
+	m <- floor(min(c(data.hist$est.date, data$date)) / 365.25)
+	M <- floor(max(c(data.hist$est.date)) / 365.25) + 1
+	breaks <- seq(m, M) * 365.25
+	date.vals <- rep('red', length(date.levels))
+	date.labs <- rep('LAB', length(date.levels))
+}
+
+H <- max(hist(data.hist$est.date, breaks=breaks)$counts)
+
+p <- ggplot(data.hist, aes(x=est.date, fill=factor(date, levels=date.levels)))
+
+if (!is.na(THERAPY_START)) {
+	if (is.na(therapy2)) {
+		p <- p + geom_rect(xmin=as.numeric(THERAPY_START), xmax=as.numeric(therapyend), ymin=-Inf, ymax=H, fill=THERAPY_COLOUR, linetype=2)
+	} else {
+		p <- p + geom_rect(xmin=as.numeric(THERAPY_START), xmax=as.numeric(therapyend), ymin=-Inf, ymax=H, fill=if (therapyend == therapy2) THERAPY_COLOUR2 else THERAPY_COLOUR, linetype=0) + geom_rect(xmin=as.numeric(therapy2), xmax=Inf, ymin=-Inf, ymax=H, fill=THERAPY_COLOUR, linetype=0)
+	}
+}
+
+p <- p + geom_segment(x=min(data$date), xend=min(data$date), y=H * 9 / 8, yend=H, arrow=arrow(length = unit(0.25, "cm"))) +
+	geom_histogram(breaks=breaks) +
+	scale_fill_manual(name="Collection Date", values=date.vals, labels=date.labs)
+
+if (use.real) {
+	p <- p + scale_x_continuous(name="Estimated integration year", breaks=breaks, labels=as.character(as.Date(breaks, origin="1970-01-01"), "%Y"))
+} else {
+	p <- p + scale_x_continuous(name=x.title, breaks=breaks, labels=seq(m, M))
+}
+	
+p <- p +
+	guides(fill=guide_legend(override.aes=list(size=8, colour="#00000000"), ncol=2)) +
+	theme_bw() +
+	theme(
+		text=element_text(size=35),
+		axis.text=element_text(size=30, colour='black'),
+		axis.text.x=element_text(angle=90, hjust=1, vjust=0.5),
+		legend.text=element_text(size=30),
+		legend.title=element_text(size=30),
+		legend.position=c(.98, .98),
+		legend.justification=c(1, 1),
+		legend.spacing=unit(0, 'cm'),
+		legend.margin=margin(0, 0, 0, 0, 'cm'),
+		legend.key.size=unit(1.2, 'cm'),
+		legend.background=element_blank(),
+		legend.box.background=element_blank(),
+		panel.grid.major=element_blank(),
+	    panel.grid.minor=element_blank()
+	)
+	
+if (!use.real || length(date.levels) == 1) {
+	p <- p + scale_y_continuous(name="Frequency", breaks=seq(0, H, by=2), limits=c(0, H)) +
+		theme(legend.position='none')
+} else {
+	p <- p + scale_y_continuous(name="Frequency", breaks=seq(0, H, by=2), limits=c(0, H * 1.5))
+}
+
+pdf.options(family="Helvetica", fonts="Helvetica", width=7, height=5, colormodel='rgb')
+pdf(pdf.hist.file)
+p
 dev.off()
