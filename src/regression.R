@@ -1,5 +1,6 @@
 library(ape)
 library(optparse)
+library(chemCal)
 
 args.all <- commandArgs(trailingOnly = F)
 
@@ -79,11 +80,7 @@ cutoff  <- if (is.na(cutoff)) {
 		as.numeric(cutoff)
 }
 
-ci <- predict(g, newdata=data.frame(date=-a / b), interval='confidence')
-rownames(ci) <- NULL
-ci <- as.data.frame(ci)	
-ci$lwr <- ci$lwr / b - a / b
-ci$upr <- ci$upr / b - a / b
+ci <- inverse.predict(g, 0)
 
 bin.test=binom.test(sum(data[data$censored == 1, "date.diff"] < 0), sum(data$censored == 1), alternative='two.sided')
 T.test <- t.test(data[data$censored == 1, "date.diff"], alternative='two.sided')
@@ -109,8 +106,8 @@ stats <- data.frame(
 	b=b,
 	error=0,
 	root.date=-a / b,
-	ci.lwr=ci$lwr,
-	ci.upr=ci$upr,
+	ci.lwr=ci[['Confidence Limits']][1],
+	ci.upr=ci[['Confidence Limits']][2],
 	fit=as.numeric(AIC(g.null) - AIC(g) > 10 && ci$lwr < cutoff && b > 0),
 	train.RMSE=sqrt(sum(data$date.diff[data$censored == 0]^2)/sum(data$censored == 0)),
 	cens.RMSD=sqrt(sum(data$date.diff[data$censored == 1]^2)/sum(data$censored == 1)),
