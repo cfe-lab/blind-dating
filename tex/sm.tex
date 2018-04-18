@@ -101,13 +101,13 @@ Reference & ID & \multicolumn{3}{c}{Sequences} & \multicolumn{3}{c}{Time points}
 %\cite{Schnell10} & 35566 & 81  & & 81  & 2 & & 2 & & & \\
 \hline
 \cite{Shankarappa99}% & 820* & 45  & 81  & 126  & 5 & 10 & 15 & 2.1 & 19 & 3.3 & 0.78 & 0.38 & 8.2 & 3.9 \\
-& 821 & 69  & 178  & 247  & 7 & 17 & 17 & 6.5 & 180 & -0.20 (-0.46, 0.064) & 0.46 & 0.070 & 0.78 & 0.12 & $< 10^{-5}$ \\ 
+& 821 & 69  & 178  & 247  & 7 & 17 & 17 & 6.5 & 180 & -0.20 (-0.46, 0.064) & 0.46 & 0.070 & 0.78 & 0.12 & $< 10^{-5}*$ \\ 
 & 822 & 29  & 90  & 119  & 3 & 10 & 10 & 5.8 & 70 & -1.6 (-2.2, 0.95) & 0.50 & 0.086 & 0.89 & 0.15 & 0.0080 \\ 
 & 824 & 52  & 102  & 154  & 7 & 9 & 13 & 8.6 & 130 & -0.65 (-1.2, -0.057) & 0.63 & 0.073 & 0.96 & 0.11 & 0.0072 \\
 %& 10137 & 17  & 71  & 88  & 2 & 10 & 12 & & \\
 %& 10138* & 64  & 112  & 176  & 6 & 13 & 16 & 8.0 & 80 & -1.0 & 1.5 & 0.19 & 1.2 & 0.15 \\
 %& 10586 & 11  & 65  & 76  & 2 & 12 & 14 & & \\ 
-& 13889 & 77  & 65  & 142  & 13 & 14 & 18 & 13& 130 & -3.5 (-4.7, -2.2) & 1.5 & 0.11 & 1.8 & 0.13 & $< 10^{-5}$ \\
+& 13889 & 77  & 65  & 142  & 13 & 14 & 18 & 13& 130 & -3.5 (-4.7, -2.3) & 1.5 & 0.11 & 1.8 & 0.13 & $< 10^{-5}*$ \\
 \badpat \cite{Fischer04} & 10769 & 108  & 56  & 164  & 10 & 4 & 11 & 5.4 & 5.8 & -17 (-30, -3.3) & 5.6 & 1.0 & 7.6 & 1.4 & 0.02 \\ 
 %& 10770 &    190 &       31 &      221 &       11 &        2 &       11  \\ 
 %\cite{Llewellyn06} & 16616 & 16 & 64  & 80  & 2 & 5 & 5 & & \\
@@ -129,13 +129,14 @@ Reference & ID & \multicolumn{3}{c}{Sequences} & \multicolumn{3}{c}{Time points}
 \end{tabular}
 \end{center}
 }
-	Patient ID corresponds to the anonymized patient identifiers in the LANL database.
+	ID corresponds to the anonymized patient identifiers in the LANL database.
 	Time span is in years.
 	$\Delta$AIC is the Akaike Information Criterion (AIC) \cite{Akaike74} of the null model minus the AIC of the linear model.
 	Root is the estimate of the root time in years by the linear model with respect to the time of the first sample.
 	MAE is Mean Absolute Error between collection date and estimated date of the training data.
 	MAD is Mean Absolute Difference is between collection date and estimated date) of the censored data.
 	Scaled MAE/D is the mean absolute error/difference divided by the time span of the training data.
+	p-Latency is the p-value of the nonparameteric binomial test (* marks significant results after a Bonferroni correction).
 	The model failed to be calibrated for bold rows.
 \end{sidewaystable}
 
