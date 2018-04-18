@@ -82,8 +82,8 @@ cutoff  <- if (is.na(cutoff)) {
 
 ci <- inverse.predict(g, 0)
 
-bin.test <- tryCatch(binom.test(sum(data[data$censored == 1, "date.diff"] < 0), sum(data$censored == 1), alternative='two.sided'), error=function(x) NA)
-T.test <- tryCatch(t.test(data[data$censored == 1, "date.diff"], alternative='two.sided'), error=function(x) NA)
+bin.test <- tryCatch(binom.test(sum(data[data$censored == 1, "date.diff"] < 0), sum(data$censored == 1), alternative='two.sided'), error=function(x) list(p.value=NA, estimate=NA))
+T.test <- tryCatch(t.test(data[data$censored == 1, "date.diff"], alternative='two.sided'), error=function(x) list(p.value=NA, estimate=NA))
 
 stats <- data.frame(
 	pat=pat.id,
