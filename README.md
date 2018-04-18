@@ -15,3 +15,17 @@ Jones BR, Horacsek J, Joy JB, Brumme ZL, Poon AFY. Blind-dating: using phlylogen
 
 Jones BR, Horacsek J, Joy JB, Brumme ZL, Poon AFY. Blind dating: a phylogenetic approach to dating HIV reservoir sequences. The 25th Annual Canadian Conference on HIV/AIDS Research (2016, Winnipeg, Canada) abstract BSP3.06.
 
+# R packages required
+
+* ape
+* chemCal
+* ggplot2
+* optparse
+* phylobase
+* seqinr
+* TreeSim
+* ggtree https://bioconductor.org/packages/release/bioc/html/ggtree.html
+* NELSI https://github.com/sebastianduchene/NELSI.git
+* node.dating https://github.com/brj1/node.dating.git (random fork)
+
+Blind-dating also requires Python3 and INDELible for the simulations only and RAxML
