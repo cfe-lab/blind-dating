@@ -108,7 +108,7 @@ stats <- data.frame(
 	root.date=-a / b,
 	ci.lwr=ci[['Confidence Limits']][1],
 	ci.upr=ci[['Confidence Limits']][2],
-	fit=as.numeric(AIC(g.null) - AIC(g) > 10 && (-a / b < cuttoff || (!is.na(ci[['Confidence Limits']][1]) && ci[['Confidence Limits']][1] < cutoff)) && b > 0),
+	fit=as.numeric(AIC(g.null) - AIC(g) > 10 && (-a / b < cutoff || (!is.na(ci[['Confidence Limits']][1]) && ci[['Confidence Limits']][1] < cutoff)) && b > 0),
 	train.RMSE=sqrt(sum(data$date.diff[data$censored == 0]^2)/sum(data$censored == 0)),
 	cens.RMSD=sqrt(sum(data$date.diff[data$censored == 1]^2)/sum(data$censored == 1)),
 	cens.RMSD=sqrt(sum(data$date.diff^2)/nrow(data)),
