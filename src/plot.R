@@ -139,6 +139,7 @@ op <- add_option(op, "--liktol", type='numeric', default=1e-3)
 op <- add_option(op, "--usedups", type='logical', action='store_true', default=F)
 op <- add_option(op, "--cartoon", type='logical', action='store_true', default=F)
 op <- add_option(op, "--xtitle", type='character', default="Years since first collection")
+op <- add_option(op, "--histbymonth", type='logical', action='store_true', default=F)
 args <- parse_args(op)
 
 tree.file <- args$tree
@@ -153,6 +154,7 @@ therapy2 <- args$therapy2
 therapyend <- args$therapyend
 cartoon <- args$cartoon
 xtitle <- args$xtitle
+hist.by.month <- args$histbymonth
 if (use.real) {
 	year.start <- args$yearstart
 	year.end <- args$yearend
@@ -410,9 +412,30 @@ data.hist <- subset(data, censored == 1)
 date.levels <- sort(unique(data.hist$date))
 
 if (use.real) {
-	m <- as.numeric(gsub("(.+)-.+-.+", "\\1", as.Date(min(c(data.hist$est.date, data$date)), origin="1970-01-01")))
-	M <- as.numeric(gsub("(.+)-.+-.+", "\\1", as.Date(max(data.hist$est.date), origin="1970-01-01"))) + 1
-	breaks <- as.numeric(as.Date(paste0(seq(m, M), "-01-01")))
+	if (hist.by.month) {
+		m.month <- as.numeric(as.character(as.Date(min(c(data.hist$est.date, data$date)), origin="1970-01-01"), "%m"))
+		m.year <- as.numeric(as.character(as.Date(min(c(data.hist$est.date, data$date)), origin="1970-01-01"), "%Y"))
+		M.month <- as.numeric(as.character(as.Date(max(data.hist$est.date), origin="1970-01-01"), "%m")) + 1
+		M.year <- as.numeric(as.character(as.Date(max(data.hist$est.date), origin="1970-01-01"), "%Y"))
+		
+		if (M.month == 13) {
+			M.year <- M.year + 1
+			M.month <- 1
+		}
+		
+		breaks <- if (M.year == m.year) {
+			as.numeric(as.Date(paste0(m.year, "-", seq(m.month, M.month), "-01")))
+		} else if (M.year == m.year + 1) {
+			as.numeric(as.Date(c(paste0(m.year, "-", seq(m.month, 12), "-01"), paste0(M.year, "-", seq(1, M.month), "-01"))))
+		} else {
+			as.numeric(as.Date(c(paste0(m.year, "-", seq(m.month, 12), "-01"), paste0(unlist(lapply((m.year + 1):(M.year - 1), rep, 12)), "-", 1:12, "01"), paste0(M.year, "-", seq(1, M.month), "-01"))))
+		}
+	}
+	else {
+		m <- as.numeric(gsub("(.+)-.+-.+", "\\1", as.Date(min(c(data.hist$est.date, data$date)), origin="1970-01-01")))
+		M <- as.numeric(gsub("(.+)-.+-.+", "\\1", as.Date(max(data.hist$est.date), origin="1970-01-01"))) + 1
+		breaks <- as.numeric(as.Date(paste0(seq(m, M), "-01-01")))
+	}
 	m <- breaks[1]
 	M <- breaks[length(breaks[1])]
 	date.vals <-  if (length(date.levels) == 4) c("#FF9999", "#ff4a4a", "#DD0000", "#a30000") else if (length(date.levels) == 2) c("#ff4a4a", "#a30000") else 'red'
@@ -442,7 +465,16 @@ p <- p + geom_segment(x=min(data$date), xend=min(data$date), y=H * 9 / 8, yend=H
 	scale_fill_manual(name="Collection Date", values=date.vals, labels=date.labs)
 
 if (use.real) {
-	p <- p + scale_x_continuous(name="Estimated integration year", breaks=breaks, labels=as.character(as.Date(breaks, origin="1970-01-01"), "%Y"))
+	if (hist.by.month) {
+		if (M.year == m.year)  {
+			p <- p + scale_x_continuous(name="Estimated integration month", breaks=breaks, labels=as.character(as.Date(breaks, origin="1970-01-01"), "%b"))
+		} else {
+			p + scale_x_continuous(name="Estimated integration month", breaks=breaks, labels=as.character(as.Date(breaks, origin="1970-01-01"), "%b %Y"))
+		}
+	}
+	else {
+		p <- p + scale_x_continuous(name="Estimated integration year", breaks=breaks, labels=as.character(as.Date(breaks, origin="1970-01-01"), "%Y"))
+	}
 } else {
 	p <- p + scale_x_continuous(name=x.title, breaks=breaks, labels=seq(m, M))
 }
