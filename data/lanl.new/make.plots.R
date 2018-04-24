@@ -72,7 +72,7 @@ THERAPY <- 1795
 data <- read.csv("stats/patient_821.data.csv")
 data <- subset(data, Censored == 1)
 
-colours <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+lanl.colours <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#D55E00")
 
 pdf.options(family="Helvetica", fonts="Helvetica", width=7, height=4.2, colormodel='rgb')
 pdf("plots/patient_821.hist.pdf")
@@ -153,11 +153,10 @@ data.all <- subset(data.all, Censored == 1)
 
 data.all$Patient <- as.factor(data.all$Patient)
 pat_levels <- levels(data.all$Patient)
-colours <- colours[1:length(pat_levels)]
 
 pdf("lanl.comp.pdf")
-p <- ggplot(data.all) + geom_abline() + geom_point(aes(x=Estimated.Date.rtt / 365.25, y=Estimated.Date.ogr / 365.25, colour=Patient), size=2) + annotate("text", x=15, y=-5, label=sprintf("Concordance: %.2f", with(data.all, concord(Estimated.Date.rtt, Estimated.Date.ogr))), vjust=0, hjust=1, size=8) + scale_colour_manual(name="", values=colours, label=gsub("_", " ", gsub("p", "P", pat_levels))) + scale_x_continuous(name="Estimated Date RTT (years since first collection)", limits=c(-5, 15)) + scale_y_continuous(name="Estimated Date OGR (years since first collection)", limits=c(-5, 15)) + theme_bw() + my.theme + guides(colour=guide_legend(override.aes=list(size=5)))
-saveRDS(list(p=p, colours=colours), "lanl.comp.rds")
+p <- ggplot(data.all) + geom_abline() + geom_point(aes(x=Estimated.Date.rtt / 365.25, y=Estimated.Date.ogr / 365.25, colour=Patient), size=2) + annotate("text", x=15, y=-5, label=sprintf("Concordance: %.2f", with(data.all, concord(Estimated.Date.rtt, Estimated.Date.ogr))), vjust=0, hjust=1, size=8) + scale_colour_manual(name="", values=lanl.colours, label=gsub("_", " ", gsub("p", "P", pat_levels))) + scale_x_continuous(name="Estimated Date RTT (years since first collection)", limits=c(-5, 15)) + scale_y_continuous(name="Estimated Date OGR (years since first collection)", limits=c(-5, 15)) + theme_bw() + my.theme + guides(colour=guide_legend(override.aes=list(size=5)))
+saveRDS(p, "lanl.comp.rds")
 p
 dev.off()
 
