@@ -70,7 +70,7 @@ THERAPY <- 1795
 data <- read.csv("stats/patient_13334.cens.data.csv")
 data <- subset(data, Censored == 1)
 
-ancre.colours <- c("#0072B2", "#CC79A7")
+ancre.colours <- c("#0072B2", "#D55E00")
 
 pdf.options(family="Helvetica", fonts="Helvetica", width=7, height=4.2, colormodel='rgb')
 pdf("plots/patient_13334.cens.hist.pdf")

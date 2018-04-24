@@ -72,7 +72,7 @@ THERAPY <- 1795
 data <- read.csv("stats/patient_821.data.csv")
 data <- subset(data, Censored == 1)
 
-lanl.colours <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#D55E00")
+lanl.colours <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#CC79A7")
 
 pdf.options(family="Helvetica", fonts="Helvetica", width=7, height=4.2, colormodel='rgb')
 pdf("plots/patient_821.hist.pdf")
