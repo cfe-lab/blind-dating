@@ -9,16 +9,18 @@ library(optparse)
 source("~/git/node.dating/src/node.dating.R")
 
 
-THERAPY_COLOUR <- "#a0a0a0"
-THERAPY_COLOUR2 <- "#c0c0c0"
+THERAPY_COLOUR <- "#333333"
+THERAPY_LTY <- 3
+THERAPY_COLOUR2 <- "#333333"
+THERAPY_LTY2 <- 4
 
 TRAINING_COLOUR <- 'black'
 TRAINING_COLOUR2 <- 'darkblue'
 CENSORED_COLOUR <- 'red'
 CENSORED_COLOUR2 <- "#ff8000"
 
-REGRESS_COLOUR <- "#001878b0"
-REGRESS_COLOUR2 <- "#006090b0"
+REGRESS_COLOUR <- "#808080b0"
+REGRESS_COLOUR2 <- "#aaaaaab0"
 
 pdf.options(family="Helvetica", fonts="Helvetica", width=7, height=7, colormodel='rgb')
 
@@ -48,46 +50,46 @@ apply.axes <- function(p, flipped, scaled) {
 			p <- p + 
 				y.scale +
 				x.div + 
-				coord_flip(xlim=c(dist.min, dist.max)) +
-				geom_abline(intercept=-stats[, "Model.Intercept"] / stats[, "Model.Slope"], slope=1 / stats[, "Model.Slope"], colour=REGRESS_COLOUR, linetype=2, size=regression.size)
+				coord_flip(xlim=c(dist.min, dist.max))				
 #				geom_path(aes(y=date, x=ci.high), data=data.ci, linetype=3, colour="#0060b080") +
 #				geom_path(aes(y=date, x=ci.low), data=data.ci, linetype=3, colour="#0060b080")
 			if (!is.na(THERAPY_START)) {
 				if (is.na(therapy2))
-					p$layers <- c(geom_rect(ymin=as.numeric(THERAPY_START), ymax=as.numeric(therapyend), xmin=-Inf, xmax=Inf, fill=THERAPY_COLOUR, linetype=2), p$layers)
+					p$layers <- c(geom_hline(yintercept=as.numeric(THERAPY_START), linetype=THERAPY_LTY, colour=THERAPY_COLOUR), p$layers)
 				else {
 					p$layers <- c(
-						geom_rect(ymin=as.numeric(THERAPY_START), ymax=as.numeric(therapyend), xmin=-Inf, xmax=Inf, fill=if (therapyend == therapy2) THERAPY_COLOUR2 else THERAPY_COLOUR, linetype=0),
-						geom_rect(ymin=as.numeric(therapy2), ymax=Inf, xmin=-Inf, xmax=Inf, fill=THERAPY_COLOUR, linetype=0),
+						geom_hline(yintercept=as.numeric(THERAPY_START), linetype=THERAPY_LTY2, colour=THERAPY_COLOUR2),
+						geom_hline(yintercept=as.numeric(therapy2), linetype=THERAPY_LTY, colour=THERAPY_COLOUR),
 						p$layers
 					)
 				}
 			}
+			p$layers <- c(geom_abline(intercept=-stats[, "Model.Intercept"] / stats[, "Model.Slope"], slope=1 / stats[, "Model.Slope"], colour=REGRESS_COLOUR, linetype=2, size=regression.size), p$layers)
 			if (!is.na(pat.id2))
-				p <- p + geom_abline(intercept=-stats.2[, "Model.Intercept"] / stats.2[, "Model.Slope"], slope=1 / stats.2[, "Model.Slope"], colour=REGRESS_COLOUR2, linetype=2, size=regression.size)
+				p$layers <- c(geom_abline(intercept=-stats.2[, "Model.Intercept"] / stats.2[, "Model.Slope"], slope=1 / stats.2[, "Model.Slope"], colour=REGRESS_COLOUR2, linetype=2, size=regression.size), p$layers)
 #					geom_path(aes(y=date, x=ci.high.2), data=data.ci, linetype=3, colour="#00305880") +
 #					geom_path(aes(y=date, x=ci.low.2), data=data.ci, linetype=3, colour="#00305880")
 		} else {
 			p <- p + 
 				x.scale +
 				y.div +
-				coord_cartesian(ylim=c(dist.min, dist.max)) +
-				geom_abline(intercept=stats[, "Model.Intercept"], slope=stats[, "Model.Slope"], colour=REGRESS_COLOUR, linetype=2, size=regression.size)
+				coord_cartesian(ylim=c(dist.min, dist.max))				
 #				geom_path(aes(x=date, y=ci.high), data=data.ci, linetype=3, colour="#0060b080") +
 #				geom_path(aes(x=date, y=ci.low), data=data.ci, linetype=3, colour="#0060b080")
 			if (!is.na(THERAPY_START)) {
 				if (is.na(therapy2))
-					p$layers <- c(geom_rect(xmin=as.numeric(THERAPY_START), xmax=as.numeric(therapyend), ymin=-Inf, ymax=Inf, fill=THERAPY_COLOUR, linetype=0), p$layers)
+					p$layers <- c(geom_vline(xintercept=as.numeric(THERAPY_START), linetype=THERAPY_LTY, colour=THERAPY_COLOUR), p$layers)
 				else {
 					p$layers <- c(
-						geom_rect(xmin=as.numeric(THERAPY_START), xmax=as.numeric(therapyend), ymin=-Inf, ymax=Inf, fill=if (therapyend == therapy2) THERAPY_COLOUR2 else THERAPY_COLOUR, linetype=0),
-						geom_rect(xmin=as.numeric(therapy2), xmax=Inf, ymin=-Inf, ymax=Inf, fill=THERAPY_COLOUR, linetype=0),
+						geom_vline(xintercept=as.numeric(THERAPY_START), linetype=THERAPY_LTY2, colour=THERAPY_COLOUR2),
+						geom_vline(xintercept=as.numeric(therapy2), linetype=THERAPY_LTY, colour=THERAPY_COLOUR),
 						p$layers
 					)
 				}
 			}
+			p$layers <- c(geom_abline(intercept=stats[, "Model.Intercept"], slope=stats[, "Model.Slope"], colour=REGRESS_COLOUR, linetype=2, size=regression.size), p$layers)
 			if (!is.na(pat.id2))
-				p <- p + geom_abline(intercept=stats.2[, "Model.Intercept"], slope=stats.2[, "Model.Slope"], colour=REGRESS_COLOUR2, linetype=2, size=regression.size)
+				p$layers <- c(geom_abline(intercept=stats.2[, "Model.Intercept"], slope=stats.2[, "Model.Slope"], colour=REGRESS_COLOUR2, linetype=2, size=regression.size), p$layers)
 #					geom_path(aes(x=date, y=ci.high.2), data=data.ci, linetype=3, colour="#00305880") +
 #					geom_path(aes(x=date, y=ci.low.2), data=data.ci, linetype=3, colour="#00305880")
 		}
@@ -191,6 +193,7 @@ if (!is.na(pat.id2)) {
 pdf.file <- paste0("plots/", pat.id, ".pdf")
 pdf.disttree.file <- paste0("plots/", pat.id, ".disttree.pdf")
 pdf.colour.disttree.file <- paste0("plots/", pat.id, ".colour.disttree.pdf")
+pdf.colour.tree.file <- paste0("plots/", pat.id, ".colour.tree.pdf")
 pdf.tree.file <- paste0("plots/", pat.id, ".tree.pdf")
 pdf.hist.file <- paste0("plots/", pat.id, ".hist.pdf")
 pdf.histdate.file <- paste0("plots/", pat.id, ".histdate.pdf")
@@ -359,7 +362,7 @@ data$my.colour <- data$date
 data$my.colour[data$censored > 0] <- "censored"
 my.colour.break <- unique(data$my.colour)
 my.colour.filter <- suppressWarnings(!is.na(as.numeric(my.colour.break)))
-my.colour.value <- rep('darkgray', length(my.colour.break))
+my.colour.value <- rep('black', length(my.colour.break))
 my.colour.value[my.colour.filter] <- hsv((as.numeric(my.colour.break[my.colour.filter]) - stats$Minimum.Training.Time.Point) / (stats$Maximum.Training.Time.Point - stats$Minimum.Training.Time.Point) * .75, 0.5, 0.5)
 
 data.all <- as.data.frame(cbind(rbind(data, data.frame(tip.label=paste0("N.", 1:tree$Nnode), type="NODE", censored=NA, date=NA, dist=node.depth.edgelength(tree)[1:tree$Nnode + nrow(data)], est.date=NA, date.diff=NA, my.colour=NA)), node.date=node.dates))
@@ -388,23 +391,30 @@ if (cartoon) {
 	regression.size <- 1
 }	
 
-pdf(pdf.disttree.file)
-apply.theme(ggtree(ptree, colour="#49494980", size=dist.tree.size, ladderize=T) +
-#	geom_tiplab(colour="#49494980", angle=90, hjust=-.1, size=1) + 
-	geom_tippoint(aes(colour=factor(censored), shape=type), size=point.size) +
-	geom_treescale(width=0.02, fontsize=7, offset=scale.offset), flipped=F, scaled=F)
-dev.off()
+#pdf(pdf.disttree.file)
+#apply.theme(ggtree(ptree, colour="#49494980", size=dist.tree.size, ladderize=T) +
+#	geom_tippoint(aes(colour=factor(censored), shape=type), size=point.size) +
+#	geom_treescale(width=0.02, fontsize=7, offset=scale.offset),
+#	flipped=F, scaled=F)
+#dev.off()
 
 pdf(pdf.colour.disttree.file)
 apply.theme(ggtree(ptree, colour="#49494980", size=dist.tree.size, ladderize=T) +
 	geom_tippoint(aes(colour=my.colour, shape=type), size=point.size) +
-	geom_treescale(width=0.02, fontsize=7, offset=scale.offset), flipped=F, scaled=F, colour.value=my.colour.value, colour.label=my.colour.break, colour.break=my.colour.break)
+	geom_treescale(width=0.02, fontsize=7, offset=scale.offset),
+	flipped=F, scaled=F, colour.value=my.colour.value, colour.label=my.colour.break, colour.break=my.colour.break)
 dev.off()
 
-pdf(pdf.tree.file)
-apply.theme(ggtree(ptree, yscale="node.date", colour="#6d4d4180", size=tree.size, ladderize=F) +
-	geom_tippoint(aes(colour=factor(censored), shape=type), size=point.size),
-	flipped=T)
+#pdf(pdf.tree.file)
+#apply.theme(ggtree(ptree, yscale="node.date", colour="#6d4d4180", size=tree.size, ladderize=F) +
+#	geom_tippoint(aes(colour=factor(censored), shape=type), size=point.size),
+#	flipped=T)
+#dev.off()
+
+pdf(pdf.colour.tree.file)
+apply.theme(ggtree(ptree, yscale="node.date", colour="#49494980", size=tree.size, ladderize=F) +
+	geom_tippoint(aes(colour=my.colour, shape=type), size=point.size),
+	flipped=T, scaled=T, colour.value=my.colour.value, colour.label=my.colour.break, colour.break=my.colour.break)
 dev.off()
 
 data.hist <- subset(data, censored == 1)
@@ -438,13 +448,13 @@ if (use.real) {
 	}
 	m <- breaks[1]
 	M <- breaks[length(breaks[1])]
-	date.vals <-  if (length(date.levels) == 4) c("#FF9999", "#ff4a4a", "#DD0000", "#a30000") else if (length(date.levels) == 2) c("#ff4a4a", "#a30000") else 'red'
+	date.vals <-  if (length(date.levels) == 4) c("#999999", "#666666", "#333333", "#000000") else if (length(date.levels) == 2) c("#666666", "#000000") else 'black'
 	date.labs <- as.character(as.Date(date.levels, origin="1970-01-01"), format="%b. %Y")
 } else {
 	m <- floor(min(c(data.hist$est.date, data$date)) / 365.25)
 	M <- floor(max(c(data.hist$est.date)) / 365.25) + 1
 	breaks <- seq(m, M) * 365.25
-	date.vals <- rep('red', length(date.levels))
+	date.vals <- rep('black', length(date.levels))
 	date.labs <- rep('LAB', length(date.levels))
 }
 
@@ -454,9 +464,10 @@ p <- ggplot(data.hist, aes(x=est.date, fill=factor(date, levels=date.levels)))
 
 if (!is.na(THERAPY_START)) {
 	if (is.na(therapy2)) {
-		p <- p + geom_rect(xmin=as.numeric(THERAPY_START), xmax=as.numeric(therapyend), ymin=-Inf, ymax=H, fill=THERAPY_COLOUR, linetype=2)
+		p <-  p + geom_segment(x=as.numeric(THERAPY_START), xend=as.numeric(THERAPY_START), y=-Inf, yend=H, linetype=THERAPY_LTY, colour=THERAPY_COLOUR)
 	} else {
-		p <- p + geom_rect(xmin=as.numeric(THERAPY_START), xmax=as.numeric(therapyend), ymin=-Inf, ymax=H, fill=if (therapyend == therapy2) THERAPY_COLOUR2 else THERAPY_COLOUR, linetype=0) + geom_rect(xmin=as.numeric(therapy2), xmax=Inf, ymin=-Inf, ymax=H, fill=THERAPY_COLOUR, linetype=0)
+		p <- p + geom_segment(x=as.numeric(THERAPY_START), xend=as.numeric(THERAPY_START), y=-Inf, yend=H, linetype=THERAPY_LTY2, colour=THERAPY_COLOUR2) +
+			geom_segment(x=as.numeric(therapy2), xend=as.numeric(therapy2), y=-Inf, yend=H, linetype=THERAPY_LTY, colour=THERAPY_COLOUR)
 	}
 }
 
@@ -503,7 +514,7 @@ if (!use.real || length(date.levels) == 1) {
 	p <- p + scale_y_continuous(name="Frequency", breaks=seq(0, H, by=2), limits=c(0, H)) +
 		theme(legend.position='none')
 } else {
-	p <- p + scale_y_continuous(name="Frequency", breaks=seq(0, H, by=2), limits=c(0, H * 1.5))
+	p <- p + scale_y_continuous(name="Frequency", breaks=seq(0, H, by=2), limits=c(0, H * 1.6))
 }
 
 pdf.options(family="Helvetica", fonts="Helvetica", width=7, height=5, colormodel='rgb')
