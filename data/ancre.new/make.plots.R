@@ -65,25 +65,6 @@ panel.grid.major=element_blank(),
 panel.grid.minor=element_blank()
 )
 
-THERAPY_COLOUR <- "#a0a0a0"
-THERAPY <- 1795
-data <- read.csv("stats/patient_13334.cens.data.csv")
-data <- subset(data, Censored == 1)
-
-ancre.colours <- c("#0072B2", "#D55E00")
-
-pdf.options(family="Helvetica", fonts="Helvetica", width=7, height=4.2, colormodel='rgb')
-pdf("plots/patient_13334.cens.hist.pdf")
-ggplot(data, aes(x=Estimated.Date)) +
-#	geom_rect(xmin=THERAPY, xmax=Inf, ymin=-Inf, ymax=Inf, fill=THERAPY_COLOUR) +
-	geom_histogram(breaks=seq(min(floor(data$Estimated.Date / 365.25)) * 365.25, max(floor(data$Estimated.Date / 365.25) + 1) * 365.25, by=365.25), fill='red') +
-	geom_segment(x=0, xend=0, y=8, yend=7, arrow=arrow(length = unit(0.5, "cm")))  +
-	theme_bw() +
-	my.theme.hist +
-	scale_x_continuous(name="Years since first collection", breaks=seq(min(floor(data$Estimated.Date / 365.25)) * 365.25, max(floor(data$Estimated.Date / 365.25) + 1) * 365.25, by=365.25), labels=seq(-1, 3)) +
-	scale_y_continuous(name="Frequency")
-dev.off()
-
 pdf.options(family="Helvetica", fonts="Helvetica", width=7, height=7, colormodel='rgb')
 
 files <- paste0("patient_", c(2658, 825, 7259, 7265, 13333, 13334, 13336), ".cens.csv")

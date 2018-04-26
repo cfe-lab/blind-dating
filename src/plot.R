@@ -149,6 +149,7 @@ op <- add_option(op, "--histbymonth", type='logical', action='store_true', defau
 op <- add_option(op, "--histheight", type='numeric', default=1.7)
 op <- add_option(op, "--mincoltime", type='numeric', default=MIN_COL_TIME)
 op <- add_option(op, "--maxcoltime", type='numeric', default=MAX_COL_TIME)
+op <- add_option(op, "--histfreqby", type='numeric', default=2)
 args <- parse_args(op)
 
 tree.file <- args$tree
@@ -162,11 +163,12 @@ LIK_TOL <- args$liktol
 therapy2 <- args$therapy2
 therapyend <- args$therapyend
 cartoon <- args$cartoon
-xtitle <- args$xtitle
+x.title <- args$xtitle
 hist.by.month <- args$histbymonth
 hist.height <- args$histheight
-MIN_COL_TIME <- op$mincoltime
-MAX_COL_TIME <- op$maxcoltime
+MIN_COL_TIME <- args$mincoltime
+MAX_COL_TIME <- args$maxcoltime
+hist.freq.by <- args$histfreqby
 if (use.real) {
 	year.start <- args$yearstart
 	year.end <- args$yearend
@@ -349,8 +351,8 @@ if (use.real) {
 		y.scale <- scale_y_continuous(name="Years since first collection", breaks=date.ticks, limits=c(year.start, year.end))
 	} else {
 		date.ticks <- seq(floor(year.start / year.by) * year.by, year.end, by=year.by)
-		x.scale <- scale_x_continuous(name=xtitle, breaks=date.ticks, labels=as.integer(date.ticks / 365.25), limits=c(year.start, year.end))
-		y.scale <- scale_y_continuous(name=xtitle, breaks=date.ticks, labels=as.integer(date.ticks / 365.25), limits=c(year.start, year.end))
+		x.scale <- scale_x_continuous(name=x.title, breaks=date.ticks, labels=as.integer(date.ticks / 365.25), limits=c(year.start, year.end))
+		y.scale <- scale_y_continuous(name=x.title, breaks=date.ticks, labels=as.integer(date.ticks / 365.25), limits=c(year.start, year.end))
 	}
 	
 	type.break <- c("PLASMA", "PBMC")
@@ -463,7 +465,7 @@ if (use.real) {
 	date.labs <- as.character(as.Date(date.levels, origin="1970-01-01"), format="%b. %Y")
 } else {
 	m <- floor(min(c(data.hist$est.date, data$date)) / 365.25)
-	M <- floor(max(c(data.hist$est.date)) / 365.25) + 1
+	M <- floor(max(c(data.hist$est.date, subset(data, censored <= 0)$date)) / 365.25) + 1
 	breaks <- seq(m, M) * 365.25
 	date.vals <- rep('black', length(date.levels))
 	date.labs <- rep('LAB', length(date.levels))
@@ -471,7 +473,11 @@ if (use.real) {
 
 H <- max(hist(data.hist$est.date, breaks=breaks)$counts)
 
-p <- ggplot(data.hist, aes(x=est.date, fill=factor(date, levels=date.levels)))
+if (use.real) {
+	p <- ggplot(data.hist, aes(x=est.date, fill=factor(date, levels=date.levels)))
+} else {
+	p <- ggplot(data.hist, aes(x=est.date))
+}
 
 if (!is.na(THERAPY_START)) {
 	if (is.na(therapy2)) {
@@ -482,9 +488,14 @@ if (!is.na(THERAPY_START)) {
 	}
 }
 
-p <- p + geom_segment(x=min(data$date), xend=min(data$date), y=H * 9 / 8, yend=H, arrow=arrow(length = unit(0.25, "cm"))) +
-	geom_histogram(breaks=breaks) +
-	scale_fill_manual(name="Collection Date", values=date.vals, labels=date.labs)
+p <- p + geom_segment(x=min(data$date), xend=min(data$date), y=H * 9 / 8, yend=H, arrow=arrow(length = unit(0.25, "cm")))
+
+if (use.real) {
+	p <- p + geom_histogram(breaks=breaks) + scale_fill_manual(name="Collection Date", values=date.vals, labels=date.labs)
+} else {
+	p <- p + geom_histogram(breaks=breaks, fill='black')
+}
+
 
 if (use.real) {
 	if (hist.by.month) {
@@ -522,10 +533,10 @@ p <- p +
 	)
 	
 if (!use.real || length(date.levels) == 1) {
-	p <- p + scale_y_continuous(name="Frequency", breaks=seq(0, H, by=2), limits=c(0, H)) +
+	p <- p + scale_y_continuous(name="Frequency", breaks=seq(0, H, by=hist.freq.by), limits=c(0, H)) +
 		theme(legend.position='none')
 } else {
-	p <- p + scale_y_continuous(name="Frequency", breaks=seq(0, H, by=2), limits=c(0, H * hist.height))
+	p <- p + scale_y_continuous(name="Frequency", breaks=seq(0, H, by=hist.freq.by), limits=c(0, H * hist.height))
 }
 
 pdf.options(family="Helvetica", fonts="Helvetica", width=7, height=5, colormodel='rgb')

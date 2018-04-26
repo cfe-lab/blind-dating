@@ -67,22 +67,6 @@ panel.grid.major=element_blank(),
 panel.grid.minor=element_blank()
 )
 
-THERAPY_COLOUR <- "#a0a0a0"
-THERAPY <- 1795
-data <- read.csv("stats/SIM_1.data.csv")
-data <- subset(data, Censored == 1)
-
-pdf.options(family="Helvetica", fonts="Helvetica", width=7, height=4.2, colormodel='rgb')
-pdf("plots/SIM_1.hist.pdf")
-ggplot(data, aes(x=Estimated.Date)) +
-	geom_histogram(breaks=seq(min(floor(data$Estimated.Date / 365.25)) * 365.25, max(floor(data$Estimated.Date / 365.25) + 1) * 365.25, by=365.25), fill='red') +
-	geom_segment(x=59.86173, xend=59.86173, y=27, yend=23, arrow=arrow(length = unit(0.5, "cm")))  +
-	theme_bw() +
-	my.theme.hist +
-	scale_x_continuous(name="Years since simulation start", breaks=seq(min(floor(data$Estimated.Date / 365.25)) * 365.25, max(floor(data$Estimated.Date / 365.25) + 1) * 365.25, by=365.25), labels=seq(0, 7)) +
-	scale_y_continuous(name="Frequency")
-dev.off()
-
 pdf.options(family="Helvetica", fonts="Helvetica", width=7, height=7, colormodel='rgb')
 
 files <- dir("info", "[0-9].cens.csv")
