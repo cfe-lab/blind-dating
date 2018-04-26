@@ -8,11 +8,13 @@ library(optparse)
 
 source("~/git/node.dating/src/node.dating.R")
 
+MIN_COL_TIME <- 9720
+MAX_COL_TIME <- 13371
 
-THERAPY_COLOUR <- "#333333"
+THERAPY_COLOUR <- "#111111"
 THERAPY_LTY <- 3
-THERAPY_COLOUR2 <- "#333333"
-THERAPY_LTY2 <- 4
+THERAPY_COLOUR2 <- "#111111"
+THERAPY_LTY2 <- 6
 
 TRAINING_COLOUR <- 'black'
 TRAINING_COLOUR2 <- 'darkblue'
@@ -20,7 +22,9 @@ CENSORED_COLOUR <- 'red'
 CENSORED_COLOUR2 <- "#ff8000"
 
 REGRESS_COLOUR <- "#808080b0"
+REGRESS_LTY <- 2
 REGRESS_COLOUR2 <- "#aaaaaab0"
+REGRESS_LTY2 <- 4
 
 pdf.options(family="Helvetica", fonts="Helvetica", width=7, height=7, colormodel='rgb')
 
@@ -64,9 +68,9 @@ apply.axes <- function(p, flipped, scaled) {
 					)
 				}
 			}
-			p$layers <- c(geom_abline(intercept=-stats[, "Model.Intercept"] / stats[, "Model.Slope"], slope=1 / stats[, "Model.Slope"], colour=REGRESS_COLOUR, linetype=2, size=regression.size), p$layers)
+			p$layers <- c(geom_abline(intercept=-stats[, "Model.Intercept"] / stats[, "Model.Slope"], slope=1 / stats[, "Model.Slope"], colour=REGRESS_COLOUR, linetype=REGRESS_LTY, size=regression.size), p$layers)
 			if (!is.na(pat.id2))
-				p$layers <- c(geom_abline(intercept=-stats.2[, "Model.Intercept"] / stats.2[, "Model.Slope"], slope=1 / stats.2[, "Model.Slope"], colour=REGRESS_COLOUR2, linetype=2, size=regression.size), p$layers)
+				p$layers <- c(geom_abline(intercept=-stats.2[, "Model.Intercept"] / stats.2[, "Model.Slope"], slope=1 / stats.2[, "Model.Slope"], colour=REGRESS_COLOUR2, linetype=REGRESS_LTY2, size=regression.size), p$layers)
 #					geom_path(aes(y=date, x=ci.high.2), data=data.ci, linetype=3, colour="#00305880") +
 #					geom_path(aes(y=date, x=ci.low.2), data=data.ci, linetype=3, colour="#00305880")
 		} else {
@@ -87,9 +91,9 @@ apply.axes <- function(p, flipped, scaled) {
 					)
 				}
 			}
-			p$layers <- c(geom_abline(intercept=stats[, "Model.Intercept"], slope=stats[, "Model.Slope"], colour=REGRESS_COLOUR, linetype=2, size=regression.size), p$layers)
+			p$layers <- c(geom_abline(intercept=stats[, "Model.Intercept"], slope=stats[, "Model.Slope"], colour=REGRESS_COLOUR, linetype=REGRESS_LTY, size=regression.size), p$layers)
 			if (!is.na(pat.id2))
-				p$layers <- c(geom_abline(intercept=stats.2[, "Model.Intercept"], slope=stats.2[, "Model.Slope"], colour=REGRESS_COLOUR2, linetype=2, size=regression.size), p$layers)
+				p$layers <- c(geom_abline(intercept=stats.2[, "Model.Intercept"], slope=stats.2[, "Model.Slope"], colour=REGRESS_COLOUR2, linetype=REGRESS_LTY2, size=regression.size), p$layers)
 #					geom_path(aes(x=date, y=ci.high.2), data=data.ci, linetype=3, colour="#00305880") +
 #					geom_path(aes(x=date, y=ci.low.2), data=data.ci, linetype=3, colour="#00305880")
 		}
@@ -142,6 +146,9 @@ op <- add_option(op, "--usedups", type='logical', action='store_true', default=F
 op <- add_option(op, "--cartoon", type='logical', action='store_true', default=F)
 op <- add_option(op, "--xtitle", type='character', default="Years since first collection")
 op <- add_option(op, "--histbymonth", type='logical', action='store_true', default=F)
+op <- add_option(op, "--histheight", type='numeric', default=1.7)
+op <- add_option(op, "--mincoltime", type='numeric', default=MIN_COL_TIME)
+op <- add_option(op, "--maxcoltime", type='numeric', default=MAX_COL_TIME)
 args <- parse_args(op)
 
 tree.file <- args$tree
@@ -157,14 +164,13 @@ therapyend <- args$therapyend
 cartoon <- args$cartoon
 xtitle <- args$xtitle
 hist.by.month <- args$histbymonth
+hist.height <- args$histheight
+MIN_COL_TIME <- op$mincoltime
+MAX_COL_TIME <- op$maxcoltime
 if (use.real) {
 	year.start <- args$yearstart
 	year.end <- args$yearend
 	THERAPY_START <- as.numeric(as.Date(args$therapy))
-} else {
-	year.start <- as.numeric(args$yearstart)
-	year.end <- as.numeric(args$yearend)
-	THERAPY_START <- as.numeric(args$therapy)
 	
 	if (!is.na(therapy2)) {
 		therapy2 <- as.Date(therapy2)
@@ -173,6 +179,10 @@ if (use.real) {
 	if (!is.na(therapyend)) {
 		therapyend <- as.Date(therapyend)
 	}
+} else {
+	year.start <- as.numeric(args$yearstart)
+	year.end <- as.numeric(args$yearend)
+	THERAPY_START <- as.numeric(args$therapy)
 }
 if (is.na(therapyend)) {
 	therapyend <- therapy2
@@ -363,7 +373,8 @@ data$my.colour[data$censored > 0] <- "censored"
 my.colour.break <- unique(data$my.colour)
 my.colour.filter <- suppressWarnings(!is.na(as.numeric(my.colour.break)))
 my.colour.value <- rep('black', length(my.colour.break))
-my.colour.value[my.colour.filter] <- hsv((as.numeric(my.colour.break[my.colour.filter]) - stats$Minimum.Training.Time.Point) / (stats$Maximum.Training.Time.Point - stats$Minimum.Training.Time.Point) * .75, 0.5, 0.5)
+my.colour.scale <- (as.numeric(my.colour.break[my.colour.filter]) - MIN_COL_TIME) / (MAX_COL_TIME - MIN_COL_TIME)
+my.colour.value[my.colour.filter] <- hsv(my.colour.scale * .75, 0.5, 0.5)
 
 data.all <- as.data.frame(cbind(rbind(data, data.frame(tip.label=paste0("N.", 1:tree$Nnode), type="NODE", censored=NA, date=NA, dist=node.depth.edgelength(tree)[1:tree$Nnode + nrow(data)], est.date=NA, date.diff=NA, my.colour=NA)), node.date=node.dates))
 
@@ -417,7 +428,7 @@ apply.theme(ggtree(ptree, yscale="node.date", colour="#49494980", size=tree.size
 	flipped=T, scaled=T, colour.value=my.colour.value, colour.label=my.colour.break, colour.break=my.colour.break)
 dev.off()
 
-data.hist <- subset(data, censored == 1)
+data.hist <- subset(data, censored > 0)
 
 date.levels <- sort(unique(data.hist$date))
 
@@ -425,8 +436,8 @@ if (use.real) {
 	if (hist.by.month) {
 		m.month <- as.numeric(as.character(as.Date(min(c(data.hist$est.date, data$date)), origin="1970-01-01"), "%m"))
 		m.year <- as.numeric(as.character(as.Date(min(c(data.hist$est.date, data$date)), origin="1970-01-01"), "%Y"))
-		M.month <- as.numeric(as.character(as.Date(max(data.hist$est.date), origin="1970-01-01"), "%m")) + 1
-		M.year <- as.numeric(as.character(as.Date(max(data.hist$est.date), origin="1970-01-01"), "%Y"))
+		M.month <- as.numeric(as.character(as.Date(max(c(data.hist$est.date, subset(data, censored <= 0)$date)), origin="1970-01-01"), "%m")) + 1
+		M.year <- as.numeric(as.character(as.Date(max(c(data.hist$est.date, subset(data, censored <= 0)$date)), origin="1970-01-01"), "%Y"))
 		
 		if (M.month == 13) {
 			M.year <- M.year + 1
@@ -443,7 +454,7 @@ if (use.real) {
 	}
 	else {
 		m <- as.numeric(gsub("(.+)-.+-.+", "\\1", as.Date(min(c(data.hist$est.date, data$date)), origin="1970-01-01")))
-		M <- as.numeric(gsub("(.+)-.+-.+", "\\1", as.Date(max(data.hist$est.date), origin="1970-01-01"))) + 1
+		M <- as.numeric(gsub("(.+)-.+-.+", "\\1", as.Date(max(c(data.hist$est.date), subset(data, censored <= 0)$date), origin="1970-01-01"))) + 1
 		breaks <- as.numeric(as.Date(paste0(seq(m, M), "-01-01")))
 	}
 	m <- breaks[1]
@@ -464,10 +475,10 @@ p <- ggplot(data.hist, aes(x=est.date, fill=factor(date, levels=date.levels)))
 
 if (!is.na(THERAPY_START)) {
 	if (is.na(therapy2)) {
-		p <-  p + geom_segment(x=as.numeric(THERAPY_START), xend=as.numeric(THERAPY_START), y=-Inf, yend=H, linetype=THERAPY_LTY, colour=THERAPY_COLOUR)
+		p <-  p + geom_segment(x=as.numeric(THERAPY_START), xend=as.numeric(THERAPY_START), y=-Inf, yend=H * 1.05, linetype=THERAPY_LTY, colour=THERAPY_COLOUR)
 	} else {
-		p <- p + geom_segment(x=as.numeric(THERAPY_START), xend=as.numeric(THERAPY_START), y=-Inf, yend=H, linetype=THERAPY_LTY2, colour=THERAPY_COLOUR2) +
-			geom_segment(x=as.numeric(therapy2), xend=as.numeric(therapy2), y=-Inf, yend=H, linetype=THERAPY_LTY, colour=THERAPY_COLOUR)
+		p <- p + geom_segment(x=as.numeric(THERAPY_START), xend=as.numeric(THERAPY_START), y=-Inf, yend=H * 1.05, linetype=THERAPY_LTY2, colour=THERAPY_COLOUR2) +
+			geom_segment(x=as.numeric(therapy2), xend=as.numeric(therapy2), y=-Inf, yend=H * 1.05, linetype=THERAPY_LTY, colour=THERAPY_COLOUR)
 	}
 }
 
@@ -514,7 +525,7 @@ if (!use.real || length(date.levels) == 1) {
 	p <- p + scale_y_continuous(name="Frequency", breaks=seq(0, H, by=2), limits=c(0, H)) +
 		theme(legend.position='none')
 } else {
-	p <- p + scale_y_continuous(name="Frequency", breaks=seq(0, H, by=2), limits=c(0, H * 1.6))
+	p <- p + scale_y_continuous(name="Frequency", breaks=seq(0, H, by=2), limits=c(0, H * hist.height))
 }
 
 pdf.options(family="Helvetica", fonts="Helvetica", width=7, height=5, colormodel='rgb')
