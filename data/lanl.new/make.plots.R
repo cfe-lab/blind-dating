@@ -48,6 +48,8 @@ concord <- function(x, y) {
 	2 * s.xy / (s.x + s.y + (mu.x - mu.y)^2)
 }
 
+lanl.colours <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#CC79A7")
+
 read.csv.2 <- function(x) if (file.exists(x)) read.csv(x) else NA
 
 my.theme.hist <- theme(
@@ -85,7 +87,7 @@ g <- ggplot() + theme_bw() + my.theme2
 
 i <- 1
 for (x in data.rtt) {
-	g <- g + geom_density(aes(x=Scaled.Difference), data=x, fill='red', alpha=1/length(data.rtt), color="#00000000")
+	g <- g + geom_density(aes(x=Scaled.Difference), data=x, fill="black", alpha=1/length(data.rtt), color="#00000000")
 	
 	pdf(paste0("plots/", gsub(".csv", ".dens.pdf", files[i])))
 	print(ggplot() + theme_bw() + my.theme2 + geom_density(aes(x=Scaled.Difference), data=x, fill='red', color="#00000000") + geom_vline(xintercept=0, linetype='dashed', colour='grey') + scale_x_continuous(name="Scaled Date Difference", limits=c(-1.6, 1.6)) + scale_y_continuous(name="Density", limits=c(0, 4.2)))

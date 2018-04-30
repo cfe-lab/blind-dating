@@ -533,7 +533,7 @@ p <- p +
 	)
 	
 if (!use.real || length(date.levels) == 1) {
-	p <- p + scale_y_continuous(name="Frequency", breaks=seq(0, H, by=hist.freq.by), limits=c(0, H)) +
+	p <- p + scale_y_continuous(name="Frequency", breaks=seq(0, H, by=hist.freq.by), limits=c(0, H * hist.height)) +
 		theme(legend.position='none')
 } else {
 	p <- p + scale_y_continuous(name="Frequency", breaks=seq(0, H, by=hist.freq.by), limits=c(0, H * hist.height))

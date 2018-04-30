@@ -67,6 +67,8 @@ panel.grid.minor=element_blank()
 
 pdf.options(family="Helvetica", fonts="Helvetica", width=7, height=7, colormodel='rgb')
 
+ancre.colours <- c("#0072B2", "#D55E00")
+
 files <- paste0("patient_", c(2658, 825, 7259, 7265, 13333, 13334, 13336), ".cens.csv")
 
 data.files.rtt <- paste0("stats/", gsub(".csv", ".data.csv", files))
@@ -83,7 +85,7 @@ g <- ggplot() + theme_bw() + my.theme2
 
 i <- 1
 for (x in data.rtt) {
-	g <- g + geom_density(aes(x=Scaled.Difference), data=x, fill='red', alpha=1/length(data.rtt), color="#00000000")
+	g <- g + geom_density(aes(x=Scaled.Difference), data=x, fill="black", alpha=1/length(data.rtt), color="#00000000")
 	
 	pdf(paste0("plots/", gsub(".csv", ".dens.pdf", files[i])))
 	print(ggplot() + theme_bw() + my.theme2 +  geom_density(aes(x=Scaled.Difference), data=x, fill='red', color="#00000000") + geom_vline(xintercept=0, linetype='dashed', colour='grey') + scale_x_continuous(name="Scaled Date Difference", limits=c(-1.6, 1.6)) + scale_y_continuous(name="Density", limits=c(0, 3)))
