@@ -5,6 +5,8 @@ Phylogenetic dating of HIV latency
 # Articles
 
 # Conference Abstracts
+**Jones BR**, Kinloch NN, Horacsek J, Ganase B, Harris M, Jones RB, Harrigan PR, Brockman MA, Joy JB, Poon A, Brumme ZL. A Phylogenetic Approach to Recover Integration Dates of Latent Human Immunodeficiency Virus Sequences Within-Host. 27th Annual Canadian Conference on HIV / AIDS Research (2018, Vancouver, Canada) abstract BSP4.03.
+
 **Jones BR**, Kinloch NN, Horacsek J, Ganase B, Harris M, Jones RB, Harrigan PR, Brockman MA, Joy JB, Poon A, Brumme ZL. Reconstructing intergation of dates of latent HIV sequences within-host. The Conference on Rettroviruses and Opportunistic Infections 2018 (2018, Boston, United States of America) abstract 372.
 
 Jones BR, Kinloch NN, Horacsek J, Ganase B, Harris M, Jones RB, Harrigan PR, Brockman MA, Joy JB, Poon A, **Brumme ZL**. The latent reservoir as a genetically diverse archive recapitulating within-host HIV evolutionary history. HIV Persistance during Therapy 8th Edition (2017, Miami, United States of America) abstract 00035.
