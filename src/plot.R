@@ -272,7 +272,7 @@ if (!is.na(pat.id2)) {
 	"p-value",
 	"Model Intercept",
 	"Model Slope",
-	"Rscsqaured",
+	"Rsquared",
 	"Estimated Root Date",
 	"ERD CI low",
 	"ERD CI high",
