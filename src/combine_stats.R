@@ -83,7 +83,7 @@ stats.col.names <- c(
 	"p-value",
 	"Model Intercept",
 	"Model Slope",
-	"Model Error",
+	"Rsquared",
 	"Estimated Root Date",
 	"ERD CI low",
 	"ERD CI high",
