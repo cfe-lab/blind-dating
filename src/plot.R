@@ -293,7 +293,7 @@ if (!is.na(pat.id2)) {
 		"p-value 2",
 		"Model Intercept 2",
 		"Model Slope 2",
-		"Rsquared 2"
+		"Rsquared 2",
 		"Training RMSE 2",
 		"Training MAE 2"
 	)
