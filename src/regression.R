@@ -104,7 +104,7 @@ stats <- data.frame(
 	p=1-pchisq(AIC(g.null) - AIC(g) + 2, 1),
 	a=a,
 	b=b,
-	error=0,
+	rsquared=summary(g)$r.squared,
 	root.date=-a / b,
 	ci.lwr=ci[['Confidence Limits']][1],
 	ci.upr=ci[['Confidence Limits']][2],
