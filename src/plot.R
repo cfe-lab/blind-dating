@@ -102,7 +102,7 @@ apply.axes <- function(p, flipped, scaled) {
 	p
 }
 
-apply.theme <- function(p, flipped=F, scaled=T, type.label.=type.label, type.value.=type.value, colour.break.=colour.break, colour.label.=colour.label, colour.value.=colour.value) {
+apply.theme <- function(p, flipped=F, scaled=T, type.label.=type.label, type.value.=type.value, colour.break.=colour.break, colour.label.=colour.label, colour.value.=colour.value, size.value.=size.value) {
 	apply.axes(p + theme_bw() +
 		theme(
 			text=element_text(size=35),
@@ -122,7 +122,7 @@ apply.theme <- function(p, flipped=F, scaled=T, type.label.=type.label, type.val
 		) +
 		scale_shape_manual(name="", breaks=type.label., labels=type.label., values=type.value., limits=type.label.) +
 		scale_colour_manual(name="", breaks=colour.break., labels=colour.label., values=colour.value., limits=colour.break.) +
-#		scale_size_manual(name="", breaks=c(0, 1), labels=c("Training", "Censored"), values=c(1.67, 2), limits=c(0, 1)) +
+		scale_size_manual(name="", breaks=type.label., labels=type.label., values=size.value., limits=type.label.) +
 		guides(shape=guide_legend(order=2), colour=guide_legend(override.aes=list(shape=15, size=8), order=1)),
 		flipped, scaled)
 }
@@ -150,6 +150,7 @@ op <- add_option(op, "--histheight", type='numeric', default=1.7)
 op <- add_option(op, "--mincoltime", type='numeric', default=MIN_COL_TIME)
 op <- add_option(op, "--maxcoltime", type='numeric', default=MAX_COL_TIME)
 op <- add_option(op, "--histfreqby", type='numeric', default=2)
+op <- add_option(op, "--dnashapescale", type='numeric', default=1)
 args <- parse_args(op)
 
 tree.file <- args$tree
@@ -169,6 +170,7 @@ hist.height <- args$histheight
 MIN_COL_TIME <- args$mincoltime
 MAX_COL_TIME <- args$maxcoltime
 hist.freq.by <- args$histfreqby
+dna.shape.scale <- args$dnashapescale
 if (use.real) {
 	year.start <- args$yearstart
 	year.end <- args$yearend
@@ -405,6 +407,8 @@ if (cartoon) {
 	regression.size <- 1
 }	
 
+size.value <- point.size * c(1, dna.shape.scale)
+
 #pdf(pdf.disttree.file)
 #apply.theme(ggtree(ptree, colour="#49494980", size=dist.tree.size, ladderize=T) +
 #	geom_tippoint(aes(colour=factor(censored), shape=type), size=point.size) +
@@ -414,7 +418,7 @@ if (cartoon) {
 
 pdf(pdf.colour.disttree.file)
 apply.theme(ggtree(ptree, colour="#49494980", size=dist.tree.size, ladderize=T) +
-	geom_tippoint(aes(colour=my.colour, shape=type), size=point.size) +
+	geom_tippoint(aes(colour=my.colour, shape=type, size=type)) +
 	geom_treescale(width=0.02, fontsize=7, offset=scale.offset),
 	flipped=F, scaled=F, colour.value=my.colour.value, colour.label=my.colour.break, colour.break=my.colour.break)
 dev.off()
@@ -427,7 +431,7 @@ dev.off()
 
 pdf(pdf.colour.tree.file)
 apply.theme(ggtree(ptree, yscale="node.date", colour="#49494980", size=tree.size, ladderize=F) +
-	geom_tippoint(aes(colour=my.colour, shape=type), size=point.size),
+	geom_tippoint(aes(colour=my.colour, shape=type, size=type)),
 	flipped=T, scaled=T, colour.value=my.colour.value, colour.label=my.colour.break, colour.break=my.colour.break)
 dev.off()
 
@@ -465,11 +469,19 @@ if (use.real) {
 	date.vals <-  if (length(date.levels) == 4) c("#999999", "#666666", "#333333", "#000000") else if (length(date.levels) == 2) c("#666666", "#000000") else 'black'
 	date.labs <- as.character(as.Date(date.levels, origin="1970-01-01"), format="%b. %Y")
 } else {
-	m <- floor(min(c(data.hist$est.date, data$date)) / 365.25)
-	M <- floor(max(c(data.hist$est.date, subset(data, censored <= 0)$date)) / 365.25) + 1
-	breaks <- seq(m, M) * 365.25
-	date.vals <- rep('black', length(date.levels))
-	date.labs <- rep('LAB', length(date.levels))
+	if (cartoon) {
+		m <- floor(min(c(data.hist$est.date, data$date)))
+		M <- floor(max(c(data.hist$est.date, subset(data, censored <= 0)$date))) + 1
+		breaks <- seq(m, M)
+		date.vals <- rep('black', length(date.levels))
+		date.labs <- rep('LAB', length(date.levels))
+	} else {
+		m <- floor(min(c(data.hist$est.date, data$date)) / 365.25)
+		M <- floor(max(c(data.hist$est.date, subset(data, censored <= 0)$date)) / 365.25) + 1
+		breaks <- seq(m, M) * 365.25
+		date.vals <- rep('black', length(date.levels))
+		date.labs <- rep('LAB', length(date.levels))
+	} 
 }
 
 H <- max(hist(data.hist$est.date, breaks=breaks)$counts)
