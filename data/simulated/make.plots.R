@@ -79,12 +79,12 @@ stats.rtt <- do.call(rbind, lapply(stats.files.rtt, read.csv.2))
 good.rtt <- with(stats.rtt, !is.na(Model.Fit) & Model.Fit == 1)
 data.rtt <- data.rtt[good.rtt]
 
-data.rtt <- lapply(data.rtt, function(x) {x$Scaled.Difference <- x$Date.Difference / (max(x$Collection.Date) - min(x$Collection.Date)); subset(x, x$Censored == 1)})
+data.rtt <- lapply(data.rtt, function(x) {x$Scaled.Difference <- x$Date.Difference / with(subset(x, Censored ==0), max(Collection.Date) - min(x$Collection.Date)); subset(x, x$Censored == 1)})
 
 g <- ggplot() + theme_bw() + my.theme2
 
 for (x in data.rtt[1:100]) {
-	g <- g + geom_density(aes(x=Scaled.Difference), data=x, fill='red', alpha=1/100, color="#00000000")
+	g <- g + geom_density(aes(x=Scaled.Difference), data=x, fill="black", alpha=1/100, color="#00000000")
 }
 
 pdf("sim.density.rtt.pdf")
@@ -104,7 +104,7 @@ data.ogr <- lapply(data.ogr, function(x) {x$Scaled.Difference <- x$Date.Differen
 g <- ggplot() + theme_bw() + my.theme2
 
 for (x in data.ogr[1:100]) {
-	g <- g + geom_density(aes(x=Scaled.Difference), data=x, fill='red', alpha=1/100, color="#00000000")
+	g <- g + geom_density(aes(x=Scaled.Difference), data=x, fill="#9966CC", alpha=1/100, color="#00000000")
 }
 
 pdf("sim.density.ogr.pdf")
