@@ -144,13 +144,15 @@ op <- add_option(op, "--therapyend", type='character', default=NA)
 op <- add_option(op, "--liktol", type='numeric', default=1e-3)
 op <- add_option(op, "--usedups", type='logical', action='store_true', default=F)
 op <- add_option(op, "--cartoon", type='logical', action='store_true', default=F)
-op <- add_option(op, "--xtitle", type='character', default="Years since first collection")
+op <- add_option(op, "--xtitle", type='character', default="Collection Year")
 op <- add_option(op, "--histbymonth", type='logical', action='store_true', default=F)
 op <- add_option(op, "--histheight", type='numeric', default=1.7)
 op <- add_option(op, "--mincoltime", type='numeric', default=MIN_COL_TIME)
 op <- add_option(op, "--maxcoltime", type='numeric', default=MAX_COL_TIME)
 op <- add_option(op, "--histfreqby", type='numeric', default=2)
 op <- add_option(op, "--dnashapescale", type='numeric', default=1)
+op <- add_option(op, "--maxvl", type='numeric', default=100000)
+op <- add_option(op, "--vlfile", type='character', default=NA)
 args <- parse_args(op)
 
 tree.file <- args$tree
@@ -171,6 +173,8 @@ MIN_COL_TIME <- args$mincoltime
 MAX_COL_TIME <- args$maxcoltime
 hist.freq.by <- args$histfreqby
 dna.shape.scale <- args$dnashapescale
+max.vl <- args$maxvl
+vl.file <- args$vlfile
 if (use.real) {
 	year.start <- args$yearstart
 	year.end <- args$yearend
@@ -211,6 +215,7 @@ pdf.colour.tree.file <- paste0("plots/", pat.id, ".colour.tree.pdf")
 pdf.tree.file <- paste0("plots/", pat.id, ".tree.pdf")
 pdf.hist.file <- paste0("plots/", pat.id, ".hist.pdf")
 pdf.histdate.file <- paste0("plots/", pat.id, ".histdate.pdf")
+pdf.vl.file <- paste0("plots/", pat.id, ".vl.pdf")
 
 tree <- ape::ladderize(read.tree(tree.file))
 data <- read.csv(data.file, col.names=c("tip.label", "type", "censored", "date", "dist", "est.date", "date.diff"), stringsAsFactors=F)
@@ -312,7 +317,7 @@ if (!is.na(pat.id2)) {
 	colour.value <- c(TRAINING_COLOUR, CENSORED_COLOUR)
 }
 
-node.dates <- tryCatch(estimate.dates(tree, c(data$date, stats$Estimated.Root.Date, rep(NA, tree$Nnode - 1)), mu, node.mask=length(tree$tip.label) + 1, lik.tol=0, nsteps=1000, show.steps=100, opt.tol=1e-16), error=function(e) estimate.dates(tree, data$date, mu, lik.tol=0, nsteps=1000, show.steps=100, opt.tol=1e-16))
+node.dates <- tryCatch(estimate.dates(tree, c(data$date, stats$Estimated.Root.Date, rep(NA, tree$Nnode - 1)), mu, node.mask=length(tree$tip.label) + 1, lik.tol=0, nsteps=1, show.steps=100, opt.tol=1e-16), error=function(e) estimate.dates(tree, data$date, mu, lik.tol=0, nsteps=1, show.steps=100, opt.tol=1e-16))
 
 if (is.na(dist.min))
 	dist.min <- -0.01
@@ -342,36 +347,32 @@ if (use.real) {
 	date.ticks <- as.character(seq(floor(as.numeric(year.start) / year.by) * year.by - year.by, as.numeric(year.end), by=year.by))
 	x.scale <- scale_x_continuous(name="Collection Year", breaks=as.numeric(as.Date(paste0(date.ticks, "-01-01"))), labels=date.ticks, limits=as.numeric(as.Date(paste0(c(year.start, year.end), "-01-01"))))
 	y.scale <- scale_y_continuous(name="Collection Year", breaks=as.numeric(as.Date(paste0(date.ticks, "-01-01"))), labels=date.ticks, limits=as.numeric(as.Date(paste0(c(year.start, year.end), "-01-01"))))
-	x.scale.hist <- scale_x_continuous(name="Collection Year", breaks=as.numeric(as.Date(paste0(seq(as.numeric(year.start), as.numeric(year.end)), "-01-01"))), labels=as.character(seq(as.numeric(year.start), as.numeric(year.end))))
-	
-	type.break <- c("PLASMA", "PBMC", "PBMC (cultured)", "WHOLE BLOOD", "PBMC (REACTIVE)", "PBMC (CULTURE)")
-	type.label <- c("RNA", "DNA", "DNA", "DNA", "RNA", "DNA")
-	type.value <- c(16, 5, 5, 5, 16, 5)
 } else {
 	if (cartoon) {
 		date.ticks <- seq(floor(year.start / year.by) * year.by, year.end, by=year.by)
-		x.scale <- scale_x_continuous(name="Years since first collection", breaks=date.ticks, limits=c(year.start, year.end))
-		y.scale <- scale_y_continuous(name="Years since first collection", breaks=date.ticks, limits=c(year.start, year.end))
+		x.scale <- scale_x_continuous(name="Collection Year", breaks=date.ticks, limits=c(year.start, year.end))
+		y.scale <- scale_y_continuous(name="Collection Year", breaks=date.ticks, limits=c(year.start, year.end))
 	} else {
 		date.ticks <- seq(floor(year.start / year.by) * year.by, year.end, by=year.by)
 		x.scale <- scale_x_continuous(name=x.title, breaks=date.ticks, labels=as.integer(date.ticks / 365.25), limits=c(year.start, year.end))
 		y.scale <- scale_y_continuous(name=x.title, breaks=date.ticks, labels=as.integer(date.ticks / 365.25), limits=c(year.start, year.end))
 	}
-	
-	type.break <- c("PLASMA", "PBMC")
-	type.label <- c("RNA", "DNA")
-	type.value <- c(16, 5)
 }
+
+type.break <- c("PLASMAFALSE", "PBMCFALSE", "PLASMATRUE", "PBMCTRUE")
+ori.type.label <- c("RNA0", "DNA0", "RNA1", "DNA1")
+type.label <- c("RNA0", "DNA0", "RNA1", "DNA1")
+type.value <- c(16, 18, 1, 5)
 
 
 x.div <- scale_x_continuous(name="Divergence from root", breaks=seq(0.0, dist.max, by=dist.by))
 y.div <- scale_y_continuous(name="Divergence from root", breaks=seq(0.0, dist.max, by=dist.by))
 
-data$type <- type.label[match(data$type, type.break)]
+data$my.type <- type.label[match(with(data, paste0(type, censored > 0)), type.break)]
 
-type.mask <- type.label %in% data$type
-type.label <- unique(type.label[type.mask])
-type.value <- unique(type.value[type.mask])
+type.mask <- type.label %in% data$my.type
+type.label <- type.label[type.mask]
+type.value <- type.value[type.mask]
 
 data$my.colour <- data$date
 data$my.colour[data$censored > 0] <- "censored"
@@ -381,7 +382,7 @@ my.colour.value <- rep('black', length(my.colour.break))
 my.colour.scale <- (as.numeric(my.colour.break[my.colour.filter]) - MIN_COL_TIME) / (MAX_COL_TIME - MIN_COL_TIME)
 my.colour.value[my.colour.filter] <- hsv(my.colour.scale * .75, 0.5, 0.5)
 
-data.all <- as.data.frame(cbind(rbind(data, data.frame(tip.label=paste0("N.", 1:tree$Nnode), type="NODE", censored=NA, date=NA, dist=node.depth.edgelength(tree)[1:tree$Nnode + nrow(data)], est.date=NA, date.diff=NA, my.colour=NA)), node.date=node.dates))
+data.all <- as.data.frame(cbind(rbind(data, data.frame(tip.label=paste0("N.", 1:tree$Nnode), type="NODE", censored=NA, date=NA, dist=node.depth.edgelength(tree)[1:tree$Nnode + nrow(data)], est.date=NA, date.diff=NA, my.colour=NA, my.type=NA)), node.date=node.dates))
 
 ptree <- phylo4d(tree, all.data=data.all)
 
@@ -407,7 +408,8 @@ if (cartoon) {
 	regression.size <- 1
 }	
 
-size.value <- point.size * c(1, dna.shape.scale)
+size.value <- point.size * c(1, 1, 1, dna.shape.scale)
+size.value <- size.value[type.mask]
 
 #pdf(pdf.disttree.file)
 #apply.theme(ggtree(ptree, colour="#49494980", size=dist.tree.size, ladderize=T) +
@@ -418,7 +420,7 @@ size.value <- point.size * c(1, dna.shape.scale)
 
 pdf(pdf.colour.disttree.file)
 apply.theme(ggtree(ptree, colour="#49494980", size=dist.tree.size, ladderize=T) +
-	geom_tippoint(aes(colour=my.colour, shape=type, size=type)) +
+	geom_tippoint(aes(colour=my.colour, shape=my.type, size=my.type)) +
 	geom_treescale(width=0.02, fontsize=7, offset=scale.offset),
 	flipped=F, scaled=F, colour.value=my.colour.value, colour.label=my.colour.break, colour.break=my.colour.break)
 dev.off()
@@ -431,7 +433,7 @@ dev.off()
 
 pdf(pdf.colour.tree.file)
 apply.theme(ggtree(ptree, yscale="node.date", colour="#49494980", size=tree.size, ladderize=F) +
-	geom_tippoint(aes(colour=my.colour, shape=type, size=type)),
+	geom_tippoint(aes(colour=my.colour, shape=my.type, size=my.type)),
 	flipped=T, scaled=T, colour.value=my.colour.value, colour.label=my.colour.break, colour.break=my.colour.break)
 dev.off()
 
@@ -513,16 +515,16 @@ if (use.real) {
 if (use.real) {
 	if (hist.by.month) {
 		if (M.year == m.year)  {
-			p <- p + scale_x_continuous(name="Estimated integration month", breaks=breaks, labels=as.character(as.Date(breaks, origin="1970-01-01"), "%b"))
+			p <- p + scale_x_continuous(name="Estimated Integration Month", breaks=breaks, labels=as.character(as.Date(breaks, origin="1970-01-01"), "%b"))
 		} else {
-			p + scale_x_continuous(name="Estimated integration month", breaks=breaks, labels=as.character(as.Date(breaks, origin="1970-01-01"), "%b %Y"))
+			p + scale_x_continuous(name="Estimated Integration Month", breaks=breaks, labels=as.character(as.Date(breaks, origin="1970-01-01"), "%b %Y"))
 		}
 	}
 	else {
-		p <- p + scale_x_continuous(name="Estimated integration year", breaks=breaks, labels=as.character(as.Date(breaks, origin="1970-01-01"), "%Y"))
+		p <- p + scale_x_continuous(name="Estimated Integration Year", breaks=breaks, labels=as.character(as.Date(breaks, origin="1970-01-01"), "%Y"))
 	}
 } else {
-	p <- p + scale_x_continuous(name=x.title, breaks=breaks, labels=seq(m, M))
+	p <- p + scale_x_continuous(name="Estimated Integration Year", breaks=breaks, labels=seq(m, M))
 }
 	
 p <- p +
@@ -556,3 +558,48 @@ pdf.options(family="Helvetica", fonts="Helvetica", width=7, height=5, colormodel
 pdf(pdf.hist.file)
 p
 dev.off()
+
+
+if (!is.na(vl.file)) {
+	data.vl <- read.csv(vl.file, stringsAsFactors=F)
+	data.vl$Date <- as.Date(data.vl$Date)
+	data.vl$Used <- gsub("(V3| & )", "", data.vl$Used)
+	data.vl$my.type <- ori.type.label[match(with(data.vl, paste0(Type, Censored > 0)), type.break)]
+	print(with(data.vl, paste0(Type, Censored > 0)))
+	data.vl$my.colour <- as.numeric(data.vl$Date)
+	data.vl$my.colour[data.vl$Censored > 0] <- "censored"
+
+	p.vl <- ggplot(data.vl, aes(x=Date, y=VL))
+#	if (!is.na(THERAPY_START))
+#		p.vl <- p.vl + geom_vline(xintercept=THERAPY_START, linetype=THERAPY_LTY, colour=THERAPY_COLOUR)
+	if (!is.na(therapy2))
+		p.vl <- p.vl + geom_vline(xintercept=therapy2, linetype=THERAPY_LTY2, colour=THERAPY_COLOUR2)
+	p.vl <- p.vl + geom_line(size=.5)
+	p.vl <- p.vl + geom_point(aes(shape=my.type, colour=my.colour), data=subset(data.vl, Used != ""), size=6)
+	p.vl <- p.vl + scale_y_log10(name="Viral load", breaks=10^c(1, 3, 5), labels=sapply(c(1, 3, 5), function(x) bquote(''*10^{.(x)}*'')))
+#	p.vl <- p.vl + x.scale
+	p.vl <- p.vl + coord_cartesian(ylim=c(10, max.vl))
+	p.vl <- p.vl + theme_bw()
+	p.vl <- p.vl + theme(
+	legend.justification=c(1, 1),
+	legend.position=0,
+	legend.spacing=unit(0, 'cm'),
+	legend.margin=margin(.0, .0, .0, .0, 'cm'),
+	legend.box.background=element_blank(),
+	text=element_text(size=35),
+	legend.key.size=unit(1.2, 'cm'),
+	axis.text=element_text(size=30, colour='black'),
+	axis.text.x=element_text(angle=60, hjust=1),
+	legend.text=element_text(size=30),
+	panel.grid=element_blank(),
+	legend.background=element_blank(),
+	legend.key=element_rect(fill="#00000000", colour="#00000000")
+	)
+	p.vl <- p.vl + scale_colour_manual(name="", breaks=my.colour.break, limits=my.colour.break, values=my.colour.value)
+	p.vl <- p.vl + scale_shape_manual(name="", breaks=type.label, limits=type.label, values=type.value)
+
+	pdf.options(family="Helvetica", fonts="Helvetica", width=7, height=4.2, colormodel='rgb')
+	pdf(pdf.vl.file)
+	print(p.vl)
+	dev.off()
+}
