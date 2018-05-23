@@ -317,7 +317,7 @@ if (!is.na(pat.id2)) {
 	colour.value <- c(TRAINING_COLOUR, CENSORED_COLOUR)
 }
 
-node.dates <- tryCatch(estimate.dates(tree, c(data$date, stats$Estimated.Root.Date, rep(NA, tree$Nnode - 1)), mu, node.mask=length(tree$tip.label) + 1, lik.tol=0, nsteps=1, show.steps=100, opt.tol=1e-16), error=function(e) estimate.dates(tree, data$date, mu, lik.tol=0, nsteps=1, show.steps=100, opt.tol=1e-16))
+node.dates <- tryCatch(estimate.dates(tree, c(data$date, stats$Estimated.Root.Date, rep(NA, tree$Nnode - 1)), mu, node.mask=length(tree$tip.label) + 1, lik.tol=0, nsteps=1000, show.steps=100, opt.tol=1e-16), error=function(e) estimate.dates(tree, data$date, mu, lik.tol=0, nsteps=1000, show.steps=100, opt.tol=1e-16))
 
 if (is.na(dist.min))
 	dist.min <- -0.01
