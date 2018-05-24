@@ -30,6 +30,6 @@ Jones BR, Kinloch NN, Horacsek J, Ganase B, Harris M, Jones RB, Harrigan PR, Bro
 * TreeSim
 * ggtree https://bioconductor.org/packages/release/bioc/html/ggtree.html
 * NELSI https://github.com/sebastianduchene/NELSI.git
-* node.dating https://github.com/brj1/node.dating.git (random fork)
+* node.dating https://github.com/brj1/node.dating/tree/random
 
 Blind-dating also requires Python3 and INDELible for the simulations only and RAxML
