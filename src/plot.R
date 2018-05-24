@@ -368,8 +368,8 @@ if (use.real) {
 }
 
 type.break <- c("PLASMAFALSE", "PBMCFALSE", "PLASMATRUE", "PBMCTRUE")
-ori.type.label <- c("RNA0", "DNA0", "RNA1", "DNA1")
-type.label <- c("RNA0", "DNA0", "RNA1", "DNA1")
+ori.type.label <- c("RNAFALSE", "DNAFALSE", "RNATRUE", "DNATRUE")
+type.label <- c("RNAFALSE", "DNAFALSE", "RNATRUE", "DNATRUE")
 type.value <- c(16, 18, 1, 5)
 
 
@@ -408,12 +408,14 @@ if (cartoon) {
 	tree.size <- 1
 	scale.offset <- 0.3
 	regression.size <- 2
+	vl.linesize <- 1
 } else {
 	point.size <- 6
 	dist.tree.size <- .6
 	tree.size <- .4
 	scale.offset <- 3
 	regression.size <- 1
+	vl.linesize <- 0.5
 }	
 
 size.value <- point.size * c(1, 1, 1, dna.shape.scale)
@@ -615,10 +617,10 @@ dev.off()
 
 if (!is.na(vl.file)) {
 	data.vl <- read.csv(vl.file, stringsAsFactors=F)
-	data.vl$Date <- as.Date(data.vl$Date)
+	if (use.real)
+		data.vl$Date <- as.Date(data.vl$Date)		
 	data.vl$Used <- gsub("(V3| & )", "", data.vl$Used)
 	data.vl$my.type <- ori.type.label[match(with(data.vl, paste0(Type, Censored > 0)), type.break)]
-	print(with(data.vl, paste0(Type, Censored > 0)))
 	data.vl$my.colour <- as.numeric(data.vl$Date)
 	data.vl$my.colour[data.vl$Censored > 0] <- "censored"
 
@@ -627,10 +629,13 @@ if (!is.na(vl.file)) {
 		p.vl <- p.vl + add.therapy(as.numeric(THERAPY_START), Inf, 1)
 	if (!is.na(therapy2))
 		p.vl <- p.vl + add.therapy(as.numeric(therapy2), as.numeric(THERAPY_START), 2)
-	p.vl <- p.vl + geom_line(size=.5)
-	p.vl <- p.vl + geom_point(aes(shape=my.type, colour=my.colour), data=subset(data.vl, Used != ""), size=6)
+	p.vl <- p.vl + geom_line(size=vl.linesize)
+	p.vl <- p.vl + geom_point(aes(shape=my.type, colour=my.colour), data=subset(data.vl, Used != ""), size=point.size)
 	p.vl <- p.vl + scale_y_log10(name="Viral load", breaks=10^c(1, 3, 5), labels=sapply(c(1, 3, 5), function(x) bquote(''*10^{.(x)}*'')))
-	p.vl <- p.vl + scale_x_date(name="Collection Year", breaks=as.Date(paste0(seq(1984, 2020, by=2), "-01-01")), labels=seq(1984, 2020, by=2))
+	if (use.real)
+		p.vl <- p.vl + scale_x_date(name="Collection Year", breaks=as.Date(paste0(seq(1984, 2020, by=2), "-01-01")), labels=seq(1984, 2020, by=2))
+	else
+		p.vl <- p.vl + scale_x_continuous(name="Collection Year", breaks=seq(0, 10, by=1))
 	p.vl <- p.vl + coord_cartesian(ylim=c(10, max.vl))
 	p.vl <- p.vl + theme_bw()
 	p.vl <- p.vl + theme(
