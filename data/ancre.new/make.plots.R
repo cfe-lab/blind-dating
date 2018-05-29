@@ -67,9 +67,9 @@ panel.grid.minor=element_blank()
 
 pdf.options(family="Helvetica", fonts="Helvetica", width=7, height=7, colormodel='rgb')
 
-ancre.colours <- c("#0072B2", "#D55E00")
+ancre.colours <- c("#0072B2", "#D55E00", "#999999")
 
-files <- paste0("patient_", c(2658, 825, 7259, 7265, 13333, 13334, 13336), ".cens.csv")
+files <- paste0("patient_", c(2658, 825, 7259, 7265, 13333, 13334, 13336, "cp-1362"), ".cens.csv")
 
 data.files.rtt <- paste0("stats/", gsub(".csv", ".data.csv", files))
 stats.files.rtt <- paste0("stats/", gsub(".csv", ".stats.csv", files))
@@ -95,7 +95,7 @@ for (x in data.rtt) {
 }
 
 pdf("ancre.density.rtt.pdf")
-g + geom_vline(xintercept=0, linetype='dashed', size=1, colour='black') + scale_x_continuous(name="Scaled Date Difference", limits=c(-1.6, 1.6)) + scale_y_continuous(name="Density", limits=c(0, 3))
+g + geom_vline(xintercept=0, linetype='dashed', size=1, colour='black') + scale_x_continuous(name="Scaled Date Difference", limits=c(-1.6, 1.6)) + scale_y_continuous(name="Density", limits=c(0, 6))
 dev.off()
 
 data.files.ogr <- paste0("stats/", gsub(".csv", "-with_ref.data.csv", files))
@@ -121,7 +121,7 @@ for (x in data.ogr) {
 }
 
 pdf("ancre.density.ogr.pdf")
-g + scale_x_continuous(name="Scaled Date Difference", limits=c(-1.6, 1.6)) + scale_y_continuous(name="Density", limits=c(0, 3))
+g + scale_x_continuous(name="Scaled Date Difference", limits=c(-1.6, 1.6)) + scale_y_continuous(name="Density", limits=c(0, 6))
 dev.off()
 
 data.rtt <- lapply(data.files.rtt, read.csv)
