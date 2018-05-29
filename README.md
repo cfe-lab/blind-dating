@@ -15,7 +15,7 @@ Jones BR, Kinloch NN, Horacsek J, Ganase B, Harris M, Jones RB, Harrigan PR, Bro
 
 **Jones BR**, Kinloch NN, Horacsek J, Mwimanzi P, Huang J, Truong R, Ganase B, Harris M, Harrigan PR, Jones RB, Brockman MA, Joy JB, Poon A, Brumme ZL. The HIV reservoir as a genetically heterogeneous archive of within-host viral evolution: implications for immunotherapeutic cure strategies. IAS HIV Cure & Cancer Forum (2017, Paris, France) abstract P22.
 
-**Jones BR**, Horacsek J, Joy JB, Brumme ZL, Poon AFY. Blind-dating: using phlylogeny to find the ages of latent HIV-1 sequences within host. 24th Conference on Rettroviruses and Opportunistic Infections (2017, Seattle, United States of America) abstract 196.
+**Jones BR**, Horacsek J, Joy JB, Brumme ZL, Poon AFY. Blind-dating: using phlylogeny to find the ages of latent HIV-1 sequences within host. 24th Conference on Retroviruses and Opportunistic Infections (2017, Seattle, United States of America) abstract 196.
 
 **Jones BR**, Horacsek J, Joy JB, Brumme ZL, Poon AFY. Blind dating: a phylogenetic approach to dating HIV reservoir sequences. The 25th Annual Canadian Conference on HIV/AIDS Research (2016, Winnipeg, Canada) abstract BSP3.06.
 
@@ -30,6 +30,6 @@ Jones BR, Kinloch NN, Horacsek J, Ganase B, Harris M, Jones RB, Harrigan PR, Bro
 * TreeSim
 * ggtree https://bioconductor.org/packages/release/bioc/html/ggtree.html
 * NELSI https://github.com/sebastianduchene/NELSI.git
-* node.dating https://github.com/brj1/node.dating.git (random fork)
+* node.dating https://github.com/brj1/node.dating/tree/random
 
 Blind-dating also requires Python3 and INDELible for the simulations only and RAxML
