@@ -20,23 +20,33 @@ if (any(grep("--file=", args.all))) {
 
 source(file.path(source.dir, 'read.info.R'), chdir=T)
 
-args <- commandArgs(trailingOnly = T)
+op <- OptionParser()
+op <- add_option(op, "--tree", type='character')
+op <- add_option(op, "--info", type='character')
+op <- add_option(op, "--rootedtree", type='character')
+op <- add_option(op, "--ogr", type='logical', action='store_true', default=F)
+op <- add_option(op, "--useall", type='logical', action='store_true', default=F)
+op <- add_option(op, "--real", type='logical', action='store_true', default=F)
+op <- add_option(op, "--method", type='character', default='correlation')
+op <- add_option(op, "--ogrname", type='character', default="REFERENCE")
+args <- parse_args(op)
 
-tree.file <- args[1]
-info.file <- args[2]
-rooted.tree.file <- args[3]
-use.rtt <- as.integer(args[4])		# 0 = no, 1 = yes (only plasma), 2 = yes (all)
-use.date <- if (length(args) >= 5) as.integer(args[5]) else 1
-method <- if (length(args) >= 6) args[6] else 'correlation'		# 'correlation', 'rms' or 'rsquared'
+tree.file <- args$tree
+info.file <- args$info
+rooted.tree.file <- args$rootedtree
+use.rtt <- 	as.numeric(args$ogr) * (1 + as.numeric(args$usall))	# 0 = no, 1 = yes (only plasma), 2 = yes (all)
+use.date <- args$real
+method <- args$method		# 'correlation', 'rms' or 'rsquared'
+ogr.name <- args$ogrname
 	
 tree.read <- function(tr) {	
 	tree <- read.tree(paste(tr, sep='/'))
 		
-	if (any("REFERENCE" == tree$tip.label)) {
+	if (any(tree$tip.label == ogr.name)) {
 		if (use.rtt > 0)			
-			drop.tip(tree, "REFERENCE")
+			drop.tip(tree, ogr.name)
 		else
-			drop.tip(root(tree, "REFERENCE"), "REFERENCE")
+			drop.tip(root(tree, ogr.name), ogr.name)
 	}
 	else
 		tree
@@ -47,7 +57,7 @@ tree <- tree.read(tree.file)
 
 if (use.rtt > 0) {
 	info <- read.info(info.file, tree$tip.label)
-	plasma.dates <-  if (use.date == 1) as.numeric(as.Date(info$COLDATE)) else info$COLDATE
+	plasma.dates <-  if (use.date) as.numeric(as.Date(info$COLDATE)) else info$COLDATE
 	tip.type <- info$CENSORED
 }
 	
