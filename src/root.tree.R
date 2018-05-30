@@ -35,7 +35,7 @@ args <- parse_args(op)
 tree.file <- args$tree
 info.file <- args$info
 rooted.tree.file <- args$rootedtree
-use.rtt <- 	as.numeric(!args$ogr) * (1 + as.numeric(args$usall))	# 0 = no, 1 = yes (only plasma), 2 = yes (all)
+use.rtt <- 	as.numeric(!args$ogr) * (1 + as.numeric(args$useall))	# 0 = no, 1 = yes (only plasma), 2 = yes (all)
 use.date <- args$real
 method <- args$method		# 'correlation', 'rms' or 'rsquared'
 ogr.name <- args$ogrname
