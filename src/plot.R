@@ -638,7 +638,7 @@ if (!is.na(vl.file)) {
 	if (!is.na(therapy2))
 		p.vl <- p.vl + add.therapy(as.numeric(therapy2), as.numeric(THERAPY_START), 2)
 	if (!is.na(therapy3))
-		p <- p + add.therapy(as.numeric(therapy3), as.numeric(therapy3end), 1)
+		p <- p.vl + add.therapy(as.numeric(therapy3), as.numeric(therapy3end), 1)
 	p.vl <- p.vl + geom_line(size=vl.linesize)
 	p.vl <- p.vl + geom_point(aes(shape=my.type, colour=my.colour), data=subset(data.vl, Used != ""), size=point.size)
 	p.vl <- p.vl + scale_y_log10(name="Viral load", breaks=10^c(1, 3, 5), labels=sapply(c(1, 3, 5), function(x) bquote(''*10^{.(x)}*'')))
