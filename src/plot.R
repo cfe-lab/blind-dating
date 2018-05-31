@@ -15,6 +15,8 @@ THERAPY_COLOUR <- "#ffffa0"
 THERAPY_LTY <- 3
 THERAPY_COLOUR2 <- "#ffcccc"
 THERAPY_LTY2 <- 6
+THERAPY_COLOUR3 <- "#ffffa0"
+THERAPY_LTY3 <- 3
 
 TRAINING_COLOUR <- 'black'
 TRAINING_COLOUR2 <- 'darkblue'
@@ -96,6 +98,9 @@ apply.axes <- function(p, flipped, scaled) {
 					p$layers
 				)
 			}
+			
+			if (!is.na(therapy3))
+				p$layers <- c(add.therapy(as.numeric(therapy3), as.numeric(therapy3end), 1, flipped), p$layers)
 		}
 	} else
 		p <- p + theme(axis.ticks=element_blank(), axis.text=element_blank(), axis.line=element_blank())
@@ -140,7 +145,8 @@ op <- add_option(op, "--yearend", type='character', default=NA)
 op <- add_option(op, "--yearby", type='double', default=NA)
 op <- add_option(op, "--therapy", type='character', default=NA)
 op <- add_option(op, "--therapy2", type='character', default=NA)
-op <- add_option(op, "--therapyend", type='character', default=NA)
+op <- add_option(op, "--therapy3", type='character', default=NA)
+op <- add_option(op, "--therapy3end", type='character', default=NA)
 op <- add_option(op, "--liktol", type='numeric', default=1e-3)
 op <- add_option(op, "--usedups", type='logical', action='store_true', default=F)
 op <- add_option(op, "--cartoon", type='logical', action='store_true', default=F)
@@ -168,7 +174,8 @@ dist.by <- args$distby
 year.by <- args$yearby
 LIK_TOL <- args$liktol
 therapy2 <- args$therapy2
-therapyend <- args$therapyend
+therapy3 <- args$therapy3
+therapy3end <- args$therapy3end
 cartoon <- args$cartoon
 x.title <- args$xtitle
 hist.by.month <- args$histbymonth
@@ -192,19 +199,17 @@ if (use.real) {
 		therapy2 <- as.Date(therapy2)
 	}
 	
-	if (!is.na(therapyend)) {
-		therapyend <- as.Date(therapyend)
+	if (!is.na(therapy3)) {
+		therapy3 <- as.Date(therapy3)
+	}
+	
+	if (!is.na(therapy3end)) {
+		therapy3end <- as.Date(therapy3end)
 	}
 } else {
 	year.start <- as.numeric(args$yearstart)
 	year.end <- as.numeric(args$yearend)
 	THERAPY_START <- as.numeric(args$therapy)
-}
-if (is.na(therapyend)) {
-	therapyend <- therapy2
-	if (is.na(therapyend))  {
-		therapyend <- Inf
-	}
 }
 
 data.file <- paste0("stats/", pat.id, ".data.csv")
@@ -559,6 +564,9 @@ if (!is.na(THERAPY_START)) {
 		p <-  p + add.therapy(as.numeric(therapy2), as.numeric(THERAPY_START), 2, height=H * 1.05)
 }
 
+if (!is.na(therapy3))
+	p <- p + add.therapy(as.numeric(therapy3), as.numeric(therapy3end), 1, height=H * 1.05)
+
 p <- p + geom_segment(x=min(data$date), xend=min(data$date), y=H * 9 / 8, yend=H, arrow=arrow(length = unit(0.25, "cm")))
 
 if (use.real) {
@@ -629,6 +637,8 @@ if (!is.na(vl.file)) {
 		p.vl <- p.vl + add.therapy(as.numeric(THERAPY_START), Inf, 1)
 	if (!is.na(therapy2))
 		p.vl <- p.vl + add.therapy(as.numeric(therapy2), as.numeric(THERAPY_START), 2)
+	if (!is.na(therapy3))
+		p <- p + add.therapy(as.numeric(therapy3), as.numeric(therapy3end), 1)
 	p.vl <- p.vl + geom_line(size=vl.linesize)
 	p.vl <- p.vl + geom_point(aes(shape=my.type, colour=my.colour), data=subset(data.vl, Used != ""), size=point.size)
 	p.vl <- p.vl + scale_y_log10(name="Viral load", breaks=10^c(1, 3, 5), labels=sapply(c(1, 3, 5), function(x) bquote(''*10^{.(x)}*'')))
