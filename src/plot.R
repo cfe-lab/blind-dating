@@ -5,6 +5,7 @@ library(phylobase)
 library(ggplot2)
 library(ggtree)
 library(optparse)
+library(chemCal)
 
 source("~/git/node.dating/src/node.dating.R")
 
@@ -162,6 +163,7 @@ op <- add_option(op, "--vlfile", type='character', default=NA)
 op <- add_option(op, "--info", type='character', default=NA)
 op <- add_option(op, "--dupshift", type='numeric', default=0.01)
 op <- add_option(op, "--nsteps", type='numeric', default=1000)
+op <- add_option(op, "--marklatent", type='logical', action='store_true', default=F)
 args <- parse_args(op)
 
 tree.file <- args$tree
@@ -190,6 +192,7 @@ use.dups <- args$usedups
 info.file <- args$info
 dup.shift <- args$dupshift
 nsteps <- args$nsteps
+mark.latent <- args$marklatent
 if (use.real) {
 	year.start <- args$yearstart
 	year.end <- args$yearend
@@ -229,6 +232,7 @@ pdf.hist.file <- paste0("plots/", pat.id, ".hist.pdf")
 pdf.histdate.file <- paste0("plots/", pat.id, ".histdate.pdf")
 pdf.vl.file <- paste0("plots/", pat.id, ".vl.pdf")
 pdf.dup.disttree.file <- paste0("plots/", pat.id, ".dup.disttree.pdf")
+pdf.colour.mark.tree.file <- paste0("plots/", pat.id, ".colour.mark.tree.pdf")
 
 tree <- ape::ladderize(read.tree(tree.file))
 data <- read.csv(data.file, col.names=c("tip.label", "type", "censored", "date", "dist", "est.date", "date.diff"), stringsAsFactors=F)
@@ -501,6 +505,22 @@ if (use.dups) {
 	dev.off()
 }
 
+if (mark.latent) {
+	data.conf <- as.data.frame(do.call(rbind, lapply(data.all$dist, function(x) unlist(inverse.predict(g, x)))))
+	names(data.conf) <- gsub(" ", ".", names(data.conf))
+	data.withconf <- as.data.frame(cbind(data.all, data.conf))
+	data.withconf$conf.colour <- with(data.withconf, paste0(node.date > Confidence.Limits2, date < Confidence.Limits1))
+	conf.colour.break <- c("TRUEFALSE", "FALSETRUE", "FALSEFALSE")
+	conf.colour.value <- c('red', 'blue', 'black')
+	ptree.withconf <- phylo4d(tree, all.data=data.withconf)
+
+	pdf(pdf.colour.mark.tree.file)
+	print(apply.theme(ggtree(ptree.withconf, yscale="node.date", colour="#49494980", size=tree.size, ladderize=F) +
+	geom_tippoint(aes(colour=conf.colour, shape=my.type, size=my.type)),
+	flipped=T, scaled=T, colour.value.=conf.colour.value, colour.label.=conf.colour.break, colour.break.=conf.colour.break))
+	dev.off()
+}
+
 data.hist <- subset(data, censored > 0)
 
 date.levels <- sort(unique(data.hist$date))
@@ -638,7 +658,7 @@ if (!is.na(vl.file)) {
 	if (!is.na(therapy2))
 		p.vl <- p.vl + add.therapy(as.numeric(therapy2), as.numeric(THERAPY_START), 2)
 	if (!is.na(therapy3))
-		p <- p.vl + add.therapy(as.numeric(therapy3), as.numeric(therapy3end), 1)
+		p.vl <- p.vl + add.therapy(as.numeric(therapy3), as.numeric(therapy3end), 1)
 	p.vl <- p.vl + geom_line(size=vl.linesize)
 	p.vl <- p.vl + geom_point(aes(shape=my.type, colour=my.colour), data=subset(data.vl, Used != ""), size=point.size)
 	p.vl <- p.vl + scale_y_log10(name="Viral load", breaks=10^c(1, 3, 5), labels=sapply(c(1, 3, 5), function(x) bquote(''*10^{.(x)}*'')))
