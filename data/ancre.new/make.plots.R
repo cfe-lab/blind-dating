@@ -136,7 +136,7 @@ data.all$Patient <- as.factor(data.all$Patient)
 pat_levels <- levels(data.all$Patient)
 
 pdf("ancre.comp.pdf")
-p <- ggplot(data.all) + geom_abline(lty=2) + geom_point(aes(x=Estimated.Date.rtt / 365.25, y=Estimated.Date.ogr / 365.25, colour=Patient), size=3) + annotate("text", x=6, y=-1, label=sprintf("Concordance: %.2f", with(data.all, concord(Estimated.Date.rtt, Estimated.Date.ogr))), vjust=0, hjust=1, size=8) + scale_colour_manual(name="", values=ancre.colours, label=gsub("^.+_", "", gsub(".cens", "", pat_levels))) + scale_x_continuous(name="Estimated Date (RTT)", limits=c(-1, 6)) + scale_y_continuous(name="Estimated Date (OGR)", limits=c(-1, 6)) + theme_bw() + my.theme + guides(colour=guide_legend(override.aes=list(size=6)))
+p <- ggplot(data.all) + geom_abline(lty=2) + geom_point(aes(x=Estimated.Date.rtt / 365.25, y=Estimated.Date.ogr / 365.25, colour=Patient), size=3) + annotate("text", x=6, y=-1, label=sprintf("Concordance: %.2f", with(data.all, concord(Estimated.Date.rtt, Estimated.Date.ogr))), vjust=0, hjust=1, size=9) + scale_colour_manual(name="", values=ancre.colours, label=gsub("^.+_", "", gsub(".cens", "", pat_levels))) + scale_x_continuous(name="Estimated Date (RTT)", limits=c(-1, 6)) + scale_y_continuous(name="Estimated Date (OGR)", limits=c(-1, 6)) + theme_bw() + my.theme + guides(colour=guide_legend(override.aes=list(size=6)))
 saveRDS(p, "ancre.comp.rds")
 p
 dev.off()
