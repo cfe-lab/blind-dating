@@ -5,21 +5,21 @@ library(ggplot2)
 pdf.options(family="Helvetica", fonts="Helvetica", width=7, height=7, colormodel='rgb')
 
 my.theme <- theme(
-	text=element_text(size=20),
-	axis.text=element_text(size=13, colour='black'),
-	legend.text=element_text(size=15),
-	legend.position=c(0.01, 1),
-	axis.text.x=element_text(angle=90, vjust=0.5, hjust=1),
-	legend.justification=c(0, 1),
-	legend.spacing=unit(0, 'cm'),
-	legend.margin=margin(0, 0, 0, 0, 'cm'),
-	legend.key.size=unit(0.8, 'cm'),
-	legend.key=element_rect(fill="#00000000", colour="#00000000"),
-	legend.background=element_blank(),
-	legend.box.background=element_blank(),
-	panel.grid.major=element_blank(),
-	panel.grid.minor=element_blank()
-) 
+			text=element_text(size=35),
+			axis.text=element_text(size=25, colour='black'),
+			legend.text=element_text(size=25),
+			legend.position=c(0.01, 1),
+			axis.text.x=element_text(angle=90, vjust=0.5, hjust=1),
+			legend.justification=c(0, 1),
+			legend.spacing=unit(0, 'cm'),
+			legend.margin=margin(0, 0, 0, 0, 'cm'),
+			legend.key.size=unit(1, 'cm'),
+			legend.key=element_rect(fill="#00000000", colour="#00000000"),
+			legend.background=element_blank(),
+			legend.box.background=element_blank(),
+			panel.grid.major=element_blank(),
+		    panel.grid.minor=element_blank()
+)
 
 my.theme2 <- theme(
  text=element_text(size=35),
@@ -139,7 +139,7 @@ data.all$Patient <- as.factor(data.all$Patient)
 pat_levels <- levels(data.all$Patient)
 
 pdf("lanl.comp.pdf")
-p <- ggplot(data.all) + geom_abline(lty=2) + geom_point(aes(x=Estimated.Date.rtt / 365.25, y=Estimated.Date.ogr / 365.25, colour=Patient), size=2) + annotate("text", x=15, y=-5, label=sprintf("Concordance: %.2f", with(data.all, concord(Estimated.Date.rtt, Estimated.Date.ogr))), vjust=0, hjust=1, size=8) + scale_colour_manual(name="", values=lanl.colours, label=gsub("_", " ", gsub("p", "P", pat_levels))) + scale_x_continuous(name="Estimated Date RTT (years since first collection)", limits=c(-5, 15)) + scale_y_continuous(name="Estimated Date OGR (years since first collection)", limits=c(-5, 15)) + theme_bw() + my.theme + guides(colour=guide_legend(override.aes=list(size=5)))
+p <- ggplot(data.all) + geom_abline(lty=2) + geom_point(aes(x=Estimated.Date.rtt / 365.25, y=Estimated.Date.ogr / 365.25, colour=Patient), size=3) + annotate("text", x=15, y=-5, label=sprintf("Concordance: %.2f", with(data.all, concord(Estimated.Date.rtt, Estimated.Date.ogr))), vjust=0, hjust=1, size=8) + scale_colour_manual(name="", values=lanl.colours, label=gsub("^.+_", "", pat_levels)) + scale_x_continuous(name="Estimated Date (RTT)", limits=c(-5, 15)) + scale_y_continuous(name="Estimated Date (OGR)", limits=c(-5, 15)) + theme_bw() + my.theme + guides(colour=guide_legend(override.aes=list(size=6)))
 saveRDS(p, "lanl.comp.rds")
 p
 dev.off()
