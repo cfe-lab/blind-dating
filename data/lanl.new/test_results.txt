@@ -1,0 +1,333 @@
+Only good
+     [,1] [,2]
+[1,]   23    2
+[2,]  243  146
+[3,]    7    1
+DNA v RNA contigency
+
+Barnard's Unconditional Test
+
+           Treatment I Treatment II
+Outcome I          250          147
+Outcome II          23            2
+
+Null hypothesis: Treatments have no effect on the outcomes
+Score statistic = 2.94551
+Nuisance parameter = 0.021 (One sided), 0.537 (Two sided)
+P-value = 0.00223629 (One sided), 0.00322709 (Two sided)
+
+Latent DNA v RNA
+
+	Exact binomial test
+
+data:  sum(skew.latent.data$Type == "PBMC") and nrow(skew.latent.data)
+number of successes = 23, number of trials = 25, p-value = 1.943e-05
+alternative hypothesis: true probability of success is not equal to 0.5
+95 percent confidence interval:
+ 0.7396942 0.9901604
+sample estimates:
+probability of success 
+                  0.92 
+
+Slow v Fast
+
+	Exact binomial test
+
+data:  c(nrow(skew.latent.data), nrow(skew.fast.data))
+number of successes = 25, number of trials = 33, p-value = 0.004551
+alternative hypothesis: true probability of success is not equal to 0.5
+95 percent confidence interval:
+ 0.5774107 0.8890767
+sample estimates:
+probability of success 
+             0.7575758 
+
+Slow v Fast (only DNA)
+
+	Exact binomial test
+
+data:  c(sum(skew.latent.data$Type == "PBMC"), sum(skew.fast.data$Type ==     "PBMC"))
+number of successes = 23, number of trials = 30, p-value = 0.005223
+alternative hypothesis: true probability of success is not equal to 0.5
+95 percent confidence interval:
+ 0.5771635 0.9006621
+sample estimates:
+probability of success 
+             0.7666667 
+
+patient_821 
+     [,1] [,2]
+[1,]   15    0
+[2,]  178   69
+[3,]    5    1
+DNA v RNA contigency
+
+Barnard's Unconditional Test
+
+           Treatment I Treatment II
+Outcome I          183           70
+Outcome II          15            0
+
+Null hypothesis: Treatments have no effect on the outcomes
+Score statistic = 2.37011
+Nuisance parameter = 0.009 (One sided), 0.991 (Two sided)
+P-value = 0.0232396 (One sided), 0.0232396 (Two sided)
+
+Latent DNA v RNA
+
+	Exact binomial test
+
+data:  sum(latent.data$Type == "PBMC") and nrow(latent.data)
+number of successes = 15, number of trials = 15, p-value = 6.104e-05
+alternative hypothesis: true probability of success is not equal to 0.5
+95 percent confidence interval:
+ 0.7819806 1.0000000
+sample estimates:
+probability of success 
+                     1 
+
+Slow v Fast
+
+	Exact binomial test
+
+data:  c(nrow(latent.data), nrow(fast.data))
+number of successes = 15, number of trials = 21, p-value = 0.07835
+alternative hypothesis: true probability of success is not equal to 0.5
+95 percent confidence interval:
+ 0.4782489 0.8871906
+sample estimates:
+probability of success 
+             0.7142857 
+
+Slow v Fast (only DNA)
+
+	Exact binomial test
+
+data:  c(sum(latent.data$Type == "PBMC"), sum(fast.data$Type == "PBMC"))
+number of successes = 15, number of trials = 20, p-value = 0.04139
+alternative hypothesis: true probability of success is not equal to 0.5
+95 percent confidence interval:
+ 0.5089541 0.9134285
+sample estimates:
+probability of success 
+                  0.75 
+
+patient_822 
+     [,1] [,2]
+[1,]    0    0
+[2,]   90   29
+[3,]    0    0
+DNA v RNA contigency
+Latent DNA v RNA
+N.A.
+Slow v Fast
+N.A.
+Slow v Fast (only DNA)
+N.A.
+patient_824 
+     [,1] [,2]
+[1,]    2    3
+[2,]  102   52
+[3,]    8    2
+DNA v RNA contigency
+
+Barnard's Unconditional Test
+
+           Treatment I Treatment II
+Outcome I          110           54
+Outcome II           2            3
+
+Null hypothesis: Treatments have no effect on the outcomes
+Score statistic = -1.26137
+Nuisance parameter = 0.992 (One sided), 0.959 (Two sided)
+P-value = 0.155246 (One sided), 0.233634 (Two sided)
+
+Latent DNA v RNA
+
+	Exact binomial test
+
+data:  sum(latent.data$Type == "PBMC") and nrow(latent.data)
+number of successes = 2, number of trials = 5, p-value = 1
+alternative hypothesis: true probability of success is not equal to 0.5
+95 percent confidence interval:
+ 0.05274495 0.85336720
+sample estimates:
+probability of success 
+                   0.4 
+
+Slow v Fast
+
+	Exact binomial test
+
+data:  c(nrow(latent.data), nrow(fast.data))
+number of successes = 5, number of trials = 15, p-value = 0.3018
+alternative hypothesis: true probability of success is not equal to 0.5
+95 percent confidence interval:
+ 0.1182411 0.6161963
+sample estimates:
+probability of success 
+             0.3333333 
+
+Slow v Fast (only DNA)
+
+	Exact binomial test
+
+data:  c(sum(latent.data$Type == "PBMC"), sum(fast.data$Type == "PBMC"))
+number of successes = 2, number of trials = 10, p-value = 0.1094
+alternative hypothesis: true probability of success is not equal to 0.5
+95 percent confidence interval:
+ 0.02521073 0.55609546
+sample estimates:
+probability of success 
+                   0.2 
+
+patient_13889 
+     [,1] [,2]
+[1,]    8    2
+[2,]   65   77
+[3,]    2    0
+DNA v RNA contigency
+
+Barnard's Unconditional Test
+
+           Treatment I Treatment II
+Outcome I           67           77
+Outcome II           8            2
+
+Null hypothesis: Treatments have no effect on the outcomes
+Score statistic = 2.04777
+Nuisance parameter = 0.579 (One sided), 0.5 (Two sided)
+P-value = 0.0231776 (One sided), 0.0436746 (Two sided)
+
+Latent DNA v RNA
+
+	Exact binomial test
+
+data:  sum(latent.data$Type == "PBMC") and nrow(latent.data)
+number of successes = 8, number of trials = 10, p-value = 0.1094
+alternative hypothesis: true probability of success is not equal to 0.5
+95 percent confidence interval:
+ 0.4439045 0.9747893
+sample estimates:
+probability of success 
+                   0.8 
+
+Slow v Fast
+
+	Exact binomial test
+
+data:  c(nrow(latent.data), nrow(fast.data))
+number of successes = 10, number of trials = 12, p-value = 0.03857
+alternative hypothesis: true probability of success is not equal to 0.5
+95 percent confidence interval:
+ 0.5158623 0.9791375
+sample estimates:
+probability of success 
+             0.8333333 
+
+Slow v Fast (only DNA)
+
+	Exact binomial test
+
+data:  c(sum(latent.data$Type == "PBMC"), sum(fast.data$Type == "PBMC"))
+number of successes = 8, number of trials = 10, p-value = 0.1094
+alternative hypothesis: true probability of success is not equal to 0.5
+95 percent confidence interval:
+ 0.4439045 0.9747893
+sample estimates:
+probability of success 
+                   0.8 
+
+patient_10769 
+     [,1] [,2]
+[1,]    0    0
+[2,]   56  108
+[3,]    0    0
+DNA v RNA contigency
+Latent DNA v RNA
+N.A.
+Slow v Fast
+N.A.
+Slow v Fast (only DNA)
+N.A.
+patient_34391 
+     [,1] [,2]
+[1,]    0    0
+[2,]   35   12
+[3,]    0    0
+DNA v RNA contigency
+Latent DNA v RNA
+N.A.
+Slow v Fast
+N.A.
+Slow v Fast (only DNA)
+N.A.
+patient_34411 
+     [,1] [,2]
+[1,]    0    0
+[2,]   19   14
+[3,]    0    0
+DNA v RNA contigency
+Latent DNA v RNA
+N.A.
+Slow v Fast
+N.A.
+Slow v Fast (only DNA)
+N.A.
+All
+     [,1] [,2]
+[1,]   25    5
+[2,]  545  361
+[3,]   15    3
+DNA v RNA contigency
+
+Barnard's Unconditional Test
+
+           Treatment I Treatment II
+Outcome I          560          364
+Outcome II          25            5
+
+Null hypothesis: Treatments have no effect on the outcomes
+Score statistic = 2.51552
+Nuisance parameter = 0.006 (One sided), 0.095 (Two sided)
+P-value = 0.00852491 (One sided), 0.012038 (Two sided)
+
+Latent DNA v RNA
+
+	Exact binomial test
+
+data:  sum(all.latent.data$Type == "PBMC") and nrow(all.latent.data)
+number of successes = 25, number of trials = 30, p-value = 0.0003249
+alternative hypothesis: true probability of success is not equal to 0.5
+95 percent confidence interval:
+ 0.6527883 0.9435783
+sample estimates:
+probability of success 
+             0.8333333 
+
+Slow v Fast
+
+	Exact binomial test
+
+data:  c(nrow(all.latent.data), nrow(all.fast.data))
+number of successes = 30, number of trials = 48, p-value = 0.1114
+alternative hypothesis: true probability of success is not equal to 0.5
+95 percent confidence interval:
+ 0.4735058 0.7604776
+sample estimates:
+probability of success 
+                 0.625 
+
+Slow v Fast (only DNA)
+
+	Exact binomial test
+
+data:  c(sum(all.latent.data$Type == "PBMC"), sum(all.fast.data$Type ==     "PBMC"))
+number of successes = 25, number of trials = 40, p-value = 0.1539
+alternative hypothesis: true probability of success is not equal to 0.5
+95 percent confidence interval:
+ 0.4580148 0.7727373
+sample estimates:
+probability of success 
+                 0.625 
+
