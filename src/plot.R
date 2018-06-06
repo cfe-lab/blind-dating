@@ -9,8 +9,8 @@ library(chemCal)
 
 source("~/git/node.dating/src/node.dating.R")
 
-MIN_COL_TIME <- 9720
-MAX_COL_TIME <- 13371
+#MIN_COL_TIME <- 9720
+#MAX_COL_TIME <- 13371
 
 THERAPY_COLOUR <- "#ffffa0"
 THERAPY_LTY <- 3
@@ -154,8 +154,8 @@ op <- add_option(op, "--cartoon", type='logical', action='store_true', default=F
 op <- add_option(op, "--xtitle", type='character', default="Collection Year")
 op <- add_option(op, "--histbymonth", type='logical', action='store_true', default=F)
 op <- add_option(op, "--histheight", type='numeric', default=1.7)
-op <- add_option(op, "--mincoltime", type='numeric', default=MIN_COL_TIME)
-op <- add_option(op, "--maxcoltime", type='numeric', default=MAX_COL_TIME)
+op <- add_option(op, "--mincoltime", type='numeric', default=NA)
+op <- add_option(op, "--maxcoltime", type='numeric', default=NA)
 op <- add_option(op, "--histfreqby", type='numeric', default=2)
 op <- add_option(op, "--dnashapescale", type='numeric', default=1)
 op <- add_option(op, "--maxvl", type='numeric', default=100000)
@@ -390,6 +390,11 @@ data$my.type <- type.label[match(with(data, paste0(type, censored > 0)), type.br
 type.mask <- type.label %in% data$my.type
 type.label <- type.label[type.mask]
 type.value <- type.value[type.mask]
+
+if (is.na(MIN_COL_TIME))
+	MIN_COL_TIME <- min(subset(data, censored <= 0)$date)
+if (is.na(MAX_COL_TIME))
+	MAX_COL_TIME <- max(subset(data, censored <= 0)$date)
 
 data$my.colour <- data$date
 data$my.colour[data$censored > 0] <- "censored"
@@ -660,12 +665,13 @@ if (!is.na(vl.file)) {
 	if (!is.na(therapy3))
 		p.vl <- p.vl + add.therapy(as.numeric(therapy3), as.numeric(therapy3end), 1)
 	p.vl <- p.vl + geom_line(size=vl.linesize)
-	p.vl <- p.vl + geom_point(aes(shape=my.type, colour=my.colour), data=subset(data.vl, Used != ""), size=point.size)
+	p.vl <- p.vl + geom_point2(aes(shape=my.type, colour=my.colour), data=subset(data.vl, Used != ""), size=point.size)
 	p.vl <- p.vl + scale_y_log10(name="Viral load", breaks=10^c(1, 3, 5), labels=sapply(c(1, 3, 5), function(x) bquote(''*10^{.(x)}*'')))
-	if (use.real)
+	if (use.real) {
 		p.vl <- p.vl + scale_x_date(name="Collection Year", breaks=as.Date(paste0(seq(1984, 2020, by=2), "-01-01")), labels=seq(1984, 2020, by=2))
-	else
+	} else {
 		p.vl <- p.vl + scale_x_continuous(name="Collection Year", breaks=seq(0, 10, by=1))
+	}
 	p.vl <- p.vl + coord_cartesian(ylim=c(10, max.vl))
 	p.vl <- p.vl + theme_bw()
 	p.vl <- p.vl + theme(
