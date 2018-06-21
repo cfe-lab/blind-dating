@@ -5,29 +5,16 @@ Only good
 [3,]    7    1
 DNA v RNA contigency
 
-Barnard's Unconditional Test
+	Fisher's Exact Test for Count Data
 
-           Treatment I Treatment II
-Outcome I          250          147
-Outcome II          23            2
-
-Null hypothesis: Treatments have no effect on the outcomes
-Score statistic = 2.94551
-Nuisance parameter = 0.021 (One sided), 0.537 (Two sided)
-P-value = 0.00223629 (One sided), 0.00322709 (Two sided)
-
-Latent DNA v RNA
-
-	Exact binomial test
-
-data:  sum(skew.latent.data$Type == "PBMC") and nrow(skew.latent.data)
-number of successes = 23, number of trials = 25, p-value = 1.943e-05
-alternative hypothesis: true probability of success is not equal to 0.5
+data:  
+p-value = 0.002142
+alternative hypothesis: true odds ratio is not equal to 1
 95 percent confidence interval:
- 0.7396942 0.9901604
+  1.626911 59.847197
 sample estimates:
-probability of success 
-                  0.92 
+odds ratio 
+  6.739902 
 
 Slow v Fast
 
@@ -62,29 +49,16 @@ patient_821
 [3,]    5    1
 DNA v RNA contigency
 
-Barnard's Unconditional Test
+	Fisher's Exact Test for Count Data
 
-           Treatment I Treatment II
-Outcome I          183           70
-Outcome II          15            0
-
-Null hypothesis: Treatments have no effect on the outcomes
-Score statistic = 2.37011
-Nuisance parameter = 0.009 (One sided), 0.991 (Two sided)
-P-value = 0.0232396 (One sided), 0.0232396 (Two sided)
-
-Latent DNA v RNA
-
-	Exact binomial test
-
-data:  sum(latent.data$Type == "PBMC") and nrow(latent.data)
-number of successes = 15, number of trials = 15, p-value = 6.104e-05
-alternative hypothesis: true probability of success is not equal to 0.5
+data:  
+p-value = 0.01376
+alternative hypothesis: true odds ratio is not equal to 1
 95 percent confidence interval:
- 0.7819806 1.0000000
+ 1.324306      Inf
 sample estimates:
-probability of success 
-                     1 
+odds ratio 
+       Inf 
 
 Slow v Fast
 
@@ -118,8 +92,18 @@ patient_822
 [2,]   90   29
 [3,]    0    0
 DNA v RNA contigency
-Latent DNA v RNA
-N.A.
+
+	Fisher's Exact Test for Count Data
+
+data:  
+p-value = 1
+alternative hypothesis: true odds ratio is not equal to 1
+95 percent confidence interval:
+   0 Inf
+sample estimates:
+odds ratio 
+         0 
+
 Slow v Fast
 N.A.
 Slow v Fast (only DNA)
@@ -131,29 +115,16 @@ patient_824
 [3,]    8    2
 DNA v RNA contigency
 
-Barnard's Unconditional Test
+	Fisher's Exact Test for Count Data
 
-           Treatment I Treatment II
-Outcome I          110           54
-Outcome II           2            3
-
-Null hypothesis: Treatments have no effect on the outcomes
-Score statistic = -1.26137
-Nuisance parameter = 0.992 (One sided), 0.959 (Two sided)
-P-value = 0.155246 (One sided), 0.233634 (Two sided)
-
-Latent DNA v RNA
-
-	Exact binomial test
-
-data:  sum(latent.data$Type == "PBMC") and nrow(latent.data)
-number of successes = 2, number of trials = 5, p-value = 1
-alternative hypothesis: true probability of success is not equal to 0.5
+data:  
+p-value = 0.3368
+alternative hypothesis: true odds ratio is not equal to 1
 95 percent confidence interval:
- 0.05274495 0.85336720
+ 0.02679003 2.96604598
 sample estimates:
-probability of success 
-                   0.4 
+odds ratio 
+ 0.3296475 
 
 Slow v Fast
 
@@ -188,29 +159,16 @@ patient_13889
 [3,]    2    0
 DNA v RNA contigency
 
-Barnard's Unconditional Test
+	Fisher's Exact Test for Count Data
 
-           Treatment I Treatment II
-Outcome I           67           77
-Outcome II           8            2
-
-Null hypothesis: Treatments have no effect on the outcomes
-Score statistic = 2.04777
-Nuisance parameter = 0.579 (One sided), 0.5 (Two sided)
-P-value = 0.0231776 (One sided), 0.0436746 (Two sided)
-
-Latent DNA v RNA
-
-	Exact binomial test
-
-data:  sum(latent.data$Type == "PBMC") and nrow(latent.data)
-number of successes = 8, number of trials = 10, p-value = 0.1094
-alternative hypothesis: true probability of success is not equal to 0.5
+data:  
+p-value = 0.05189
+alternative hypothesis: true odds ratio is not equal to 1
 95 percent confidence interval:
- 0.4439045 0.9747893
+  0.8677552 45.4995090
 sample estimates:
-probability of success 
-                   0.8 
+odds ratio 
+  4.556379 
 
 Slow v Fast
 
@@ -244,8 +202,18 @@ patient_10769
 [2,]   56  108
 [3,]    0    0
 DNA v RNA contigency
-Latent DNA v RNA
-N.A.
+
+	Fisher's Exact Test for Count Data
+
+data:  
+p-value = 1
+alternative hypothesis: true odds ratio is not equal to 1
+95 percent confidence interval:
+   0 Inf
+sample estimates:
+odds ratio 
+         0 
+
 Slow v Fast
 N.A.
 Slow v Fast (only DNA)
@@ -256,8 +224,18 @@ patient_34391
 [2,]   35   12
 [3,]    0    0
 DNA v RNA contigency
-Latent DNA v RNA
-N.A.
+
+	Fisher's Exact Test for Count Data
+
+data:  
+p-value = 1
+alternative hypothesis: true odds ratio is not equal to 1
+95 percent confidence interval:
+   0 Inf
+sample estimates:
+odds ratio 
+         0 
+
 Slow v Fast
 N.A.
 Slow v Fast (only DNA)
@@ -268,8 +246,18 @@ patient_34411
 [2,]   19   14
 [3,]    0    0
 DNA v RNA contigency
-Latent DNA v RNA
-N.A.
+
+	Fisher's Exact Test for Count Data
+
+data:  
+p-value = 1
+alternative hypothesis: true odds ratio is not equal to 1
+95 percent confidence interval:
+   0 Inf
+sample estimates:
+odds ratio 
+         0 
+
 Slow v Fast
 N.A.
 Slow v Fast (only DNA)
@@ -281,29 +269,16 @@ All
 [3,]   15    3
 DNA v RNA contigency
 
-Barnard's Unconditional Test
+	Fisher's Exact Test for Count Data
 
-           Treatment I Treatment II
-Outcome I          560          364
-Outcome II          25            5
-
-Null hypothesis: Treatments have no effect on the outcomes
-Score statistic = 2.51552
-Nuisance parameter = 0.006 (One sided), 0.095 (Two sided)
-P-value = 0.00852491 (One sided), 0.012038 (Two sided)
-
-Latent DNA v RNA
-
-	Exact binomial test
-
-data:  sum(all.latent.data$Type == "PBMC") and nrow(all.latent.data)
-number of successes = 25, number of trials = 30, p-value = 0.0003249
-alternative hypothesis: true probability of success is not equal to 0.5
+data:  
+p-value = 0.01243
+alternative hypothesis: true odds ratio is not equal to 1
 95 percent confidence interval:
- 0.6527883 0.9435783
+  1.206038 10.958815
 sample estimates:
-probability of success 
-             0.8333333 
+odds ratio 
+  3.246681 
 
 Slow v Fast
 

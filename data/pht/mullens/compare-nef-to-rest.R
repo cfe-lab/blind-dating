@@ -35,5 +35,5 @@ all.diffs <- colSums(t(df[, all.ids]) != cons[all.ids]) / length(all.ids)
 nef.diffs <- colSums(t(df[, nef.ids]) != cons[nef.ids]) / length(nef.ids)
 notnef.diffs <- colSums(t(df[, notnef.ids]) != cons[notnef.ids]) / length(notnef.ids)
 
-cor(all.diffs, nef.diffs)
-cor(notnef.diffs, nef.diffs)
+cor.test(all.diffs, nef.diffs)
+cor.test(notnef.diffs, nef.diffs)
