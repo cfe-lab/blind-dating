@@ -102,7 +102,7 @@ stats.col.names <- c(
 	"Original RMSE",
 	"Original MAE",
 	"Original Correlation",
-	"Original Correlation",
+	"Original Correlation (Spearman)",
 	"Original Concordance"
 )
 write.table(stats, output.stats, row.names=F, col.names=stats.col.names, sep=",")

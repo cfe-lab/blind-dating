@@ -5,16 +5,19 @@ library(phylobase)
 library(ggplot2)
 library(ggtree)
 library(optparse)
+library(chemCal)
 
 source("~/git/node.dating/src/node.dating.R")
 
-MIN_COL_TIME <- 9720
-MAX_COL_TIME <- 13371
+#MIN_COL_TIME <- 9720
+#MAX_COL_TIME <- 13371
 
 THERAPY_COLOUR <- "#ffffa0"
 THERAPY_LTY <- 3
 THERAPY_COLOUR2 <- "#ffcccc"
 THERAPY_LTY2 <- 6
+THERAPY_COLOUR3 <- "#ffffa0"
+THERAPY_LTY3 <- 3
 
 TRAINING_COLOUR <- 'black'
 TRAINING_COLOUR2 <- 'darkblue'
@@ -96,6 +99,9 @@ apply.axes <- function(p, flipped, scaled) {
 					p$layers
 				)
 			}
+			
+			if (!is.na(therapy3))
+				p$layers <- c(add.therapy(as.numeric(therapy3), as.numeric(therapy3end), 1, flipped), p$layers)
 		}
 	} else
 		p <- p + theme(axis.ticks=element_blank(), axis.text=element_blank(), axis.line=element_blank())
@@ -140,15 +146,16 @@ op <- add_option(op, "--yearend", type='character', default=NA)
 op <- add_option(op, "--yearby", type='double', default=NA)
 op <- add_option(op, "--therapy", type='character', default=NA)
 op <- add_option(op, "--therapy2", type='character', default=NA)
-op <- add_option(op, "--therapyend", type='character', default=NA)
+op <- add_option(op, "--therapy3", type='character', default=NA)
+op <- add_option(op, "--therapy3end", type='character', default=NA)
 op <- add_option(op, "--liktol", type='numeric', default=1e-3)
 op <- add_option(op, "--usedups", type='logical', action='store_true', default=F)
 op <- add_option(op, "--cartoon", type='logical', action='store_true', default=F)
 op <- add_option(op, "--xtitle", type='character', default="Collection Year")
 op <- add_option(op, "--histbymonth", type='logical', action='store_true', default=F)
 op <- add_option(op, "--histheight", type='numeric', default=1.7)
-op <- add_option(op, "--mincoltime", type='numeric', default=MIN_COL_TIME)
-op <- add_option(op, "--maxcoltime", type='numeric', default=MAX_COL_TIME)
+op <- add_option(op, "--mincoltime", type='numeric', default=NA)
+op <- add_option(op, "--maxcoltime", type='numeric', default=NA)
 op <- add_option(op, "--histfreqby", type='numeric', default=2)
 op <- add_option(op, "--dnashapescale", type='numeric', default=1)
 op <- add_option(op, "--maxvl", type='numeric', default=100000)
@@ -156,6 +163,7 @@ op <- add_option(op, "--vlfile", type='character', default=NA)
 op <- add_option(op, "--info", type='character', default=NA)
 op <- add_option(op, "--dupshift", type='numeric', default=0.01)
 op <- add_option(op, "--nsteps", type='numeric', default=1000)
+op <- add_option(op, "--marklatent", type='logical', action='store_true', default=F)
 args <- parse_args(op)
 
 tree.file <- args$tree
@@ -168,7 +176,8 @@ dist.by <- args$distby
 year.by <- args$yearby
 LIK_TOL <- args$liktol
 therapy2 <- args$therapy2
-therapyend <- args$therapyend
+therapy3 <- args$therapy3
+therapy3end <- args$therapy3end
 cartoon <- args$cartoon
 x.title <- args$xtitle
 hist.by.month <- args$histbymonth
@@ -183,6 +192,7 @@ use.dups <- args$usedups
 info.file <- args$info
 dup.shift <- args$dupshift
 nsteps <- args$nsteps
+mark.latent <- args$marklatent
 if (use.real) {
 	year.start <- args$yearstart
 	year.end <- args$yearend
@@ -192,19 +202,17 @@ if (use.real) {
 		therapy2 <- as.Date(therapy2)
 	}
 	
-	if (!is.na(therapyend)) {
-		therapyend <- as.Date(therapyend)
+	if (!is.na(therapy3)) {
+		therapy3 <- as.Date(therapy3)
+	}
+	
+	if (!is.na(therapy3end)) {
+		therapy3end <- as.Date(therapy3end)
 	}
 } else {
 	year.start <- as.numeric(args$yearstart)
 	year.end <- as.numeric(args$yearend)
 	THERAPY_START <- as.numeric(args$therapy)
-}
-if (is.na(therapyend)) {
-	therapyend <- therapy2
-	if (is.na(therapyend))  {
-		therapyend <- Inf
-	}
 }
 
 data.file <- paste0("stats/", pat.id, ".data.csv")
@@ -224,6 +232,7 @@ pdf.hist.file <- paste0("plots/", pat.id, ".hist.pdf")
 pdf.histdate.file <- paste0("plots/", pat.id, ".histdate.pdf")
 pdf.vl.file <- paste0("plots/", pat.id, ".vl.pdf")
 pdf.dup.disttree.file <- paste0("plots/", pat.id, ".dup.disttree.pdf")
+pdf.colour.mark.tree.file <- paste0("plots/", pat.id, ".colour.mark.tree.pdf")
 
 tree <- ape::ladderize(read.tree(tree.file))
 data <- read.csv(data.file, col.names=c("tip.label", "type", "censored", "date", "dist", "est.date", "date.diff"), stringsAsFactors=F)
@@ -382,6 +391,11 @@ type.mask <- type.label %in% data$my.type
 type.label <- type.label[type.mask]
 type.value <- type.value[type.mask]
 
+if (is.na(MIN_COL_TIME))
+	MIN_COL_TIME <- min(subset(data, censored <= 0)$date)
+if (is.na(MAX_COL_TIME))
+	MAX_COL_TIME <- max(subset(data, censored <= 0)$date)
+
 data$my.colour <- data$date
 data$my.colour[data$censored > 0] <- "censored"
 my.colour.break <- unique(data$my.colour)
@@ -496,6 +510,22 @@ if (use.dups) {
 	dev.off()
 }
 
+if (mark.latent) {
+	data.conf <- as.data.frame(do.call(rbind, lapply(data.all$dist, function(x) unlist(inverse.predict(g, x)))))
+	names(data.conf) <- gsub(" ", ".", names(data.conf))
+	data.withconf <- as.data.frame(cbind(data.all, data.conf))
+	data.withconf$conf.colour <- with(data.withconf, paste0(node.date > Confidence.Limits2, date < Confidence.Limits1))
+	conf.colour.break <- c("TRUEFALSE", "FALSETRUE", "FALSEFALSE")
+	conf.colour.value <- c('red', 'blue', 'black')
+	ptree.withconf <- phylo4d(tree, all.data=data.withconf)
+
+	pdf(pdf.colour.mark.tree.file)
+	print(apply.theme(ggtree(ptree.withconf, yscale="node.date", colour="#49494980", size=tree.size, ladderize=F) +
+	geom_tippoint(aes(colour=conf.colour, shape=my.type, size=my.type)),
+	flipped=T, scaled=T, colour.value.=conf.colour.value, colour.label.=conf.colour.break, colour.break.=conf.colour.break))
+	dev.off()
+}
+
 data.hist <- subset(data, censored > 0)
 
 date.levels <- sort(unique(data.hist$date))
@@ -558,6 +588,9 @@ if (!is.na(THERAPY_START)) {
 	if (!is.na(therapy2))
 		p <-  p + add.therapy(as.numeric(therapy2), as.numeric(THERAPY_START), 2, height=H * 1.05)
 }
+
+if (!is.na(therapy3))
+	p <- p + add.therapy(as.numeric(therapy3), as.numeric(therapy3end), 1, height=H * 1.05)
 
 p <- p + geom_segment(x=min(data$date), xend=min(data$date), y=H * 9 / 8, yend=H, arrow=arrow(length = unit(0.25, "cm")))
 
@@ -629,13 +662,16 @@ if (!is.na(vl.file)) {
 		p.vl <- p.vl + add.therapy(as.numeric(THERAPY_START), Inf, 1)
 	if (!is.na(therapy2))
 		p.vl <- p.vl + add.therapy(as.numeric(therapy2), as.numeric(THERAPY_START), 2)
+	if (!is.na(therapy3))
+		p.vl <- p.vl + add.therapy(as.numeric(therapy3), as.numeric(therapy3end), 1)
 	p.vl <- p.vl + geom_line(size=vl.linesize)
-	p.vl <- p.vl + geom_point(aes(shape=my.type, colour=my.colour), data=subset(data.vl, Used != ""), size=point.size)
+	p.vl <- p.vl + geom_point2(aes(shape=my.type, colour=my.colour), data=subset(data.vl, Used != ""), size=point.size)
 	p.vl <- p.vl + scale_y_log10(name="Viral load", breaks=10^c(1, 3, 5), labels=sapply(c(1, 3, 5), function(x) bquote(''*10^{.(x)}*'')))
-	if (use.real)
+	if (use.real) {
 		p.vl <- p.vl + scale_x_date(name="Collection Year", breaks=as.Date(paste0(seq(1984, 2020, by=2), "-01-01")), labels=seq(1984, 2020, by=2))
-	else
+	} else {
 		p.vl <- p.vl + scale_x_continuous(name="Collection Year", breaks=seq(0, 10, by=1))
+	}
 	p.vl <- p.vl + coord_cartesian(ylim=c(10, max.vl))
 	p.vl <- p.vl + theme_bw()
 	p.vl <- p.vl + theme(

@@ -32,4 +32,4 @@ Jones BR, Kinloch NN, Horacsek J, Ganase B, Harris M, Jones RB, Harrigan PR, Bro
 * NELSI https://github.com/sebastianduchene/NELSI.git
 * node.dating https://github.com/brj1/node.dating/tree/random
 
-Blind-dating also requires Python3 and INDELible for the simulations only and RAxML
+Blind-dating also requires RAxML. Python3 and INDELible are needed for the simulations only.
