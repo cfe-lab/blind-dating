@@ -1,4 +1,5 @@
 library(ape)
+library(optparse)
 
 args.all <- commandArgs(trailingOnly = F)
 
@@ -20,14 +21,30 @@ if (any(grep("--file=", args.all))) {
 
 source(file.path(source.dir, 'raxml.R'), chdir=T)
 
-args <- commandArgs(trailingOnly = T)
+op <- OptionParser()
+op <- add_option(op, "--fasta", type='character')
+op <- add_option(op, "--tree", type='character')
+op <- add_option(op, "--raxml", type='character')
+op <- add_option(op, "--threads", type='numeric', default=2)
+op <- add_option(op, "--seed", type='numeric', default=1989)
+op <- add_option(op, "--tmpdir", type='character', default=NULL)
+op <- add_option(op, "--settings", type='character', default=NA)
+args <- parse_args(op)
 
-fasta.file = args[1]
-tree.file = args[2]
-exec = args[3]
-threads = as.integer(args[4])
-seed = as.integer(args[5])
-tmp.dir <- if (length(args) > 5) args[6] else NULL
+settings.file <- args$settings
+if (!is.na(settings.file)) {
+	settings <- readLines(settings.file)
+	settings.filter <- unlist(lapply(op@options, function(x) settings[grepl(paste0("^", x@long_flag, "(=|$)"), settings)]))
+	args.settings <- parse_args(op, args=settings.filter)
+	args <- c(args, args.settings)
+}
+
+fasta.file <- args$fasta
+tree.file <- args$tree
+exec <- args$raxml
+threads <- args$threads
+seed <- args$seed
+tmp.dir <- args$tmpdir
 
 tmp <- !is.null(tmp.dir)
 

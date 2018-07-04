@@ -135,8 +135,8 @@ apply.theme <- function(p, flipped=F, scaled=T, type.label.=type.label, type.val
 
 op <- OptionParser()
 op <- add_option(op, "--tree", type='character')
-op <- add_option(op, "--patid", type='character')
-op <- add_option(op, "--patid2", type='character')
+op <- add_option(op, "--patid", type='character', default=NA)
+op <- add_option(op, "--patid2", type='character', default=NA)
 op <- add_option(op, "--real", type='logical', action='store_true', default=F)
 op <- add_option(op, "--distmax", type='double', default=NA)
 op <- add_option(op, "--distmin", type='double', default=NA)
@@ -164,11 +164,21 @@ op <- add_option(op, "--info", type='character', default=NA)
 op <- add_option(op, "--dupshift", type='numeric', default=0.01)
 op <- add_option(op, "--nsteps", type='numeric', default=1000)
 op <- add_option(op, "--marklatent", type='logical', action='store_true', default=F)
+op <- add_option(op, "--settings", type='character', default=NA)
 args <- parse_args(op)
+
+settings.file <- args$settings
+if (!is.na(settings.file)) {
+	settings <- readLines(settings.file)
+	settings.filter <- unlist(lapply(op@options, function(x) settings[grepl(paste0("^", x@long_flag, "(=|$)"), settings)]))
+	args.settings <- parse_args(op, args=settings.filter)
+	args <- c(args, args.settings)
+}
+
 
 tree.file <- args$tree
 pat.id <- args$patid
-pat.id2 <- if ("patid2" %in% names(args)) args$patid2 else NA
+pat.id2 <- args$patid2
 use.real <- args$real # 0 Training/Censored, 1 RNA/DNA
 dist.min <- args$distmin
 dist.max <- args$distmax
