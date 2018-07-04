@@ -30,7 +30,16 @@ op <- add_option(op, "--useall", type='logical', action='store_true', default=F)
 op <- add_option(op, "--real", type='logical', action='store_true', default=F)
 op <- add_option(op, "--method", type='character', default='correlation')
 op <- add_option(op, "--ogrname", type='character', default="REFERENCE")
+op <- add_option(op, "--settings", type='character', default=NA)
 args <- parse_args(op)
+
+settings.file <- args$settings
+if (!is.na(settings.file)) {
+	settings <- readLines(settings.file)
+	settings.filter <- unlist(lapply(op@options, function(x) settings[grepl(paste0("^", x@long_flag, "(=|$)"), settings)]))
+	args.settings <- parse_args(op, args=settings.filter)
+	args <- c(args, args.settings)
+}
 
 tree.file <- args$tree
 info.file <- args$info

@@ -35,12 +35,22 @@ concord <- function(x, y) {
 op <- OptionParser()
 op <- add_option(op, "--tree", type='character')
 op <- add_option(op, "--info", type='character')
-op <- add_option(op, "--patid", type='character')
+op <- add_option(op, "--patid", type='character', default=NA)
 op <- add_option(op, "--real", type='logical', action='store_true', default=F)
 op <- add_option(op, "--usedups", type='logical', action='store_true', default=F)
 op <- add_option(op, "--seed", type="numeric", default=1989)
 op <- add_option(op, "--cutoff", type="character", default=NA)
+op <- add_option(op, "--settings", type='character', default=NA)
 args <- parse_args(op)
+
+settings.file <- args$settings
+if (!is.na(settings.file)) {
+	settings <- readLines(settings.file)
+	settings.filter <- unlist(lapply(op@options, function(x) settings[grepl(paste0("^", x@long_flag, "(=|$)"), settings)]))
+	args.settings <- parse_args(op, args=settings.filter)
+	args <- c(args, args.settings)
+}
+
 
 tree.file <- args$tree
 info.file <- args$info
