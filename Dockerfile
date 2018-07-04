@@ -23,7 +23,7 @@ RUN make -f Makefile.PTHREADS.gcc && \
   ln -s raxmlHPC-PTHREADS /opt/raxml
 
 # CRAN R packages
-RUN R --slave -e 'local({r <- getOption("repos"); r["CRAN"] <- "http://cran.stat.sfu.ca"; options(repos=r)}); install.packages(c("ape", "chemCal", "ggplot2", "optparse", "phylobase", "seqinr", "TreeSim"))'
+RUN R --slave -e 'local({r <- getOption("repos"); r["CRAN"] <- "http://cran.stat.sfu.ca"; options(repos=r)}); install.packages(c("ape", "chemCal", "ggplot2", "optparse", "phylobase", "seqinr", "TreeSim", "parallel"))'
 
 # NELSI
 WORKDIR /tmp
