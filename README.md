@@ -25,6 +25,7 @@ Jones BR, Kinloch NN, Horacsek J, Ganase B, Harris M, Jones RB, Harrigan PR, Bro
 * chemCal
 * ggplot2
 * optparse
+* parallel
 * phylobase
 * seqinr
 * TreeSim
