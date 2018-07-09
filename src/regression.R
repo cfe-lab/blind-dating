@@ -2,25 +2,7 @@ library(ape)
 library(optparse)
 library(chemCal)
 
-args.all <- commandArgs(trailingOnly = F)
-
-if (any(grep("--file=", args.all))) {
-	source.dir <- dirname(sub("--file=", "", args.all[grep("--file=", args.all)]))
-} else {
-	file.arg <- F
-
-	for (i in 1:length(args.all)) {
-		if (file.arg) {
-			source.dir <- dirname(args.all[i])
-		
-			break
-		}
-		
-		file.arg <- args.all[i] == '-f'
-	}
-}
-
-source(file.path(source.dir, 'read.info.R'), chdir=T)
+source("/opt/blind-dating/read.info.R", chdir=T)
 
 concord <- function(x, y) {
 	mu.x <- sum(x) / length(x)
@@ -40,6 +22,10 @@ op <- add_option(op, "--real", type='logical', action='store_true', default=F)
 op <- add_option(op, "--usedups", type='logical', action='store_true', default=F)
 op <- add_option(op, "--seed", type="numeric", default=1989)
 op <- add_option(op, "--cutoff", type="character", default=NA)
+op <- add_option(op, "--data", type='character', default=NA)
+op <- add_option(op, "--stats", type='character', default=NA)
+op <- add_option(op, "--regression", type='character', default=NA)
+op <- add_option(op, "--freqweights", type='logical', action='store_true', default=F)
 op <- add_option(op, "--settings", type='character', default=NA)
 args <- parse_args(op)
 
@@ -58,12 +44,16 @@ pat.id <- args$patid
 use.date <- args$real
 use.all <- args$usedups
 cutoff <- args$cutoff
+data.file <- args$data
+stats.file <- args$stats
+regression.file <- args$regression
+freq.weights <- args$freqweights
 
 set.seed(args$seed)
 
-data.file <- paste0("stats/", pat.id, ".data.csv")
-stats.file <- paste0("stats/", pat.id, ".stats.csv")
-regression.file <- paste0("stats/", pat.id, ".regression.rds")
+if (!is.na(data.file)) data.file <- paste0("stats/", pat.id, ".data.csv")
+if (!is.na(stats.file)) stats.file <- paste0("stats/", pat.id, ".stats.csv")
+if (!is.na(regression.file)) regression.file <- paste0("stats/", pat.id, ".regression.rds")
 
 tree <- read.tree(tree.file)
 info <- if (use.all) read.csv(info.file, stringsAsFactors=F) else read.info(info.file, tree$tip.label)
@@ -71,8 +61,14 @@ n <- length(tree$tip.label)
 
 data <- data.frame(label=info$FULLSEQID, type=info$TYPE, censored=info$CENSORED, date=if (use.date == 1) as.numeric(as.Date(info$COLDATE)) else as.numeric(info$COLDATE), dist=node.depth.edgelength(tree)[if (use.all) match(info$DUPLICATE, tree$tip.label) else 1:n], stringsAsFactors=F)
 
-g <- lm(dist ~ date, data=data, subset=censored == 0)
-g.null <- lm(dist ~ 1, data=data, subset=censored == 0)
+weights <- if (freq.weights) {
+	info$COUNT[if (use.all) match(info$DUPLICATE, tree$tip.label) else 1:n, ]
+} else {
+	NULL
+}
+
+g <- lm(dist ~ date, data=data, weights=weights, subset=censored == 0)
+g.null <- lm(dist ~ 1, data=data, weights=weights, subset=censored == 0)
 
 a <- coef(g)[[1]]
 b <- coef(g)[[2]]

@@ -24,7 +24,9 @@ args <- commandArgs(trailingOnly = T)
 
 fasta.file <- args[1]
 info.file <- args[2]
-use.real <- length(args) == 2 || args[2] == '1'
+new.fasta.file <- args[3]
+new.info.file <- args[4]
+use.real <- length(args) == 4 || args[5] == '1'
 
 f <- read.fasta(fasta.file)
 
@@ -32,7 +34,7 @@ same <- lapply(f, function(x) which(unlist(lapply(f, function(y) all(x == y)))))
 same <- same[unlist(lapply(same, length)) > 1]
 same <- unique(lapply(same, function(x) {names(x) <- NULL; x}))
 
-info <- read.info(info.file, names(f)[names(f) != "REFERENCE"])
+info <- read.info(info.file, names(f))
 
 o <- match(info$FULLSEQID, names(f))[order(if (use.real) as.numeric(as.Date(info$COLDATE)) else info$COLDATE)]
 
@@ -50,5 +52,7 @@ info$DUPLICATES[all.rows] <- unlist(lapply(dups, paste, collapse=";"))
 info$DUPLICATE[all.rows] <- rep.dup
 info$DUPLICATE[nall.rows] <- info$FULLSEQID[nall.rows]
 
-info <- info[!is.na(info$PATID), ]
-write.csv(info, info.file, row.names=F, na="")
+write.csv(info, new.info.file, row.names=F, na="")
+
+f <- f[info$KEPT == 1]
+write.fasta(f, names(f), new.fasta.file)

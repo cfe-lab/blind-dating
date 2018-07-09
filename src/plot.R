@@ -7,7 +7,7 @@ library(ggtree)
 library(optparse)
 library(chemCal)
 
-source("~/git/node.dating/src/node.dating.R")
+source("/opt/node.dating.R")
 
 #MIN_COL_TIME <- 9720
 #MAX_COL_TIME <- 13371
@@ -164,6 +164,9 @@ op <- add_option(op, "--info", type='character', default=NA)
 op <- add_option(op, "--dupshift", type='numeric', default=0.01)
 op <- add_option(op, "--nsteps", type='numeric', default=1000)
 op <- add_option(op, "--marklatent", type='logical', action='store_true', default=F)
+op <- add_option(op, "--data", type='character', default=NA)
+op <- add_option(op, "--stats", type='character', default=NA)
+op <- add_option(op, "--regression", type='character', default=NA)
 op <- add_option(op, "--settings", type='character', default=NA)
 args <- parse_args(op)
 
@@ -203,6 +206,9 @@ info.file <- args$info
 dup.shift <- args$dupshift
 nsteps <- args$nsteps
 mark.latent <- args$marklatent
+data.file <- args$data
+stats.file <- args$stats
+regression.file <- args$regression
 if (use.real) {
 	year.start <- args$yearstart
 	year.end <- args$yearend
@@ -225,24 +231,25 @@ if (use.real) {
 	THERAPY_START <- as.numeric(args$therapy)
 }
 
-data.file <- paste0("stats/", pat.id, ".data.csv")
-stats.file <- paste0("stats/", pat.id, ".stats.csv")
-regression.file <- paste0("stats/", pat.id, ".regression.rds")
+if (!is.na(data.file)) data.file <- paste0("stats/", pat.id, ".data.csv")
+if (!is.na(stats.file)) stats.file <- paste0("stats/", pat.id, ".stats.csv")
+if (!is.na(regression.file)) regression.file <- paste0("stats/", pat.id, ".regression.rds")
 if (!is.na(pat.id2)) {
 	data.2.file <- paste0("stats/", pat.id2, ".data.csv")
 	stats.2.file <- paste0("stats/", pat.id2, ".stats.csv")
 	regression.2.file <- paste0("stats/", pat.id2, ".regression.rds")
+	comb.stats.file <- paste0("stats/", pat.id, ".comb.data.csv")
 }
-pdf.file <- paste0("plots/", pat.id, ".pdf")
-pdf.disttree.file <- paste0("plots/", pat.id, ".disttree.pdf")
-pdf.colour.disttree.file <- paste0("plots/", pat.id, ".colour.disttree.pdf")
-pdf.colour.tree.file <- paste0("plots/", pat.id, ".colour.tree.pdf")
-pdf.tree.file <- paste0("plots/", pat.id, ".tree.pdf")
-pdf.hist.file <- paste0("plots/", pat.id, ".hist.pdf")
-pdf.histdate.file <- paste0("plots/", pat.id, ".histdate.pdf")
-pdf.vl.file <- paste0("plots/", pat.id, ".vl.pdf")
-pdf.dup.disttree.file <- paste0("plots/", pat.id, ".dup.disttree.pdf")
-pdf.colour.mark.tree.file <- paste0("plots/", pat.id, ".colour.mark.tree.pdf")
+pdf.file <- paste0(output.folder, pat.id, ".pdf")
+pdf.disttree.file <- paste0(output.folder, pat.id, ".disttree.pdf")
+pdf.colour.disttree.file <- paste0(output.folder, pat.id, ".colour.disttree.pdf")
+pdf.colour.tree.file <- paste0(output.folder, pat.id, ".colour.tree.pdf")
+pdf.tree.file <- paste0(output.folder, pat.id, ".tree.pdf")
+pdf.hist.file <- paste0(output.folder, pat.id, ".hist.pdf")
+pdf.histdate.file <- paste0(output.folder, pat.id, ".histdate.pdf")
+pdf.vl.file <- paste0(output.folder, pat.id, ".vl.pdf")
+pdf.dup.disttree.file <- paste0(output.folder, pat.id, ".dup.disttree.pdf")
+pdf.colour.mark.tree.file <- paste0(output.folder, pat.id, ".colour.mark.tree.pdf")
 
 tree <- ape::ladderize(read.tree(tree.file))
 data <- read.csv(data.file, col.names=c("tip.label", "type", "censored", "date", "dist", "est.date", "date.diff"), stringsAsFactors=F)
@@ -276,7 +283,7 @@ if (!is.na(pat.id2)) {
 	data[clade.tips, ] <- data.2[clade.tips, ]
 	data[data.old$censored == -1, "censored"] <- -1
 	data[data.old$censored == 0, ] <- data.old[data.old$censored == 0, ]
-	write.table(data, paste0("stats/", pat.id, ".comb.data.csv"), col.names=c("ID", "Type", "Censored", "Collection Date", "Divergence", "Estimated Date", "Date Difference", "LM"), row.names=F, sep=",")
+	write.table(data, comb.stats.file, col.names=c("ID", "Type", "Censored", "Collection Date", "Divergence", "Estimated Date", "Date Difference", "LM"), row.names=F, sep=",")
 	data <- data[, -8]
 	
 	stats$Minimum.Time.Point <- min(stats$Mimimum.Time.Point, stats.2$Minimum.Time.Point)

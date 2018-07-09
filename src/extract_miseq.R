@@ -3,49 +3,65 @@ library(optparse)
 
 echo <- function(...) if (verbose) cat(..., '\n', sep="")
 
+get.info <- function(name, sequence.key) {
+	short.name <- gsub("-.+", "", name)
+	subset(sequence.key, enum == short.name)
+}
+
 op <- OptionParser()
-op <- add_option(op, c("-c", "--align-csv"), type='character')
+op <- add_option(op, c("-c", "--align-csv-folder"), type='character')
+op <- add_option(op, c("-k", "--sequence-key"), type='character')
 op <- add_option(op, c("-f", "--align-fasta"), type='character')
+op <- add_option(op, c("-i", "--info"), type='character')
 op <- add_option(op, c("-q", "--q-cutoff"), type='numeric', default=15)
 op <- add_option(op, c("-n", "--count-cutoff"), type="numeric", default=1)
-op <- add_option(op, c("-p", "--seq-id-prefix"), type='character', default=NA)
-op <- add_option(op, c("-s", "--seq-id-suffix"), type='character', default=NA)
 op <- add_option(op, c("-v", "--verbose"), type='logical', action="store_true", default=F)
 args <- parse_args(op)
 
-align.csv.file <- args[["align-csv"]]
+align.csv.folder <- args[["align-csv-folder"]]
+sequence.key.file <- args[["sequence-key"]]
 align.fasta.file <- args[["align-fasta"]]
+info.file <- args[["info"]]
 q.cutoff <- args[["q-cutoff"]]
 count.cutoff <- args[["count-cutoff"]]
-seq.id.prefix <- args[["seq-id-prefix"]]
-seq.id.suffix <- args[["seq-id-suffix"]]
+seq.id.prefix <- args[["seq-name"]]
 verbose <- args[["verbose"]]
 
 echo("extract_miseq.R")
 echo("Params:")
-echo("align-csv: ", align.csv.file)
+echo("align-csv-folder: ", align.csv.folder)
+echo("sequence-key: ", sequence.key.file)
 echo("align-fasta: ", align.fasta.file)
+echo("info: ", info.file)
 echo("q-cutoff: ", q.cutoff)
 echo("count-cutoff: ", count.cutoff)
-echo("seq-id-prefix: ", seq.id.prefix)
-echo("seq-id-suffix: ", seq.id.suffix)
 echo("verbose: ", verbose)
 echo()
 
+echo("Reading key...")
+sequence.key <- read.csv(sequence.key.file,  stringsAsFactors=F, col.names=c("enum", "id", "patient", "date", "type", "censored", "note"), colClasses=c('character', 'character', 'character', 'Date', 'character', 'numeric', "character"))
+
 echo("Reading csv...")
-align.csv <- read.csv(align.csv.file, stringsAsFactors=F, col.names=c("refnames", "qcut", "rank", "count", "offset", "seq"), colClasses=c('character', 'numeric', 'numeric', 'numeric', 'numeric', 'character'))
+csv.files <- dir(align.csv.folder)
+align.csv <- lapply(file.path(align.csv.folder, csv.files), read.csv, stringsAsFactors=F, col.names=c("refnames", "qcut", "rank", "count", "offset", "seq"), colClasses=c('character', 'numeric', 'numeric', 'numeric', 'numeric', 'character'))
 
 echo("Parsing csv...")
-align.csv.filter <- subset(align.csv, qcut >= q.cutoff & count > count.cutoff)
+name <- gsub(".+[- ](.+-V3.+V3LOOP.+)_align.csv", "\\1", csv.files, perl=T)
+align.csv.all <- do.call(rbind, lapply(1:length(csv.files), function(i) cbind(name=name[i], align.csv[i], get.info(name[i], sequence.key))))
+
+align.csv.filter <- subset(align.csv.all, qcut >= q.cutoff & count > count.cutoff)
+
 align.fasta <- strsplit(align.csv.filter$seq, "")
 
-names(align.fasta) <- paste(align.csv.filter$rank, align.csv.filter$count, sep="_")
-if (!is.na(seq.id.prefix))
-	names(align.fasta)  <- paste(seq.id.prefix, names(align.fasta), sep="_")
-if (!is.na(seq.id.suffix))
-	names(align.fasta)  <- paste(names(align.fasta), seq.id.suffix, sep="_")
+align.csv.filter$full.name <- with(align.csv.filter, paste(name, rank, count, as.numeric(date), sep="_"))
+names(align.fasta) <- align.csv.filter$full.name
+
+warnings()
 
 echo("Writing fasta...")
 write.fasta(align.fasta, names(align.fasta), align.fasta.file)
+
+echo("Writing info...")
+write.csv(align.csv.filter, info.file, row.names=F)
 
 echo("Done")
