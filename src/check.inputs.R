@@ -101,7 +101,7 @@ compare.fasta.info <- function(f, info) {
 
 compare.info.settings <- function(info, settings) {
 	# check that real is set properly
-	assert(!settings$real | is.na(as.Date(info$COLDATE)), "--real flag is to be used calendar dates")
+	assert(!settings$real | !is.na(as.Date(info$COLDATE)), "--real flag is to be used calendar dates")
 	assert(settings$real | is.numeric(info$COLDATE), "--real flag is not used with numeric dates")
 }
 
