@@ -107,9 +107,6 @@ compare.info.settings <- function(info, settings) {
 	assert(!settings$real & is.numeric(info$COLDATE))
 }
 
-check.exists('info', info.file)
-check.exists('settings', settings.file)
-
 op <- OptionParser()
 op <- add_option(op, "--fasta", type='character')
 op <- add_option(op, "--info", type='character')
