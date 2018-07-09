@@ -34,7 +34,7 @@ check.info <- function(info.file) {
 	assert(is.character(info$FULLSEQID) | is.numeric(info$FULLSEQID), "FULLSEQID in info file parsed incorectly")
 	assert(is.character(info$TYPE), "TYPE in info file parsed incorectly")
 	assert(is.numeric(info$CENSORED), "CENSORED in info must be numeric")
-	assert(is.character(info$DUPLICATE), | is.numeric(info$DUPLICATE), "DUPLICATE in info file parsed incorrectly")
+	assert(is.character(info$DUPLICATE) | is.numeric(info$DUPLICATE), "DUPLICATE in info file parsed incorrectly")
 	assert(is.numeric(info$COUNT), "COUNT in info must be numeric")
 	assert(!is.na(as.Date(info$COLDATE)) | is.numeric(info$COLDATE), "COLDATE must be either in date format or numeric")
 		
@@ -101,6 +101,12 @@ compare.fasta.info <- function(f, info) {
 	TRUE
 }
 
+compare.info.settings <- function(info, settings) {
+	# check that real is set properly
+	assert(settings$real & !is.na(as.Date(info$COLDATE)))
+	assert(!settings$real & is.numeric(info$COLDATE))
+}
+
 check.exists('info', info.file)
 check.exists('settings', settings.file)
 
@@ -117,7 +123,8 @@ settings.file <- args$settings
 # check file integrity
 f <- check.fasta(fasta.file)
 info <- check.info(info.file)
-
-cont <- compare.fasta.info(f, info)
-
 settings <- check.settings(settings.file)
+
+# check file compatibility
+cont <- compare.fasta.info(f, info)
+cont <- compare.info.settings(info, settings)
