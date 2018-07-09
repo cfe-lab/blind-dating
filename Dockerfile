@@ -9,8 +9,9 @@ RUN apt-get update --fix-missing && apt-get install -y \
   wget \
   make \
   git \
-  openssl \
+  libssl-dev \
   libcurl4-openssl-dev \
+  libxml2-dev \
   && rm -rf /var/lib/apt/lists/*
 
 # RAxML
@@ -22,8 +23,8 @@ RUN make -f Makefile.PTHREADS.gcc && \
   rm *.o && \
   ln -s raxmlHPC-PTHREADS /opt/raxml
 
-# CRAN R packages
-RUN R --slave -e 'local({r <- getOption("repos"); r["CRAN"] <- "http://cran.stat.sfu.ca"; options(repos=r)}); install.packages(c("ape", "chemCal", "ggplot2", "optparse", "phylobase", "seqinr", "TreeSim", "parallel"))'
+# CRAN R packages and ggtree
+RUN R --slave -e 'local({r <- getOption("repos"); r["CRAN"] <- "http://cran.stat.sfu.ca"; options(repos=r)}); install.packages(c("ape", "chemCal", "ggplot2", "optparse", "phylobase", "seqinr", "TreeSim", "parallel", "phylobase")); source("https://bioconductor.org/biocLite.R"); biocLite(); biocLite("ggtree")'
 
 # NELSI
 WORKDIR /tmp
@@ -37,12 +38,10 @@ WORKDIR /tmp/node.dating
 RUN git branch random && \
  ln -s R/node.dating.R /opt/node.dating.R
 
-# ggtree
-RUN R --slave -e 'source("https://bioconductor.org/biocLite.R"); biocLite(); biocLite("ggtree")'
-
 # scripts
 COPY src/*.R /opt/blind-dating/
 COPY src/blind-dating /opt/blind-dating/
+RUN chmod 777 /opt/blind-dating/blind-dating
 
 # command
-CMD ["/opt/blind-dating/blind-dating", "info_csv", "fasta_csv", "settings_txt"]
+CMD ["/opt/blind-dating/blind-dating", "info_csv", "align_fasta", "settings_txt"]
