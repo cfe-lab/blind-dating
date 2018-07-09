@@ -36,7 +36,7 @@ check.info <- function(info.file) {
 	assert(is.numeric(info$CENSORED), "CENSORED in info must be numeric")
 	assert(is.character(info$DUPLICATE), | is.numeric(info$DUPLICATE), "DUPLICATE in info file parsed incorrectly")
 	assert(is.numeric(info$COUNT), "COUNT in info must be numeric")
-	assert(!is.na(as.Date(info$COLDATE)) | | is.numeric(info$COLDATE), "COLDATE must be either in date format or numeric")
+	assert(!is.na(as.Date(info$COLDATE)) | is.numeric(info$COLDATE), "COLDATE must be either in date format or numeric")
 		
 	info
 }
