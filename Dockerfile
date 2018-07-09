@@ -44,4 +44,4 @@ COPY src/blind-dating /opt/blind-dating/
 RUN chmod 777 /opt/blind-dating/blind-dating
 
 # command
-CMD ["/opt/blind-dating/blind-dating", "info_csv", "align_fasta", "settings_txt"]
+CMD ["/opt/blind-dating/blind-dating"]
