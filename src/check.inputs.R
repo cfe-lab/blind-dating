@@ -3,7 +3,7 @@ library(optparse)
 
 assert <- function(assertion, assertion.message) {
 	if (!all(assertion))
-		stop(asertion.message)
+		stop(assertion.message)
 }
 
 check.fasta <- function(fasta.file) {
@@ -89,7 +89,7 @@ check.settings <- function(settings.file) {
 	op <- add_option(op, "--nsteps", type='numeric', default=1000)
 	op <- add_option(op, "--marklatent", type='logical', action='store_true', default=F)
 	op <- add_option(op, "--freqweights", type='logical', action='store_true', default=F)
-	args <- parse_options(op, args=settings)
+	args <- parse_args(op, args=settings)
 	
 	args
 }
