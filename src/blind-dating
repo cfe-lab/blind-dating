@@ -12,7 +12,7 @@ cd ${OUTPUT} && \
 echo 'checking inputs...' && \
 Rscript ${SRC}/check.inputs.R --info=${INFO} --fasta=${FASTA} --settings=${SETTINGS} && \
 echo 'building tree...' && \
-Rscript ${SRC}/build.tree.R --info=${INFO} --fasta=${FASTA} --tree=tree_nwk --settings=${SETTINGS} && \
+Rscript ${SRC}/build.tree.R --info=${INFO} --fasta=${FASTA} --raxml=/opt/raxml --tree=tree_nwk --settings=${SETTINGS} && \
 echo 'rooting tree...' && \
 Rscript ${SRC}/root.tree.R --info=${INFO} --tree=tree_nwk --rootedtree=rooted_tree_nwk --settings=${SETTINGS} && \
 echo 'regressing...' && \

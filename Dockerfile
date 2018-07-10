@@ -21,7 +21,7 @@ RUN wget -q -O raxml.zip https://github.com/stamatak/standard-RAxML/archive/v8.2
 WORKDIR /tmp/standard-RAxML-8.2.12
 RUN make -f Makefile.PTHREADS.gcc && \
   rm *.o && \
-  ln -s raxmlHPC-PTHREADS /opt/raxml
+  ln -s /tmp/standard-RAxML-8.2.12/raxmlHPC-PTHREADS /opt/raxml
 
 # CRAN R packages and ggtree
 RUN R --slave -e 'local({r <- getOption("repos"); r["CRAN"] <- "http://cran.stat.sfu.ca"; options(repos=r)}); install.packages(c("ape", "chemCal", "ggplot2", "optparse", "phylobase", "seqinr", "TreeSim", "parallel", "phylobase")); source("https://bioconductor.org/biocLite.R"); biocLite(); biocLite("ggtree")'
@@ -36,7 +36,7 @@ WORKDIR /tmp
 RUN git clone https://github.com/brj1/node.dating.git
 WORKDIR /tmp/node.dating
 RUN git branch random && \
- ln -s R/node.dating.R /opt/node.dating.R
+ ln -s /tmp/node.dating/R/node.dating.R /opt/node.dating.R
 
 # scripts
 COPY src/*.R /opt/blind-dating/
