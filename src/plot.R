@@ -12,6 +12,9 @@ source("/opt/node.dating.R")
 #MIN_COL_TIME <- 9720
 #MAX_COL_TIME <- 13371
 
+
+get.val <- function(x, default) if (is.null(x))	default	else x
+
 THERAPY_COLOUR <- "#ffffa0"
 THERAPY_LTY <- 3
 THERAPY_COLOUR2 <- "#ffcccc"
@@ -180,39 +183,39 @@ if (!is.na(settings.file)) {
 
 
 tree.file <- args$tree
-pat.id <- args$patid
-pat.id2 <- args$patid2
-use.real <- args$real # 0 Training/Censored, 1 RNA/DNA
-dist.min <- args$distmin
-dist.max <- args$distmax
-dist.by <- args$distby
-year.by <- args$yearby
-LIK_TOL <- args$liktol
-therapy2 <- args$therapy2
-therapy3 <- args$therapy3
-therapy3end <- args$therapy3end
-cartoon <- args$cartoon
-x.title <- args$xtitle
-hist.by.month <- args$histbymonth
-hist.height <- args$histheight
-MIN_COL_TIME <- args$mincoltime
-MAX_COL_TIME <- args$maxcoltime
-hist.freq.by <- args$histfreqby
-dna.shape.scale <- args$dnashapescale
-max.vl <- args$maxvl
-vl.file <- args$vlfile
-use.dups <- args$usedups
-info.file <- args$info
-dup.shift <- args$dupshift
-nsteps <- args$nsteps
-mark.latent <- args$marklatent
-data.file <- args$data
-stats.file <- args$stats
-regression.file <- args$regression
+pat.id <- get.val(args$patid, NA)
+pat.id2 <- get.val(args$patid2, NA)
+use.real <- get.val(args$real, F) # 0 Training/Censored, 1 RNA/DNA
+dist.min <- get.val(args$distmin, NA)
+dist.max <- get.val(args$distmax, NA)
+dist.by <- get.val(args$distby, NA)
+year.by <- get.val(args$yearby, NA)
+LIK_TOL <- get.val(args$liktol, 1e-3)
+therapy2 <- get.val(args$therapy2, NA)
+therapy3 <- get.val(args$therapy3, NA)
+therapy3end <- get.val(args$therapy3end)
+cartoon <- get.val(args$cartoon, F)
+x.title <- get.val(args$xtitle, "Collection Year")
+hist.by.month <- get.val(args$histbymonth, F)
+hist.height <- get.val(args$histheight, hist.height=1.7)
+MIN_COL_TIME <- get.val(args$mincoltime, NA)
+MAX_COL_TIME <- get.val(args$maxcoltime, NA)
+hist.freq.by <- get.val(args$histfreqby, 2)
+dna.shape.scale <- get.val(args$dnashapescale, 1)
+max.vl <- get.val(args$maxvl, 10000)
+vl.file <- get.val(args$vlfile, NA)
+use.dups <- get.val(args$usedups, F)
+info.file <- get.val(args$info, NA)
+dup.shift <- get.val(args$dupshift, 0.01)
+nsteps <- get.val(args$nsteps, 1000)
+mark.latent <- get.val(args$marklatent, F)
+data.file <- get.val(args$data, NA)
+stats.file <- get.val(args$stats, NA)
+regression.file <- get.val(args$regression, NA)
 if (use.real) {
-	year.start <- args$yearstart
-	year.end <- args$yearend
-	THERAPY_START <- as.numeric(as.Date(args$therapy))
+	year.start <- get.val(args$yearstart, NA)
+	year.end <- get.val(args$yearend, NA)
+	THERAPY_START <- as.numeric(as.Date(get.val(args$therapy, NA)))
 	
 	if (!is.na(therapy2)) {
 		therapy2 <- as.Date(therapy2)
@@ -226,9 +229,9 @@ if (use.real) {
 		therapy3end <- as.Date(therapy3end)
 	}
 } else {
-	year.start <- as.numeric(args$yearstart)
-	year.end <- as.numeric(args$yearend)
-	THERAPY_START <- as.numeric(args$therapy)
+	year.start <- as.numeric(get.val(args$yearstart, NA))
+	year.end <- as.numeric(get.val(args$yearend, NA))
+	THERAPY_START <- as.numeric(get.val(args$therapy, NA))
 }
 
 if (!is.na(data.file)) data.file <- paste0("stats/", pat.id, ".data.csv")

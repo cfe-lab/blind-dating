@@ -1,16 +1,19 @@
 library(ape)
 library(optparse)
 
-source("/opt/blind-dating/raxml.R", chdir=T)
+bd.src <- Sys.getenv("BDSRC", ".")
+source(file.path(bd.src, "raxml.R"), chdir=T)
+
+get.val <- function(x, default) if (is.null(x))	default	else x
 
 op <- OptionParser()
 op <- add_option(op, "--fasta", type='character')
 op <- add_option(op, "--tree", type='character')
-op <- add_option(op, "--info", type='character', default ='NA')
-op <- add_option(op, "--raxml", type='character', default='raxml')
-op <- add_option(op, "--threads", type='numeric', default=2)
-op <- add_option(op, "--seed", type='numeric', default=1989)
-op <- add_option(op, "--tmpdir", type='character', default=NULL)
+op <- add_option(op, "--info", type='character')
+op <- add_option(op, "--raxml", type='character')
+op <- add_option(op, "--threads", type='numeric')
+op <- add_option(op, "--seed", type='numeric')
+op <- add_option(op, "--tmpdir", type='character')
 op <- add_option(op, "--settings", type='character', default=NA)
 args <- parse_args(op)
 
@@ -24,9 +27,9 @@ if (!is.na(settings.file)) {
 
 fasta.file <- args$fasta
 tree.file <- args$tree
-exec <- args$raxml
-threads <- args$threads
-seed <- args$seed
+exec <- get.val(args$raxml, "raxml")
+threads <- get.val(args$threads, 2)
+seed <- get.val(args$seed, 1989)
 tmp.dir <- args$tmpdir
 
 tmp <- !is.null(tmp.dir)

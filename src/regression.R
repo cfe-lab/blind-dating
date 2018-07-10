@@ -2,7 +2,10 @@ library(ape)
 library(optparse)
 library(chemCal)
 
-source("/opt/blind-dating/read.info.R", chdir=T)
+bd.src <- Sys.getenv("BDSRC", ".")
+source(file.path(bd.src, "read.info.R"), chdir=T)
+
+get.val <- function(x, default) if (is.null(x))	default	else x
 
 concord <- function(x, y) {
 	mu.x <- sum(x) / length(x)
@@ -17,15 +20,14 @@ concord <- function(x, y) {
 op <- OptionParser()
 op <- add_option(op, "--tree", type='character')
 op <- add_option(op, "--info", type='character')
-op <- add_option(op, "--patid", type='character', default=NA)
-op <- add_option(op, "--real", type='logical', action='store_true', default=F)
-op <- add_option(op, "--usedups", type='logical', action='store_true', default=F)
-op <- add_option(op, "--seed", type="numeric", default=1989)
-op <- add_option(op, "--cutoff", type="character", default=NA)
-op <- add_option(op, "--data", type='character', default=NA)
-op <- add_option(op, "--stats", type='character', default=NA)
-op <- add_option(op, "--regression", type='character', default=NA)
-op <- add_option(op, "--freqweights", type='logical', action='store_true', default=F)
+op <- add_option(op, "--patid", type='character')
+op <- add_option(op, "--real", type='logical', action='store_true')
+op <- add_option(op, "--usedups", type='logical', action='store_true')
+op <- add_option(op, "--cutoff", type="character")
+op <- add_option(op, "--data", type='character')
+op <- add_option(op, "--stats", type='character')
+op <- add_option(op, "--regression", type='character')
+op <- add_option(op, "--freqweights", type='logical', action='store_true')
 op <- add_option(op, "--settings", type='character', default=NA)
 args <- parse_args(op)
 
@@ -40,14 +42,14 @@ if (!is.na(settings.file)) {
 
 tree.file <- args$tree
 info.file <- args$info
-pat.id <- args$patid
-use.date <- args$real
-use.all <- args$usedups
-cutoff <- args$cutoff
-data.file <- args$data
-stats.file <- args$stats
-regression.file <- args$regression
-freq.weights <- args$freqweights
+pat.id <- get.val(args$patid, NA)
+use.date <- get.val(args$real, F)
+use.all <- get.val(args$usedups, F)
+cutoff <- get.val(args$cutoff, NA)
+data.file <- get.val(args$data, NA)
+stats.file <- get.val(args$stats, NA)
+regression.file <- get.val(args$regression, NA)
+freq.weights <- get.val(args$freqweights, F)
 
 set.seed(args$seed)
 
