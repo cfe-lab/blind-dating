@@ -1,13 +1,30 @@
 library(ape)
 library(optparse)
 
-source("/opt/blind-dating/rtt.R", chdir=T)
+bd.src <- Sys.getenv("BDSRC", ".")
+source(file.path(bd.src, "rtt.R"), chdir=T)
+
+get.val <- function(x, default) if (is.null(x))	default	else x
+
+tree.read <- function(tr) {	
+	tree <- read.tree(paste(tr, sep='/'))
+		
+	if (any(tree$tip.label == ogr.name)) {
+		if (use.rtt > 0)			
+			drop.tip(tree, ogr.name)
+		else
+			drop.tip(root(tree, ogr.name), ogr.name)
+	}
+	else
+		tree
+			
+}
 
 op <- OptionParser()
 op <- add_option(op, "--tree", type='character')
 op <- add_option(op, "--info", type='character')
 op <- add_option(op, "--rootedtree", type='character')
-op <- add_option(op, "--ogr", type='logical', action='store_true', default=F)
+op <- add_option(op, "--ogr", type='logical', action='store_true')
 op <- add_option(op, "--useall", type='logical', action='store_true', default=F)
 op <- add_option(op, "--real", type='logical', action='store_true', default=F)
 op <- add_option(op, "--method", type='character', default='correlation')
@@ -29,27 +46,16 @@ if (!is.na(settings.file)) {
 tree.file <- args$tree
 info.file <- args$info
 rooted.tree.file <- args$rootedtree
-use.rtt <- 	as.numeric(!args$ogr) * (1 + as.numeric(args$useall))	# 0 = no, 1 = yes (only plasma), 2 = yes (all)
-use.date <- args$real
-method <- args$method		# 'correlation', 'rms' or 'rsquared'
-ogr.name <- args$ogrname
-use.dups <- args$usedups
-threads <- args$threads
-freq.weights <- args$freqweights
-	
-tree.read <- function(tr) {	
-	tree <- read.tree(paste(tr, sep='/'))
-		
-	if (any(tree$tip.label == ogr.name)) {
-		if (use.rtt > 0)			
-			drop.tip(tree, ogr.name)
-		else
-			drop.tip(root(tree, ogr.name), ogr.name)
-	}
-	else
-		tree
-			
-}
+ogr <- get.val(args$ogr, F)
+use.all <- get.val(args$useall, F)
+use.date <- get.val(args$real, F)
+method <- get.val(args$method, 'correlation')		# 'correlation', 'rms' or 'rsquared'
+ogr.name <- get.val(args$ogrname, "REFERENCE")
+use.dups <- get.val(args$usedups, F)
+threads <- get.val(args$threads, 1)
+freq.weights <- get.val(args$freqweights, F)
+
+use.rtt <- 	as.numeric(!ogr) * (1 + as.numeric(use.all))	# 0 = no, 1 = yes (only plasma), 2 = yes (all)
 
 tree <- tree.read(tree.file)
 
