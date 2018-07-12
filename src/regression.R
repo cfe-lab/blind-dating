@@ -5,7 +5,7 @@ library(chemCal)
 bd.src <- Sys.getenv("BDSRC", ".")
 source(file.path(bd.src, "read.info.R"), chdir=T)
 
-get.val <- function(x, default) if (is.null(x))	default	else x
+get.val <- function(x, default) if (is.null(x)) default else x
 
 concord <- function(x, y) {
 	mu.x <- sum(x) / length(x)

@@ -4,7 +4,7 @@ library(optparse)
 bd.src <- Sys.getenv("BDSRC", ".")
 source(file.path(bd.src, "rtt.R"), chdir=T)
 
-get.val <- function(x, default) if (is.null(x))	default	else x
+get.val <- function(x, default) if (is.null(x)) default else x
 
 tree.read <- function(tr) {	
 	tree <- read.tree(paste(tr, sep='/'))
@@ -25,13 +25,13 @@ op <- add_option(op, "--tree", type='character')
 op <- add_option(op, "--info", type='character')
 op <- add_option(op, "--rootedtree", type='character')
 op <- add_option(op, "--ogr", type='logical', action='store_true')
-op <- add_option(op, "--useall", type='logical', action='store_true', default=F)
-op <- add_option(op, "--real", type='logical', action='store_true', default=F)
-op <- add_option(op, "--method", type='character', default='correlation')
-op <- add_option(op, "--ogrname", type='character', default="REFERENCE")
-op <- add_option(op, "--usedups", type='logical', action='store_true', default=F)
-op <- add_option(op, "--threads", type='numeric', default=1)
-op <- add_option(op, "--freqweights", type='logical', action='store_true', default=F)
+op <- add_option(op, "--useall", type='logical', action='store_true')
+op <- add_option(op, "--real", type='logical', action='store_true')
+op <- add_option(op, "--method", type='character')
+op <- add_option(op, "--ogrname", type='character')
+op <- add_option(op, "--usedups", type='logical', action='store_true')
+op <- add_option(op, "--threads", type='numeric')
+op <- add_option(op, "--freqweights", type='logical', action='store_true')
 op <- add_option(op, "--settings", type='character', default=NA)
 args <- parse_args(op)
 
