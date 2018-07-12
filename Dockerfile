@@ -3,7 +3,10 @@ FROM r-base
 
 MAINTAINER Bradley R. Jones, BC CfE in HIV/AIDS
 
-# Prerequistes
+# environment variables
+ENV BDSRC=/opt/blind-dating
+
+# prerequistes
 RUN apt-get update --fix-missing && apt-get install -y \
   unzip \
   wget \
@@ -24,7 +27,7 @@ RUN make -f Makefile.PTHREADS.gcc && \
   ln -s /tmp/standard-RAxML-8.2.12/raxmlHPC-PTHREADS /opt/raxml
 
 # CRAN R packages and ggtree
-RUN R --slave -e 'local({r <- getOption("repos"); r["CRAN"] <- "http://cran.stat.sfu.ca"; options(repos=r)}); install.packages(c("ape", "chemCal", "ggplot2", "optparse", "phylobase", "seqinr", "TreeSim", "parallel", "phylobase")); source("https://bioconductor.org/biocLite.R"); biocLite(); biocLite("ggtree")'
+RUN R --slave -e 'local({r <- getOption("repos"); r["CRAN"] <- "http://cran.stat.sfu.ca"; options(repos=r)}); install.packages(c("ape", "chemCal", "ggplot2", "optparse", "phylobase", "seqinr", "TreeSim")); source("https://bioconductor.org/biocLite.R"); biocLite(); biocLite("ggtree")'
 
 # NELSI
 WORKDIR /tmp
@@ -41,7 +44,7 @@ RUN git branch random && \
 # scripts
 COPY src/*.R /opt/blind-dating/
 COPY src/blind-dating /opt/blind-dating/
-RUN chmod 777 /opt/blind-dating/blind-dating
+RUN chmod +x /opt/blind-dating/blind-dating
 
 # command
 CMD ["/opt/blind-dating/blind-dating"]
