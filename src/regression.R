@@ -53,9 +53,9 @@ freq.weights <- get.val(args$freqweights, F)
 
 set.seed(args$seed)
 
-if (!is.na(data.file)) data.file <- paste0("stats/", pat.id, ".data.csv")
-if (!is.na(stats.file)) stats.file <- paste0("stats/", pat.id, ".stats.csv")
-if (!is.na(regression.file)) regression.file <- paste0("stats/", pat.id, ".regression.rds")
+if (is.na(data.file)) data.file <- paste0("stats/", pat.id, ".data.csv")
+if (is.na(stats.file)) stats.file <- paste0("stats/", pat.id, ".stats.csv")
+if (is.na(regression.file)) regression.file <- paste0("stats/", pat.id, ".regression.rds")
 
 tree <- read.tree(tree.file)
 info <- if (use.all) read.csv(info.file, stringsAsFactors=F) else read.info(info.file, tree$tip.label)
