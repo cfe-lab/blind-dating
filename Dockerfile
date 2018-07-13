@@ -27,12 +27,7 @@ RUN make -f Makefile.PTHREADS.gcc && \
   ln -s /tmp/standard-RAxML-8.2.12/raxmlHPC-PTHREADS /opt/raxml
 
 # CRAN R packages and ggtree
-RUN R --slave -e 'local({r <- getOption("repos"); r["CRAN"] <- "http://cran.stat.sfu.ca"; options(repos=r)}); install.packages(c("ape", "chemCal", "ggplot2", "optparse", "phylobase", "seqinr", "TreeSim")); source("https://bioconductor.org/biocLite.R"); biocLite(); biocLite("ggtree")'
-
-# NELSI
-WORKDIR /tmp
-RUN git clone https://github.com/sebastianduchene/NELSI.git
-RUN R CMD INSTALL NELSI
+RUN R --slave -e 'local({r <- getOption("repos"); r["CRAN"] <- "http://cran.stat.sfu.ca"; options(repos=r)}); install.packages(c("ape", "chemCal", "ggplot2", "optparse", "phylobase", "seqinr")); source("https://bioconductor.org/biocLite.R"); biocLite(); biocLite("ggtree")'
 
 # node.dating
 WORKDIR /tmp
