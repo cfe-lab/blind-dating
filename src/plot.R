@@ -405,7 +405,7 @@ type.value <- c(16, 18, 1, 5)
 x.div <- scale_x_continuous(name="Divergence from root", breaks=seq(0.0, dist.max, by=dist.by))
 y.div <- scale_y_continuous(name="Divergence from root", breaks=seq(0.0, dist.max, by=dist.by))
 
-data$my.type <- type.label[match(with(data, paste0(type, censored > 0)), type.break)]
+data$my.type <- type.label[match(with(data, paste0(toupper(type), censored > 0)), type.break)]
 
 type.mask <- type.label %in% data$my.type
 type.label <- type.label[type.mask]
