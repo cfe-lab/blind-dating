@@ -13,7 +13,7 @@ source("/opt/node.dating.R")
 #MAX_COL_TIME <- 13371
 
 
-get.val <- function(x, default) if (is.null(x))	default	else x
+get.val <- function(x, default) if (is.null(x)) default else x
 
 THERAPY_COLOUR <- "#ffffa0"
 THERAPY_LTY <- 3
@@ -170,6 +170,7 @@ op <- add_option(op, "--marklatent", type='logical', action='store_true')
 op <- add_option(op, "--data", type='character')
 op <- add_option(op, "--stats", type='character')
 op <- add_option(op, "--regression", type='character')
+op <- add_option(op, "--outputfolder", type='character')
 op <- add_option(op, "--settings", type='character', default=NA)
 args <- parse_args(op)
 
@@ -197,7 +198,7 @@ therapy3end <- get.val(args$therapy3end)
 cartoon <- get.val(args$cartoon, F)
 x.title <- get.val(args$xtitle, "Collection Year")
 hist.by.month <- get.val(args$histbymonth, F)
-hist.height <- get.val(args$histheight, hist.height=1.7)
+hist.height <- get.val(args$histheight, 1.7)
 MIN_COL_TIME <- get.val(args$mincoltime, NA)
 MAX_COL_TIME <- get.val(args$maxcoltime, NA)
 hist.freq.by <- get.val(args$histfreqby, 2)
@@ -212,6 +213,7 @@ mark.latent <- get.val(args$marklatent, F)
 data.file <- get.val(args$data, NA)
 stats.file <- get.val(args$stats, NA)
 regression.file <- get.val(args$regression, NA)
+output.folder <- get.val(args$outputfolder, "plots")
 if (use.real) {
 	year.start <- get.val(args$yearstart, NA)
 	year.end <- get.val(args$yearend, NA)
@@ -234,9 +236,9 @@ if (use.real) {
 	THERAPY_START <- as.numeric(get.val(args$therapy, NA))
 }
 
-if (!is.na(data.file)) data.file <- paste0("stats/", pat.id, ".data.csv")
-if (!is.na(stats.file)) stats.file <- paste0("stats/", pat.id, ".stats.csv")
-if (!is.na(regression.file)) regression.file <- paste0("stats/", pat.id, ".regression.rds")
+if (is.na(data.file)) data.file <- paste0("stats/", pat.id, ".data.csv")
+if (is.na(stats.file)) stats.file <- paste0("stats/", pat.id, ".stats.csv")
+if (is.na(regression.file)) regression.file <- paste0("stats/", pat.id, ".regression.rds")
 if (!is.na(pat.id2)) {
 	data.2.file <- paste0("stats/", pat.id2, ".data.csv")
 	stats.2.file <- paste0("stats/", pat.id2, ".stats.csv")
@@ -494,7 +496,7 @@ if (use.dups) {
 	
 	fort.dup$tip.label <- info$FULLSEQID
 	fort.dup$type <- info$TYPE
-	fort.dup$date <- info$COLDATE
+	fort.dup$date <- if (real) as.numeric(as.Date(info$COLDATE)) else  info$COLDATE
 		
 	for (i in 1:nrow(fort.dup)) {
 		if (i == 1 || info$DUPLICATE[i - 1] != info$DUPLICATE[i]) {
@@ -503,7 +505,7 @@ if (use.dups) {
 			shift <- shift + 1
 		}
 		
-		fort.dup$x[i] <- fort.dup$x[i] + shift * dup.shift
+		fort.dup$x.shift[i] <- fort.dup$x[i] + shift * dup.shift
 		
 		if (info$CENSORED[i] <= 0) {
 			fort.dup$censored[i] <- info$CENSORED[i]
@@ -525,8 +527,15 @@ if (use.dups) {
 	print(apply.theme(ggtree(ptree, colour="#49494980", size=dist.tree.size, ladderize=T) +
 	geom_tippoint(aes(colour=my.colour, shape=my.type, size=my.type)) +
 	geom_treescale(width=0.02, fontsize=7, offset=scale.offset) + 
-	geom_point(aes(colour=my.colour, shape=my.type, size=my.type, x=x, y=y), data=fort.dup, alpha=0.4),
+	geom_point(aes(colour=my.colour, shape=my.type, size=my.type, x=x.shift, y=y), data=fort.dup, alpha=0.4),
 	flipped=F, scaled=F, colour.value.=my.colour.value, colour.label.=my.colour.break, colour.break.=my.colour.break, size.value.=size.value * 0.5))
+	dev.off()
+	
+	pdf(pdf.dup.tree.file)
+	print(ggtree(ptree, yscale="node.date", colour="#49494980", size=tree.size, ladderize=F) +
+	geom_tippoint(aes(colour=my.colour, shape=my.type, size=my.type)) +
+	geom_point(aes(colour=my.colour, shape=my.type, size=my.type, x=x, y=date), data=fort.dup, alpha=0.4),
+	flipped=T, scaled=T, colour.value.=my.colour.value, colour.label.=my.colour.break, colour.break.=my.colour.break)
 	dev.off()
 }
 
