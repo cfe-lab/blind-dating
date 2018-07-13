@@ -28,7 +28,7 @@ check.info <- function(info.file) {
 	info <- read.csv(info.file, stringsAsFactors=F)
 	
 	# correct columns present
-	assert(all(c("FULLSEQID", "COLDATE", "TYPE", "CENSORED", "DUPLICATE", "COUNT") %in% names(info)), "info file missing column")
+	assert(all(c("FULLSEQID", "COLDATE", "TYPE", "CENSORED") %in% names(info)), "info file missing column")
 	
 	# correct column types
 	assert(is.character(info$FULLSEQID) | is.numeric(info$FULLSEQID), "FULLSEQID in info file parsed incorectly")
@@ -87,6 +87,11 @@ op <- add_option(op, "--xtitle", type='character', default="Collection Year")
 op <- add_option(op, "--yearby", type='double', default=NA)
 op <- add_option(op, "--yearend", type='character', default=NA)
 op <- add_option(op, "--yearstart", type='character', default=NA)
+op <- add_option(op, "--outputfolder", type='character', default="plots")
+op <- add_option(op, "--types", type='character', default="PLASMA,PBMC")
+op <- add_option(op, "--typevalues", type='character', default="16,1,18,5")
+op <- add_option(op, "--rainbow", type='logical', action='store_true', default=T)
+op <- add_option(op, "--black", type='logical', action='store_false', dest="rainbow")
 	args <- parse_args(op, args=settings)
 	
 	args
@@ -103,6 +108,9 @@ compare.info.settings <- function(info, settings) {
 	# check that real is set properly
 	assert(!settings$real | !is.na(as.Date(info$COLDATE)), "--real flag is to be used calendar dates")
 	assert(settings$real | is.numeric(info$COLDATE), "--real flag is not used with numeric dates")
+	
+	if (settings$usedups)
+		assert(all(c("DUPLICATE", "COUNT") %in% names(info)), "info file missing columns for usedups option")
 }
 
 op <- OptionParser()
