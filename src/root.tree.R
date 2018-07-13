@@ -84,7 +84,7 @@ if (use.rtt > 0) {
 	
 if (use.rtt == 1) {
 	if (use.dups) {
-		weights <- lapply(1:length(tree$tip.label), function(x) {
+		weights <- lapply(1:length(tree$tip.label), function(i) {
 			w <- weights[[i]]
 			w[with(subset(info.all, DUPLICATE == tree$tip.label[i]), CENSORED != 0)] <- 0
 			w
