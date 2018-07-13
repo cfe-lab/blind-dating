@@ -55,34 +55,44 @@ use.dups <- get.val(args$usedups, F)
 threads <- get.val(args$threads, 1)
 freq.weights <- get.val(args$freqweights, F)
 
-use.rtt <- 	as.numeric(!ogr) * (1 + as.numeric(use.all))	# 0 = no, 1 = yes (only plasma), 2 = yes (all)
+use.rtt <- as.numeric(!ogr) * (1 + as.numeric(use.all))	# 0 = no, 1 = yes (only plasma), 2 = yes (all)
 
 tree <- tree.read(tree.file)
 
 if (use.rtt > 0) {
 	info.all <- read.csv(info.file, stringsAsFactors=T)
 	info <- info.all[match(tree$tip.label, info.all$FULLSEQID), ]
-	tip.type <- info$CENSORED
-	weights <- NA
 	
 	if (use.dups) {
 		plasma.dates <- lapply(tree$tip.label, function(x) with(subset(info.all, DUPLICATE == x), if (use.date) as.numeric(as.Date(COLDATE)) else COLDATE))
 		
-		if (use.dups) {
+		if (freq.weights) {
 			weights <- lapply(tree$tip.label, function(x) with(subset(info.all, DUPLICATE == x), COUNT))
+		} else {
+			weights <- lapply(tree$tip.label, function(x) rep(1, sum(info.all$DUPLICATE == x)))
 		}
 	} else {
 		plasma.dates <- if (use.date) as.numeric(as.Date(info$COLDATE)) else info$COLDATE
 		
-		if (use.dups) {
-			weights <- info$COUNT
+		weights <- if (freq.weights) {
+			info$COUNT
+		} else {
+			rep(1, nrow(info))
 		}
 	}
 }
 	
 if (use.rtt == 1) {
-	plasma.dates[tip.type != 0] <- 0
-	weights[tip.type != 0] <- 0
+	if (use.dups) {
+		weights <- lapply(1:length(tree$tip.label), function(x) {
+			w <- weights[[i]]
+			w[with(subset(info.all, DUPLICATE == tree$tip.label[i]), CENSORED != 0)] <- 0
+			w
+		})
+	} else {
+		tip.type <- info$CENSORED
+		weights[tip.type != 0] <- 0
+	}
 }
 	
 if (use.rtt)
