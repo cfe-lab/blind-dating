@@ -14,7 +14,7 @@ Rscript ${SRC}/check.inputs.R --info=${INFO} --fasta=${FASTA} --settings=${SETTI
 echo 'building tree...' &&
 Rscript ${SRC}/build.tree.R --info=${INFO} --fasta=${FASTA} --raxml=/opt/raxml --tree=tree_nwk --settings=${SETTINGS} &&
 echo 'rooting tree...' &&
-Rscript ${SRC}/root.tree.R --info=${INFO} --tree=tree_nwk --rootedtree=rooted_tree_nwk --settings=${SETTINGS}
+Rscript ${SRC}/root.tree.R --info=${INFO} --tree=tree_nwk --rootedtree=rooted_tree_nwk --settings=${SETTINGS} &&
 echo 'regressing...' &&
 Rscript ${SRC}/regression.R --info=${INFO} --tree=rooted_tree_nwk --stats=stats_csv --data=data_csv --regression=regression_rds && --settings=${SETTINGS} &&
 echo 'plotting...' &&
