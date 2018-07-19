@@ -415,8 +415,8 @@ if (use.real) {
 	}
 }
 
-type.break <- unlist(lapply(strsplit(types, sep=",")[[1]], paste0, c("FALSE", "TRUE")))
-type.value <- as.numeric(strplit(type.values, sep=",")[[1]])
+type.break <- unlist(lapply(strsplit(types, split=",")[[1]], paste0, c("FALSE", "TRUE")))
+type.value <- as.numeric(strplit(type.values, split=",")[[1]])
 
 x.div <- scale_x_continuous(name="Divergence from root", breaks=seq(0.0, dist.max, by=dist.by))
 y.div <- scale_y_continuous(name="Divergence from root", breaks=seq(0.0, dist.max, by=dist.by))
@@ -438,7 +438,7 @@ if (use.rainbow) {
 	my.colour.value[my.colour.filter] <- hsv(my.colour.scale * .75, 0.5, 0.5)
 } else {
 	data$my.colour <- toupper(data$type)
-	my.colour.break <- strsplit(types, sep=",")[[1]]
+	my.colour.break <- strsplit(types, split=",")[[1]]
 	my.colour.value <- colour.blind[1:length(my.colour.break)]
 }
 
