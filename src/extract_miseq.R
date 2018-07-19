@@ -14,7 +14,8 @@ op <- add_option(op, c("-k", "--sequence-key"), type='character')
 op <- add_option(op, c("-f", "--align-fasta"), type='character')
 op <- add_option(op, c("-i", "--info"), type='character')
 op <- add_option(op, c("-q", "--q-cutoff"), type='numeric', default=15)
-op <- add_option(op, c("-n", "--count-cutoff"), type="numeric", default=1)
+op <- add_option(op, c("-n", "--count-cutoff"), type="numeric", default=1500)
+op <- add_option(op, c("-p", "--percent-cutoff"), type="numeric", default=0.4)
 op <- add_option(op, c("-v", "--verbose"), type='logical', action="store_true", default=F)
 args <- parse_args(op)
 
@@ -24,6 +25,7 @@ align.fasta.file <- args[["align-fasta"]]
 info.file <- args[["info"]]
 q.cutoff <- args[["q-cutoff"]]
 count.cutoff <- args[["count-cutoff"]]
+percent.cutoff <- args[["percent-cutoff"]]
 seq.id.prefix <- args[["seq-name"]]
 verbose <- args[["verbose"]]
 
@@ -35,6 +37,7 @@ echo("align-fasta: ", align.fasta.file)
 echo("info: ", info.file)
 echo("q-cutoff: ", q.cutoff)
 echo("count-cutoff: ", count.cutoff)
+echo("percent-cutoff: ", percent.cutoff)
 echo("verbose: ", verbose)
 echo()
 
@@ -47,9 +50,9 @@ align.csv <- lapply(file.path(align.csv.folder, csv.files), read.csv, stringsAsF
 
 echo("Parsing csv...")
 name <- gsub(".+[- ](.+-V3.+V3LOOP.+)_align.csv", "\\1", csv.files, perl=T)
-align.csv.all <- do.call(rbind, lapply(1:length(csv.files), function(i) cbind(name=name[i], align.csv[i], get.info(name[i], sequence.key))))
+align.csv.all <- lapply(1:length(csv.files), function(i) cbind(name=name[i], align.csv[i], get.info(name[i], sequence.key)))
 
-align.csv.filter <- subset(align.csv.all, qcut >= q.cutoff & count > count.cutoff)
+align.csv.filter <- do.call(rbind, lapply(align.csv.all, function(x) subset(x, qcut >= q.cutoff & count > count.cutoff & count > sum(count) * percent.cutoff * 0.01)))
 
 align.fasta <- strsplit(align.csv.filter$seq, "")
 
