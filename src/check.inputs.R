@@ -35,7 +35,6 @@ check.info <- function(info.file) {
 	assert(is.character(info$TYPE), "TYPE in info file parsed incorectly")
 	assert(is.numeric(info$CENSORED), "CENSORED in info must be numeric")
 	assert(is.character(info$DUPLICATE) | is.numeric(info$DUPLICATE), "DUPLICATE in info file parsed incorrectly")
-	assert(is.numeric(info$COUNT), "COUNT in info must be numeric")
 	assert(!is.na(as.Date(info$COLDATE)) | is.numeric(info$COLDATE), "COLDATE must be either in date format or numeric")
 		
 	info
@@ -109,8 +108,10 @@ compare.info.settings <- function(info, settings) {
 	assert(!settings$real | !is.na(as.Date(info$COLDATE)), "--real flag is to be used calendar dates")
 	assert(settings$real | is.numeric(info$COLDATE), "--real flag is not used with numeric dates")
 	
-	if (settings$usedups)
+	if (settings$usedups) {
 		assert(all(c("DUPLICATE", "COUNT") %in% names(info)), "info file missing columns for usedups option")
+		assert(is.numeric(info$COUNT), "COUNT in info must be numeric")
+	}
 }
 
 op <- OptionParser()
