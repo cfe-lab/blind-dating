@@ -416,7 +416,7 @@ if (use.real) {
 }
 
 type.break <- unlist(lapply(strsplit(types, split=",")[[1]], paste0, c("FALSE", "TRUE")))
-type.value <- as.numeric(strplit(type.values, split=",")[[1]])
+type.value <- as.numeric(strsplit(type.values, split=",")[[1]])
 
 x.div <- scale_x_continuous(name="Divergence from root", breaks=seq(0.0, dist.max, by=dist.by))
 y.div <- scale_y_continuous(name="Divergence from root", breaks=seq(0.0, dist.max, by=dist.by))
