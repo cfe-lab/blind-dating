@@ -57,7 +57,7 @@ get.parent.edges <- function(tree, node) {
 }
 
 add.therapy <- function(therapy.start, therapy.end, therapy.type, flipped=F, height=Inf) {
-	if (rainbow) {
+	if (use.rainbow) {
 		therapy.colour <- if (therapy.type == 1) THERAPY_COLOUR else THERAPY_COLOUR2	
 	
 		if (flipped) {
@@ -69,9 +69,9 @@ add.therapy <- function(therapy.start, therapy.end, therapy.type, flipped=F, hei
 		therapy.line <- if (therapy.type == 1) THERAPY_LTY else THERAPY_LTY2
 		
 		if (flipped) {
-			geom_hline(y.intercept=therapy.start, linetype=therapy.line)
+			geom_hline(yintercept=therapy.start, linetype=therapy.line)
 		} else {
-			geom_vline(x.intercept=therapy.start, linetype=therapy.line)
+			geom_vline(xintercept=therapy.start, linetype=therapy.line)
 		}
 	}
 }
@@ -123,7 +123,7 @@ apply.axes <- function(p, flipped, scaled) {
 	p
 }
 
-apply.theme <- function(p, flipped=F, scaled=T, type.break.=type.break, type.value.=type.value, colour.break.=colour.break, colour.value.=colour.value, size.value.=size.value) {
+apply.theme <- function(p, flipped=F, scaled=T, type.break.=type.break, type.value.=type.value, colour.break.=colour.break, colour.value.=colour.value) {
 	apply.axes(p + theme_bw() +
 		theme(
 			text=element_text(size=35),
@@ -141,9 +141,8 @@ apply.theme <- function(p, flipped=F, scaled=T, type.break.=type.break, type.val
 			panel.grid.major=element_blank(),
 		    panel.grid.minor=element_blank()
 		) +
-		scale_shape_manual(name="", breaks=type.break., values=type.value., limits=type.label.) +
+		scale_shape_manual(name="", breaks=type.break., values=type.value., limits=type.break.) +
 		scale_colour_manual(name="", breaks=colour.break., values=colour.value., limits=colour.break.) +
-		scale_size_manual(name="", breaks=type.break., values=size.value., limits=type.label.) +
 		guides(shape=guide_legend(order=2), colour=guide_legend(override.aes=list(shape=15, size=8), order=1)),
 		flipped, scaled)
 }
@@ -264,16 +263,16 @@ if (!is.na(pat.id2)) {
 	regression.2.file <- paste0("stats/", pat.id2, ".regression.rds")
 	comb.stats.file <- paste0("stats/", pat.id, ".comb.data.csv")
 }
-pdf.file <- paste0(output.folder, pat.id, ".pdf")
-pdf.disttree.file <- paste0(output.folder, pat.id, ".disttree.pdf")
-pdf.colour.disttree.file <- paste0(output.folder, pat.id, ".colour.disttree.pdf")
-pdf.colour.tree.file <- paste0(output.folder, pat.id, ".colour.tree.pdf")
-pdf.tree.file <- paste0(output.folder, pat.id, ".tree.pdf")
-pdf.hist.file <- paste0(output.folder, pat.id, ".hist.pdf")
-pdf.histdate.file <- paste0(output.folder, pat.id, ".histdate.pdf")
-pdf.vl.file <- paste0(output.folder, pat.id, ".vl.pdf")
-pdf.dup.disttree.file <- paste0(output.folder, pat.id, ".dup.disttree.pdf")
-pdf.colour.mark.tree.file <- paste0(output.folder, pat.id, ".colour.mark.tree.pdf")
+pdf.file <- paste0(output.folder, "/", pat.id, ".pdf")
+pdf.disttree.file <- paste0(output.folder, "/", pat.id, ".disttree.pdf")
+pdf.colour.disttree.file <- paste0(output.folder, "/", pat.id, ".colour.disttree.pdf")
+pdf.colour.tree.file <- paste0(output.folder, "/", pat.id, ".colour.tree.pdf")
+pdf.tree.file <- paste0(output.folder, "/", pat.id, ".tree.pdf")
+pdf.hist.file <- paste0(output.folder, "/", pat.id, ".hist.pdf")
+pdf.histdate.file <- paste0(output.folder, "/",  pat.id, ".histdate.pdf")
+pdf.vl.file <- paste0(output.folder, "/", pat.id, ".vl.pdf")
+pdf.dup.disttree.file <- paste0(output.folder, "/", pat.id, ".dup.disttree.pdf")
+pdf.colour.mark.tree.file <- paste0(output.folder, "/", pat.id, ".colour.mark.tree.pdf")
 
 tree <- ape::ladderize(read.tree(tree.file))
 data <- read.csv(data.file, col.names=c("tip.label", "type", "censored", "date", "dist", "est.date", "date.diff"), stringsAsFactors=F)
@@ -482,7 +481,7 @@ if (cartoon) {
 
 pdf(pdf.colour.disttree.file)
 apply.theme(ggtree(ptree, colour="#49494980", size=dist.tree.size, ladderize=T) +
-	geom_tippoint(aes(colour=my.colour, shape=my.type, size=my.type)) +
+	geom_tippoint(aes(colour=my.colour, shape=my.type), size=point.size) +
 	geom_treescale(width=0.02, fontsize=7, offset=scale.offset),
 	flipped=F, scaled=F, colour.value.=my.colour.value, colour.break.=my.colour.break)
 dev.off()
@@ -495,7 +494,7 @@ dev.off()
 
 pdf(pdf.colour.tree.file)
 apply.theme(ggtree(ptree, yscale="node.date", colour="#49494980", size=tree.size, ladderize=F) +
-	geom_tippoint(aes(colour=my.colour, shape=my.type, size=my.type)),
+	geom_tippoint(aes(colour=my.colour, shape=my.type), size=point.size),
 	flipped=T, scaled=T, colour.value.=my.colour.value, colour.break.=my.colour.break)
 dev.off()
 
@@ -541,16 +540,16 @@ if (use.dups) {
 	
 	pdf(pdf.dup.disttree.file, height=10)
 	print(apply.theme(ggtree(ptree, colour="#49494980", size=dist.tree.size, ladderize=T) +
-	geom_tippoint(aes(colour=my.colour, shape=my.type, size=my.type)) +
+	geom_tippoint(aes(colour=my.colour, shape=my.type), size=point.size) +
 	geom_treescale(width=0.02, fontsize=7, offset=scale.offset) + 
-	geom_point(aes(colour=my.colour, shape=my.type, size=my.type, x=x.shift, y=y), data=fort.dup, alpha=0.4),
-	flipped=F, scaled=F, colour.value.=my.colour.value, colour.break.=my.colour.break, size.value.=size.value * 0.5))
+	geom_point(aes(colour=my.colour, shape=my.type, x=x.shift, y=y), data=fort.dup, alpha=0.4),
+	flipped=F, scaled=F, colour.value.=my.colour.value, colour.break.=my.colour.break))
 	dev.off()
 	
 	pdf(pdf.dup.tree.file)
 	print(ggtree(ptree, yscale="node.date", colour="#49494980", size=tree.size, ladderize=F) +
-	geom_tippoint(aes(colour=my.colour, shape=my.type, size=my.type)) +
-	geom_point(aes(colour=my.colour, shape=my.type, size=my.type, x=x, y=date), data=fort.dup, alpha=0.4),
+	geom_tippoint(aes(colour=my.colour, shape=my.type), size=point.size) +
+	geom_point(aes(colour=my.colour, shape=my.type, x=x, y=date), data=fort.dup, alpha=0.4),
 	flipped=T, scaled=T, colour.value.=my.colour.value, colour.break.=my.colour.break)
 	dev.off()
 }
@@ -566,19 +565,19 @@ if (mark.latent) {
 
 	pdf(pdf.colour.mark.tree.file)
 	print(apply.theme(ggtree(ptree.withconf, yscale="node.date", colour="#49494980", size=tree.size, ladderize=F) +
-	geom_tippoint(aes(colour=conf.colour, shape=my.type, size=my.type)),
+	geom_tippoint(aes(colour=conf.colour, shape=my.type)),
 	flipped=T, scaled=T, colour.value.=conf.colour.value, colour.break.=conf.colour.break))
 	dev.off()
 }
 
 data.hist <- subset(data, censored > 0)
 
-if (rainbow) {
+if (use.rainbow) {
 	date.levels <- sort(unique(data.hist$date))
 } else {
 	type.filter <- my.colour.break %in% data.hist$type
 	type.levels <- my.colour.break[type.filter]
-	colour.vals <- my.colour.values[type.filter]
+	colour.vals <- my.colour.value[type.filter]
 	colour.labs <- type.levels
 }
 
@@ -609,7 +608,7 @@ if (use.real) {
 	}
 	m <- breaks[1]
 	M <- breaks[length(breaks[1])]
-	if (rainbow) {
+	if (use.rainbow) {
 		colour.vals <-  if (length(date.levels) == 4) c("#cccccc", "#888888", "#444444", "#000000") else if (length(date.levels) == 2) c("#999999", "#000000") else 'black'
 		colour.labs <- as.character(as.Date(date.levels, origin="1970-01-01"), format="%b. %Y")
 	}
@@ -618,7 +617,7 @@ if (use.real) {
 		m <- floor(min(c(data.hist$est.date, data$date)))
 		M <- floor(max(c(data.hist$est.date, subset(data, censored <= 0)$date))) + 1
 		breaks <- seq(m, M)
-		if (rainbow) {
+		if (use.rainbow) {
 			colour.vals <- rep('black', length(date.levels))
 			colour.labs <- rep('LAB', length(date.levels))
 		}
@@ -626,7 +625,7 @@ if (use.real) {
 		m <- floor(min(c(data.hist$est.date, data$date)) / 365.25)
 		M <- floor(max(c(data.hist$est.date, subset(data, censored <= 0)$date)) / 365.25) + 1
 		breaks <- seq(m, M) * 365.25
-		if (rainbow) {
+		if (use.rainbow) {
 			colour.vals <- rep('black', length(date.levels))
 			colour.labs <- rep('LAB', length(date.levels))
 		}
@@ -635,14 +634,14 @@ if (use.real) {
 
 H <- max(hist(data.hist$est.date, breaks=breaks)$counts)
 
-if (rainbow) {
+if (use.rainbow) {
 	if (use.real) {
 		p <- ggplot(data.hist, aes(x=est.date, fill=factor(date, levels=colour.levels)))
 	} else {
 		p <- ggplot(data.hist, aes(x=est.date))
 	}
 } else {
-	p <- ggplot(data.hist, aes(x=est.date, fill=factor(type, levels=colour.levels)))
+	p <- ggplot(data.hist, aes(x=est.date, fill=factor(type, levels=type.levels)))
 }
 
 if (!is.na(THERAPY_START)) {
@@ -656,7 +655,7 @@ if (!is.na(therapy3))
 
 p <- p + geom_segment(x=min(data$date), xend=min(data$date), y=H * 9 / 8, yend=H, arrow=arrow(length = unit(0.25, "cm")))
 
-if (rainbow) {
+if (use.rainbow) {
 	if (use.real) {
 		p <- p + geom_histogram(breaks=breaks) + scale_fill_manual(name="Collection Date", values=colour.vals, labels=colour.labs)
 	} else {
@@ -702,11 +701,11 @@ p <- p +
 	    panel.grid.minor=element_blank()
 	)
 	
-if (!use.real || length(date.levels) == 1) {
+if (!use.rainbow || (use.real && length(date.levels) > 1)) {
+	p <- p + scale_y_continuous(name="Frequency", breaks=seq(0, H, by=hist.freq.by), limits=c(0, H * hist.height))
+} else {
 	p <- p + scale_y_continuous(name="Frequency", breaks=seq(0, H, by=hist.freq.by), limits=c(0, H * hist.height)) +
 		theme(legend.position='none')
-} else {
-	p <- p + scale_y_continuous(name="Frequency", breaks=seq(0, H, by=hist.freq.by), limits=c(0, H * hist.height))
 }
 
 pdf(pdf.hist.file, height=5)
@@ -719,7 +718,7 @@ if (!is.na(vl.file)) {
 	if (use.real)
 		data.vl$Date <- as.Date(data.vl$Date)		
 	data.vl$Used <- gsub("(V3| & )", "", data.vl$Used)
-	data.vl$my.type <- match(with(data.vl, paste0(Type, Censored > 0))
+	data.vl$my.type <- match(with(data.vl, paste0(Type, Censored > 0)))
 	data.vl$my.colour <- as.numeric(data.vl$Date)
 	data.vl$my.colour[data.vl$Censored > 0] <- "censored"
 
