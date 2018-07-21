@@ -8,6 +8,8 @@ INFO=${INPUT}/info_csv
 FASTA=${INPUT}/align_fasta
 SETTINGS=${INPUT}/settings_txt
 
+mkdir ${OUTPUT}/plots
+
 cd ${OUTPUT} &&
 echo 'checking inputs...' &&
 Rscript ${SRC}/check.inputs.R --info=${INFO} --fasta=${FASTA} --settings=${SETTINGS} &&

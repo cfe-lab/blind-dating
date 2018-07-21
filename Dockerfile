@@ -8,6 +8,7 @@ ENV BDSRC=/opt/blind-dating
 
 # prerequistes
 RUN apt-get update --fix-missing && apt-get install -y \
+  zlib1g \
   unzip \
   wget \
   make \
@@ -27,14 +28,14 @@ RUN make -f Makefile.PTHREADS.gcc && \
   ln -s /tmp/standard-RAxML-8.2.12/raxmlHPC-PTHREADS /opt/raxml
 
 # CRAN R packages and ggtree
-RUN R --slave -e 'local({r <- getOption("repos"); r["CRAN"] <- "http://cran.stat.sfu.ca"; options(repos=r)}); install.packages(c("ape", "chemCal", "ggplot2", "optparse", "phylobase", "seqinr")); source("https://bioconductor.org/biocLite.R"); biocLite(); biocLite("ggtree")'
+RUN R --vanilla --slave -e 'local({r <- getOption("repos"); r["CRAN"] <- "http://cran.stat.sfu.ca"; options(repos=r)}); install.packages(c("ape", "chemCal", "ggplot2", "optparse", "phylobase", "seqinr")); update.packages(ask=FALSE); source("https://bioconductor.org/biocLite.R"); biocLite("ggtree")'
 
 # node.dating
 WORKDIR /tmp
 RUN git clone https://github.com/brj1/node.dating.git
 WORKDIR /tmp/node.dating
-RUN git branch random && \
- ln -s /tmp/node.dating/R/node.dating.R /opt/node.dating.R
+RUN git checkout random && \
+  ln -s /tmp/node.dating/R/node.dating.R /opt/node.dating.R 
 
 # scripts
 COPY src/*.R /opt/blind-dating/
