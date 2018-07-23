@@ -100,6 +100,12 @@ compare.fasta.info <- function(f, info) {
 	TRUE
 }
 
+compare.fasta.settings <- function(f, info) {
+	# check that outgroup is in fasta file
+	if (settings$ogr)
+		assert(settings$ogrname %in% names(f), "outgroup not in fasta file")
+}
+
 compare.info.settings <- function(info, settings) {
 	# check that real is set properly
 	assert(!settings$real | !is.na(as.Date(info$COLDATE)), "--real flag is to be used calendar dates")
@@ -115,8 +121,10 @@ compare.info.settings <- function(info, settings) {
 
 compare.fasta.info.settings <- function(f, info, settings) {
 	# sequence names in info file
-	names.f <- if (settings.ogr) c(settings.ogrname, names(f)) else names(f)
-	assert(names.f %in% info$FULLSEQID, "info file does not contain all sequence ids in the fasta file")
+	seq.ids <- if (settings$ogr) c(settings$ogrname, info$FULLSEQID) else info$FULLSEQID
+	assert(names(f) %in% seq.ids, "info file does not contain all sequence ids in the fasta file")
+	
+	TRUE
 }
 
 op <- OptionParser()
@@ -136,4 +144,6 @@ settings <- check.settings(settings.file)
 
 # check file compatibility
 cont <- compare.fasta.info(f, info)
+cont <- compare.fasta.settings(f, settings)
 cont <- compare.info.settings(info, settings)
+cont <- compare.fasta.info.settings(f, info, settings)
