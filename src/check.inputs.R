@@ -97,9 +97,6 @@ op <- add_option(op, "--black", type='logical', action='store_false', dest="rain
 }
 
 compare.fasta.info <- function(f, info) {
-	# sequence names in info file
-	assert(names(f) %in% info$FULLSEQID, "info file does not contain all sequence ids in the fasta file")
-	
 	TRUE
 }
 
@@ -112,6 +109,14 @@ compare.info.settings <- function(info, settings) {
 		assert(all(c("DUPLICATE", "COUNT") %in% names(info)), "info file missing columns for usedups option")
 		assert(is.numeric(info$COUNT), "COUNT in info must be numeric")
 	}
+	
+	TRUE
+}
+
+compare.fasta.info.settings <- function(f, info, settings) {
+	# sequence names in info file
+	names.f <- if (settings.ogr) c(settings.ogrname, names(f)) else names(f)
+	assert(names.f %in% info$FULLSEQID, "info file does not contain all sequence ids in the fasta file")
 }
 
 op <- OptionParser()
