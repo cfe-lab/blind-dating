@@ -272,6 +272,7 @@ pdf.hist.file <- paste0(output.folder, "/", pat.id, ".hist.pdf")
 pdf.histdate.file <- paste0(output.folder, "/",  pat.id, ".histdate.pdf")
 pdf.vl.file <- paste0(output.folder, "/", pat.id, ".vl.pdf")
 pdf.dup.disttree.file <- paste0(output.folder, "/", pat.id, ".dup.disttree.pdf")
+pdf.dup.disttree.file <- paste0(output.folder, "/", pat.id, ".dup.tree.pdf")
 pdf.colour.mark.tree.file <- paste0(output.folder, "/", pat.id, ".colour.mark.tree.pdf")
 
 tree <- ape::ladderize(read.tree(tree.file))
@@ -512,7 +513,8 @@ if (use.dups) {
 	fort.dup$tip.label <- info$FULLSEQID
 	fort.dup$type <- info$TYPE
 	fort.dup$date <- info$COLDATE
-		
+	fort.dup$x.shift <- fort.dup$x
+	
 	for (i in 1:nrow(fort.dup)) {
 		if (i == 1 || info$DUPLICATE[i - 1] != info$DUPLICATE[i]) {
 			shift <- 1
