@@ -91,6 +91,7 @@ op <- add_option(op, "--types", type='character', default="PLASMA,PBMC")
 op <- add_option(op, "--typevalues", type='character', default="16,1,18,5")
 op <- add_option(op, "--rainbow", type='logical', action='store_true', default=T)
 op <- add_option(op, "--black", type='logical', action='store_false', dest="rainbow")
+op <- add_option(op, "--plotdups", type='logical', action='store_true', default=F)
 	args <- parse_args(op, args=settings)
 	
 	args
