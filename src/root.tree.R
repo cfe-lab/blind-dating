@@ -31,7 +31,7 @@ op <- add_option(op, "--method", type='character')
 op <- add_option(op, "--ogrname", type='character')
 op <- add_option(op, "--usedups", type='logical', action='store_true')
 op <- add_option(op, "--threads", type='numeric')
-op <- add_option(op, "--freqweights", type='logical', action='store_true')
+op <- add_option(op, "--weight", type='character')
 op <- add_option(op, "--settings", type='character', default=NA)
 args <- parse_args(op)
 
@@ -53,7 +53,7 @@ method <- get.val(args$method, 'correlation')		# 'correlation', 'rms' or 'rsquar
 ogr.name <- get.val(args$ogrname, "REFERENCE")
 use.dups <- get.val(args$usedups, F)
 threads <- get.val(args$threads, 1)
-freq.weights <- get.val(args$freqweights, F)
+weight <- get.val(args$weight, NA)
 
 use.rtt <- as.numeric(!ogr) * (1 + as.numeric(use.all))	# 0 = no, 1 = yes (only plasma), 2 = yes (all)
 
@@ -66,16 +66,16 @@ if (use.rtt > 0) {
 	if (use.dups) {
 		plasma.dates <- lapply(tree$tip.label, function(x) with(subset(info.all, DUPLICATE == x), if (use.date) as.numeric(as.Date(COLDATE)) else COLDATE))
 		
-		if (freq.weights) {
-			weights <- lapply(tree$tip.label, function(x) with(subset(info.all, DUPLICATE == x), COUNT))
+		if (!is.na(weight)) {
+			weights <- lapply(tree$tip.label, function(x) info.all[info$DUPLICATE == x, weight])
 		} else {
 			weights <- lapply(tree$tip.label, function(x) rep(1, sum(info.all$DUPLICATE == x)))
 		}
 	} else {
 		plasma.dates <- if (use.date) as.numeric(as.Date(info$COLDATE)) else info$COLDATE
 		
-		weights <- if (freq.weights) {
-			info$COUNT
+		weights <- if (!is.na(weight)) {
+			info[, weight]
 		} else {
 			rep(1, nrow(info))
 		}

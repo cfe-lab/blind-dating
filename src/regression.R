@@ -27,7 +27,7 @@ op <- add_option(op, "--cutoff", type="character")
 op <- add_option(op, "--data", type='character')
 op <- add_option(op, "--stats", type='character')
 op <- add_option(op, "--regression", type='character')
-op <- add_option(op, "--freqweights", type='logical', action='store_true')
+op <- add_option(op, "--weight", type='character')
 op <- add_option(op, "--settings", type='character', default=NA)
 args <- parse_args(op)
 
@@ -49,7 +49,7 @@ cutoff <- get.val(args$cutoff, NA)
 data.file <- get.val(args$data, NA)
 stats.file <- get.val(args$stats, NA)
 regression.file <- get.val(args$regression, NA)
-freq.weights <- get.val(args$freqweights, F)
+weight <- get.val(args$weight, NA)
 
 set.seed(args$seed)
 
@@ -63,8 +63,8 @@ n <- length(tree$tip.label)
 
 data <- data.frame(label=info$FULLSEQID, type=info$TYPE, censored=info$CENSORED, date=if (use.date == 1) as.numeric(as.Date(info$COLDATE)) else as.numeric(info$COLDATE), dist=node.depth.edgelength(tree)[if (use.all) match(info$DUPLICATE, tree$tip.label) else 1:n], stringsAsFactors=F)
 
-weights <- if (freq.weights) {
-	info$COUNT[if (use.all) match(info$DUPLICATE, tree$tip.label) else 1:n, ]
+weights <- if (!is.na(weight)) {
+	info[if (use.all) match(info$DUPLICATE, tree$tip.label) else 1:n, weight]
 } else {
 	NULL
 }

@@ -28,14 +28,12 @@ check.info <- function(info.file) {
 	info <- read.csv(info.file, stringsAsFactors=F)
 	
 	# correct columns present
-	assert(all(c("FULLSEQID", "COLDATE", "TYPE", "CENSORED") %in% names(info)), "info file missing column")
+	assert(c("FULLSEQID", "COLDATE", "TYPE", "CENSORED") %in% names(info), "info file missing column")
 	
 	# correct column types
 	assert(is.character(info$FULLSEQID) | is.numeric(info$FULLSEQID), "FULLSEQID in info file parsed incorectly")
 	assert(is.character(info$TYPE), "TYPE in info file parsed incorectly")
 	assert(is.numeric(info$CENSORED), "CENSORED in info must be numeric")
-	assert(is.character(info$DUPLICATE) | is.numeric(info$DUPLICATE), "DUPLICATE in info file parsed incorrectly")
-	assert(!is.na(as.Date(info$COLDATE)) | is.numeric(info$COLDATE), "COLDATE must be either in date format or numeric")
 		
 	info
 }
@@ -56,7 +54,7 @@ op <- add_option(op, "--distmax", type='double', default=NA)
 op <- add_option(op, "--distmin", type='double', default=NA)
 op <- add_option(op, "--dnashapescale", type='numeric', default=1)
 op <- add_option(op, "--dupshift", type='numeric', default=0.01)
-op <- add_option(op, "--freqweights", type='logical', action='store_true', default=F)
+op <- add_option(op, "--weight", type='character', default=NA)
 op <- add_option(op, "--histbymonth", type='logical', action='store_true', default=F)
 op <- add_option(op, "--histfreqby", type='numeric', default=2)
 op <- add_option(op, "--histheight", type='numeric', default=1.7)
@@ -106,6 +104,8 @@ compare.fasta.settings <- function(f, info) {
 	# check that outgroup is in fasta file
 	if (settings$ogr)
 		assert(settings$ogrname %in% names(f), "outgroup not in fasta file")
+		
+	TRUE
 }
 
 compare.info.settings <- function(info, settings) {
@@ -114,8 +114,13 @@ compare.info.settings <- function(info, settings) {
 	assert(settings$real | is.numeric(info$COLDATE), "--real flag is not used with numeric dates")
 	
 	if (settings$usedups) {
-		assert(all(c("DUPLICATE", "COUNT") %in% names(info)), "info file missing columns for usedups option")
-		assert(is.numeric(info$COUNT), "COUNT in info must be numeric")
+		assert("DUPLICATE" %in% names(info), "info file missing columns for usedup option")
+		assert(is.character(info$DUPLICATE) | is.numeric(info$DUPLICATE), "DUPLICATE in info file parsed incorrectly")
+	}
+	
+	if (!is.na(settings$weight)) {
+		assert(settings$weight %in% names(info), "info file missing columns for usedup option")
+		assert(is.numeric(info[, settings$weight]), "weight in info must be numeric")
 	}
 	
 	TRUE
