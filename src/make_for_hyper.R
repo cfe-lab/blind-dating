@@ -9,14 +9,14 @@ op <- add_option(op, "--fasta", type='character')
 op <- add_option(op, "--info", type='character')
 op <- add_option(op, "--hyperfasta", type='character')
 op <- add_option(op, "--real", type='logical', action='store_true', default=F)
-op <- add_optoon(op, "--useall", type='logical', action='store_true', default=F)
+op <- add_option(op, "--useall", type='logical', action='store_true', default=F)
 args <- parse_args(op)
 
 fasta.file <- args$fasta
 info.file <- args$info
 hyper.fasta.file <- args$hyperfasta
 use.date <- args$real
-use.all <- args$use.all
+use.all <- args$useall
 
 f <- read.fasta(fasta.file)
 
