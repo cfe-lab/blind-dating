@@ -272,7 +272,7 @@ pdf.hist.file <- paste0(output.folder, "/", pat.id, ".hist.pdf")
 pdf.histdate.file <- paste0(output.folder, "/",  pat.id, ".histdate.pdf")
 pdf.vl.file <- paste0(output.folder, "/", pat.id, ".vl.pdf")
 pdf.dup.disttree.file <- paste0(output.folder, "/", pat.id, ".dup.disttree.pdf")
-pdf.dup.disttree.file <- paste0(output.folder, "/", pat.id, ".dup.tree.pdf")
+pdf.dup.tree.file <- paste0(output.folder, "/", pat.id, ".dup.tree.pdf")
 pdf.colour.mark.tree.file <- paste0(output.folder, "/", pat.id, ".colour.mark.tree.pdf")
 
 tree <- ape::ladderize(read.tree(tree.file))
