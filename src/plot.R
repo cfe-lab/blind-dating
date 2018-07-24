@@ -511,7 +511,7 @@ if (use.dups) {
 	
 	fort.dup$tip.label <- info$FULLSEQID
 	fort.dup$type <- info$TYPE
-	fort.dup$date <- if (real) as.numeric(as.Date(info$COLDATE)) else  info$COLDATE
+	fort.dup$date <- if (use.real) as.numeric(as.Date(info$COLDATE)) else  info$COLDATE
 		
 	for (i in 1:nrow(fort.dup)) {
 		if (i == 1 || info$DUPLICATE[i - 1] != info$DUPLICATE[i]) {
