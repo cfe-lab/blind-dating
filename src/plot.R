@@ -186,6 +186,7 @@ op <- add_option(op, "--types", type='character')
 op <- add_option(op, "--typevalues", type='character')
 op <- add_option(op, "--rainbow", type='logical', action='store_true')
 op <- add_option(op, "--black", type='logical', action='store_false', dest="rainbow")
+op <- add_option(op, "--colourvalues", type='character')
 op <- add_option(op, "--settings", type='character', default=NA)
 args <- parse_args(op)
 
@@ -232,6 +233,7 @@ output.folder <- get.val(args$outputfolder, "plots")
 types <- get.val(args$types, "PLASMA,PBMC")
 type.values <- get.val(args$typevalues, "16,1,18,5")
 use.rainbow <- get.val(args$rainbow, T)
+colour.values <- get.val(args$colourvalues, NA)
 if (use.real) {
 	year.start <- get.val(args$yearstart, NA)
 	year.end <- get.val(args$yearend, NA)
@@ -439,7 +441,7 @@ if (use.rainbow) {
 } else {
 	data$my.colour <- toupper(data$type)
 	my.colour.break <- strsplit(types, split=",")[[1]]
-	my.colour.value <- colour.blind[1:length(my.colour.break)]
+	my.colour.value <- if (is.na(colour.values)) colour.blind[1:length(my.colour.break)] else strsplit(colour.values, split=",")[[1]]
 }
 
 data.all <- as.data.frame(cbind(rbind(data, data.frame(tip.label=paste0("N.", 1:tree$Nnode), type="NODE", censored=NA, date=NA, dist=node.depth.edgelength(tree)[1:tree$Nnode + nrow(data)], est.date=NA, date.diff=NA, my.colour=NA, my.type=NA)), node.date=node.dates))
@@ -504,6 +506,7 @@ if (use.dups) {
 	
 	info <- subset(info, KEPTDUP == 1 & DUPLICATE != FULLSEQID)
 	info$COLDATE <- if (use.real) as.numeric(as.Date(info$COLDATE, origin="1970-01-01")) else info$COLDATE
+	info <- info[order(info$TYPE), ]
 	info <- info[order(info$COLDATE), ]
 	info <- info[order(info$DUPLICATE), ]
 	
@@ -535,24 +538,28 @@ if (use.dups) {
 		}
 	}
 	
-	fort.dup$my.colour <- fort.dup$date
-	fort.dup$my.colour[fort.dup$censored > 0] <- 'censored'
+	if (use.rainbow) {
+		fort.dup$my.colour <- fort.dup$date
+		fort.dup$my.colour[fort.dup$censored > 0] <- 'censored'
+	} else {
+		fort.dup$my.colour <- fort.dup$type
+	}
 	
-	fort.dup$my.type <-  with(fort.dup, paste0(type, censored > 0))
+	fort.dup$my.type <- with(fort.dup, paste0(type, censored > 0))
 	
 	pdf(pdf.dup.disttree.file, height=10)
 	print(apply.theme(ggtree(ptree, colour="#49494980", size=dist.tree.size, ladderize=T) +
 	geom_tippoint(aes(colour=my.colour, shape=my.type), size=point.size) +
 	geom_treescale(width=0.02, fontsize=7, offset=scale.offset) + 
-	geom_point(aes(colour=my.colour, shape=my.type, x=x.shift, y=y), data=fort.dup, alpha=0.4),
+	geom_point(aes(colour=my.colour, shape=my.type, x=x.shift, y=y), data=fort.dup, alpha=0.4, size=point.size),
 	flipped=F, scaled=F, colour.value.=my.colour.value, colour.break.=my.colour.break))
 	dev.off()
 	
 	pdf(pdf.dup.tree.file)
-	print(ggtree(ptree, yscale="node.date", colour="#49494980", size=tree.size, ladderize=F) +
+	print(apply.theme(ggtree(ptree, yscale="node.date", colour="#49494980", size=tree.size, ladderize=F) +
 	geom_tippoint(aes(colour=my.colour, shape=my.type), size=point.size) +
-	geom_point(aes(colour=my.colour, shape=my.type, x=x, y=date), data=fort.dup, alpha=0.4),
-	flipped=T, scaled=T, colour.value.=my.colour.value, colour.break.=my.colour.break)
+	geom_point(aes(colour=my.colour, shape=my.type, x=x, y=date), data=fort.dup, alpha=0.4, size=point.size),
+	flipped=T, scaled=T, colour.value.=my.colour.value, colour.break.=my.colour.break))
 	dev.off()
 }
 
