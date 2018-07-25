@@ -504,7 +504,7 @@ dev.off()
 if (use.dups) {
 	info <- read.csv(info.file, stringsAsFactors=F)
 	
-	info <- subset(info, KEPTDUP == 1 & DUPLICATE != FULLSEQID)
+	info <- subset(info, DUPLICATE != FULLSEQID & DUPLICATE %in% data.all$tip.label)
 	info$COLDATE <- if (use.real) as.numeric(as.Date(info$COLDATE, origin="1970-01-01")) else info$COLDATE
 	info <- info[order(info$TYPE), ]
 	info <- info[order(info$COLDATE), ]

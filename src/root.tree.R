@@ -60,7 +60,7 @@ use.rtt <- as.numeric(!ogr) * (1 + as.numeric(use.all))	# 0 = no, 1 = yes (only 
 tree <- tree.read(tree.file)
 
 if (use.rtt > 0) {
-	info.all <- read.csv(info.file, stringsAsFactors=T)
+	info.all <- read.csv(info.file, stringsAsFactors=F)
 	info <- info.all[match(tree$tip.label, info.all$FULLSEQID), ]
 	
 	if (use.dups) {
@@ -95,7 +95,7 @@ if (use.rtt == 1) {
 	}
 }
 	
-if (use.rtt)
+if (use.rtt > 0)
 	tree <- rtt(tree, plasma.dates, weights=weights, ncpu=threads, objective=method, opt.tol=1e-8)
 
 tree$node.label <- paste0("N.", 1:tree$Nnode)
