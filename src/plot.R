@@ -645,7 +645,7 @@ H <- max(hist(data.hist$est.date, breaks=breaks)$counts)
 
 if (use.rainbow) {
 	if (use.real) {
-		p <- ggplot(data.hist, aes(x=est.date, fill=factor(date, levels=colour.levels)))
+		p <- ggplot(data.hist, aes(x=est.date, fill=factor(date, levels=date.levels)))
 	} else {
 		p <- ggplot(data.hist, aes(x=est.date))
 	}
