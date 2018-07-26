@@ -656,6 +656,7 @@ if (use.dups) {
 	fort.dup <- fort[match(info$DUPLICATE, fort$tip.label), ]
 	
 	fort.dup$tip.label <- info$FULLSEQID
+	fort.dup$censored <- info$CENSORED
 	fort.dup$type <- info$TYPE
 	fort.dup$my.colour <- NA
 	fort.dup$date <- info$COLDATE
