@@ -667,7 +667,7 @@ if (use.dups) {
 	if (use.rainbow) {
 		data.comb$my.colour <- data.comb$date
 		data.comb$my.colour[data.comb$censored > 0] <- "censored"
-		my.colour.break <- unique(data$my.colour)
+		my.colour.break <- unique(data.comb$my.colour)
 		my.colour.filter <- suppressWarnings(!is.na(as.numeric(my.colour.break)))
 		my.colour.value <- rep('black', length(my.colour.break))
 		my.colour.scale <- (as.numeric(my.colour.break[my.colour.filter]) - MIN_COL_TIME) / (MAX_COL_TIME - MIN_COL_TIME)
