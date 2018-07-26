@@ -187,6 +187,7 @@ op <- add_option(op, "--typevalues", type='character')
 op <- add_option(op, "--rainbow", type='logical', action='store_true')
 op <- add_option(op, "--black", type='logical', action='store_false', dest="rainbow")
 op <- add_option(op, "--colourvalues", type='character')
+op <- add_option(op, "--histdupfreqby", type='numeric')
 op <- add_option(op, "--settings", type='character', default=NA)
 args <- parse_args(op)
 
@@ -234,6 +235,7 @@ types <- get.val(args$types, "PLASMA,PBMC")
 type.values <- get.val(args$typevalues, "16,1,18,5")
 use.rainbow <- get.val(args$rainbow, T)
 colour.values <- get.val(args$colourvalues, NA)
+hist.dup.freq.by <- get.val(args$histdupfreqby, 10)
 if (use.real) {
 	year.start <- get.val(args$yearstart, NA)
 	year.end <- get.val(args$yearend, NA)
@@ -633,11 +635,10 @@ p <- p +
 	    panel.grid.minor=element_blank()
 	)
 	
-if (!use.rainbow || (use.real && length(date.levels) > 1)) {
-	p <- p + scale_y_continuous(name="Frequency", breaks=seq(0, H, by=hist.freq.by), limits=c(0, H * hist.height))
-} else {
-	p <- p + scale_y_continuous(name="Frequency", breaks=seq(0, H, by=hist.freq.by), limits=c(0, H * hist.height)) +
-		theme(legend.position='none')
+p <- p + scale_y_continuous(name="Frequency", breaks=seq(0, H, by=hist.freq.by), limits=c(0, H * hist.height))
+	
+if (use.rainbow && !(use.real && length(date.levels) > 1)) {
+	p <- p + theme(legend.position='none')
 }
 
 pdf(pdf.hist.file, height=5)
@@ -846,12 +847,11 @@ p <- p +
 		panel.grid.major=element_blank(),
 	    panel.grid.minor=element_blank()
 	)
+
+p <- p + scale_y_continuous(name="Frequency", breaks=seq(0, H, by=hist.dup.freq.by), limits=c(0, H * hist.height))
 	
-if (!use.rainbow || (use.real && length(date.levels) > 1)) {
-	p <- p + scale_y_continuous(name="Frequency", breaks=seq(0, H, by=hist.freq.by), limits=c(0, H * hist.height))
-} else {
-	p <- p + scale_y_continuous(name="Frequency", breaks=seq(0, H, by=hist.freq.by), limits=c(0, H * hist.height)) +
-		theme(legend.position='none')
+if (use.rainbow && !(use.real && length(date.levels) > 1)) {
+	p <- p + theme(legend.position='none')
 }
 
 pdf(pdf.dup.hist.file, height=5)
