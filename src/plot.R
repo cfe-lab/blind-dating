@@ -855,7 +855,7 @@ if (use.rainbow && !(use.real && length(date.levels) > 1)) {
 }
 
 pdf(pdf.dup.hist.file, height=5)
-p
+print(p)
 dev.off()
 }
 
