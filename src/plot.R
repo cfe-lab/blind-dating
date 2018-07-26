@@ -563,7 +563,7 @@ if (use.real) {
 	} 
 }
 
-H <- max(hist(data.hist$est.date, breaks=breaks)$counts)
+H <- max(hist(data.hist$est.date, breaks=breaks, plot=F)$counts)
 
 if (use.rainbow) {
 	if (use.real) {
@@ -657,8 +657,24 @@ if (use.dups) {
 	
 	fort.dup$tip.label <- info$FULLSEQID
 	fort.dup$type <- info$TYPE
+	fort.dup$my.colour <- NA
 	fort.dup$date <- info$COLDATE
 	fort.dup$x.shift <- fort.dup$x
+	fort.dup$my.type <- with(fort.dup, paste0(type, censored > 0))
+	
+	data.comb <- subset(rbind(data[, c("tip.label", "type", "censored", "date", "dist", "est.date", "date.diff", "my.type", "my.colour")], fort.dup[, c("tip.label", "type", "censored", "date", "dist", "est.date", "date.diff", "my.type", "my.colour")])
+	
+	if (use.rainbow) {
+		data.comb$my.colour <- data.comb$date
+		data.comb$my.colour[data.comb$censored > 0] <- "censored"
+		my.colour.break <- unique(data$my.colour)
+		my.colour.filter <- suppressWarnings(!is.na(as.numeric(my.colour.break)))
+		my.colour.value <- rep('black', length(my.colour.break))
+		my.colour.scale <- (as.numeric(my.colour.break[my.colour.filter]) - MIN_COL_TIME) / (MAX_COL_TIME - MIN_COL_TIME)
+		my.colour.value[my.colour.filter] <- hsv(my.colour.scale * .75, 0.5, 0.5)
+	} else {
+		fort.dup$my.colour <- fort.dup$type
+	}
 	
 	for (i in 1:nrow(fort.dup)) {
 		if (i == 1 || info$DUPLICATE[i - 1] != info$DUPLICATE[i]) {
@@ -680,15 +696,6 @@ if (use.dups) {
 		}
 	}
 	
-	if (use.rainbow) {
-		fort.dup$my.colour <- fort.dup$date
-		fort.dup$my.colour[fort.dup$censored > 0] <- 'censored'
-	} else {
-		fort.dup$my.colour <- fort.dup$type
-	}
-	
-	fort.dup$my.type <- with(fort.dup, paste0(type, censored > 0))
-	
 	pdf(pdf.dup.disttree.file, height=10)
 	print(apply.theme(ggtree(ptree, colour="#49494980", size=dist.tree.size, ladderize=T) +
 	geom_tippoint(aes(colour=my.colour, shape=my.type), size=point.size) +
@@ -704,7 +711,7 @@ if (use.dups) {
 	flipped=T, scaled=T, colour.value.=my.colour.value, colour.break.=my.colour.break))
 	dev.off()
 	
-data.hist <- subset(rbind(data, fort.dup[, c("tip.label", "type", "censored", "date", "dist", "est.date", "date.diff", "my.type", "my.colour")]), censored > 0)
+data.hist <- subset(data.comb, censored > 0)
 
 if (use.rainbow) {
 	date.levels <- sort(unique(data.hist$date))
