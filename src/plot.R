@@ -618,7 +618,7 @@ if (use.real) {
 	m <- breaks[1]
 	M <- breaks[length(breaks[1])]
 	if (use.rainbow) {
-		colour.vals <-  if (length(date.levels) == 4) c("#cccccc", "#888888", "#444444", "#000000") else if (length(date.levels) == 2) c("#999999", "#000000") else 'black'
+		colour.vals <- if (length(date.levels) == 4) c("#cccccc", "#888888", "#444444", "#000000") else if (length(date.levels) == 3) c("#aaaaaa", "#555555", "#000000") else if (length(date.levels) == 2) c("#999999", "#000000") else 'black'
 		colour.labs <- as.character(as.Date(date.levels, origin="1970-01-01"), format="%b. %Y")
 	}
 } else {
