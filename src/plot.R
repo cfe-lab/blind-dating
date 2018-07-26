@@ -704,7 +704,7 @@ if (use.dups) {
 	flipped=T, scaled=T, colour.value.=my.colour.value, colour.break.=my.colour.break))
 	dev.off()
 	
-data.hist <- subset(rbind(data, fort.dup[, c("tip.label", "type", "censored", "date", "dist", "est.date", "date.diff", "my.type", "my.colour"), censored > 0)
+data.hist <- subset(rbind(data, fort.dup[, c("tip.label", "type", "censored", "date", "dist", "est.date", "date.diff", "my.type", "my.colour")], censored > 0)
 
 if (use.rainbow) {
 	date.levels <- sort(unique(data.hist$date))
