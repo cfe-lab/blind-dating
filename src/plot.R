@@ -729,10 +729,10 @@ if (use.rainbow) {
 
 if (use.real) {
 	if (hist.by.month) {
-		m.month <- as.numeric(as.character(as.Date(min(c(data.hist$est.date, data$date)), origin="1970-01-01"), "%m"))
-		m.year <- as.numeric(as.character(as.Date(min(c(data.hist$est.date, data$date)), origin="1970-01-01"), "%Y"))
-		M.month <- as.numeric(as.character(as.Date(max(c(data.hist$est.date, subset(data, censored <= 0)$date)), origin="1970-01-01"), "%m")) + 1
-		M.year <- as.numeric(as.character(as.Date(max(c(data.hist$est.date, subset(data, censored <= 0)$date)), origin="1970-01-01"), "%Y"))
+		m.month <- as.numeric(as.character(as.Date(min(c(data.hist$est.date, data.comb$date)), origin="1970-01-01"), "%m"))
+		m.year <- as.numeric(as.character(as.Date(min(c(data.hist$est.date, data.comb$date)), origin="1970-01-01"), "%Y"))
+		M.month <- as.numeric(as.character(as.Date(max(c(data.hist$est.date, subset(data.comb, censored <= 0)$date)), origin="1970-01-01"), "%m")) + 1
+		M.year <- as.numeric(as.character(as.Date(max(c(data.hist$est.date, subset(data.comb, censored <= 0)$date)), origin="1970-01-01"), "%Y"))
 		
 		if (M.month == 13) {
 			M.year <- M.year + 1
@@ -748,8 +748,8 @@ if (use.real) {
 		}
 	}
 	else {
-		m <- as.numeric(gsub("(.+)-.+-.+", "\\1", as.Date(min(c(data.hist$est.date, data$date)), origin="1970-01-01")))
-		M <- as.numeric(gsub("(.+)-.+-.+", "\\1", as.Date(max(c(data.hist$est.date), subset(data, censored <= 0)$date), origin="1970-01-01"))) + 1
+		m <- as.numeric(gsub("(.+)-.+-.+", "\\1", as.Date(min(c(data.hist$est.date, data.comb$date)), origin="1970-01-01")))
+		M <- as.numeric(gsub("(.+)-.+-.+", "\\1", as.Date(max(c(data.hist$est.date), subset(data.comb, censored <= 0)$date), origin="1970-01-01"))) + 1
 		breaks <- as.numeric(as.Date(paste0(seq(m, M), "-01-01")))
 	}
 	m <- breaks[1]
@@ -760,16 +760,16 @@ if (use.real) {
 	}
 } else {
 	if (cartoon) {
-		m <- floor(min(c(data.hist$est.date, data$date)))
-		M <- floor(max(c(data.hist$est.date, subset(data, censored <= 0)$date))) + 1
+		m <- floor(min(c(data.hist$est.date, data.comb$date)))
+		M <- floor(max(c(data.hist$est.date, subset(data.comb, censored <= 0)$date))) + 1
 		breaks <- seq(m, M)
 		if (use.rainbow) {
 			colour.vals <- rep('black', length(date.levels))
 			colour.labs <- rep('LAB', length(date.levels))
 		}
 	} else {
-		m <- floor(min(c(data.hist$est.date, data$date)) / 365.25)
-		M <- floor(max(c(data.hist$est.date, subset(data, censored <= 0)$date)) / 365.25) + 1
+		m <- floor(min(c(data.hist$est.date, data.comb$date)) / 365.25)
+		M <- floor(max(c(data.hist$est.date, subset(data.comb, censored <= 0)$date)) / 365.25) + 1
 		breaks <- seq(m, M) * 365.25
 		if (use.rainbow) {
 			colour.vals <- rep('black', length(date.levels))
@@ -778,7 +778,7 @@ if (use.real) {
 	} 
 }
 
-H <- max(hist(data.hist$est.date, breaks=breaks)$counts)
+H <- max(hist(data.hist$est.date, breaks=breaks, plot=F)$counts)
 
 if (use.rainbow) {
 	if (use.real) {
