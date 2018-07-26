@@ -619,11 +619,11 @@ p <- p +
 	guides(fill=guide_legend(override.aes=list(size=8, colour="#00000000"), ncol=2)) +
 	theme_bw() +
 	theme(
-		text=element_text(size=35),
-		axis.text=element_text(size=30, colour='black'),
+		text=element_text(size=30),
+		axis.text=element_text(size=25, colour='black'),
 		axis.text.x=element_text(angle=90, hjust=1, vjust=0.5),
-		legend.text=element_text(size=30),
-		legend.title=element_text(size=30),
+		legend.text=element_text(size=25),
+		legend.title=element_text(size=25),
 		legend.position=c(.98, .98),
 		legend.justification=c(1, 1),
 		legend.spacing=unit(0, 'cm'),
@@ -832,11 +832,11 @@ p <- p +
 	guides(fill=guide_legend(override.aes=list(size=8, colour="#00000000"), ncol=2)) +
 	theme_bw() +
 	theme(
-		text=element_text(size=35),
-		axis.text=element_text(size=30, colour='black'),
+		text=element_text(size=30),
+		axis.text=element_text(size=25, colour='black'),
 		axis.text.x=element_text(angle=90, hjust=1, vjust=0.5),
-		legend.text=element_text(size=30),
-		legend.title=element_text(size=30),
+		legend.text=element_text(size=25),
+		legend.title=element_text(size=25),
 		legend.position=c(.98, .98),
 		legend.justification=c(1, 1),
 		legend.spacing=unit(0, 'cm'),
