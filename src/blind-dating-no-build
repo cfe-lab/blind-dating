@@ -1,5 +1,7 @@
 #!/bin/bash
 
+PATID=$1
+
 SRC=/opt/blind-dating
 OUTPUT=/mnt/output
 INPUT=/mnt/input
@@ -18,7 +20,7 @@ Rscript ${SRC}/check.inputs.R --info=${INFO} --fasta=${FASTA} --settings=${SETTI
 echo 'rooting tree...' &&
 Rscript ${SRC}/root.tree.R --info=${INFO} --tree=${TREE} --rootedtree=rooted_tree_nwk --settings=${SETTINGS} &&
 echo 'regressing...' &&
-Rscript ${SRC}/regression.R --info=${INFO} --tree=rooted_tree_nwk --stats=stats_csv --data=data_csv --regression=regression_rds --settings=${SETTINGS} &&
+Rscript ${SRC}/regression.R --patid=${PATID} --info=${INFO} --tree=rooted_tree_nwk --stats=stats_csv --data=data_csv --regression=regression_rds --settings=${SETTINGS} &&
 echo 'plotting...' &&
 Rscript ${SRC}/plot.R --patid='plot' --info=${INFO} --tree=rooted_tree_nwk --stats=stats_csv --data=data_csv --regression=regression_rds --settings=${SETTINGS} &&
 tar -czf plot_tar_gz plots/*.pdf &&
