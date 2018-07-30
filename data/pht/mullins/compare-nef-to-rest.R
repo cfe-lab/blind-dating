@@ -2,7 +2,7 @@ library(seqinr)
 nef.start <- 8149
 nef.end <- 8795
 
-f <- read.fasta("seqs/mullens-aligned-trimmed.fasta")
+f <- read.fasta("seqs/mullins-aligned-trimmed.fasta")
 #!/usr/local/bin/Rscript
 
 df <- do.call(rbind, f)
@@ -19,7 +19,7 @@ nef.diffs <- colSums(t(df[, nef.ids]) != cons[nef.ids]) / length(nef.ids)
 notnef.diffs <- colSums(t(df[, notnef.ids]) != cons[notnef.ids]) / length(notnef.ids)
 
 
-f.cleaned <- read.fasta("seqs/mullens-aligned-stripped.cleaned.fasta")
+f.cleaned <- read.fasta("seqs/mullins-aligned-stripped.cleaned.fasta")
 df <- df[row.names(df) %in% names(f.cleaned), ]
 
 filter <- apply(df, 2, function(x) !any(x == '-'))
