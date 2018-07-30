@@ -67,7 +67,7 @@ if (use.rtt > 0) {
 		plasma.dates <- lapply(tree$tip.label, function(x) with(subset(info.all, DUPLICATE == x), if (use.date) as.numeric(as.Date(COLDATE)) else COLDATE))
 		
 		if (!is.na(weight)) {
-			weights <- lapply(tree$tip.label, function(x) info.all[info$DUPLICATE == x, weight])
+			weights <- lapply(tree$tip.label, function(x) info.all[info.all$DUPLICATE == x, weight])
 		} else {
 			weights <- lapply(tree$tip.label, function(x) rep(1, sum(info.all$DUPLICATE == x)))
 		}
