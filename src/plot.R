@@ -312,7 +312,7 @@ if (!is.na(pat.id2)) {
 	data[clade.tips, ] <- data.2[clade.tips, ]
 	data[data.old$censored == -1, "censored"] <- -1
 	data[data.old$censored == 0, ] <- data.old[data.old$censored == 0, ]
-	write.table(data, comb.stats.file, col.names=c("ID", "Type", "Censored", "Collection Date", "Divergence", "Estimated Date", "Date Difference"), row.names=F, sep=",")
+	write.table(data, comb.stats.file, col.names=c("ID", "Type", "Censored", "Collection Date", "Divergence", "Weight", "Estimated Date", "Date Difference"), row.names=F, sep=",")
 	data <- data[, -8]
 	
 	stats$Minimum.Time.Point <- min(stats$Mimimum.Time.Point, stats.2$Minimum.Time.Point)
