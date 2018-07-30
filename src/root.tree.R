@@ -2,7 +2,6 @@ library(ape)
 library(optparse)
 
 bd.src <- Sys.getenv("BDSRC", ".")
-source(file.path(bd.src, "rtt.R"), chdir=T)
 
 get.val <- function(x, default) if (is.null(x)) default else x
 
@@ -74,11 +73,8 @@ if (use.rtt > 0) {
 	} else {
 		plasma.dates <- if (use.date) as.numeric(as.Date(info$COLDATE)) else info$COLDATE
 		
-		weights <- if (!is.na(weight)) {
-			info[, weight]
-		} else {
-			rep(1, nrow(info))
-		}
+		if (!is.na(weight))
+			weights <- info[, weight]
 	}
 }
 	
@@ -91,12 +87,21 @@ if (use.rtt == 1) {
 		})
 	} else {
 		tip.type <- info$CENSORED
-		weights[tip.type != 0] <- 0
+		if (is.na(weight))
+			plasma.dates[tip.type != 0] <- NA
+		else
+			weights[tip.type != 0] <- 0
 	}
 }
 	
-if (use.rtt > 0)
-	tree <- rtt(tree, plasma.dates, weights=weights, ncpu=threads, objective=method, opt.tol=1e-8)
+if (use.rtt > 0) {
+	if (!use.dups && is.na(weight)) {
+		tree <- rtt(tree, plasma.dates, ncpu=threads, objective=method, opt.tol=1e-8)
+	} else {
+		source(file.path(bd.src, "rtt.R"))
+		tree <- rtt(tree, plasma.dates, weights=weights, ncpu=threads, objective=method, opt.tol=1e-8)
+	}
+}
 
 tree$node.label <- paste0("N.", 1:tree$Nnode)
 
