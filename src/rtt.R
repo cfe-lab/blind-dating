@@ -22,15 +22,18 @@ rtt <- function (t, tip.dates, weights=NA, ncpu = 1, objective = "correlation", 
 #		tip.dates <- unlist(lapply(1:length(weights), function(i) rep(tip.dates[i], weights[i])))
 #		tips <- unlist(lapply(1:length(weights), function(i) rep(tips[i], weights[i])))
 
-		mean.weights <- function(x, w) sum(x * w) / sum(w)
-		dev.weights <- function(x, w) sqrt(sum((x * w - mean.weights(x, w))^2) / sum(w))
-	
-#        objective <- function(x, y) cor.test(y, x)$estimate
-        objective <- function(x, y) mean.weights((x - mean.weights(x, weights)) * (y - mean.weights(y, weights)), weights) / dev.weights(x, weights) / dev.weights(y, weights)
+        if (all(weights == 1 | weights == 0)) {
+        	tip.dates[weight == 0] <- NA
+	        objective <- function(x, y) cor.test(y, x)$estimate
+        } else {
+	   		mean.weights <- function(x, w) sum(x * w) / sum(w)
+			dev.weights <- function(x, w) sqrt(sum((x * w - mean.weights(x, w))^2) / sum(w))
+	        objective <- function(x, y) mean.weights((x - mean.weights(x, weights)) * (y - mean.weights(y, weights)), weights) / dev.weights(x, weights) / dev.weights(y, weights)
+    	}
     } else if (objective == "rsquared") 
         objective <- function(x, y) summary(lm(y ~ x, weights=weights))$r.squared
     else if (objective == "rms") 
-        objective <- function(x, y) -summary(lm(y ~ x), weights=weights)$sigma^2
+        objective <- function(x, y) -summary(lm(y ~ x, weights=weights))$sigma^2
     else stop("objective must be one of \"correlation\", \"rsquared\", or \"rms\"")
     
     ut <- unroot(t)
