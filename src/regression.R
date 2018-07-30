@@ -63,8 +63,13 @@ n <- length(tree$tip.label)
 
 data <- data.frame(label=info$FULLSEQID, type=info$TYPE, censored=info$CENSORED, date=if (use.date == 1) as.numeric(as.Date(info$COLDATE)) else as.numeric(info$COLDATE), dist=node.depth.edgelength(tree)[if (use.all) match(info$DUPLICATE, tree$tip.label) else 1:n, if (!is.na(weight)) info[if (use.all) match(info$DUPLICATE, tree$tip.label) else 1:n, weight] else 1], stringsAsFactors=F)
 
-g <- lm(dist ~ date, data=data, weights=weights, subset=censored == 0)
-g.null <- lm(dist ~ 1, data=data, weights=weights, subset=censored == 0)
+if (is.na(weight)) {
+	g <- lm(dist ~ date, data=data, subset=censored == 0)
+	g.null <- lm(dist ~ 1, data=data, subset=censored == 0)
+} else {
+	g <- lm(dist ~ date, data=data, weights=weights, subset=censored == 0)
+	g.null <- lm(dist ~ 1, data=data, weights=weights, subset=censored == 0)
+}
 
 a <- coef(g)[[1]]
 b <- coef(g)[[2]]
