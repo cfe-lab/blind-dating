@@ -281,14 +281,14 @@ pdf.dup.hist.file <- paste0(output.folder, "/", pat.id, ".dup.hist.pdf")
 pdf.colour.mark.tree.file <- paste0(output.folder, "/", pat.id, ".colour.mark.tree.pdf")
 
 tree <- ape::ladderize(read.tree(tree.file))
-data <- read.csv(data.file, col.names=c("tip.label", "type", "censored", "date", "dist", "est.date", "date.diff"), stringsAsFactors=F)
+data <- read.csv(data.file, col.names=c("tip.label", "type", "censored", "date", "dist", "weight", "est.date", "date.diff"), stringsAsFactors=F)
 data <- data[match(tree$tip.label, data$tip.label), ]
 rownames(data) <- NULL
 stats <- read.csv(stats.file, stringsAsFactors=F)
 g <- readRDS(regression.file)
 
 if (!is.na(pat.id2)) {
-	data.2 <- read.csv(data.2.file, col.names=c("tip.label", "type", "censored", "date", "dist", "est.date", "date.diff"), stringsAsFactors=F)
+	data.2 <- read.csv(data.2.file, col.names=c("tip.label", "type", "censored", "date", "dist", "weight", "est.date", "date.diff"), stringsAsFactors=F)
 	data.2 <- data.2[match(tree$tip.label, data.2$tip.label), ]
 	rownames(data.2) <- NULL
 	stats.2 <- read.csv(stats.2.file, stringsAsFactors=F)
