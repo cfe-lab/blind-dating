@@ -51,8 +51,6 @@ stats.file <- get.val(args$stats, NA)
 regression.file <- get.val(args$regression, NA)
 weight <- get.val(args$weight, NA)
 
-set.seed(args$seed)
-
 if (is.na(data.file)) data.file <- paste0("stats/", pat.id, ".data.csv")
 if (is.na(stats.file)) stats.file <- paste0("stats/", pat.id, ".stats.csv")
 if (is.na(regression.file)) regression.file <- paste0("stats/", pat.id, ".regression.rds")
