@@ -1,5 +1,6 @@
 library(ape)
 library(parallel)
+library(weights)
 
 rtt <- function (t, tip.dates, weights=NA, ncpu = 1, objective = "correlation", opt.tol = .Machine$double.eps^0.25) {
 	# default weight
@@ -19,16 +20,12 @@ rtt <- function (t, tip.dates, weights=NA, ncpu = 1, objective = "correlation", 
 
 	if (objective == "correlation") {
 		weights <- as.integer(weights)
-#		tip.dates <- unlist(lapply(1:length(weights), function(i) rep(tip.dates[i], weights[i])))
-#		tips <- unlist(lapply(1:length(weights), function(i) rep(tips[i], weights[i])))
 
         if (all(weights == 1 | weights == 0)) {
         	tip.dates[weight == 0] <- NA
 	        objective <- function(x, y) cor.test(y, x)$estimate
         } else {
-	   		mean.weights <- function(x, w) sum(x * w) / sum(w)
-			dev.weights <- function(x, w) sqrt(sum((x * w - mean.weights(x, w))^2) / sum(w))
-	        objective <- function(x, y) mean.weights((x - mean.weights(x, weights)) * (y - mean.weights(y, weights)), weights) / dev.weights(x, weights) / dev.weights(y, weights)
+	        objective <- function(x, y) cor.weights(y, x, weight=weights)[, 'correlation']
     	}
     } else if (objective == "rsquared") 
         objective <- function(x, y) summary(lm(y ~ x, weights=weights))$r.squared
