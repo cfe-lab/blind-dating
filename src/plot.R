@@ -447,7 +447,7 @@ if (use.rainbow) {
 	my.colour.value <- if (is.na(colour.values)) colour.blind[1:length(my.colour.break)] else strsplit(colour.values, split=",")[[1]]
 }
 
-data.all <- as.data.frame(cbind(rbind(data, data.frame(tip.label=paste0("N.", 1:tree$Nnode), type="NODE", censored=NA, date=NA, dist=node.depth.edgelength(tree)[1:tree$Nnode + nrow(data)], est.date=NA, date.diff=NA, my.colour=NA, my.type=NA)), node.date=node.dates))
+data.all <- as.data.frame(cbind(rbind(data, data.frame(tip.label=paste0("N.", 1:tree$Nnode), type="NODE", censored=NA, date=NA, dist=node.depth.edgelength(tree)[1:tree$Nnode + nrow(data)], weight=NA, est.date=NA, date.diff=NA, my.colour=NA, my.type=NA)), node.date=node.dates))
 
 ptree <- phylo4d(tree, all.data=data.all)
 
