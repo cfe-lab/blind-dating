@@ -36,6 +36,18 @@ colour.blind <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B
 
 pdf.options(family="Helvetica", fonts="Helvetica", width=7, height=7, colormodel='rgb')
 
+make.mean.row <- function(label, data) {
+	data.dup <- subset(data, duplicate == label)
+	
+	if (any(data.dup$censored <= 0))
+		data.dup <- subset(data.dup, censored <= 0)
+		
+	data.dup$tip.label[1] <- label
+	data.dup$date[1] <- mean(data.dup$date)
+	
+	data
+}
+
 get.date <- function(date) {
 	as.character(as.Date(date, origin=as.Date("1970-01-01")))
 }
@@ -648,7 +660,7 @@ dev.off()
 if (use.dups) {
 	info <- read.csv(info.file, stringsAsFactors=F)
 	
-	info <- subset(info, DUPLICATE != FULLSEQID & DUPLICATE %in% data.all$tip.label)
+	info <- subset(info, DUPLICATE %in% data.all$tip.label)
 	info$COLDATE <- if (use.real) as.numeric(as.Date(info$COLDATE, origin="1970-01-01")) else info$COLDATE
 	info <- info[order(info$TYPE), ]
 	info <- info[order(info$COLDATE), ]
@@ -658,14 +670,14 @@ if (use.dups) {
 	fort.dup <- fort[match(info$DUPLICATE, fort$tip.label), ]
 	
 	fort.dup$tip.label <- info$FULLSEQID
+	fort.dup$duplicate <- info$DUPLICATE
 	fort.dup$censored <- info$CENSORED
+	fort.dup$dup.censored <- info[match(info$DUPLICATE, info$FULLSEQID), "CENSORED"]
 	fort.dup$type <- info$TYPE
 	fort.dup$my.colour <- NA
 	fort.dup$date <- info$COLDATE
 	fort.dup$x.shift <- fort.dup$x
 	fort.dup$my.type <- with(fort.dup, paste0(type, censored > 0))
-	
-	data.comb <- subset(rbind(data[, c("tip.label", "type", "censored", "date", "dist", "est.date", "date.diff", "my.type", "my.colour")], fort.dup[, c("tip.label", "type", "censored", "date", "dist", "est.date", "date.diff", "my.type", "my.colour")]))
 	
 	if (use.rainbow) {
 		data.comb$my.colour <- data.comb$date
@@ -682,24 +694,19 @@ if (use.dups) {
 		fort.dup$my.colour <- fort.dup$type
 	}
 	
+	fort.dup$censored <- (fort.dup$censored =< 0) * fort.dup$censored + (fort.dup$censored > 0) * (1 - fort.dup$dup.censored)
+	
+	data.comb <- fort.dup	
+	fort.dup <- subset(fort.dup, tip.label != duplicate)
+	
 	for (i in 1:nrow(fort.dup)) {
-		if (i == 1 || info$DUPLICATE[i - 1] != info$DUPLICATE[i]) {
+		if (i == 1 || fort.dup$duplicate[i - 1] != fort.dup$duplicate[i]) {
 			shift <- 1
 		} else {
 			shift <- shift + 1
 		}
 		
 		fort.dup$x.shift[i] <- fort.dup$x[i] + shift * dup.shift
-		
-		if (info$CENSORED[i] <= 0) {
-			fort.dup$censored[i] <- info$CENSORED[i]
-		} else {
-			if (fort.dup$censored[i] == 0) {
-				fort.dup$censored[i] <- 1
-			} else if (fort.dup$censored[i] == -1) {
-				fort.dup$censored[i] <- 1
-			}
-		}
 	}
 	
 	pdf(pdf.dup.disttree.file, height=10)
@@ -710,10 +717,13 @@ if (use.dups) {
 	flipped=F, scaled=F, colour.value.=my.colour.value, colour.break.=my.colour.break))
 	dev.off()
 	
+	data.mean <- do.call(rbind, lapply(tree$tip.label, make.mean.row, data.comb))
+	dup.node.dates <- tryCatch(estimate.dates(tree, c(data.mean$date, stats$Estimated.Root.Date, rep(NA, tree$Nnode - 1)), mu, node.mask=length(tree$tip.label) + 1, lik.tol=0, nsteps=nsteps, show.steps=100, opt.tol=1e-16), error=function(e) estimate.dates(tree, data.mean$date, mu, lik.tol=0, nsteps=nsteps, show.steps=100, opt.tol=1e-16))
+	mean.ptree <- phylo4d(tree, all.data=as.data.frame(cbind(rbind(data[, c("tip.label", "type", "date", "dist", "weight", "date.diff", "est.date", "my.colour", "my.type")], data.frame(tip.label=paste0("N.", 1:tree$Nnode), type="NODE", censored=NA, date=NA, dist=node.depth.edgelength(tree)[1:tree$Nnode + nrow(data)], weight=NA, est.date=NA, date.diff=NA, my.colour=NA, my.type=NA)), node.date=node.dates)))
+	
 	pdf(pdf.dup.tree.file)
-	print(apply.theme(ggtree(ptree, yscale="node.date", colour="#49494980", size=tree.size, ladderize=F) +
-	geom_tippoint(aes(colour=my.colour, shape=my.type), size=point.size) +
-	geom_point(aes(colour=my.colour, shape=my.type, x=x, y=date), data=fort.dup, alpha=0.4, size=point.size),
+	print(apply.theme(ggtree(mean.ptree, yscale="node.date", colour="#49494980", size=tree.size, ladderize=F) +
+	geom_point(aes(colour=my.colour, shape=my.type, x=x, y=date), data=fort.dup, alpha=0.1, size=point.size),
 	flipped=T, scaled=T, colour.value.=my.colour.value, colour.break.=my.colour.break))
 	dev.off()
 	
