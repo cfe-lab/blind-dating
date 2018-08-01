@@ -14,7 +14,7 @@ rtt <- function (t, tip.dates, weights=rep(1, length(tip.dates)), ncpu=1, object
     tip.dates <- unlist(tip.dates)
 
 	if (objective == "correlation") {
-        objective <- function(x, y) cor.weights(y, x, weight=weights)[, 'correlation']
+        objective <- function(x, y) wtd.cor(y, x, weight=weights)[, 'correlation']
     } else if (objective == "rsquared") 
         objective <- function(x, y) summary(lm(y ~ x, weights=weights))$r.squared
     else if (objective == "rms") 
