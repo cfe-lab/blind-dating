@@ -28,7 +28,7 @@ RUN make -f Makefile.PTHREADS.gcc && \
   ln -s /tmp/standard-RAxML-8.2.12/raxmlHPC-PTHREADS /opt/raxml
 
 # CRAN R packages and ggtree
-RUN R --vanilla --slave -e 'local({r <- getOption("repos"); r["CRAN"] <- "http://cran.stat.sfu.ca"; options(repos=r)}); install.packages(c("ape", "chemCal", "ggplot2", "optparse", "phylobase", "seqinr")); update.packages(ask=FALSE); source("https://bioconductor.org/biocLite.R"); biocLite("ggtree")'
+RUN R --vanilla --slave -e 'local({r <- getOption("repos"); r["CRAN"] <- "http://cran.stat.sfu.ca"; options(repos=r)}); install.packages(c("ape", "chemCal", "ggplot2", "optparse", "phylobase", "seqinr", "weights")); update.packages(ask=FALSE); source("https://bioconductor.org/biocLite.R"); biocLite("ggtree")'
 
 # node.dating
 WORKDIR /tmp
