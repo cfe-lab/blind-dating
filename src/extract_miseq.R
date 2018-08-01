@@ -50,7 +50,7 @@ align.csv <- lapply(file.path(align.csv.folder, csv.files), read.csv, stringsAsF
 
 echo("Parsing csv...")
 name <- gsub(".+[- ](.+-V3.+V3LOOP.+)_align.csv", "\\1", csv.files, perl=T)
-align.csv.all <- lapply(1:length(csv.files), function(i) cbind(name=name[i], align.csv[[i]], get.info(name[i], sequence.key), percent=with(align.csv[[i]], count / sum(count))))
+align.csv.all <- lapply(1:length(csv.files), function(i) cbind(name=name[i], align.csv[[i]], get.info(name[i], sequence.key), percent=with(align.csv[[i]], count / sum(count)))
 
 align.csv.filter <- do.call(rbind, lapply(align.csv.all, function(x) subset(x, qcut >= q.cutoff & count > count.cutoff & count > sum(count) * percent.cutoff * 0.01)))
 

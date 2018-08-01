@@ -694,7 +694,7 @@ if (use.dups) {
 		fort.dup$my.colour <- fort.dup$type
 	}
 	
-	fort.dup$censored <- (fort.dup$censored =< 0) * fort.dup$censored + (fort.dup$censored > 0) * (1 - fort.dup$dup.censored)
+	fort.dup$censored <- (fort.dup$censored <= 0) * fort.dup$censored + (fort.dup$censored > 0) * (1 - fort.dup$dup.censored)
 	
 	data.comb <- fort.dup	
 	fort.dup <- subset(fort.dup, tip.label != duplicate)
