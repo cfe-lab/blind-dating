@@ -680,23 +680,20 @@ if (use.dups) {
 	fort.dup$my.type <- with(fort.dup, paste0(type, censored > 0))
 	
 	if (use.rainbow) {
-		data.comb$my.colour <- data.comb$date
-		data.comb$my.colour[data.comb$censored > 0] <- "censored"
-		my.colour.break <- unique(data.comb$my.colour)
+		fort.dup$my.colour <- fort.dup$date
+		fort.dup$my.colour[fort.dup$censored > 0] <- "censored"
+		my.colour.break <- unique(fort.dup$my.colour)
 		my.colour.filter <- suppressWarnings(!is.na(as.numeric(my.colour.break)))
 		my.colour.value <- rep('black', length(my.colour.break))
 		my.colour.scale <- (as.numeric(my.colour.break[my.colour.filter]) - MIN_COL_TIME) / (MAX_COL_TIME - MIN_COL_TIME)
 		my.colour.value[my.colour.filter] <- hsv(my.colour.scale * .75, 0.5, 0.5)
-		
-		fort.dup$my.colour <- fort.dup$date
-		fort.dup$my.colour[fort.dup$censored > 0] <- "censored"
 	} else {
 		fort.dup$my.colour <- fort.dup$type
 	}
 	
 	fort.dup$censored <- (fort.dup$censored <= 0) * fort.dup$censored + (fort.dup$censored > 0) * (1 - fort.dup$dup.censored)
 	
-	data.comb <- fort.dup	
+	data.comb <- fort.dup
 	fort.dup <- subset(fort.dup, tip.label != duplicate)
 	
 	for (i in 1:nrow(fort.dup)) {
