@@ -14,8 +14,9 @@ op <- add_option(op, c("-k", "--sequence-key"), type='character')
 op <- add_option(op, c("-f", "--align-fasta"), type='character')
 op <- add_option(op, c("-i", "--info"), type='character')
 op <- add_option(op, c("-q", "--q-cutoff"), type='numeric', default=15)
-op <- add_option(op, c("-n", "--count-cutoff"), type="numeric", default=1500)
-op <- add_option(op, c("-p", "--percent-cutoff"), type="numeric", default=0.4)
+op <- add_option(op, c("-n", "--count-cutoff"), type="numeric", default=100)
+op <- add_option(op, c("-p", "--percent-cutoff"), type="numeric", default=1)
+op <- add_option(op, c("-t", "--top"), type="numeric", default=NA)
 op <- add_option(op, c("-v", "--verbose"), type='logical', action="store_true", default=F)
 args <- parse_args(op)
 
@@ -26,7 +27,7 @@ info.file <- args[["info"]]
 q.cutoff <- args[["q-cutoff"]]
 count.cutoff <- args[["count-cutoff"]]
 percent.cutoff <- args[["percent-cutoff"]]
-seq.id.prefix <- args[["seq-name"]]
+top <- args[["top"]]
 verbose <- args[["verbose"]]
 
 echo("extract_miseq.R")
@@ -38,6 +39,7 @@ echo("info: ", info.file)
 echo("q-cutoff: ", q.cutoff)
 echo("count-cutoff: ", count.cutoff)
 echo("percent-cutoff: ", percent.cutoff)
+echo("top: ", top)
 echo("verbose: ", verbose)
 echo()
 
@@ -50,9 +52,17 @@ align.csv <- lapply(file.path(align.csv.folder, csv.files), read.csv, stringsAsF
 
 echo("Parsing csv...")
 name <- gsub(".+[- ](.+-V3.+V3LOOP.+)_align.csv", "\\1", csv.files, perl=T)
-align.csv.all <- lapply(1:length(csv.files), function(i) cbind(name=name[i], align.csv[[i]], get.info(name[i], sequence.key), percent=with(align.csv[[i]], count / sum(count)))
+align.csv.all <- lapply(1:length(csv.files), function(i) 
+	cbind(name=name[i], align.csv[[i]], get.info(name[i], sequence.key), percent=with(align.csv[[i]], count / sum(count)))
+)
 
-align.csv.filter <- do.call(rbind, lapply(align.csv.all, function(x) subset(x, qcut >= q.cutoff & count > count.cutoff & count > sum(count) * percent.cutoff * 0.01)))
+align.csv.filter <- do.call(rbind, lapply(align.csv.all, function(x) {
+	d <- subset(x, qcut >= q.cutoff & count > count.cutoff & count > sum(count) * percent.cutoff * 0.01)
+	if (nrow(d) > 0 && !is.na(top))
+		d[1:min(c(nrow(d), top)), ]
+	else
+		d
+}))
 
 align.fasta <- strsplit(align.csv.filter$seq, "")
 
