@@ -13,6 +13,7 @@ SETTINGS=${INPUT}/settings_txt
 mkdir ${OUTPUT}/plots
 
 hostname > ${OUTPUT}/run_info_txt
+echo $PATID >> ${OUTPUT}/run_info_txt
 date >> ${OUTPUT}/run_info_txt
 
 cd ${OUTPUT} &&

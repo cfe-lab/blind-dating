@@ -12,7 +12,10 @@ SETTINGS=${INPUT}/settings_txt
 TREE=${INPUT}/tree_nwk
 
 mkdir ${OUTPUT}/plots
-hostname > ${OUTPUT}/docker_id_txt
+
+hostname >> ${OUTPUT}/run_info_txt
+echo $PATID no build >> ${OUTPUT}/run_info_txt
+date >> ${OUTPUT}/run_info_txt
 
 cd ${OUTPUT} &&
 echo 'checking inputs...' &&
