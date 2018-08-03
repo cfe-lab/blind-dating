@@ -1,32 +1,27 @@
 library(seqinr)
+library(optparse)
 
-args.all <- commandArgs(trailingOnly = F)
+bd.src <- Sys.getenv("BDSRC", ".")
+source(file.path(bd.src, 'read.info.R'), chdir=T)
 
-if (any(grep("--file=", args.all))) {
-	source.dir <- dirname(sub("--file=", "", args.all[grep("--file=", args.all)]))
-} else {
-	file.arg <- F
+op <- OptionParser()
+op <- add_option(op, "--fasta", type='character')
+op <- add_option(op, "--info", type='character')
+op <- add_option(op, "--newfasta", type='character')
+op <- add_option(op, "--newinfo", type='character')
+op <- add_option(op, "--real", type='logical', action='store_true', default=F)
+op <- add_option(op, "--weight", type='character', default="COLDATE")
+op <- add_option(op, "--lowest", type="logical", action='store_true', default=T)
+op <- add_option(op, "--highest", type="logical", dest="lowest", action='store_false')
+args <- parse_args(op)
 
-	for (i in 1:length(args.all)) {
-		if (file.arg) {
-			source.dir <- dirname(args.all[i])
-		
-			break
-		}
-		
-		file.arg <- args.all[i] == '-f'
-	}
-}
-
-source(file.path(source.dir, 'read.info.R'), chdir=T)
-
-args <- commandArgs(trailingOnly = T)
-
-fasta.file <- args[1]
-info.file <- args[2]
-new.fasta.file <- args[3]
-new.info.file <- args[4]
-use.real <- length(args) == 4 || args[5] == '1'
+fasta.file <- args$fasta
+info.file <- args$info
+new.fasta.file <- args$newfasta
+new.info.file <- args$newinfo
+use.real <- args$real
+weight <- args$weight
+use.lowest <- args$lowest
 
 f <- read.fasta(fasta.file)
 
@@ -36,7 +31,12 @@ same <- unique(lapply(same, function(x) {names(x) <- NULL; x}))
 
 info <- read.info(info.file, names(f))
 
-o <- match(info$FULLSEQID, names(f))[order(if (use.real) as.numeric(as.Date(info$COLDATE)) else info$COLDATE)]
+o <- order(if (use.real) as.numeric(as.Date(info[, weight])) else info[, weight], decreasing=!use.lowest)
+info <- info[o, ]
+o <-  order(info$CENSORED)
+info <- info[o, ]
+o <- match(info$FULLSEQID, names(f))
+info <- info[match(names(f), info$FULLSEQID), ]
 
 same <- lapply(same, function(x) o[o %in% x])
 
