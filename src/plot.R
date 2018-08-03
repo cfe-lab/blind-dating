@@ -738,7 +738,7 @@ if (use.dups) {
 	
 	pdf(pdf.dup.tree.file)
 	print(apply.theme(ggtree(mean.ptree, yscale="node.date", colour="#49494980", size=tree.size, ladderize=F) +
-	geom_point(aes(colour=my.colour, shape=my.type, x=x, y=date), data=fort.dup, alpha=0.1, size=point.size),
+	geom_point(aes(colour=my.colour, shape=my.type, x=x, y=date), data=data.comb, alpha=0.1, size=point.size),
 	flipped=T, scaled=T, colour.value.=my.colour.value, colour.break.=my.colour.break))
 	dev.off()
 	
