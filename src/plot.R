@@ -43,7 +43,7 @@ make.mean.row <- function(label, data) {
 		data.dup <- subset(data.dup, censored <= 0)
 		
 	data.dup$tip.label[1] <- label
-	data.dup$date[1] <- weighted.mean(data.dup$date, data$weight)
+	data.dup$date[1] <- weighted.mean(data.dup$date, data.dup$weight)
 	
 	data.dup[1, ]
 }
