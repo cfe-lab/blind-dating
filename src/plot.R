@@ -693,7 +693,7 @@ if (use.dups) {
 	fort.dup$my.colour <- NA
 	fort.dup$date <- info$COLDATE
 	fort.dup$x.shift <- fort.dup$x
-	fort.dup$my.type <- with(fort.dup, toupper(paste0(type, censored > 0))
+	fort.dup$my.type <- with(fort.dup, toupper(paste0(type, censored > 0)))
 	
 	if (use.rainbow) {
 		fort.dup$my.colour <- fort.dup$date
