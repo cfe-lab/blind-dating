@@ -41,6 +41,9 @@ RUN git checkout random && \
 COPY src/*.R /opt/blind-dating/
 COPY src/blind-dating /opt/blind-dating/
 RUN chmod +x /opt/blind-dating/blind-dating
+COPY src/blind-dating2 /opt/blind-dating/
+RUN chmod +x /opt/blind-dating/blind-dating2
 
 # command
 CMD ["/opt/blind-dating/blind-dating"]
+CMD ["/opt/blind-dating/blind-dating2"]
