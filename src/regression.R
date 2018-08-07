@@ -28,6 +28,7 @@ op <- add_option(op, "--data", type='character')
 op <- add_option(op, "--stats", type='character')
 op <- add_option(op, "--regression", type='character')
 op <- add_option(op, "--weight", type='character')
+op <- add_option(op, "--training", type='numeric')
 op <- add_option(op, "--settings", type='character', default=NA)
 args <- parse_args(op)
 
@@ -49,6 +50,7 @@ cutoff <- get.val(args$cutoff, NA)
 data.file <- get.val(args$data, NA)
 stats.file <- get.val(args$stats, NA)
 regression.file <- get.val(args$regression, NA)
+training <- get.val(args$training, 0)
 weight <- get.val(args$weight, NA)
 
 if (is.na(data.file)) data.file <- paste0("stats/", pat.id, ".data.csv")
@@ -62,11 +64,11 @@ n <- length(tree$tip.label)
 data <- data.frame(label=info$FULLSEQID, type=info$TYPE, censored=info$CENSORED, date=if (use.date == 1) as.numeric(as.Date(info$COLDATE)) else as.numeric(info$COLDATE), dist=node.depth.edgelength(tree)[if (use.all) match(info$DUPLICATE, tree$tip.label) else 1:n], weights=if (!is.na(weight)) info[if (use.all) match(info$DUPLICATE, tree$tip.label) else 1:n, weight] else 1, stringsAsFactors=F)
 
 if (is.na(weight)) {
-	g <- lm(dist ~ date, data=data, subset=censored == 0)
-	g.null <- lm(dist ~ 1, data=data, subset=censored == 0)
+	g <- lm(dist ~ date, data=data, subset=censored == training)
+	g.null <- lm(dist ~ 1, data=data, subset=censored == training)
 } else {
-	g <- lm(dist ~ date, data=data, weights=weights, subset=censored == 0)
-	g.null <- lm(dist ~ 1, data=data, weights=weights, subset=censored == 0)
+	g <- lm(dist ~ date, data=data, weights=weights, subset=censored == training)
+	g.null <- lm(dist ~ 1, data=data, weights=weights, subset=censored == training)
 }
 
 a <- coef(g)[[1]]
