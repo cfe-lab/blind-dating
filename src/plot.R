@@ -339,7 +339,7 @@ if (!is.na(pat.id2)) {
 	data[clade.tips, ] <- data.2[clade.tips, ]
 	data[data.old$censored == -1, "censored"] <- -1
 	data[data.old$censored == 0, ] <- data.old[data.old$censored == 0, ]
-	write.table(data, comb.stats.file, col.names=c("ID", "Type", "Censored", "Collection Date", "Divergence", "Weight", "Estimated Date", "Date Difference"), row.names=F, sep=",")
+	write.table(data, comb.data.file, col.names=c("ID", "Type", "Censored", "Collection Date", "Divergence", "Weight", "Estimated Date", "Date Difference"), row.names=F, sep=",")
 
 	stats$Minimum.Time.Point <- min(stats$Mimimum.Time.Point, stats.2$Minimum.Time.Point)
 	stats$Minimum.Training.Time.Point <- min(stats$Minimum.Training.Time.Point, stats.2$Minimum.Training.Time.Point)
@@ -393,7 +393,7 @@ if (!is.na(pat.id2)) {
 		"Training RMSE 2",
 		"Training MAE 2"
 	)
-	write.table(stats, comb.data.file, row.names=F, col.names=stats.col.names, sep=",")
+	write.table(stats, comb.stats.file, row.names=F, col.names=stats.col.names, sep=",")
 
 	colour.break <- c(0, -1, 1, 2)
 	colour.value <- c(TRAINING_COLOUR, TRAINING_COLOUR2, CENSORED_COLOUR, CENSORED_COLOUR2)
