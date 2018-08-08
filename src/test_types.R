@@ -36,7 +36,7 @@ ggplot(info.uniq, aes(x=TYPE, y=as.Date(est.date, origin='1970-01-01'), fill=TYP
 	stat_summary(fun.data=get.n, geom='text') +
 	scale_y_date(name="Estimate Integration Date") +
 	scale_x_discrete(name="Cell Type", breaks=c("CD4-NAIVE", "CD4-CM", "CD4-TM", "CD4-EM"), limits=c("CD4-NAIVE", "CD4-CM", "CD4-TM", "CD4-EM"), labels=c("Naive", "Central Memory", "Transitory Memory", "Effector Memory")) +
-	scale_fill_manual(name="Cell Type", breaks=c("CD4-NAIVE", "CD4-CM", "CD4-TM", "CD4-EM"), limits=c("CD4-NAIVE", "CD4-CM", "CD4-TM", "CD4-EM"), values=c("#E69F00", "#56B4E9", "#009E73", "#D55E00")) +
+	scale_fill_manual(name="Cell Type", breaks=c("CD4-NAIVE", "CD4-CM", "CD4-TM", "CD4-EM"), limits=c("CD4-NAIVE", "CD4-CM", "CD4-TM", "CD4-EM"), values=c("#E69F00", "#56B4E9", "#009E73", "#CC79A7")) +
 	theme_classic() +
 	theme(text=element_text(size=15), legend.position='none')
 dev.off()
