@@ -311,6 +311,8 @@ stats <- read.csv(stats.file, stringsAsFactors=F)
 g <- readRDS(regression.file)
 
 if (!is.na(pat.id2)) {
+	library(phangorn)
+	
 	data.2 <- read.csv(data.2.file, col.names=c("tip.label", "type", "censored", "date", "dist", "weight", "est.date", "date.diff"), stringsAsFactors=F)
 	data.2 <- data.2[match(tree$tip.label, data.2$tip.label), ]
 	rownames(data.2) <- NULL
@@ -322,7 +324,9 @@ if (!is.na(pat.id2)) {
 	data.2$censored[data.2$censored == 1] <- 2
 	
 	mu <- rep(stats.2[, "Model.Slope"], nrow(tree$edge))
-	first.edges <- unique(unlist(lapply(which(data$censored == 0), get.parent.edges, tree=tree)))
+	tr <- function(x) -3 * x ^ 2 / 2 + x / 2 + 1
+	anc <- ace(tr(data$censored), tree)
+	first.edges <- anc$ace[tree$edge[, 1] - length(tree$tip.label) + 1] > 0
 	mu[first.edges] <- stats[, "Model.Slope"]
 	
 #	mu <- rep(stats[, "Model.Slope"], nrow(tree$edge))
