@@ -340,8 +340,7 @@ if (!is.na(pat.id2)) {
 	data[data.old$censored == -1, "censored"] <- -1
 	data[data.old$censored == 0, ] <- data.old[data.old$censored == 0, ]
 	write.table(data, comb.stats.file, col.names=c("ID", "Type", "Censored", "Collection Date", "Divergence", "Weight", "Estimated Date", "Date Difference"), row.names=F, sep=",")
-	data <- data[, -8]
-	
+
 	stats$Minimum.Time.Point <- min(stats$Mimimum.Time.Point, stats.2$Minimum.Time.Point)
 	stats$Minimum.Training.Time.Point <- min(stats$Minimum.Training.Time.Point, stats.2$Minimum.Training.Time.Point)
 	stats$Maximum.Time.Point <- max(stats$Maximum.Time.Point, stats.2$Maximum.Time.Point)
