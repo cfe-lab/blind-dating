@@ -31,6 +31,7 @@ op <- add_option(op, "--ogrname", type='character')
 op <- add_option(op, "--usedups", type='logical', action='store_true')
 op <- add_option(op, "--threads", type='numeric')
 op <- add_option(op, "--weight", type='character')
+op <- add_option(op, "--alltraining", type='logical', action='store_true')
 op <- add_option(op, "--settings", type='character', default=NA)
 args <- parse_args(op)
 
@@ -53,6 +54,7 @@ ogr.name <- get.val(args$ogrname, "REFERENCE")
 use.dups <- get.val(args$usedups, F)
 threads <- get.val(args$threads, 1)
 weight <- get.val(args$weight, NA)
+all.training <- args$alltraining
 
 use.rtt <- as.numeric(!ogr) * (1 + as.numeric(use.all))	# 0 = no, 1 = yes (only plasma), 2 = yes (all)
 
@@ -82,15 +84,16 @@ if (use.rtt == 1) {
 	if (use.dups) {
 		weights <- lapply(1:length(tree$tip.label), function(i) {
 			w <- weights[[i]]
-			w[with(subset(info.all, DUPLICATE == tree$tip.label[i]), CENSORED != 0)] <- 0
+			w[with(subset(info.all, DUPLICATE == tree$tip.label[i]), CENSORED > 0 | (!all.training & CENSORED != 0))] <- 0
 			w
 		})
 	} else {
 		tip.type <- info$CENSORED
+		filter <- tip.type > 0 | (!all.training & tip.type != 0)
 		if (is.na(weight))
-			plasma.dates[tip.type != 0] <- NA
+			plasma.dates[filter] <- NA
 		else
-			weights[tip.type != 0] <- 0
+			weights[filter] <- 0
 	}
 }
 	

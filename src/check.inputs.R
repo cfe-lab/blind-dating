@@ -93,6 +93,7 @@ op <- add_option(op, "--plotdups", type='logical', action='store_true', default=
 op <- add_option(op, "--colourvalues", type='character', default=NA)
 op <- add_option(op, "--histdupfreqby", type='numeric', default=10)
 op <- add_option(op, "--training", type='numeric', default=0)
+op <- add_option(op, "--alltraining", type='logical', action='store_true', default=F)
 	args <- parse_args(op, args=settings)
 	
 	args
