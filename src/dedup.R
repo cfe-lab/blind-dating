@@ -48,6 +48,7 @@ rep.dup <- unlist(lapply(same, function(x) rep(info$FULLSEQID[x[1]], length(x)))
 
 info$KEPT <- 1
 info$KEPT[dont.keep] <- 0
+info$DUPLICATES <- ""
 info$DUPLICATES[all.rows] <- unlist(lapply(dups, paste, collapse=";"))
 info$DUPLICATE[all.rows] <- rep.dup
 info$DUPLICATE[nall.rows] <- info$FULLSEQID[nall.rows]

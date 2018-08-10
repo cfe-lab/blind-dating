@@ -54,7 +54,7 @@ ogr.name <- get.val(args$ogrname, "REFERENCE")
 use.dups <- get.val(args$usedups, F)
 threads <- get.val(args$threads, 1)
 weight <- get.val(args$weight, NA)
-all.training <- args$alltraining
+all.training <- get.val(args$alltraining, F)
 
 use.rtt <- as.numeric(!ogr) * (1 + as.numeric(use.all))	# 0 = no, 1 = yes (only plasma), 2 = yes (all)
 
