@@ -69,7 +69,7 @@ get.parent.edges <- function(tree, node) {
 }
 
 add.therapy <- function(therapy.start, therapy.end, therapy.type, flipped=F, height=Inf) {
-	if (use.rainbow) {
+	if (T) {
 		therapy.colour <- if (therapy.type == 1) THERAPY_COLOUR else THERAPY_COLOUR2	
 	
 		if (flipped) {
