@@ -679,7 +679,7 @@ if (!is.na(vl.file)) {
 	data.vl$my.type <- with(data.vl, paste0(toupper(Type), Censored > 0))
 	
 	if (is.na(max.vl))
-		max.vl <- max(data$VL)
+		max.vl <- max(data.vl$VL)
 	
 	if (use.rainbow) {
 		data.vl$my.colour <- as.numeric(data.vl$Date)
