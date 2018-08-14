@@ -671,6 +671,76 @@ pdf(pdf.hist.file, height=5)
 p
 dev.off()
 
+if (!is.na(vl.file)) {
+	data.vl <- read.csv(vl.file, stringsAsFactors=F)
+	if (use.real)
+		data.vl$Date <- as.Date(data.vl$Date)		
+	data.vl$Used <- gsub("(V3| & )", "", data.vl$Used)
+	data.vl$my.type <- match(with(data.vl, paste0(Type, Censored > 0)))
+	data.vl$my.colour <- as.numeric(data.vl$Date)
+	data.vl$my.colour[data.vl$Censored > 0] <- "censored"
+	p.vl <- ggplot(data.vl, aes(x=Date, y=VL))
+	if (!is.na(THERAPY_START))
+		p.vl <- p.vl + add.therapy(as.numeric(THERAPY_START), Inf, 1)
+	if (!is.na(therapy2))
+		p.vl <- p.vl + add.therapy(as.numeric(therapy2), as.numeric(THERAPY_START), 2)
+	if (!is.na(therapy3))
+		p.vl <- p.vl + add.therapy(as.numeric(therapy3), as.numeric(therapy3end), 1)
+	p.vl <- p.vl + geom_line(size=vl.linesize)
+	p.vl <- p.vl + geom_point2(aes(shape=my.type, colour=my.colour), data=subset(data.vl, Used != ""), size=point.size)
+	p.vl <- p.vl + scale_y_log10(name="Viral load", breaks=10^c(1, 3, 5), labels=sapply(c(1, 3, 5), function(x) bquote(''*10^{.(x)}*'')))
+	if (use.real) {
+		p.vl <- p.vl + scale_x_date(name="Collection Year", breaks=as.Date(paste0(seq(1984, 2020, by=2), "-01-01")), labels=seq(1984, 2020, by=2))
+	} else {
+		p.vl <- p.vl + scale_x_continuous(name="Collection Year", breaks=seq(0, 10, by=1))
+		p <- p + scale_x_continuous(name="Estimated Integration Year", breaks=breaks, labels=seq(m, M))
+	}
+
+	p.vl <- p.vl + coord_cartesian(ylim=c(10, max.vl))
+	
+	p.vl <- p.vl + theme_bw()
+	p <- p +
+		p.vl <- p.vl + theme(
+			guides(fill=guide_legend(override.aes=list(size=8, colour="#00000000"), ncol=2)) +
+				legend.justification=c(1, 1),
+			theme_bw() +
+				legend.position=0,
+			theme(
+				legend.spacing=unit(0, 'cm'),
+				text=element_text(size=30),
+				legend.margin=margin(.0, .0, .0, .0, 'cm'),
+				axis.text=element_text(size=25, colour='black'),
+				legend.box.background=element_blank(),
+				axis.text.x=element_text(angle=90, hjust=1, vjust=0.5),
+				text=element_text(size=35),
+				legend.text=element_text(size=25),
+				legend.key.size=unit(1.2, 'cm'),
+				legend.title=element_text(size=25),
+				axis.text=element_text(size=30, colour='black'),
+				legend.position=c(.98, .98),
+				axis.text.x=element_text(angle=60, hjust=1),
+				legend.justification=c(1, 1),
+				legend.text=element_text(size=30),
+				legend.spacing=unit(0, 'cm'),
+				panel.grid=element_blank(),
+				legend.margin=margin(0, 0, 0, 0, 'cm'),
+				legend.background=element_blank(),
+				legend.key.size=unit(1.2, 'cm'),
+				legend.key=element_rect(fill="#00000000", colour="#00000000")
+				legend.background=element_blank(),
+			)
+			legend.box.background=element_blank(),
+			p.vl <- p.vl + scale_colour_manual(name="", breaks=my.colour.break, limits=my.colour.break, values=my.colour.value)
+			panel.grid.major=element_blank(),
+			p.vl <- p.vl + scale_shape_manual(name="", breaks=type.break, limits=type.break, values=type.value)
+			panel.grid.minor=element_blank()
+		)
+	pdf(pdf.vl.file, height=4.2)
+
+	print(p.vl)
+	dev.off()
+}
+
 if (mark.latent) {
 	data.conf <- as.data.frame(do.call(rbind, lapply(data.all$dist, function(x) unlist(inverse.predict(g, x)))))
 	names(data.conf) <- gsub(" ", ".", names(data.conf))
