@@ -676,9 +676,13 @@ if (!is.na(vl.file)) {
 	if (use.real)
 		data.vl$Date <- as.Date(data.vl$Date)		
 	data.vl$Used <- gsub("(V3| & )", "", data.vl$Used)
-	data.vl$my.type <- with(data.vl, paste0(Type, Censored > 0))
-	data.vl$my.colour <- as.numeric(data.vl$Date)
-	data.vl$my.colour[data.vl$Censored > 0] <- "censored"
+	data.vl$my.type <- with(data.vl, paste0(toupper(Type), Censored > 0))
+	if (rainbow) {
+		data.vl$my.colour <- as.numeric(data.vl$Date)
+		data.vl$my.colour[data.vl$Censored > 0] <- "censored"
+	} else {
+		data.vl$my.colour <- 'black'
+	}
 	p.vl <- ggplot(data.vl, aes(x=Date, y=VL))
 	if (!is.na(THERAPY_START))
 		p.vl <- p.vl + add.therapy(as.numeric(THERAPY_START), Inf, 1)
@@ -715,7 +719,10 @@ if (!is.na(vl.file)) {
 		legend.key=element_rect(fill="#00000000", colour="#00000000")
 	)
 	
-	p.vl <- p.vl + scale_colour_manual(name="", breaks=my.colour.break, limits=my.colour.break, values=my.colour.value)
+	if (rainbow)
+		p.vl <- p.vl + scale_colour_manual(name="", breaks=my.colour.break, limits=my.colour.break, values=my.colour.value)
+	else
+		p.vl <- p.vl + scale_colour_manual(name="", breaks=c('black'), limits=c('black'), values=c('black'))
 	p.vl <- p.vl + scale_shape_manual(name="", breaks=type.break, limits=type.break, values=type.value)
 	
 	pdf(pdf.vl.file, height=4.2)
