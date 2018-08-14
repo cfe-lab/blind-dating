@@ -677,7 +677,7 @@ if (!is.na(vl.file)) {
 		data.vl$Date <- as.Date(data.vl$Date)		
 	data.vl$Used <- gsub("(V3| & )", "", data.vl$Used)
 	data.vl$my.type <- with(data.vl, paste0(toupper(Type), Censored > 0))
-	if (rainbow) {
+	if (use.rainbow) {
 		data.vl$my.colour <- as.numeric(data.vl$Date)
 		data.vl$my.colour[data.vl$Censored > 0] <- "censored"
 	} else {
