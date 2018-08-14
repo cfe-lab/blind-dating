@@ -719,7 +719,7 @@ if (!is.na(vl.file)) {
 		legend.key=element_rect(fill="#00000000", colour="#00000000")
 	)
 	
-	if (rainbow)
+	if (use.rainbow)
 		p.vl <- p.vl + scale_colour_manual(name="", breaks=my.colour.break, limits=my.colour.break, values=my.colour.value)
 	else
 		p.vl <- p.vl + scale_colour_manual(name="", breaks=c('black'), limits=c('black'), values=c('black'))
