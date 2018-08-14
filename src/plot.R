@@ -671,7 +671,7 @@ pdf(pdf.hist.file, height=5)
 p
 dev.off()
 
-f (!is.na(vl.file)) {
+if (!is.na(vl.file)) {
 	data.vl <- read.csv(vl.file, stringsAsFactors=F)
 	if (use.real)
 		data.vl$Date <- as.Date(data.vl$Date)		
