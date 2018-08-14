@@ -237,7 +237,7 @@ MIN_COL_TIME <- get.val(args$mincoltime, NA)
 MAX_COL_TIME <- get.val(args$maxcoltime, NA)
 hist.freq.by <- get.val(args$histfreqby, 2)
 dna.shape.scale <- get.val(args$dnashapescale, 1)
-max.vl <- get.val(args$maxvl, 10000)
+max.vl <- get.val(args$maxvl, NA)
 vl.file <- get.val(args$vlfile, NA)
 use.dups <- get.val(args$plotdups, F)
 info.file <- get.val(args$info, NA)
@@ -677,6 +677,10 @@ if (!is.na(vl.file)) {
 		data.vl$Date <- as.Date(data.vl$Date)		
 	data.vl$Used <- gsub("(V3| & )", "", data.vl$Used)
 	data.vl$my.type <- with(data.vl, paste0(toupper(Type), Censored > 0))
+	
+	if (is.na(max.vl))
+		max.vl <- max(data$VL)
+	
 	if (use.rainbow) {
 		data.vl$my.colour <- as.numeric(data.vl$Date)
 		data.vl$my.colour[data.vl$Censored > 0] <- "censored"
