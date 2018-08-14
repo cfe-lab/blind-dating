@@ -676,7 +676,7 @@ if (!is.na(vl.file)) {
 	if (use.real)
 		data.vl$Date <- as.Date(data.vl$Date)		
 	data.vl$Used <- gsub("(V3| & )", "", data.vl$Used)
-	data.vl$my.type <- match(with(data.vl, paste0(Type, Censored > 0)))
+	data.vl$my.type <- with(data.vl, paste0(Type, Censored > 0))
 	data.vl$my.colour <- as.numeric(data.vl$Date)
 	data.vl$my.colour[data.vl$Censored > 0] <- "censored"
 	p.vl <- ggplot(data.vl, aes(x=Date, y=VL))
