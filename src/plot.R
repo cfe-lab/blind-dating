@@ -159,7 +159,7 @@ apply.theme <- function(p, flipped=F, scaled=T, type.break.=type.break, type.val
 		flipped, scaled)
 }
 
-plot.dupes <- function(info) {
+plot.dupes <- function(info, pdf.dup.disttree.file, pdf.dup.tree.file, pdf.dup.hist.file) {
 	info$COLDATE <- if (use.real) as.numeric(as.Date(info$COLDATE, origin="1970-01-01")) else info$COLDATE
 	info <- info[order(info$TYPE), ]
 	info <- info[order(info$COLDATE), ]
