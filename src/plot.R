@@ -413,7 +413,7 @@ op <- add_option(op, "--stats2", type='character')
 op <- add_option(op, "--regression2", type='character')
 op <- add_option(op, "--datacomb", type='character')
 op <- add_option(op, "--statscomb", type='character')
-op <- add_option(op, "plotgroups", type='logical', action='store_true')
+op <- add_option(op, "--plotgroups", type='logical', action='store_true')
 op <- add_option(op, "--settings", type='character', default=NA)
 args <- parse_args(op)
 
