@@ -24,7 +24,7 @@ Rscript ${SRC}/build.tree.R --info=${INFO} --fasta=${FASTA} --raxml=/opt/raxml -
 echo 'rooting tree...' &&
 Rscript ${SRC}/root.tree.R --info=${INFO} --tree=tree_nwk --rootedtree=rooted_tree_nwk --settings=${SETTINGS} &&
 echo 'regressing...' &&
-Rscript ${SRC}/regression.R --patid=${PATID} --info=${INFO} --tree=rooted_tree_nwk --stats=stats_csv --data=data_csv --regression=regression_rds --settings=${SETTINGS} &&
+Rscript ${SRC}/regression.R --patid=${PATID} --training='0' --info=${INFO} --tree=rooted_tree_nwk --stats=stats_csv --data=data_csv --regression=regression_rds --settings=${SETTINGS} &&
 Rscript ${SRC}/regression.R --patid=${PATID} --training='-1' --info=${INFO} --tree=rooted_tree_nwk --stats=stats_2_csv --data=data_2_csv --regression=regression_2_rds --settings=${SETTINGS} &&
 echo 'plotting...' &&
 Rscript ${SRC}/plot.R --patid='plot' --patid2='plot' --info=${INFO} --tree=rooted_tree_nwk --stats=stats_csv --data=data_csv --regression=regression_rds --stats2=stats_2_csv --data2=data_2_csv --regression2=regression_2_rds --statscomb=stats_comb_csv --datacomb=data_comb_csv --settings=${SETTINGS} &&
