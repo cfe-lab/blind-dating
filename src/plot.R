@@ -159,7 +159,9 @@ apply.theme <- function(p, flipped=F, scaled=T, type.break.=type.break, type.val
 		flipped, scaled)
 }
 
-plot.hist <- function(data.hist, pdf.hist.file) {
+plot.hist <- function(data, pdf.hist.file) {
+	data.hist <- subset(data, censored > 0)
+		
 	if (use.rainbow) {
 		date.levels <- sort(unique(data.hist$date))
 	} else {
@@ -171,10 +173,10 @@ plot.hist <- function(data.hist, pdf.hist.file) {
 	
 	if (use.real) {
 		if (hist.by.month) {
-			m.month <- as.numeric(as.character(as.Date(min(c(data.hist$est.date, data.comb$date)), origin="1970-01-01"), "%m"))
-			m.year <- as.numeric(as.character(as.Date(min(c(data.hist$est.date, data.comb$date)), origin="1970-01-01"), "%Y"))
-			M.month <- as.numeric(as.character(as.Date(max(c(data.hist$est.date, subset(data.comb, censored <= 0)$date)), origin="1970-01-01"), "%m")) + 1
-			M.year <- as.numeric(as.character(as.Date(max(c(data.hist$est.date, subset(data.comb, censored <= 0)$date)), origin="1970-01-01"), "%Y"))
+			m.month <- as.numeric(as.character(as.Date(min(c(data.hist$est.date, data$date)), origin="1970-01-01"), "%m"))
+			m.year <- as.numeric(as.character(as.Date(min(c(data.hist$est.date, data$date)), origin="1970-01-01"), "%Y"))
+			M.month <- as.numeric(as.character(as.Date(max(c(data.hist$est.date, subset(data, censored <= 0)$date)), origin="1970-01-01"), "%m")) + 1
+			M.year <- as.numeric(as.character(as.Date(max(c(data.hist$est.date, subset(data, censored <= 0)$date)), origin="1970-01-01"), "%Y"))
 			
 			if (M.month == 13) {
 				M.year <- M.year + 1
@@ -190,8 +192,8 @@ plot.hist <- function(data.hist, pdf.hist.file) {
 			}
 		}
 		else {
-			m <- as.numeric(gsub("(.+)-.+-.+", "\\1", as.Date(min(c(data.hist$est.date, data.comb$date)), origin="1970-01-01")))
-			M <- as.numeric(gsub("(.+)-.+-.+", "\\1", as.Date(max(c(data.hist$est.date), subset(data.comb, censored <= 0)$date), origin="1970-01-01"))) + 1
+			m <- as.numeric(gsub("(.+)-.+-.+", "\\1", as.Date(min(c(data.hist$est.date, data$date)), origin="1970-01-01")))
+			M <- as.numeric(gsub("(.+)-.+-.+", "\\1", as.Date(max(c(data.hist$est.date), subset(data, censored <= 0)$date), origin="1970-01-01"))) + 1
 			breaks <- as.numeric(as.Date(paste0(seq(m, M), "-01-01")))
 		}
 		m <- breaks[1]
@@ -202,16 +204,16 @@ plot.hist <- function(data.hist, pdf.hist.file) {
 		}
 	} else {
 		if (cartoon) {
-			m <- floor(min(c(data.hist$est.date, data.comb$date)))
-			M <- floor(max(c(data.hist$est.date, subset(data.comb, censored <= 0)$date))) + 1
+			m <- floor(min(c(data.hist$est.date, data$date)))
+			M <- floor(max(c(data.hist$est.date, subset(data, censored <= 0)$date))) + 1
 			breaks <- seq(m, M)
 			if (use.rainbow) {
 				colour.vals <- rep('black', length(date.levels))
 				colour.labs <- rep('LAB', length(date.levels))
 			}
 		} else {
-			m <- floor(min(c(data.hist$est.date, data.comb$date)) / 365.25)
-			M <- floor(max(c(data.hist$est.date, subset(data.comb, censored <= 0)$date)) / 365.25) + 1
+			m <- floor(min(c(data.hist$est.date, data$date)) / 365.25)
+			M <- floor(max(c(data.hist$est.date, subset(data, censored <= 0)$date)) / 365.25) + 1
 			breaks <- seq(m, M) * 365.25
 			if (use.rainbow) {
 				colour.vals <- rep('black', length(date.levels))
@@ -366,7 +368,7 @@ plot.dupes <- function(info, pdf.dup.disttree.file, pdf.dup.tree.file, pdf.dup.h
 					  flipped=T, scaled=T, colour.value.=my.colour.value, colour.break.=my.colour.break))
 	dev.off()
 	
-	plot.hist(subset(data.comb, censored > 0), pdf.dup.hist.file)
+	plot.hist(data.comb, pdf.dup.hist.file)
 }
 
 op <- OptionParser()
@@ -755,7 +757,7 @@ apply.theme(ggtree(ptree, yscale="node.date", colour="#49494980", size=tree.size
 	flipped=T, scaled=T, colour.value.=my.colour.value, colour.break.=my.colour.break)
 dev.off()
 
-plot.hist(subset(data, censored > 0), pdf.hist.file)
+plot.hist(data, pdf.hist.file)
 
 if (!is.na(vl.file)) {
 	data.vl <- read.csv(vl.file, stringsAsFactors=F)
