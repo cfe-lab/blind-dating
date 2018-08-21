@@ -777,7 +777,7 @@ if (use.real) {
 		} else if (M.year == m.year + 1) {
 			as.numeric(as.Date(c(paste0(m.year, "-", seq(m.month, 12), "-01"), paste0(M.year, "-", seq(1, M.month), "-01"))))
 		} else {
-			as.numeric(as.Date(c(paste0(m.year, "-", seq(m.month, 12), "-01"), paste0(unlist(lapply((m.year + 1):(M.year - 1), rep, 12)), "-", 1:12, "01"), paste0(M.year, "-", seq(1, M.month), "-01"))))
+			as.numeric(as.Date(c(paste0(m.year, "-", seq(m.month, 12), "-01"), paste0(unlist(lapply((m.year + 1):(M.year - 1), rep, 12)), "-", 1:12, "-01"), paste0(M.year, "-", seq(1, M.month), "-01"))))
 		}
 	}
 	else {
