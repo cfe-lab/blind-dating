@@ -159,74 +159,7 @@ apply.theme <- function(p, flipped=F, scaled=T, type.break.=type.break, type.val
 		flipped, scaled)
 }
 
-plot.dupes <- function(info, pdf.dup.disttree.file, pdf.dup.tree.file, pdf.dup.hist.file, disttree.dupalpha=0.4, tree.dupalpha=0.1) {
-	info$COLDATE <- if (use.real) as.numeric(as.Date(info$COLDATE, origin="1970-01-01")) else info$COLDATE
-	info <- info[order(info$TYPE), ]
-	info <- info[order(info$COLDATE), ]
-	info <- info[order(info$DUPLICATE), ]
-	
-	fort <- fortify(ptree, colour="#49494980", size=dist.tree.size, ladderize=T)
-	fort.dup <- fort[match(info$DUPLICATE, fort$tip.label), ]
-	
-	fort.dup$tip.label <- info$FULLSEQID
-	fort.dup$duplicate <- info$DUPLICATE
-	fort.dup$censored <- info$CENSORED
-	fort.dup$dup.censored <- info[match(info$DUPLICATE, info$FULLSEQID), "CENSORED"]
-	fort.dup$type <- info$TYPE
-	fort.dup$my.colour <- NA
-	fort.dup$date <- info$COLDATE
-	fort.dup$x.shift <- fort.dup$x
-	fort.dup$my.type <- with(fort.dup, toupper(paste0(type, censored > 0)))
-	
-	if (use.rainbow) {
-		fort.dup$my.colour <- fort.dup$date
-		fort.dup$my.colour[fort.dup$censored > 0] <- "censored"
-		my.colour.break <- unique(fort.dup$my.colour)
-		my.colour.filter <- suppressWarnings(!is.na(as.numeric(my.colour.break)))
-		my.colour.value <- rep('black', length(my.colour.break))
-		my.colour.scale <- (as.numeric(my.colour.break[my.colour.filter]) - MIN_COL_TIME) / (MAX_COL_TIME - MIN_COL_TIME)
-		my.colour.value[my.colour.filter] <- hsv(my.colour.scale * .75, 0.5, 0.5)
-	} else {
-		fort.dup$my.colour <- toupper(fort.dup$type)
-	}
-	
-	fort.dup$censored <- as.numeric(fort.dup$censored <= 0) * fort.dup$censored + 
-		as.numeric(fort.dup$censored > 0 & fort.dup$dup.censored <= 0) * (1 - fort.dup$dup.censored) + 
-		as.numeric(fort.dup$dup.censored > 0 & fort.dup$censored > 0) * (fort.dup$dup.censored)
-	
-	data.comb <- fort.dup
-	fort.dup <- subset(fort.dup, tip.label != duplicate)
-	
-	for (i in 1:nrow(fort.dup)) {
-		if (i == 1 || fort.dup$duplicate[i - 1] != fort.dup$duplicate[i]) {
-			shift <- 1
-		} else {
-			shift <- shift + 1
-		}
-		
-		fort.dup$x.shift[i] <- fort.dup$x[i] + shift * dup.shift
-	}
-	
-	pdf(pdf.dup.disttree.file, height=10)
-	print(apply.theme(ggtree(ptree, colour="#49494980", size=dist.tree.size, ladderize=T) +
-					  	geom_tippoint(aes(colour=my.colour, shape=my.type), size=point.size) +
-					  	geom_treescale(width=0.02, fontsize=7, offset=scale.offset) + 
-					  	geom_point(aes(colour=my.colour, shape=my.type, x=x.shift, y=y), data=fort.dup, alpha=disttree.dupalpha, size=point.size),
-					  flipped=F, scaled=F, colour.value.=my.colour.value, colour.break.=my.colour.break))
-	dev.off()
-	
-	data.mean <- do.call(rbind, lapply(tree$tip.label, make.mean.row, data.comb))
-	dup.node.dates <- tryCatch(estimate.dates(tree, c(data.mean$date, stats$Estimated.Root.Date, rep(NA, tree$Nnode - 1)), mu, node.mask=length(tree$tip.label) + 1, lik.tol=0, nsteps=nsteps, show.steps=100, opt.tol=1e-16), error=function(e) estimate.dates(tree, data.mean$date, mu, lik.tol=0, nsteps=nsteps, show.steps=100, opt.tol=1e-16))
-	mean.ptree <- phylo4d(tree, all.data=as.data.frame(cbind(rbind(data.mean[, c("tip.label", "type", "censored", "date", "dist", "weight", "date.diff", "est.date", "my.colour", "my.type")], data.frame(tip.label=paste0("N.", 1:tree$Nnode), type="NODE", censored=NA, date=NA, dist=node.depth.edgelength(tree)[1:tree$Nnode + nrow(data)], weight=NA, est.date=NA, date.diff=NA, my.colour=NA, my.type=NA)), node.date=dup.node.dates)))
-	
-	pdf(pdf.dup.tree.file)
-	print(apply.theme(ggtree(mean.ptree, yscale="node.date", colour="#49494980", size=tree.size, ladderize=F) +
-					  	geom_point(aes(colour=my.colour, shape=my.type, x=x, y=date), data=data.comb, alpha=tree.dupalpha, size=point.size),
-					  flipped=T, scaled=T, colour.value.=my.colour.value, colour.break.=my.colour.break))
-	dev.off()
-	
-	data.hist <- subset(data.comb, censored > 0)
-	
+plot.hist(data.hist, pdf.hist.file) {
 	if (use.rainbow) {
 		date.levels <- sort(unique(data.hist$date))
 	} else {
@@ -362,9 +295,78 @@ plot.dupes <- function(info, pdf.dup.disttree.file, pdf.dup.tree.file, pdf.dup.h
 		p <- p + theme(legend.position='none')
 	}
 	
-	pdf(pdf.dup.hist.file, height=5)
+	pdf(pdf.hist.file, height=5)
 	print(p)
 	dev.off()
+}
+
+plot.dupes <- function(info, pdf.dup.disttree.file, pdf.dup.tree.file, pdf.dup.hist.file, disttree.dupalpha=0.4, tree.dupalpha=0.1) {
+	info$COLDATE <- if (use.real) as.numeric(as.Date(info$COLDATE, origin="1970-01-01")) else info$COLDATE
+	info <- info[order(info$TYPE), ]
+	info <- info[order(info$COLDATE), ]
+	info <- info[order(info$DUPLICATE), ]
+	
+	fort <- fortify(ptree, colour="#49494980", size=dist.tree.size, ladderize=T)
+	fort.dup <- fort[match(info$DUPLICATE, fort$tip.label), ]
+	
+	fort.dup$tip.label <- info$FULLSEQID
+	fort.dup$duplicate <- info$DUPLICATE
+	fort.dup$censored <- info$CENSORED
+	fort.dup$dup.censored <- info[match(info$DUPLICATE, info$FULLSEQID), "CENSORED"]
+	fort.dup$type <- info$TYPE
+	fort.dup$my.colour <- NA
+	fort.dup$date <- info$COLDATE
+	fort.dup$x.shift <- fort.dup$x
+	fort.dup$my.type <- with(fort.dup, toupper(paste0(type, censored > 0)))
+	
+	if (use.rainbow) {
+		fort.dup$my.colour <- fort.dup$date
+		fort.dup$my.colour[fort.dup$censored > 0] <- "censored"
+		my.colour.break <- unique(fort.dup$my.colour)
+		my.colour.filter <- suppressWarnings(!is.na(as.numeric(my.colour.break)))
+		my.colour.value <- rep('black', length(my.colour.break))
+		my.colour.scale <- (as.numeric(my.colour.break[my.colour.filter]) - MIN_COL_TIME) / (MAX_COL_TIME - MIN_COL_TIME)
+		my.colour.value[my.colour.filter] <- hsv(my.colour.scale * .75, 0.5, 0.5)
+	} else {
+		fort.dup$my.colour <- toupper(fort.dup$type)
+	}
+	
+	fort.dup$censored <- as.numeric(fort.dup$censored <= 0) * fort.dup$censored + 
+		as.numeric(fort.dup$censored > 0 & fort.dup$dup.censored <= 0) * (1 - fort.dup$dup.censored) + 
+		as.numeric(fort.dup$dup.censored > 0 & fort.dup$censored > 0) * (fort.dup$dup.censored)
+	
+	data.comb <- fort.dup
+	fort.dup <- subset(fort.dup, tip.label != duplicate)
+	
+	for (i in 1:nrow(fort.dup)) {
+		if (i == 1 || fort.dup$duplicate[i - 1] != fort.dup$duplicate[i]) {
+			shift <- 1
+		} else {
+			shift <- shift + 1
+		}
+		
+		fort.dup$x.shift[i] <- fort.dup$x[i] + shift * dup.shift
+	}
+	
+	pdf(pdf.dup.disttree.file, height=10)
+	print(apply.theme(ggtree(ptree, colour="#49494980", size=dist.tree.size, ladderize=T) +
+					  	geom_tippoint(aes(colour=my.colour, shape=my.type), size=point.size) +
+					  	geom_treescale(width=0.02, fontsize=7, offset=scale.offset) + 
+					  	geom_point(aes(colour=my.colour, shape=my.type, x=x.shift, y=y), data=fort.dup, alpha=disttree.dupalpha, size=point.size),
+					  flipped=F, scaled=F, colour.value.=my.colour.value, colour.break.=my.colour.break))
+	dev.off()
+	
+	data.mean <- do.call(rbind, lapply(tree$tip.label, make.mean.row, data.comb))
+	dup.node.dates <- tryCatch(estimate.dates(tree, c(data.mean$date, stats$Estimated.Root.Date, rep(NA, tree$Nnode - 1)), mu, node.mask=length(tree$tip.label) + 1, lik.tol=0, nsteps=nsteps, show.steps=100, opt.tol=1e-16), error=function(e) estimate.dates(tree, data.mean$date, mu, lik.tol=0, nsteps=nsteps, show.steps=100, opt.tol=1e-16))
+	mean.ptree <- phylo4d(tree, all.data=as.data.frame(cbind(rbind(data.mean[, c("tip.label", "type", "censored", "date", "dist", "weight", "date.diff", "est.date", "my.colour", "my.type")], data.frame(tip.label=paste0("N.", 1:tree$Nnode), type="NODE", censored=NA, date=NA, dist=node.depth.edgelength(tree)[1:tree$Nnode + nrow(data)], weight=NA, est.date=NA, date.diff=NA, my.colour=NA, my.type=NA)), node.date=dup.node.dates)))
+	
+	pdf(pdf.dup.tree.file)
+	print(apply.theme(ggtree(mean.ptree, yscale="node.date", colour="#49494980", size=tree.size, ladderize=F) +
+					  	geom_point(aes(colour=my.colour, shape=my.type, x=x, y=date), data=data.comb, alpha=tree.dupalpha, size=point.size),
+					  flipped=T, scaled=T, colour.value.=my.colour.value, colour.break.=my.colour.break))
+	dev.off()
+	
+	plot.hist(subset(data.comb, censored > 0), pdf.dup.hist.file)
 }
 
 op <- OptionParser()
@@ -753,146 +755,7 @@ apply.theme(ggtree(ptree, yscale="node.date", colour="#49494980", size=tree.size
 	flipped=T, scaled=T, colour.value.=my.colour.value, colour.break.=my.colour.break)
 dev.off()
 
-data.hist <- subset(data, censored > 0)
-
-if (use.rainbow) {
-	date.levels <- sort(unique(data.hist$date))
-} else {
-	type.filter <- my.colour.break %in% data.hist$type
-	type.levels <- my.colour.break[type.filter]
-	colour.vals <- my.colour.value[type.filter]
-	colour.labs <- type.levels
-}
-
-if (use.real) {
-	if (hist.by.month) {
-		m.month <- as.numeric(as.character(as.Date(min(c(data.hist$est.date, data$date)), origin="1970-01-01"), "%m"))
-		m.year <- as.numeric(as.character(as.Date(min(c(data.hist$est.date, data$date)), origin="1970-01-01"), "%Y"))
-		M.month <- as.numeric(as.character(as.Date(max(c(data.hist$est.date, subset(data, censored <= 0)$date)), origin="1970-01-01"), "%m")) + 1
-		M.year <- as.numeric(as.character(as.Date(max(c(data.hist$est.date, subset(data, censored <= 0)$date)), origin="1970-01-01"), "%Y"))
-		
-		if (M.month == 13) {
-			M.year <- M.year + 1
-			M.month <- 1
-		}
-		
-		breaks <- if (M.year == m.year) {
-			as.numeric(as.Date(paste0(m.year, "-", seq(m.month, M.month), "-01")))
-		} else if (M.year == m.year + 1) {
-			as.numeric(as.Date(c(paste0(m.year, "-", seq(m.month, 12), "-01"), paste0(M.year, "-", seq(1, M.month), "-01"))))
-		} else {
-			as.numeric(as.Date(c(paste0(m.year, "-", seq(m.month, 12), "-01"), paste0(unlist(lapply((m.year + 1):(M.year - 1), rep, 12)), "-", 1:12, "-01"), paste0(M.year, "-", seq(1, M.month), "-01"))))
-		}
-	}
-	else {
-		m <- as.numeric(gsub("(.+)-.+-.+", "\\1", as.Date(min(c(data.hist$est.date, data$date)), origin="1970-01-01")))
-		M <- as.numeric(gsub("(.+)-.+-.+", "\\1", as.Date(max(c(data.hist$est.date), subset(data, censored <= 0)$date), origin="1970-01-01"))) + 1
-		breaks <- as.numeric(as.Date(paste0(seq(m, M), "-01-01")))
-	}
-	m <- breaks[1]
-	M <- breaks[length(breaks[1])]
-	if (use.rainbow) {
-		colour.vals <- if (length(date.levels) == 4) c("#cccccc", "#888888", "#444444", "#000000") else if (length(date.levels) == 3) c("#aaaaaa", "#555555", "#000000") else if (length(date.levels) == 2) c("#999999", "#000000") else 'black'
-		colour.labs <- as.character(as.Date(date.levels, origin="1970-01-01"), format="%b. %Y")
-	}
-} else {
-	if (cartoon) {
-		m <- floor(min(c(data.hist$est.date, data$date)))
-		M <- floor(max(c(data.hist$est.date, subset(data, censored <= 0)$date))) + 1
-		breaks <- seq(m, M)
-		if (use.rainbow) {
-			colour.vals <- rep('black', length(date.levels))
-			colour.labs <- rep('LAB', length(date.levels))
-		}
-	} else {
-		m <- floor(min(c(data.hist$est.date, data$date)) / 365.25)
-		M <- floor(max(c(data.hist$est.date, subset(data, censored <= 0)$date)) / 365.25) + 1
-		breaks <- seq(m, M) * 365.25
-		if (use.rainbow) {
-			colour.vals <- rep('black', length(date.levels))
-			colour.labs <- rep('LAB', length(date.levels))
-		}
-	} 
-}
-
-H <- max(hist(data.hist$est.date, breaks=breaks, plot=F)$counts)
-
-if (use.rainbow) {
-	if (use.real) {
-		p <- ggplot(data.hist, aes(x=est.date, fill=factor(date, levels=date.levels)))
-	} else {
-		p <- ggplot(data.hist, aes(x=est.date))
-	}
-} else {
-	p <- ggplot(data.hist, aes(x=est.date, fill=factor(type, levels=type.levels)))
-}
-
-if (!is.na(THERAPY_START)) {
-	p <-  p + add.therapy(as.numeric(THERAPY_START), Inf, 1, height=H * 1.05)
-	if (!is.na(therapy2))
-		p <-  p + add.therapy(as.numeric(therapy2), as.numeric(THERAPY_START), 2, height=H * 1.05)
-}
-
-if (!is.na(therapy3))
-	p <- p + add.therapy(as.numeric(therapy3), as.numeric(therapy3end), 1, height=H * 1.05)
-
-p <- p + geom_segment(x=min(data$date), xend=min(data$date), y=H * 9 / 8, yend=H, arrow=arrow(length = unit(0.25, "cm")))
-
-if (use.rainbow) {
-	if (use.real) {
-		p <- p + geom_histogram(breaks=breaks) + scale_fill_manual(name="Collection Date", values=colour.vals, labels=colour.labs)
-	} else {
-		p <- p + geom_histogram(breaks=breaks, fill='black')
-	}
-} else {
-	p <- p + geom_histogram(breaks=breaks) + scale_fill_manual(name="Type", values=colour.vals, labels=colour.labs)
-}
-
-
-if (use.real) {
-	if (hist.by.month) {
-		if (M.year == m.year)  {
-			p <- p + scale_x_continuous(name="Estimated Integration Month", breaks=breaks, labels=as.character(as.Date(breaks, origin="1970-01-01"), "%b"))
-		} else {
-			p <- p + scale_x_continuous(name="Estimated Integration Month", breaks=breaks, labels=as.character(as.Date(breaks, origin="1970-01-01"), "%b %Y"))
-		}
-	}
-	else {
-		p <- p + scale_x_continuous(name="Estimated Integration Year", breaks=breaks, labels=as.character(as.Date(breaks, origin="1970-01-01"), "%Y"))
-	}
-} else {
-	p <- p + scale_x_continuous(name="Estimated Integration Year", breaks=breaks, labels=seq(m, M))
-}
-	
-p <- p +
-	guides(fill=guide_legend(override.aes=list(size=8, colour="#00000000"), ncol=2)) +
-	theme_bw() +
-	theme(
-		text=element_text(size=30),
-		axis.text=element_text(size=25, colour='black'),
-		axis.text.x=element_text(angle=90, hjust=1, vjust=0.5),
-		legend.text=element_text(size=25),
-		legend.title=element_text(size=25),
-		legend.position=c(.98, .98),
-		legend.justification=c(1, 1),
-		legend.spacing=unit(0, 'cm'),
-		legend.margin=margin(0, 0, 0, 0, 'cm'),
-		legend.key.size=unit(1.2, 'cm'),
-		legend.background=element_blank(),
-		legend.box.background=element_blank(),
-		panel.grid.major=element_blank(),
-	    panel.grid.minor=element_blank()
-	)
-	
-p <- p + scale_y_continuous(name="Frequency", breaks=seq(0, H, by=hist.freq.by), limits=c(0, H * hist.height))
-	
-if (use.rainbow && !(use.real && length(date.levels) > 1)) {
-	p <- p + theme(legend.position='none')
-}
-
-pdf(pdf.hist.file, height=5)
-p
-dev.off()
+plot.hist(subset(data, censored > 0), pdf.hist.file)
 
 if (!is.na(vl.file)) {
 	data.vl <- read.csv(vl.file, stringsAsFactors=F)
