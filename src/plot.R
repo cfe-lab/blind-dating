@@ -159,7 +159,7 @@ apply.theme <- function(p, flipped=F, scaled=T, type.break.=type.break, type.val
 		flipped, scaled)
 }
 
-plot.dupes <- function(info, pdf.dup.disttree.file, pdf.dup.tree.file, pdf.dup.hist.file) {
+plot.dupes <- function(info, pdf.dup.disttree.file, pdf.dup.tree.file, pdf.dup.hist.file, disttree.dupalpha=0.4, tree.dupalpha=0.1) {
 	info$COLDATE <- if (use.real) as.numeric(as.Date(info$COLDATE, origin="1970-01-01")) else info$COLDATE
 	info <- info[order(info$TYPE), ]
 	info <- info[order(info$COLDATE), ]
@@ -211,7 +211,7 @@ plot.dupes <- function(info, pdf.dup.disttree.file, pdf.dup.tree.file, pdf.dup.h
 	print(apply.theme(ggtree(ptree, colour="#49494980", size=dist.tree.size, ladderize=T) +
 					  	geom_tippoint(aes(colour=my.colour, shape=my.type), size=point.size) +
 					  	geom_treescale(width=0.02, fontsize=7, offset=scale.offset) + 
-					  	geom_point(aes(colour=my.colour, shape=my.type, x=x.shift, y=y), data=fort.dup, alpha=0.4, size=point.size),
+					  	geom_point(aes(colour=my.colour, shape=my.type, x=x.shift, y=y), data=fort.dup, alpha=disttree.dupalpha, size=point.size),
 					  flipped=F, scaled=F, colour.value.=my.colour.value, colour.break.=my.colour.break))
 	dev.off()
 	
@@ -221,7 +221,7 @@ plot.dupes <- function(info, pdf.dup.disttree.file, pdf.dup.tree.file, pdf.dup.h
 	
 	pdf(pdf.dup.tree.file)
 	print(apply.theme(ggtree(mean.ptree, yscale="node.date", colour="#49494980", size=tree.size, ladderize=F) +
-					  	geom_point(aes(colour=my.colour, shape=my.type, x=x, y=date), data=data.comb, alpha=0.1, size=point.size),
+					  	geom_point(aes(colour=my.colour, shape=my.type, x=x, y=date), data=data.comb, alpha=tree.dupalpha, size=point.size),
 					  flipped=T, scaled=T, colour.value.=my.colour.value, colour.break.=my.colour.break))
 	dev.off()
 	
@@ -253,7 +253,7 @@ plot.dupes <- function(info, pdf.dup.disttree.file, pdf.dup.tree.file, pdf.dup.h
 			} else if (M.year == m.year + 1) {
 				as.numeric(as.Date(c(paste0(m.year, "-", seq(m.month, 12), "-01"), paste0(M.year, "-", seq(1, M.month), "-01"))))
 			} else {
-				as.numeric(as.Date(c(paste0(m.year, "-", seq(m.month, 12), "-01"), paste0(unlist(lapply((m.year + 1):(M.year - 1), rep, 12)), "-", 1:12, "01"), paste0(M.year, "-", seq(1, M.month), "-01"))))
+				as.numeric(as.Date(c(paste0(m.year, "-", seq(m.month, 12), "-01"), paste0(unlist(lapply((m.year + 1):(M.year - 1), rep, 12)), "-", 1:12, "-01"), paste0(M.year, "-", seq(1, M.month), "-01"))))
 			}
 		}
 		else {
@@ -414,6 +414,7 @@ op <- add_option(op, "--regression2", type='character')
 op <- add_option(op, "--datacomb", type='character')
 op <- add_option(op, "--statscomb", type='character')
 op <- add_option(op, "--plotgroups", type='logical', action='store_true')
+op <- add_option(op, "--latentedges", type='logical', action='store_true')
 op <- add_option(op, "--settings", type='character', default=NA)
 args <- parse_args(op)
 
@@ -468,6 +469,7 @@ regression.2.file <- get.val(args$regression2, NA)
 comb.data.file <- get.val(args$datacomb, NA)
 comb.stats.file <- get.val(args$statscomb, NA)
 plot.groups <- get.val(args$plotgroups, F)
+latent.edges <- get.val(args$lantentedges, F)
 if (use.real) {
 	year.start <- get.val(args$yearstart, NA)
 	year.end <- get.val(args$yearend, NA)
@@ -618,10 +620,12 @@ if (!is.na(pat.id2)) {
 }
 
 # shift latent coalescing left
-tr <- function(x) (as.numeric(x <= 0) - 1/3) * 3
-anc <- ace(tr(data$censored), tree)
-first.edges <- anc$ace[tree$edge[, 1] - length(tree$tip.label) + 1] < 0
-mu[first.edges] <- 1e-8
+if (latent.edges) {
+	tr <- function(x) (as.numeric(x <= 0) - 1/3) * 3
+	anc <- ace(tr(data$censored), tree)
+	first.edges <- anc$ace[tree$edge[, 1] - length(tree$tip.label) + 1] < 0
+	mu[first.edges] <- 1e-8
+}
 
 node.dates <- tryCatch(estimate.dates(tree, c(data$date, stats$Estimated.Root.Date, rep(NA, tree$Nnode - 1)), mu, node.mask=length(tree$tip.label) + 1, lik.tol=0, nsteps=nsteps, show.steps=100, opt.tol=1e-16), error=function(e) estimate.dates(tree, data$date, mu, lik.tol=0, nsteps=nsteps, show.steps=100, opt.tol=1e-16))
 
@@ -732,7 +736,7 @@ if (cartoon) {
 
 pdf(pdf.colour.disttree.file)
 apply.theme(ggtree(ptree, colour="#49494980", size=dist.tree.size, ladderize=T) +
-	geom_point(aes(colour=my.colour, shape=my.type), size=point.size) +
+	geom_tippoint(aes(colour=my.colour, shape=my.type), size=point.size) +
 	geom_treescale(width=0.02, fontsize=7, offset=scale.offset),
 	flipped=F, scaled=F, colour.value.=my.colour.value, colour.break.=my.colour.break)
 dev.off()
@@ -978,7 +982,7 @@ if (plot.groups) {
 		x[sapply(unique(x$DUPLICATE), function(y) which(x$DUPLICATE == y)[1]), ]
 	})))
 	
-	plot.dupes(info.groups, pdf.group.disttree.file, pdf.group.tree.file, pdf.group.hist.file)
+	plot.dupes(info.groups, pdf.group.disttree.file, pdf.group.tree.file, pdf.group.hist.file, 0.5, 0.5)
 }
 
 if (use.dups) {
