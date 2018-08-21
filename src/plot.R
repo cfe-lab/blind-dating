@@ -326,7 +326,7 @@ plot.dupes <- function(info, pdf.dup.disttree.file, pdf.dup.tree.file, pdf.dup.h
 			if (M.year == m.year)  {
 				p <- p + scale_x_continuous(name="Estimated Integration Month", breaks=breaks, labels=as.character(as.Date(breaks, origin="1970-01-01"), "%b"))
 			} else {
-				p <- p + scale_x_continuous(name="Estimated Integration Month", breaks=breaks, labels=as.character(as.Date(breaks, origin="1970-01-01"), "%b %Y"))
+				p <- p + scale_x_continuous(name="Estimated Integration Month", breaks=breaks, labels=as.character(as.Date(breaks, origin="1970-01-01"), "%b"))
 			}
 		}
 		else {
