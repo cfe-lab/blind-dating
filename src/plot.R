@@ -159,7 +159,7 @@ apply.theme <- function(p, flipped=F, scaled=T, type.break.=type.break, type.val
 		flipped, scaled)
 }
 
-plot.hist(data.hist, pdf.hist.file) {
+plot.hist <- function(data.hist, pdf.hist.file) {
 	if (use.rainbow) {
 		date.levels <- sort(unique(data.hist$date))
 	} else {
