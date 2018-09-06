@@ -35,7 +35,7 @@ tree.file <- args$tree
 exec <- get.val(args$raxml, "raxml")
 threads <- get.val(args$threads, 2)
 seed <- get.val(args$seed, 1989)
-model <- get.val(args$model, "")
+model <- get.val(args$model, "GTRGAMMA")
 tmp.dir <- args$tmpdir
 
 tmp <- !is.null(tmp.dir)
@@ -47,7 +47,8 @@ tree <- raxml(
 	executable=exec,
 	parsimony.seed=seed,
 	bootstrap.seed=seed,
-	model=model clear=!tmp,
+	model=model,
+	clear=!tmp,
 	tmp.dir=if(tmp) tmp.dir else tempdir()
 )
 write.tree(tree, tree.file)
