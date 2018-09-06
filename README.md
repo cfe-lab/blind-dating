@@ -3,11 +3,14 @@ blind-dating
 Phylogenetic dating of HIV latency
 
 # Articles
+Jones BR, Kinloch NN, Horacsek J, Ganase B, Harris M, Harrigan PR, Jones RB, Brockman M, Joy JB, Poon FY Brumme ZL. (2018) Phylogenetic approach to recover integration dates of latent HIV sequences within-host. Proceedings of the National Academy of Sciences USA. accepted. doi: 10.1073/pnas.1802028115.
 
 # Conference Abstracts
+**Jones B**, Kinloch N, Horacsek J, Ganase B, Harris M, Harrigan PR, Jones BR, Brockman M, Joy J, Poon A, Brumme Z. Using phylogenetics to reconstruct the integration dates of individual latent human immunodeficiency virus reservoir sequences. The 2nd Symposium of the Canadian Society for Virology (2018, Halifax Canada) abstract 42.
+
 **Jones BR**, Kinloch NN, Horacsek J, Ganase B, Harris M, Jones RB, Harrigan PR, Brockman MA, Joy JB, Poon A, Brumme ZL. A Phylogenetic Approach to Recover Integration Dates of Latent Human Immunodeficiency Virus Sequences Within-Host. 27th Annual Canadian Conference on HIV / AIDS Research (2018, Vancouver, Canada) abstract BSP4.03.
 
-**Jones BR**, Kinloch NN, Horacsek J, Ganase B, Harris M, Jones RB, Harrigan PR, Brockman MA, Joy JB, Poon A, Brumme ZL. Reconstructing intergation of dates of latent HIV sequences within-host. The Conference on Rettroviruses and Opportunistic Infections 2018 (2018, Boston, United States of America) abstract 372.
+**Jones BR**, Kinloch NN, Horacsek J, Ganase B, Harris M, Jones RB, Harrigan PR, Brockman MA, Joy JB, Poon A, Brumme ZL. Reconstructing intergation of dates of latent HIV sequences within-host. The Conference on Retroviruses and Opportunistic Infections 2018 (2018, Boston, United States of America) abstract 372.
 
 Jones BR, Kinloch NN, Horacsek J, Ganase B, Harris M, Jones RB, Harrigan PR, Brockman MA, Joy JB, Poon A, **Brumme ZL**. The latent reservoir as a genetically diverse archive recapitulating within-host HIV evolutionary history. HIV Persistance during Therapy 8th Edition (2017, Miami, United States of America) abstract 00035.
 
