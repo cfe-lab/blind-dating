@@ -96,6 +96,8 @@ op <- add_option(op, "--training", type='numeric', default=0)
 op <- add_option(op, "--alltraining", type='logical', action='store_true', default=F)
 op <- add_option(op, "--plotgroups", type='logical', action='store_true', default=F)
 op <- add_option(op, "--latentedges", type='logical', action='store_true', default=F)
+op <- add_option(op, "--textheight", type='character', default="2016-01-01")
+op <- add_option(op, "--model", type='character', default="GTRGAMMA")
 	args <- parse_args(op, args=settings)
 	
 	args
@@ -115,8 +117,10 @@ compare.fasta.settings <- function(f, info) {
 
 compare.info.settings <- function(info, settings) {
 	# check that real is set properly
-	assert(!settings$real | !is.na(as.Date(info$COLDATE)), "--real flag is to be used calendar dates")
-	assert(settings$real | is.numeric(info$COLDATE), "--real flag is not used with numeric dates")
+	if (settings$real)
+		assert(is.character(info$COLDATE) & !is.na(as.Date(info$COLDATE)), "use --real flag with calendar dates")
+	else
+		assert(is.numeric(info$COLDATE), "--real flag is not used with numeric dates")
 	
 	if (settings$usedups) {
 		assert("DUPLICATE" %in% names(info), "info file missing columns for usedup option")
