@@ -106,6 +106,6 @@ if (use.rtt > 0) {
 	}
 }
 
-tree$node.label <- paste0("N.", 1:tree$Nnode)
+tree$node.label <- paste0("N.", 1:tree$Nnode, "_", tree$node.label)
 
 write.tree(tree, rooted.tree.file)
