@@ -44,29 +44,94 @@ echo("verbose: ", verbose)
 echo()
 
 echo("Reading key...")
-sequence.key <- read.csv(sequence.key.file,  stringsAsFactors=F, col.names=c("enum", "id", "patient", "date", "type", "censored", "note"), colClasses=c('character', 'character', 'character', 'Date', 'character', 'numeric', "character"))
+sequence.key <- read.csv(
+	sequence.key.file,
+	stringsAsFactors=F,
+	col.names=c("enum", "id", "patient", "date", "type", "censored", "note"),
+	colClasses=c('character', 'character', 'character', 'Date', 'character', 'numeric', "character")
+)
 
 echo("Reading csv...")
 csv.files <- dir(align.csv.folder)
-align.csv <- lapply(file.path(align.csv.folder, csv.files), read.csv, stringsAsFactors=F, col.names=c("refnames", "qcut", "rank", "count", "offset", "seq"), colClasses=c('character', 'numeric', 'numeric', 'numeric', 'numeric', 'character'))
-
-echo("Parsing csv...")
-name <- gsub(".+[- ](.+-V3.+V3LOOP.+)_align.csv", "\\1", csv.files, perl=T)
-align.csv.all <- lapply(1:length(csv.files), function(i) 
-	cbind(name=name[i], align.csv[[i]], get.info(name[i], sequence.key), percent=with(align.csv[[i]], count / sum(count)))
+align.csv <- lapply(
+	file.path(align.csv.folder, csv.files),
+	read.csv,
+	stringsAsFactors=F,
+	col.names=c("refnames", "qcut", "rank", "count", "offset", "seq"),
+	colClasses=c('character', 'numeric', 'numeric', 'numeric', 'numeric', 'character')
 )
 
-align.csv.filter <- do.call(rbind, lapply(align.csv.all, function(x) {
-	d <- subset(x, qcut >= q.cutoff & count > count.cutoff & count > sum(count) * percent.cutoff * 0.01)
-	if (nrow(d) > 0 && !is.na(top))
-		d[1:min(c(nrow(d), top)), ]
-	else
-		d
-}))
+echo("Parsing csv...")
+name <- gsub(".+[- ](.+-V3.+).-(V3LOOP.+)_align.csv", "\\2", csv.files, perl=T)
+u.name <- unique(name)
+
+# combine replicate runs
+align.csv.all <- lapply(
+	u.name,
+	function(x) {
+		same.csv <- subset(
+			as.data.frame(
+				do.call(rbind, csv.files[name == x])
+			),
+			qcut >= q.cutoff
+		)
+		
+		u.seq <- unique(same.csv$seq)
+		total.count <- sum(same.csv$count)
+		
+		as.data.frame(
+			do.call(
+				rbind,
+				lapply(
+					u.seq,
+					function(y) {
+						with(
+							subset(same.csv, seq == u.seq),
+							as.data.frame(
+								cbind(
+									name=u.name,
+									refnames=refnames[1],
+									qcut=min(qcut),
+									rank=paste(rank, sep='_'),
+									count=sum(count),
+									offset=offset[1],
+									seq=u.seq,
+									percent=sum(count) / total.count,
+									get.info(u.name, sequence.key)
+								)
+							)
+						)
+					}
+				)
+			)
+		)
+	}
+)
+
+align.csv.filter <- do.call(
+	rbind,
+	lapply(
+		align.csv.all,
+		function(x) {
+			d <- subset(
+				x,
+				count > count.cutoff & 
+					count > sum(count) * percent.cutoff * 0.01
+			)
+			if (nrow(d) > 0 && !is.na(top))
+				d[1:min(c(nrow(d), top)), ]
+			else
+				d
+		}
+	)
+)
 
 align.fasta <- strsplit(align.csv.filter$seq, "")
 
-align.csv.filter$full.name <- with(align.csv.filter, sprintf("%s_%d_%4f_%d", name, rank, percent, date))
+align.csv.filter$full.name <- with(
+	align.csv.filter,
+	sprintf("%s_%d_%4f_%d", name, rank, percent, date)
+)
 names(align.fasta) <- align.csv.filter$full.name
 
 warnings()

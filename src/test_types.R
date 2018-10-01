@@ -93,7 +93,7 @@ ggplot(
 	stat_compare_means(comparisons=my.comparisons, label='p.signif') +
 	stat_compare_means(label.y=text.height, size=5) +
 	scale_y_date(
-		name="Estimate Integration Date",
+		name="Estimated Integration Date",
 		labels=if (by.month) function(x) as.character(x, "%b %Y") else waiver()
 	) +
 	scale_x_discrete(

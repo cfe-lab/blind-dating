@@ -36,6 +36,9 @@ colour.blind <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#CC79A7", "#F0E44
 
 pdf.options(family="Helvetica", fonts="Helvetica", width=7, height=7, colormodel='rgb', useDingbats=F)
 
+#print.plot <- function(..., width=7, height=7) pdf(..., width=width, height=height)
+print.plot <- function(file.name, p, width=7, height=7) ggsave(gsub("pdf", "png", file.name), p, device='png', width=width, height=height)
+
 make.mean.row <- function(label, data) {
 	data.dup <- data[data$duplicate == label, ]
 	
@@ -297,9 +300,7 @@ plot.hist <- function(data, pdf.hist.file) {
 		p <- p + theme(legend.position='none')
 	}
 	
-	pdf(pdf.hist.file, height=5)
-	print(p)
-	dev.off()
+	ggsave(pdf.hist.file, p, height=5)
 }
 
 plot.dupes <- function(info, pdf.dup.disttree.file, pdf.dup.tree.file, pdf.dup.hist.file, disttree.dupalpha=0.4, tree.dupalpha=0.1) {
@@ -350,23 +351,19 @@ plot.dupes <- function(info, pdf.dup.disttree.file, pdf.dup.tree.file, pdf.dup.h
 		fort.dup$x.shift[i] <- fort.dup$x[i] + shift * dup.shift
 	}
 	
-	pdf(pdf.dup.disttree.file, height=10)
-	print(apply.theme(ggtree(ptree, colour="#49494980", size=dist.tree.size, ladderize=T) +
+	print.plot(pdf.dup.disttree.file, apply.theme(ggtree(ptree, colour="#49494980", size=dist.tree.size, ladderize=T) +
 					  	geom_tippoint(aes(colour=my.colour, shape=my.type), size=point.size) +
 					  	geom_treescale(width=0.02, fontsize=7, offset=scale.offset) + 
 					  	geom_point(aes(colour=my.colour, shape=my.type, x=x.shift, y=y), data=fort.dup, alpha=disttree.dupalpha, size=point.size),
-					  flipped=F, scaled=F, colour.value.=my.colour.value, colour.break.=my.colour.break))
-	dev.off()
-	
+					  flipped=F, scaled=F, colour.value.=my.colour.value, colour.break.=my.colour.break), height=10)
+
 	data.mean <- do.call(rbind, lapply(tree$tip.label, make.mean.row, data.comb))
 	dup.node.dates <- tryCatch(estimate.dates(tree, c(data.mean$date, stats$Estimated.Root.Date, rep(NA, tree$Nnode - 1)), mu, node.mask=length(tree$tip.label) + 1, lik.tol=0, nsteps=nsteps, show.steps=100, opt.tol=1e-16), error=function(e) estimate.dates(tree, data.mean$date, mu, lik.tol=0, nsteps=nsteps, show.steps=100, opt.tol=1e-16))
 	mean.ptree <- phylo4d(tree, all.data=as.data.frame(cbind(rbind(data.mean[, c("tip.label", "type", "censored", "date", "dist", "weight", "date.diff", "est.date", "my.colour", "my.type")], data.frame(tip.label=paste0("N.", 1:tree$Nnode), type="NODE", censored=NA, date=NA, dist=node.depth.edgelength(tree)[1:tree$Nnode + nrow(data)], weight=NA, est.date=NA, date.diff=NA, my.colour=NA, my.type=NA)), node.date=dup.node.dates)))
 	
-	pdf(pdf.dup.tree.file)
-	print(apply.theme(ggtree(mean.ptree, yscale="node.date", colour="#49494980", size=tree.size, ladderize=F) +
+	print.plot(pdf.dup.tree.file, apply.theme(ggtree(mean.ptree, yscale="node.date", colour="#49494980", size=tree.size, ladderize=F) +
 					  	geom_point(aes(colour=my.colour, shape=my.type, x=x, y=date), data=data.comb, alpha=tree.dupalpha, size=point.size),
 					  flipped=T, scaled=T, colour.value.=my.colour.value, colour.break.=my.colour.break))
-	dev.off()
 	
 	plot.hist(data.comb, pdf.dup.hist.file)
 }
@@ -705,11 +702,9 @@ data.all <- as.data.frame(cbind(rbind(data, data.frame(tip.label=paste0("N.", 1:
 ptree <- phylo4d(tree, all.data=data.all)
 
 if (F) {
-pdf(pdf.file)
-apply.theme(ggplot(data) +
+print.plot(pdf.file, apply.theme(ggplot(data) +
 	geom_point(aes(x=date, y=dist, colour=factor(censored), shape=type), size=6)) +
-	theme(legend.position=c(0.02, .98))
-dev.off()
+	theme(legend.position=c(0.02, .98)))
 }
 
 if (cartoon) {
@@ -738,12 +733,10 @@ if (cartoon) {
 #	flipped=F, scaled=F)
 #dev.off()
 
-pdf(pdf.colour.disttree.file)
-apply.theme(ggtree(ptree, colour="#49494980", size=dist.tree.size, ladderize=T) +
+print.plot(pdf.colour.disttree.file, apply.theme(ggtree(ptree, colour="#49494980", size=dist.tree.size, ladderize=T) +
 	geom_tippoint(aes(colour=my.colour, shape=my.type), size=point.size) +
 	geom_treescale(width=0.02, fontsize=7, offset=scale.offset),
-	flipped=F, scaled=F, colour.value.=my.colour.value, colour.break.=my.colour.break)
-dev.off()
+	flipped=F, scaled=F, colour.value.=my.colour.value, colour.break.=my.colour.break))
 
 #pdf(pdf.tree.file)
 #apply.theme(ggtree(ptree, yscale="node.date", colour="#6d4d4180", size=tree.size, ladderize=F) +
@@ -751,11 +744,9 @@ dev.off()
 #	flipped=T)
 #dev.off()
 
-pdf(pdf.colour.tree.file)
-apply.theme(ggtree(ptree, yscale="node.date", colour="#49494980", size=tree.size, ladderize=F) +
+print.plot(pdf.colour.tree.file, apply.theme(ggtree(ptree, yscale="node.date", colour="#49494980", size=tree.size, ladderize=F) +
 	geom_tippoint(aes(colour=my.colour, shape=my.type), size=point.size),
-	flipped=T, scaled=T, colour.value.=my.colour.value, colour.break.=my.colour.break)
-dev.off()
+	flipped=T, scaled=T, colour.value.=my.colour.value, colour.break.=my.colour.break))
 
 plot.hist(data, pdf.hist.file)
 
@@ -817,9 +808,7 @@ if (!is.na(vl.file)) {
 		p.vl <- p.vl + scale_colour_manual(name="", breaks=c('black'), limits=c('black'), values=c('black'))
 	p.vl <- p.vl + scale_shape_manual(name="", breaks=type.break, limits=type.break, values=type.value)
 	
-	pdf(pdf.vl.file, height=4.2)
-	print(p.vl)
-	dev.off()
+	print.plot(pdf.vl.file, p.vl, height=4.2)
 }
 		
 if (mark.latent) {
@@ -831,11 +820,9 @@ if (mark.latent) {
 	conf.colour.value <- c('red', 'blue', 'black')
 	ptree.withconf <- phylo4d(tree, all.data=data.withconf)
 
-	pdf(pdf.colour.mark.tree.file)
-	print(apply.theme(ggtree(ptree.withconf, yscale="node.date", colour="#49494980", size=tree.size, ladderize=F) +
+	print.plot(pdf.colour.mark.tree.file,apply.theme(ggtree(ptree.withconf, yscale="node.date", colour="#49494980", size=tree.size, ladderize=F) +
 	geom_tippoint(aes(colour=conf.colour, shape=my.type)),
 	flipped=T, scaled=T, colour.value.=conf.colour.value, colour.break.=conf.colour.break))
-	dev.off()
 }
 
 if (plot.groups) {
