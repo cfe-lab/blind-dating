@@ -36,8 +36,12 @@ colour.blind <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#CC79A7", "#F0E44
 
 pdf.options(family="Helvetica", fonts="Helvetica", width=7, height=7, colormodel='rgb', useDingbats=F)
 
-#print.plot <- function(..., width=7, height=7) pdf(..., width=width, height=height)
-print.plot <- function(file.name, p, width=7, height=7) ggsave(gsub("pdf", "png", file.name), p, device='png', width=width, height=height)
+print.plot <- function(file.name, p, width=7, height=7){
+	pdf(file.name, width=width, height=height)
+	print(p)
+	dev.off()
+}
+#print.plot <- function(file.name, p, width=7, height=7) ggsave(gsub("pdf", "png", file.name), p, device='png', width=width, height=height)
 
 make.mean.row <- function(label, data) {
 	data.dup <- data[data$duplicate == label, ]
@@ -300,7 +304,7 @@ plot.hist <- function(data, pdf.hist.file) {
 		p <- p + theme(legend.position='none')
 	}
 	
-	ggsave(pdf.hist.file, p, height=5)
+	print.plot(pdf.hist.file, p, height=5)
 }
 
 plot.dupes <- function(info, pdf.dup.disttree.file, pdf.dup.tree.file, pdf.dup.hist.file, disttree.dupalpha=0.4, tree.dupalpha=0.1) {
@@ -416,6 +420,7 @@ op <- add_option(op, "--datacomb", type='character')
 op <- add_option(op, "--statscomb", type='character')
 op <- add_option(op, "--plotgroups", type='logical', action='store_true')
 op <- add_option(op, "--latentedges", type='logical', action='store_true')
+op <- add_option(op, "--vlyearby", type='numeric')
 op <- add_option(op, "--settings", type='character', default=NA)
 args <- parse_args(op)
 
@@ -470,7 +475,8 @@ regression.2.file <- get.val(args$regression2, NA)
 comb.data.file <- get.val(args$datacomb, NA)
 comb.stats.file <- get.val(args$statscomb, NA)
 plot.groups <- get.val(args$plotgroups, F)
-latent.edges <- get.val(args$lantentedges, F)
+latent.edges <- get.val(args$latentedges, F)
+vl.yearby <- get.val(args$vlyearby, 2)
 if (use.real) {
 	year.start <- get.val(args$yearstart, NA)
 	year.end <- get.val(args$yearend, NA)
@@ -778,7 +784,7 @@ if (!is.na(vl.file)) {
 	p.vl <- p.vl + scale_y_log10(name="Viral load", breaks=10^c(1, 3, 5), labels=sapply(c(1, 3, 5), function(x) bquote(''*10^{.(x)}*'')))
 	
 	if (use.real) {
-		p.vl <- p.vl + scale_x_date(name="Collection Year", breaks=as.Date(paste0(seq(1984, 2020, by=2), "-01-01")), labels=seq(1984, 2020, by=2))
+		p.vl <- p.vl + scale_x_date(name="Collection Year", breaks=as.Date(paste0(seq(1984, 2020, by=vl.yearby), "-01-01")), labels=seq(1984, 2020, by=vl.yearby))
 	} else {
 		p.vl <- p.vl + scale_x_continuous(name="Collection Year", breaks=seq(0, 10, by=1))
 	}
