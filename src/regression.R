@@ -35,7 +35,13 @@ args <- parse_args(op)
 settings.file <- args$settings
 if (!is.na(settings.file)) {
 	settings <- readLines(settings.file)
-	settings.filter <- unlist(lapply(op@options, function(x) settings[grepl(paste0("^", x@long_flag, "(=|$)"), settings)]))
+	settings.filter <- unlist(
+		lapply(
+			op@options,
+			function(x)
+				settings[grepl(paste0("^", x@long_flag, "(=|$)"), settings)]
+		)
+	)
 	args.settings <- parse_args(op, args=settings.filter)
 	args <- c(args, args.settings)
 }
@@ -53,15 +59,38 @@ regression.file <- get.val(args$regression, NA)
 training <- get.val(args$training, 0)
 weight <- get.val(args$weight, NA)
 
-if (is.na(data.file)) data.file <- paste0("stats/", pat.id, ".data.csv")
-if (is.na(stats.file)) stats.file <- paste0("stats/", pat.id, ".stats.csv")
-if (is.na(regression.file)) regression.file <- paste0("stats/", pat.id, ".regression.rds")
+if (is.na(data.file))
+	data.file <- paste0("stats/", pat.id, ".data.csv")
+if (is.na(stats.file))
+	stats.file <- paste0("stats/", pat.id, ".stats.csv")
+if (is.na(regression.file))
+	regression.file <- paste0("stats/", pat.id, ".regression.rds")
 
 tree <- read.tree(tree.file)
-info <- if (use.all) subset(read.csv(info.file, stringsAsFactors=F), DUPLICATE %in% tree$tip.label) else read.info(info.file, tree$tip.label)
+info <- if (use.all) {
+	subset(read.csv(info.file, stringsAsFactors=F), DUPLICATE %in% tree$tip.label)
+} else {
+	read.info(info.file, tree$tip.label)
+}
 n <- length(tree$tip.label)
 
-data <- data.frame(label=info$FULLSEQID, type=info$TYPE, censored=info$CENSORED, date=if (use.date == 1) as.numeric(as.Date(info$COLDATE)) else as.numeric(info$COLDATE), dist=node.depth.edgelength(tree)[if (use.all) match(info$DUPLICATE, tree$tip.label) else 1:n], weights=if (!is.na(weight)) info[if (use.all) match(info$DUPLICATE, tree$tip.label) else 1:n, weight] else 1, stringsAsFactors=F)
+data <- data.frame(
+	label=info$FULLSEQID,
+	type=info$TYPE,
+	censored=info$CENSORED,
+	date=if (use.date == 1)
+		as.numeric(as.Date(info$COLDATE))
+	else
+		as.numeric(info$COLDATE),
+	dist=node.depth.edgelength(tree)[
+		if (use.all) match(info$DUPLICATE, tree$tip.label) else 1:n
+	],
+	weights=if (!is.na(weight))
+		info[, weight]
+	else
+		1,
+	stringsAsFactors=F
+)
 
 if (is.na(weight)) {
 	g <- lm(dist ~ date, data=data, subset=censored == training)
@@ -74,8 +103,25 @@ if (is.na(weight)) {
 a <- coef(g)[[1]]
 b <- coef(g)[[2]]
 
-data <- as.data.frame(cbind(data, est.date=data$dist/b-a/b, date.diff=data$dist/b-a/b-data$date))
-write.table(data, data.file, col.names=c("ID", "Type", "Censored", "Collection Date", "Divergence", "Weight", "Estimated Date", "Date Difference"), row.names=F, sep=",")
+data <- as.data.frame(
+	cbind(data, est.date=data$dist/b-a/b, date.diff=data$dist/b-a/b-data$date)
+)
+write.table(
+	data,
+	data.file,
+	col.names=c(
+		"ID",
+		"Type",
+		"Censored",
+		"Collection Date",
+		"Divergence",
+		"Weight",
+		"Estimated Date",
+		"Date Difference"
+	),
+	row.names=F,
+	sep=","
+)
 
 
 cutoff  <- if (is.na(cutoff)) {
@@ -89,8 +135,21 @@ cutoff  <- if (is.na(cutoff)) {
 
 ci <- inverse.predict(g, 0)
 
-bin.test <- tryCatch(binom.test(sum(data[data$censored == 1, "date.diff"] < 0), sum(data$censored == 1), alternative='two.sided'), error=function(x) list(p.value=NA, estimate=NA))
-T.test <- tryCatch(t.test(data[data$censored == 1, "date.diff"], alternative='two.sided'), error=function(x) list(p.value=NA, estimate=NA))
+bin.test <- tryCatch(
+	binom.test(
+		sum(data[data$censored == 1, "date.diff"] < 0),
+		sum(data$censored == 1),
+		alternative='two.sided'
+	),
+	error=function(x) list(p.value=NA, estimate=NA)
+)
+T.test <- tryCatch(
+	t.test(
+		data[data$censored == 1, "date.diff"],
+		alternative='two.sided'
+	),
+	error=function(x) list(p.value=NA, estimate=NA)
+)
 
 stats <- data.frame(
 	pat=pat.id,
@@ -115,13 +174,27 @@ stats <- data.frame(
 	root.date=-a / b,
 	ci.lwr=ci[['Confidence Limits']][1],
 	ci.upr=ci[['Confidence Limits']][2],
-	fit=as.numeric(AIC(g.null) - AIC(g) > 10 && (-a / b < cutoff || (!is.na(ci[['Confidence Limits']][1]) && ci[['Confidence Limits']][1] < cutoff)) && b > 0),
-	train.RMSE=sqrt(sum(data$date.diff[data$censored == training]^2)/sum(data$censored == training)),
-	cens.RMSD=sqrt(sum(data$date.diff[data$censored == 1]^2)/sum(data$censored == 1)),
-	cens.RMSD=sqrt(sum(data$date.diff^2)/nrow(data)),
-	train.MAE=sum(abs(data$date.diff[data$censored == training]))/sum(data$censored == training),
-	cens.MAE=sum(abs(data$date.diff[data$censored == 1]))/sum(data$censored == 1),
-	tot.MAE=sum(abs(data$date.diff))/nrow(data),
+	fit=as.numeric(
+		AIC(g.null) - AIC(g) > 10 &&
+			(-a / b < cutoff ||
+			 	(!is.na(ci[['Confidence Limits']][1]) &&
+			 	 	ci[['Confidence Limits']][1] < cutoff)) &&
+			b > 0
+	),
+	train.RMSE=sqrt(
+		sum(data$date.diff[data$censored == training]^2) / 
+			sum(data$censored == training)
+	),
+	cens.RMSD=sqrt(
+		sum(data$date.diff[data$censored == 1]^2) /
+			sum(data$censored == 1)
+	),
+	cens.RMSD=sqrt(sum(data$date.diff^2) / nrow(data)),
+	train.MAE=sum(abs(data$date.diff[data$censored == training])) /
+		sum(data$censored == training),
+	cens.MAE=sum(abs(data$date.diff[data$censored == 1])) / 
+		sum(data$censored == 1),
+	tot.MAE=sum(abs(data$date.diff)) / nrow(data),
 	tot.concord=concord(data$date, data$est.date),
 	bin.test=bin.test$p.value,
 	bin.mean=bin.test$estimate,
@@ -164,6 +237,12 @@ stats.col.names <- c(
 	"T-Test (p)",
 	"T-Test (mean)"
 )
-write.table(stats, stats.file, col.names=stats.col.names, row.names=F, sep=",")
+write.table(
+	stats,
+	stats.file,
+	col.names=stats.col.names,
+	row.names=F,
+	sep=","
+)
 
 saveRDS(g, regression.file)

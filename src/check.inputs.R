@@ -98,7 +98,7 @@ op <- add_option(op, "--plotgroups", type='logical', action='store_true', defaul
 op <- add_option(op, "--latentedges", type='logical', action='store_true', default=F)
 op <- add_option(op, "--textheight", type='character', default="2016-01-01")
 op <- add_option(op, "--model", type='character', default="GTRGAMMA")
-op <- add_option(op, "--vlyearby", type='numeric', defau)
+op <- add_option(op, "--vlyearby", type='numeric', default=2)
 	args <- parse_args(op, args=settings)
 	
 	args
