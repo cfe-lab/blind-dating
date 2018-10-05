@@ -1,24 +1,28 @@
 library(seqinr)
 library(optparse)
+library(ape)
 
 assert <- function(assertion, assertion.message) {
 	if (!all(assertion))
 		stop(assertion.message)
 }
 
-check.fasta <- function(fasta.file) {
+check.tree <- function(tree.file) {
 	# can read
-	f <- read.fasta(fasta.file)
+	tree <- read.tree(tree.file)
 	
-	# ensure alignment
-	f.len <- sapply(f, length)
-	assert(f.len == f.len[1], "fasta file must contain an alignment")
+	# ensure binary tree
+	assert(is.binary(tree), "tree must be binary")
+	
+	# ensure tip labels have correct length
+	tip.labs <- tree$tip.labels
+	assert(sum(!is.na(tree$tip.label)) == tree$Nnode + 1, "tree tip labels not complete")
+	
+	# ensure no negative edge lengths
+	assert(tree$edge.length > 0, "tree must have only positive edge lengths")
 	
 	# ensure no duplicate names
-	assert(length(unique(names(f))) == length(f), "duplicate names in fasta file")
-	
-	# ensure no duplicates
-	assert(length(unique(unname(f))) == length(f), "fasta file contains duplicates")
+	assert(length(unique(tip.labels)) == length(tip.labels), "duplicate names in tree")
 	
 	f
 }
@@ -104,14 +108,14 @@ op <- add_option(op, "--vlyearby", type='numeric', default=2)
 	args
 }
 
-compare.fasta.info <- function(f, info) {
+compare.tree.info <- function(tree, info) {
 	TRUE
 }
 
-compare.fasta.settings <- function(f, info) {
+compare.tree.settings <- function(tree, info) {
 	# check that outgroup is in fasta file
 	if (settings$ogr)
-		assert(settings$ogrname %in% names(f), "outgroup not in fasta file")
+		assert(settings$ogrname %in% tree$tip.label, "outgroup not in tree")
 		
 	TRUE
 }
@@ -136,31 +140,31 @@ compare.info.settings <- function(info, settings) {
 	TRUE
 }
 
-compare.fasta.info.settings <- function(f, info, settings) {
+compare.tree.info.settings <- function(f, info, settings) {
 	# sequence names in info file
 	seq.ids <- if (settings$ogr) c(settings$ogrname, info$FULLSEQID) else info$FULLSEQID
-	assert(names(f) %in% seq.ids, "info file does not contain all sequence ids in the fasta file")
+	assert(tree$tip.label %in% seq.ids, "info file does not contain all sequence ids in the tree")
 	
 	TRUE
 }
 
 op <- OptionParser()
-op <- add_option(op, "--fasta", type='character')
+op <- add_option(op, "--tree", type='character')
 op <- add_option(op, "--info", type='character')
 op <- add_option(op, "--settings", type='character')
 args <- parse_args(op)
 
-fasta.file <- args$fasta
+tree.file <- args$tree
 info.file <- args$info
 settings.file <- args$settings
 	
 # check file integrity
-f <- check.fasta(fasta.file)
+f <- check.tree(fasta.file)
 info <- check.info(info.file)
 settings <- check.settings(settings.file)
 
 # check file compatibility
-cont <- compare.fasta.info(f, info)
-cont <- compare.fasta.settings(f, settings)
+cont <- compare.tree.info(tree, info)
+cont <- compare.tree.settings(tree, settings)
 cont <- compare.info.settings(info, settings)
-cont <- compare.fasta.info.settings(f, info, settings)
+cont <- compare.tree.info.settings(tree, info, settings)

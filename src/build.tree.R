@@ -9,7 +9,6 @@ get.val <- function(x, default) if (is.null(x))	default	else x
 op <- OptionParser()
 op <- add_option(op, "--fasta", type='character')
 op <- add_option(op, "--tree", type='character')
-op <- add_option(op, "--info", type='character')
 op <- add_option(op, "--raxml", type='character')
 op <- add_option(op, "--threads", type='numeric')
 op <- add_option(op, "--seed", type='numeric')

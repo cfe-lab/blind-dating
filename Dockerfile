@@ -7,25 +7,16 @@ MAINTAINER Bradley R. Jones, BC CfE in HIV/AIDS
 ENV BDSRC=/opt/blind-dating
 
 # prerequistes
-RUN apt-get update --fix-missing && apt-get install -y \
+RUN apt-get update --fix-missing \
+  && apt-get install -y \
   zlib1g \
   unzip \
-  wget \
   make \
   git \
   libssl-dev \
   libcurl4-openssl-dev \
   libxml2-dev \
   && rm -rf /var/lib/apt/lists/*
-
-# RAxML
-RUN wget -q -O raxml.zip https://github.com/stamatak/standard-RAxML/archive/v8.2.12.zip && \
-  unzip raxml.zip -d /tmp && \
-  rm raxml.zip
-WORKDIR /tmp/standard-RAxML-8.2.12
-RUN make -f Makefile.PTHREADS.gcc && \
-  rm *.o && \
-  ln -s /tmp/standard-RAxML-8.2.12/raxmlHPC-PTHREADS /opt/raxml
 
 # CRAN R packages and ggtree
 RUN R --vanilla --slave -e 'local({r <- getOption("repos"); r["CRAN"] <- "http://cran.stat.sfu.ca"; options(repos=r)}); install.packages(c("ape", "chemCal", "ggplot2", "optparse", "phylobase", "seqinr", "weights")); update.packages(ask=FALSE); source("https://bioconductor.org/biocLite.R"); biocLite("ggtree")'
