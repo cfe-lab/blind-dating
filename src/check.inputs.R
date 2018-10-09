@@ -1,4 +1,3 @@
-library(seqinr)
 library(optparse)
 library(ape)
 
@@ -113,7 +112,7 @@ compare.tree.info <- function(tree, info) {
 }
 
 compare.tree.settings <- function(tree, info) {
-	# check that outgroup is in fasta file
+	# check that outgroup is in tree file
 	if (settings$ogr)
 		assert(settings$ogrname %in% tree$tip.label, "outgroup not in tree")
 		
@@ -159,7 +158,7 @@ info.file <- args$info
 settings.file <- args$settings
 	
 # check file integrity
-f <- check.tree(fasta.file)
+f <- check.tree(tree.file)
 info <- check.info(info.file)
 settings <- check.settings(settings.file)
 
