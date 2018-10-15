@@ -14,16 +14,15 @@ check.tree <- function(tree.file) {
 	assert(is.binary(tree), "tree must be binary")
 	
 	# ensure tip labels have correct length
-	tip.labs <- tree$tip.labels
-	assert(sum(!is.na(tree$tip.label)) == tree$Nnode + 1, "tree tip labels not complete")
+	assert(sum(!is.na(tree$tip.label)) == tree$Nnode + 2, "tree tip labels not complete")
 	
 	# ensure no negative edge lengths
 	assert(tree$edge.length > 0, "tree must have only positive edge lengths")
 	
 	# ensure no duplicate names
-	assert(length(unique(tip.labels)) == length(tip.labels), "duplicate names in tree")
+	assert(length(unique(tree$tip.label)) == length(tree$tip.label), "duplicate names in tree")
 	
-	f
+	tree
 }
 
 check.info <- function(info.file) {
@@ -102,6 +101,7 @@ op <- add_option(op, "--latentedges", type='logical', action='store_true', defau
 op <- add_option(op, "--textheight", type='character', default="2016-01-01")
 op <- add_option(op, "--model", type='character', default="GTRGAMMA")
 op <- add_option(op, "--vlyearby", type='numeric', default=2)
+op <- add_option(op, "--unitsperyear", type='numeric', default=365.25)
 	args <- parse_args(op, args=settings)
 	
 	args
@@ -139,7 +139,7 @@ compare.info.settings <- function(info, settings) {
 	TRUE
 }
 
-compare.tree.info.settings <- function(f, info, settings) {
+compare.tree.info.settings <- function(tree, info, settings) {
 	# sequence names in info file
 	seq.ids <- if (settings$ogr) c(settings$ogrname, info$FULLSEQID) else info$FULLSEQID
 	assert(tree$tip.label %in% seq.ids, "info file does not contain all sequence ids in the tree")
@@ -158,7 +158,7 @@ info.file <- args$info
 settings.file <- args$settings
 	
 # check file integrity
-f <- check.tree(tree.file)
+tree <- check.tree(tree.file)
 info <- check.info(info.file)
 settings <- check.settings(settings.file)
 

@@ -219,9 +219,9 @@ plot.hist <- function(data, pdf.hist.file) {
 				colour.labs <- rep('LAB', length(date.levels))
 			}
 		} else {
-			m <- floor(min(c(data.hist$est.date, data$date)) / 365.25)
-			M <- floor(max(c(data.hist$est.date, subset(data, censored <= 0)$date)) / 365.25) + 1
-			breaks <- seq(m, M) * 365.25
+			m <- floor(min(c(data.hist$est.date, data$date)) / DAYSINYEAR)
+			M <- floor(max(c(data.hist$est.date, subset(data, censored <= 0)$date)) / DAYSINYEAR) + 1
+			breaks <- seq(m, M) * DAYSINYEAR
 			if (use.rainbow) {
 				colour.vals <- rep('black', length(date.levels))
 				colour.labs <- rep('LAB', length(date.levels))
@@ -421,6 +421,7 @@ op <- add_option(op, "--statscomb", type='character')
 op <- add_option(op, "--plotgroups", type='logical', action='store_true')
 op <- add_option(op, "--latentedges", type='logical', action='store_true')
 op <- add_option(op, "--vlyearby", type='numeric')
+op <- add_option(op, "--unitsperyear", type='numeric')
 op <- add_option(op, "--settings", type='character', default=NA)
 args <- parse_args(op)
 
@@ -477,6 +478,7 @@ comb.stats.file <- get.val(args$statscomb, NA)
 plot.groups <- get.val(args$plotgroups, F)
 latent.edges <- get.val(args$latentedges, F)
 vl.yearby <- get.val(args$vlyearby, 2)
+DAYSINYEAR <- get.val(args$unitsperyear, 365.25)
 if (use.real) {
 	year.start <- get.val(args$yearstart, NA)
 	year.end <- get.val(args$yearend, NA)
@@ -653,7 +655,7 @@ if (use.real) {
 		year.end <- floor(max(node.years) / year.by + 1) * year.by
 } else {
 	if (is.na(year.by))
-		year.by <- 365.25
+		year.by <- DAYSINYEAR
 	if (is.na(year.start))
 		year.start <- floor(min(node.dates) / year.by) * year.by
 	if (is.na(year.end))
@@ -671,8 +673,8 @@ if (use.real) {
 		y.scale <- scale_y_continuous(name="Collection Year", breaks=date.ticks, limits=c(year.start, year.end))
 	} else {
 		date.ticks <- seq(floor(year.start / year.by) * year.by, year.end, by=year.by)
-		x.scale <- scale_x_continuous(name=x.title, breaks=date.ticks, labels=as.integer(date.ticks / 365.25), limits=c(year.start, year.end))
-		y.scale <- scale_y_continuous(name=x.title, breaks=date.ticks, labels=as.integer(date.ticks / 365.25), limits=c(year.start, year.end))
+		x.scale <- scale_x_continuous(name=x.title, breaks=date.ticks, labels=as.integer(date.ticks / DAYSINYEAR), limits=c(year.start, year.end))
+		y.scale <- scale_y_continuous(name=x.title, breaks=date.ticks, labels=as.integer(date.ticks / DAYSINYEAR), limits=c(year.start, year.end))
 	}
 }
 

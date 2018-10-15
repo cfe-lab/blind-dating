@@ -77,6 +77,7 @@ align.csv <- lapply(
 	1:length(align.csv),
 	function(i) {
 		align.csv[[i]]$run <- run[i]
+		align.csv[[i]]$file <- csv.files[i]
 		align.csv[[i]]
 	}
 )
@@ -106,6 +107,7 @@ align.csv.all <- my.apply(
 								y,
 								data.frame(
 									name=x,
+									file=paste0(file, collapse=":"),
 									refnames=refnames[1],
 									qcut=min(qcut),
 									rank=paste0(rank, collapse='-'),
