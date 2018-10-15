@@ -648,7 +648,7 @@ if (use.real) {
 	node.years <- as.numeric(as.character(as.Date(node.dates, origin="1970-01-01"), format="%Y"))
 
 	if (is.na(year.by))
-		year.by <- 2
+		year.by <- DAYSINYEAR
 	if (is.na(year.start))
 		year.start <- floor(min(node.years) / year.by) * year.by
 	if (is.na(year.end))
