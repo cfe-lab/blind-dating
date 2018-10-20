@@ -3,7 +3,7 @@ blind-dating
 Phylogenetic dating of HIV latency
 
 # Articles
-Jones BR, Kinloch NN, Horacsek J, Ganase B, Harris M, Harrigan PR, Jones RB, Brockman M, Joy JB, Poon FY Brumme ZL. (2018) Phylogenetic approach to recover integration dates of latent HIV sequences within-host. Proceedings of the National Academy of Sciences USA. accepted. doi: 10.1073/pnas.1802028115.
+Jones BR, Kinloch NN, Horacsek J, Ganase B, Harris M, Harrigan PR, Jones RB, Brockman M, Joy JB, Poon FY Brumme ZL. (2018) Phylogenetic approach to recover integration dates of latent HIV sequences within-host. Proceedings of the National Academy of Sciences USA 115(38) E8958-E8967.
 
 # Conference Abstracts
 **Jones B**, Kinloch N, Horacsek J, Ganase B, Harris M, Harrigan PR, Jones BR, Brockman M, Joy J, Poon A, Brumme Z. Using phylogenetics to reconstruct the integration dates of individual latent human immunodeficiency virus reservoir sequences. The 2nd Symposium of the Canadian Society for Virology (2018, Halifax Canada) abstract 42.
