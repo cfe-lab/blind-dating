@@ -15,7 +15,8 @@ op <- add_option(op, c("-k", "--sequence-key"), type='character')
 op <- add_option(op, c("-f", "--align-fasta"), type='character')
 op <- add_option(op, c("-i", "--info"), type='character')
 op <- add_option(op, c("-q", "--q-cutoff"), type='numeric', default=15)
-op <- add_option(op, c("-n", "--count-cutoff"), type="numeric", default=100)
+op <- add_option(op, c("-n", "--count-cutoff"), type="numeric", default=10)
+op <- add_option(op, c("-N", "--total-count-cutoff"), type="numeric", default=1000)
 op <- add_option(op, c("-p", "--percent-cutoff"), type="numeric", default=1)
 op <- add_option(op, c("-t", "--top"), type="numeric", default=NA)
 op <- add_option(op, c("--threads"), type="numeric", default=1)
@@ -28,6 +29,7 @@ align.fasta.file <- args[["align-fasta"]]
 info.file <- args[["info"]]
 q.cutoff <- args[["q-cutoff"]]
 count.cutoff <- args[["count-cutoff"]]
+total.count.cutoff <- args[["total-count-cutoff"]]
 percent.cutoff <- args[["percent-cutoff"]]
 top <- args[["top"]]
 threads <- args[["threads"]]
@@ -41,20 +43,32 @@ echo("align-fasta: ", align.fasta.file)
 echo("info: ", info.file)
 echo("q-cutoff: ", q.cutoff)
 echo("count-cutoff: ", count.cutoff)
+echo("total-count-cutoff: ", total.count.cutoff)
 echo("percent-cutoff: ", percent.cutoff)
 echo("top: ", top)
 echo("threads: ", threads)
 echo("verbose: ", verbose)
 echo()
 
-my.apply <- if (threads > 1) function(...) mclapply(..., mc.cores=threads) else lapply
+my.apply <- if (threads > 1)
+	function(...) mclapply(..., mc.cores=threads)
+else
+	lapply
 
 echo("Reading key...")
 sequence.key <- read.csv(
 	sequence.key.file,
 	stringsAsFactors=F,
 	col.names=c("enum", "id", "patient", "date", "type", "censored", "note"),
-	colClasses=c('character', 'character', 'character', 'Date', 'character', 'numeric', "character")
+	colClasses=c(
+		'character',
+		'character',
+		'character',
+		'Date',
+		'character',
+		'numeric',
+		'character'
+	)
 )
 
 echo("Reading csv...")
@@ -64,7 +78,14 @@ align.csv <- lapply(
 	read.csv,
 	stringsAsFactors=F,
 	col.names=c("refnames", "qcut", "rank", "count", "offset", "seq"),
-	colClasses=c('character', 'numeric', 'numeric', 'numeric', 'numeric', 'character')
+	colClasses=c(
+		'character',
+		'numeric',
+		'numeric',
+		'numeric',
+		'numeric',
+		'character'
+	)
 )
 
 echo("Parsing csv...")
@@ -96,35 +117,39 @@ align.csv.all <- my.apply(
 		
 		total.count <- sum(same.csv$count)
 		
-		as.data.frame(
-			cbind(
-				do.call(
-					rbind,
-					lapply(
-						csv.filter,
-						function(y) {
-							with(
-								y,
-								data.frame(
-									name=x,
-									file=paste0(file, collapse=":"),
-									refnames=refnames[1],
-									qcut=min(qcut),
-									rank=paste0(rank, collapse='-'),
-									count=sum(count),
-									offset=offset[1],
-									seq=seq[1],
-									run=paste0(run, collapse='-'),
-									percent=sum(count) / total.count
+		if (total.count > total.count.cutoff) {
+			as.data.frame(
+				cbind(
+					do.call(
+						rbind,
+						lapply(
+							csv.filter,
+							function(y) {
+								with(
+									y,
+									data.frame(
+										name=x,
+										file=paste0(file, collapse=":"),
+										refnames=refnames[1],
+										qcut=min(qcut),
+										rank=paste0(rank, collapse='-'),
+										count=sum(count),
+										offset=offset[1],
+										seq=seq[1],
+										run=paste0(run, collapse='-'),
+										percent=sum(count) / total.count
+									)
 								)
-							)
-						}
-					)
-				),
-				get.info(x, sequence.key),
-				row.names = NULL
-			)
-		)		
+							}
+						)
+					),
+					get.info(x, sequence.key),
+					row.names = NULL
+				)
+			)		
+		} else {
+			NULL
+		}
 	}
 )
 

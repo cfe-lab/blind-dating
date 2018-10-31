@@ -28,6 +28,7 @@ op <- add_option(op, "--info", type='character')
 op <- add_option(op, "--timetree", type='character')
 op <- add_option(op, "--data", type='character')
 op <- add_option(op, "--stats", type='character')
+op <- add_option(op, "--patid", type='character')
 op <- add_option(op, "--real", type='logical', action='store_true')
 op <- add_option(op, "--training", type='numeric')
 op <- add_option(op, "--liktol", type='numeric')
@@ -39,7 +40,13 @@ args <- parse_args(op)
 settings.file <- args$settings
 if (!is.na(settings.file)) {
 	settings <- readLines(settings.file)
-	settings.filter <- unlist(lapply(op@options, function(x) settings[grepl(paste0("^", x@long_flag, "(=|$)"), settings)]))
+	settings.filter <- unlist(
+		lapply(
+			op@options,
+			function(x)
+				settings[grepl(paste0("^", x@long_flag, "(=|$)"), settings)]
+		)
+	)
 	args.settings <- parse_args(op, args=settings.filter)
 	args <- c(args, args.settings)
 }
@@ -49,6 +56,7 @@ info.file <- args$info
 time.tree.file <- args$timetree
 data.file <- args$data
 stats.file <- args$stats
+pat.id <- args$patid
 real <- get.val(args$real, F)
 training <- get.val(args$training, 0)
 lik.tol <- get.val(args$lik.tol, 0)
@@ -73,8 +81,9 @@ data <- data.frame(
 	tip.label=tree$tip.label,
 	type=info$TYPE,
 	censored=info$CENSORED,
-	date=info$COLDATE,
-	dist=node.depth.edgelength(tree)[1:n.tips]
+	date=dates,
+	dist=node.depth.edgelength(tree)[1:n.tips],
+	weight=1
 )
 
 total.node.order <- get.node.order(tree)
@@ -85,9 +94,7 @@ node.order <- c(
 )
 
 dates.for.nd <- data$date
-dates.for.nd[-training] <- NA
-
-model <- lm(date ~ dist, data=data, subset=censored==training)
+dates.for.nd[-training.tips] <- NA
 
 mu <- estimate.mu(tree, dates.for.nd)
 
@@ -95,21 +102,29 @@ node.dates <- estimate.dates(
 	tree,
 	dates.for.nd,
 	mu=mu,
-	node.mask=training,
+	node.mask=training.tips,
 	node.order=node.order,
 	max.date=max(data$date),
-	nsteps=1000
+	nsteps=nsteps,
+	show.steps=if (verbose) 100 else 0,
+	lik.tol=lik.tol
 )
+tree.lik <- logLik.phylo.strict(tree, node.dates, mu)
 
 time.tree <- tree
-time.tree$edge.length <- apply(tree$edge, 1, function(x) node.dates[2] - node.dates[1])
+time.tree$edge.length <- apply(
+	tree$edge,
+	1,
+	function(x)
+		node.dates[x[2]] - node.dates[x[1]]
+)
 write.tree(time.tree, time.tree.file)
 
 data <- as.data.frame(
 	cbind(
 		data,
-		est.date=new.dates[1:n.tips],
-		date.diff=new.dates[1:n.tips] - data$date
+		est.date=node.dates[1:n.tips],
+		date.diff=node.dates[1:n.tips] - data$date
 	)
 )
 write.table(
@@ -121,9 +136,64 @@ write.table(
 		"Censored",
 		"Collection Date",
 		"Divergence",
+		"Weight",
 		"Estimated Date",
 		"Date Difference"
 	),
+	row.names=F,
+	sep=","
+)
+
+stats <- data.frame(
+	pat=pat.id,
+	samples.rna=sum(data$censored == training),
+	samples.dna=sum(data$censored == 1),
+	samples.total=n.tips,
+	rna.time.points=length(unique(data[data$censored == training, 'date'])),
+	dna.time.points=length(unique(data[data$censored == 1, 'date'])),
+	total.time.points=length(unique(data$date)),
+	min.rna.time.point=min(data[data$censored == training, 'date']),
+	max.rna.time.point=max(data[data$censored == training, 'date']),
+	min.dna.time.point=min(data[data$censored == 1, 'date']),
+	max.dna.time.point=max(data[data$censored == 1, 'date']),
+	min.time.point=min(data$date),
+	max.time.point=max(data$date),
+	Likelihood=tree.lik,
+	AIC=2 * (tree$Nnode + sum(data$censored == 1) + 1) + 2 * tree.lik,
+	mu=mu,
+	root.date=node.dates[n.tips + 1],
+	cens.RMSD=sqrt(
+		sum(data$date.diff[data$censored == 1]^2) /
+			sum(data$censored == 1)
+	),
+	cens.MAE=sum(abs(data$date.diff[data$censored == 1])) / 
+		sum(data$censored == 1)
+)
+stats.col.names <- c(
+	"Patient",
+	"Training Samples",
+	"Censored Samples",
+	"Total Samples",
+	"Training Time Points",
+	"Censored Time Points",
+	"Total Time Points",
+	"Minimum Training Time Point",
+	"Maximum Training Time Point",
+	"Minimum Censored Time Point",
+	"Maximum Censored Time Point",
+	"Minimum Time Point",
+	"Maximum Time Point",
+	"Likelihood",
+	"AIC",
+	"Model Slope",
+	"Estimated Root Date",
+	"Censored RMSD",
+	"Censored MAE"
+)
+write.table(
+	stats,
+	stats.file,
+	col.names=stats.col.names,
 	row.names=F,
 	sep=","
 )
