@@ -1,5 +1,4 @@
 library(ape)
-library(ggtree)
 library(phylobase)
 library(optparse)
 source("~/git/node.dating/R/node.dating.R")
