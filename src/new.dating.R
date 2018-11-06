@@ -22,6 +22,16 @@ can.reach <- function(tree, node) {
 	nodes
 }
 
+concord <- function(x, y) {
+	mu.x <- sum(x) / length(x)
+	mu.y <- sum(y) / length(y)
+	s.x <- sum((x - mu.x)^2) / length(x) 
+	s.y <-  sum((y - mu.y)^2) / length(y)
+	s.xy <- sum((x - mu.x) * (y - mu.y)) / length(y)
+	
+	2 * s.xy / (s.x + s.y + (mu.x - mu.y)^2)
+}
+
 op <- OptionParser()
 op <- add_option(op, "--tree", type='character')
 op <- add_option(op, "--info", type='character')
@@ -162,12 +172,19 @@ stats <- data.frame(
 	AIC=2 * (tree$Nnode + sum(data$censored == 1) + 1) + 2 * tree.lik,
 	mu=mu,
 	root.date=node.dates[n.tips + 1],
+	RMSD=sqrt(sum(data$date.diff^2) / nrow(data)),
+	MAE=sum(abs(data$date.diff)) / nrow(data),
+	concord=concord(data$date, data$est.date),
 	cens.RMSD=sqrt(
 		sum(data$date.diff[data$censored == 1]^2) /
 			sum(data$censored == 1)
 	),
 	cens.MAE=sum(abs(data$date.diff[data$censored == 1])) / 
-		sum(data$censored == 1)
+		sum(data$censored == 1),
+	cens.concord=with(
+		subset(data, censored == 1),
+		concord(date, est.date)
+	)
 )
 stats.col.names <- c(
 	"Patient",
@@ -187,8 +204,12 @@ stats.col.names <- c(
 	"AIC",
 	"Model Slope",
 	"Estimated Root Date",
+	"Total RMSD",
+	"Total MAE",
+	"Total Concordance",
 	"Censored RMSD",
-	"Censored MAE"
+	"Censored MAE",
+	"Censored Concordance"
 )
 write.table(
 	stats,
