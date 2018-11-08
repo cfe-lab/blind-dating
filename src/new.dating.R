@@ -106,7 +106,7 @@ dates.for.nd <- data$date
 dates.for.nd[-training.tips] <- NA
 
 g <- lm(dist ~ date, data, subset=censored == 0)
-g.null <- lm(dist ~ date, data, subset=censored == 0)
+g.null <- lm(dist ~ 1, data, subset=censored == 0)
 
 mu <- coef(g)[[2]]
 		
