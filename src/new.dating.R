@@ -105,8 +105,11 @@ node.order <- c(
 dates.for.nd <- data$date
 dates.for.nd[-training.tips] <- NA
 
-mu <- estimate.mu(tree, dates.for.nd)
+g <- lm(dist ~ date, data, subset=censored == 0)
+g.null <- lm(dist ~ date, data, subset=censored == 0)
 
+mu <- coef(g)[[2]]
+		
 node.dates <- estimate.dates(
 	tree,
 	dates.for.nd,
