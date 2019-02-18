@@ -38,7 +38,13 @@ args <- parse_args(op)
 settings.file <- args$settings
 if (!is.na(settings.file)) {
 	settings <- readLines(settings.file)
-	settings.filter <- unlist(lapply(op@options, function(x) settings[grepl(paste0("^", x@long_flag, "(=|$)"), settings)]))
+	settings.filter <- unlist(
+		lapply(
+			op@options,
+			function(x)
+				settings[grepl(paste0("^", x@long_flag, "(=|$)"), settings)]
+		)
+	)
 	args.settings <- parse_args(op, args=settings.filter)
 	args <- c(args, args.settings)
 }
@@ -65,15 +71,36 @@ if (use.rtt > 0) {
 	info <- info.all[match(tree$tip.label, info.all$FULLSEQID), ]
 	
 	if (use.dups) {
-		plasma.dates <- lapply(tree$tip.label, function(x) with(subset(info.all, DUPLICATE == x), if (use.date) as.numeric(as.Date(COLDATE)) else COLDATE))
+		plasma.dates <- lapply(
+			tree$tip.label,
+			function(x)
+				with(
+					subset(info.all, DUPLICATE == x),
+					if (use.date)
+						as.numeric(as.Date(COLDATE))
+					else
+						COLDATE
+				)
+		)
 		
 		if (!is.na(weight)) {
-			weights <- lapply(tree$tip.label, function(x) info.all[info.all$DUPLICATE == x, weight])
+			weights <- lapply(
+				tree$tip.label,
+				function(x)
+					info.all[info.all$DUPLICATE == x, weight]
+			)
 		} else {
-			weights <- lapply(tree$tip.label, function(x) rep(1, sum(info.all$DUPLICATE == x)))
+			weights <- lapply(
+				tree$tip.label,
+				function(x)
+					rep(1, sum(info.all$DUPLICATE == x))
+			)
 		}
 	} else {
-		plasma.dates <- if (use.date) as.numeric(as.Date(info$COLDATE)) else info$COLDATE
+		plasma.dates <- if (use.date)
+			as.numeric(as.Date(info$COLDATE))
+		else
+			info$COLDATE
 		
 		if (!is.na(weight))
 			weights <- info[, weight]
@@ -82,11 +109,22 @@ if (use.rtt > 0) {
 	
 if (use.rtt == 1) {
 	if (use.dups) {
-		weights <- lapply(1:length(tree$tip.label), function(i) {
-			w <- weights[[i]]
-			w[with(subset(info.all, DUPLICATE == tree$tip.label[i]), CENSORED > 0 | (!all.training & CENSORED != 0))] <- 0
-			w
-		})
+		weights <- lapply(
+			1:length(tree$tip.label),
+			function(i) {
+				w <- weights[[i]]
+				w[
+					with(
+						subset(
+							info.all,
+							DUPLICATE == tree$tip.label[i]
+							),
+						CENSORED > 0 | (!all.training & CENSORED != 0)
+					)
+				] <- 0
+				w
+			}
+		)
 	} else {
 		tip.type <- info$CENSORED
 		filter <- tip.type > 0 | (!all.training & tip.type != 0)
@@ -99,10 +137,23 @@ if (use.rtt == 1) {
 	
 if (use.rtt > 0) {
 	if (!use.dups && is.na(weight)) {
-		tree <- rtt(tree, plasma.dates, ncpu=threads, objective=method, opt.tol=1e-8)
+		tree <- rtt(
+			tree,
+			plasma.dates,
+			ncpu=threads,
+			objective=method,
+			opt.tol=1e-8
+		 )
 	} else {
 		source(file.path(bd.src, "rtt.R"))
-		tree <- rtt(tree, plasma.dates, weights=weights, ncpu=threads, objective=method, opt.tol=1e-8)
+		tree <- rtt(
+			tree,
+			plasma.dates,
+			weights=weights,
+			ncpu=threads,
+			objective=method,
+			opt.tol=1e-8
+		)
 	}
 }
 

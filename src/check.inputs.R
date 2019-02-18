@@ -102,6 +102,7 @@ op <- add_option(op, "--textheight", type='character', default="2016-01-01")
 op <- add_option(op, "--model", type='character', default="GTRGAMMA")
 op <- add_option(op, "--vlyearby", type='numeric', default=2)
 op <- add_option(op, "--unitsperyear", type='numeric', default=365.25)
+op <- add_option(op, "--typeyearby", type='numeric', default=1)
 	args <- parse_args(op, args=settings)
 	
 	args
