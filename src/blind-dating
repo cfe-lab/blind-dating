@@ -25,6 +25,6 @@ echo 'regressing...' &&
 Rscript ${SRC}/regression.R --patid=${PATID} --info=${INFO} --tree=rooted_tree.nwk --stats=stats.csv --data=data.csv --regression=regression.rds --settings=${SETTINGS} &&
 #echo 'plotting...' &&
 #Rscript ${SRC}/plot.R --patid='plot' --info=${INFO} --tree=rooted_tree.nwk --stats=stats.csv --data=data.csv --regression=regression.rds --settings=${SETTINGS} &&
-tar -czf plot.tar.gz plots/*.pdf &&
-rm -r plots &&
+#tar -czf plot.tar.gz plots/*.pdf &&
+#rm -r plots &&
 echo 'done'
