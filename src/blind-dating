@@ -23,8 +23,8 @@ echo 'rooting tree...' &&
 Rscript ${SRC}/root.tree.R --info=${INFO} --tree=${TREE} --rootedtree=rooted_tree.nwk --settings=${SETTINGS} &&
 echo 'regressing...' &&
 Rscript ${SRC}/regression.R --patid=${PATID} --info=${INFO} --tree=rooted_tree.nwk --stats=stats.csv --data=data.csv --regression=regression.rds --settings=${SETTINGS} &&
-echo 'plotting...' &&
-Rscript ${SRC}/plot.R --patid='plot' --info=${INFO} --tree=rooted_tree.nwk --stats=stats.csv --data=data.csv --regression=regression.rds --settings=${SETTINGS} &&
+#echo 'plotting...' &&
+#Rscript ${SRC}/plot.R --patid='plot' --info=${INFO} --tree=rooted_tree.nwk --stats=stats.csv --data=data.csv --regression=regression.rds --settings=${SETTINGS} &&
 tar -czf plot.tar.gz plots/*.pdf &&
 rm -r plots &&
 echo 'done'
