@@ -19,6 +19,8 @@ rtt <- function (t, tip.dates, weights=rep(1, length(tip.dates)), ncpu=1, object
         objective <- function(x, y) summary(lm(y ~ x, weights=weights))$r.squared
     else if (objective == "rms") 
         objective <- function(x, y) -summary(lm(y ~ x, weights=weights))$sigma^2
+    else if (objective == "likelihood")
+    	objective <- function(x, y) logLik(lm(y ~ x, weights=weights))
     else stop("objective must be one of \"correlation\", \"rsquared\", or \"rms\"")
     
     ut <- unroot(t)

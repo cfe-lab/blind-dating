@@ -134,7 +134,7 @@ if (use.rtt == 1) {
 			weights[filter] <- 0
 	}
 }
-	
+
 if (use.rtt > 0) {
 	if (!use.dups && is.na(weight)) {
 		tree <- rtt(
