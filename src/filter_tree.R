@@ -18,7 +18,7 @@ threads <- args$threads
 
 trees <- read.nexus(tree.file)
 
-info <- read.csv(info.file) %>%
+info <- read.csv(info.file, stringsAsFactors=F) %>%
 	subset(
 		CENSORED > 0 & DUPLICATE %in% trees[[1]]$tip.label
 	)
