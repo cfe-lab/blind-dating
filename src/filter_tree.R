@@ -7,7 +7,6 @@ op <- OptionParser()
 op <- add_option(op, "--trees", type='character')
 op <- add_option(op, "--info", type='character')
 op <- add_option(op, "--outputtrees", type='character')
-op <- add_option(op, "--treetype", type='character', default='nexus')
 op <- add_option(op, "--threads", type='numeric', default=2)
 args <- parse_args(op)
 
@@ -17,11 +16,7 @@ output.tree.file <- args$outputtrees
 tree.type <- args$treetype
 threads <- args$threads
 
-trees <- if (tree.type == 'nexus') {
-	read.nexus(tree.file)
-} else {
-	read.tree(tree.file)
-}
+trees <- read.nexus(tree.file)
 
 info <- read.csv(info.file) %>%
 	subset(
