@@ -30,6 +30,7 @@ op <- add_option(op, "--plotdups", type='logical', action='store_true', default=
 op <- add_option(op, "--nsteps", type='numeric', default=1000)
 op <- add_option(op, "--weight", type='character', default=NA)
 op <- add_option(op, "--real", type='logical', action='store_true', default=F)
+op <- add_option(op, "--freeroot", type='logical', action='store_true', default=F)
 op <- add_option(op, "--settings", type='character', default=NA)
 args <- parse_args(op)
 
@@ -51,6 +52,7 @@ info.file <- args$info
 stats.file <- args$stats
 output.file <- args$output
 use.dates <- args$real
+free.root <- args$free.root
 
 tree <- read.tree(tree.file)
 data <- read.csv(data.file)
@@ -92,18 +94,22 @@ data.mean <- do.call(
 mu <- stats$Model.Slope
 
 node.dates <- tryCatch(
-	estimate.dates(
-		tree,
-		c(data.mean$date, stats$Estimated.Root.Date, rep(NA, tree$Nnode - 1)),
-		mu,
-		node.mask=1:(length(tree$tip.label) + 1),
-		lik.tol=0,
-		nsteps=args$nsteps,
-		show.steps=100,
-		opt.tol=1e-16
-	),
+	{
+		if (free.root)
+			stop("free root")
+		estimate.dates(
+			tree,
+			c(data.mean$date, stats$Estimated.Root.Date, rep(NA, tree$Nnode - 1)),
+			mu,
+			node.mask=1:(length(tree$tip.label) + 1),
+			lik.tol=0,
+			nsteps=args$nsteps,
+			show.steps=100,
+			opt.tol=1e-16
+		)
+	},
 	error=function(e) {
-		cat("Error:", str(e), "\n")
+		cat("Error: ", str(e), "\n")
 		estimate.dates(
 			tree,
 			data.mean$date,
