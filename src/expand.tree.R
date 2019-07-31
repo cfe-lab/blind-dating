@@ -1,5 +1,6 @@
 library(optparse)
 library(magrittr)
+library(ape)
 
 op <- OptionParser()
 op <- add_option(op, "--tree", type='character')

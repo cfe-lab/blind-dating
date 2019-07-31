@@ -1,6 +1,8 @@
 library(ape)
 library(optparse)
 
+source("~/git/node.dating/R/node.dating.R")
+
 make.mean.row <- function(label, data, info, weight) {
 	info.dup <- subset(info, DUPLICATE == label)
 	data.dup <- subset(data, tip.label == label)
@@ -100,15 +102,18 @@ node.dates <- tryCatch(
 		show.steps=100,
 		opt.tol=1e-16
 	),
-	error=function(e) estimate.dates(
-		tree,
-		data.mean$date,
-		mu,
-		lik.tol=0,
-		nsteps=args$nsteps,
-		show.steps=100,
-		opt.tol=1e-16
-	)
+	error=function(e) {
+		cat("Error:", str(e), "\n")
+		estimate.dates(
+			tree,
+			data.mean$date,
+			mu,
+			lik.tol=0,
+			nsteps=args$nsteps,
+			show.steps=100,
+			opt.tol=1e-16
+		)
+	}
 )
 
 write.csv(data.frame(dates=node.dates), output.file)

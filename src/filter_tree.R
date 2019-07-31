@@ -8,6 +8,7 @@ op <- add_option(op, "--trees", type='character')
 op <- add_option(op, "--info", type='character')
 op <- add_option(op, "--outputtrees", type='character')
 op <- add_option(op, "--threads", type='numeric', default=2)
+op <- add_option(op, "--dir", type='logical', action='store_true', default=F)
 args <- parse_args(op)
 
 tree.file <- args$trees
@@ -15,8 +16,17 @@ info.file <- args$info
 output.tree.file <- args$outputtrees
 tree.type <- args$treetype
 threads <- args$threads
+input.is.dir <- args$dir
 
-trees <- read.nexus(tree.file)
+if (input.is.dir) {
+	tree.files <- dir(tree.file) 
+	trees <- paste(tree.file, tree.files, sep="/") %>%
+		lapply(read.tree)
+	
+	names(trees) <- gsub(".nwk", "", tree.files)
+} else {
+	trees <- read.nexus(tree.file)
+}
 
 info <- read.csv(info.file, stringsAsFactors=F) %>%
 	subset(

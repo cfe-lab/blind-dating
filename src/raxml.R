@@ -29,6 +29,9 @@ raxml <- function(dnafile, parsimony.seed=NULL, bootstrap.seed=NULL, executable=
 	r.name <- paste0(name,"_R")
 	b.name <- paste0(name,"_B")
 	threads <- if (threads > 1) sprintf("-T %d", threads) else "" 
+	
+	# protect system from shennigans
+	model <- gsub("[^0-9A-Za-z\\-]", " ", model)
 
 	cmd <- sprintf('%s %s -b %d -m %s -p %d -N %d -s %s -n %s -w %s -O', 
 					executable, threads, bootstrap.seed, model, parsimony.seed, N, dnafile, r.name, wd)

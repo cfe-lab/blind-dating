@@ -3,7 +3,7 @@ library(optparse)
 library(chemCal)
 
 bd.src <- Sys.getenv("BDSRC", ".")
-source(file.path(bd.src, "read.info.R"), chdir=T)
+source(file.path(bd.src, "read.info.R"), chdir=TRUE)
 
 get.val <- function(x, default) if (is.null(x)) default else x
 
@@ -19,6 +19,7 @@ concord <- function(x, y) {
 
 op <- OptionParser()
 op <- add_option(op, "--tree", type='character')
+op <- add_option(op, "--rootedtree", type='character')
 op <- add_option(op, "--info", type='character')
 op <- add_option(op, "--patid", type='character')
 op <- add_option(op, "--real", type='logical', action='store_true')
@@ -47,11 +48,15 @@ if (!is.na(settings.file)) {
 }
 
 
-tree.file <- args$tree
+if (is.null(args$rooted.tree)) {
+	tree.file <- args$tree
+} else {
+	tree.file <- args$rooted.tree
+}
 info.file <- args$info
 pat.id <- get.val(args$patid, NA)
-use.date <- get.val(args$real, F)
-use.all <- get.val(args$usedups, F)
+use.date <- get.val(args$real, FALSE)
+use.all <- get.val(args$usedups, FALSE)
 cutoff <- get.val(args$cutoff, NA)
 data.file <- get.val(args$data, NA)
 stats.file <- get.val(args$stats, NA)
@@ -68,7 +73,7 @@ if (is.na(regression.file))
 
 tree <- read.tree(tree.file)
 info <- if (use.all) {
-	subset(read.csv(info.file, stringsAsFactors=F), DUPLICATE %in% tree$tip.label)
+	subset(read.csv(info.file, stringsAsFactors=FALSE), DUPLICATE %in% tree$tip.label)
 } else {
 	read.info(info.file, tree$tip.label)
 }
@@ -89,7 +94,7 @@ data <- data.frame(
 		info[, weight]
 	else
 		1,
-	stringsAsFactors=F
+	stringsAsFactors=FALSE
 )
 
 if (is.na(weight)) {
@@ -119,7 +124,7 @@ write.table(
 		"Estimated Date",
 		"Date Difference"
 	),
-	row.names=F,
+	row.names=FALSE,
 	sep=","
 )
 
@@ -241,7 +246,7 @@ write.table(
 	stats,
 	stats.file,
 	col.names=stats.col.names,
-	row.names=F,
+	row.names=FALSE,
 	sep=","
 )
 
