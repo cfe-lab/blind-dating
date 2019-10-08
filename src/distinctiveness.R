@@ -18,6 +18,11 @@ threads <- args$threads
 
 trees <- read.nexus(tree.file)
 
+if (class(trees) == "phylo") {
+	trees <- list(trees)
+	names(trees) <- "tree"
+}
+
 info <- read.csv(info.file, stringsAsFactors=F)
 info <- info[match(trees[[1]]$tip.label, info$FULLSEQID), ]
 

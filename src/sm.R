@@ -18,6 +18,11 @@ bootstrap <- args$bootstrap - 1
 threads <- args$threads
 
 trees <- read.nexus(tree.file)
+
+if (class(trees) == "phylo") {
+	trees <- list(trees)
+	names(trees) <- "tree"
+}
 info <- read.csv(info.file)
 
 data <- do.call(

@@ -52,7 +52,7 @@ info.file <- args$info
 stats.file <- args$stats
 output.file <- args$output
 use.dates <- args$real
-free.root <- args$free.root
+free.root <- args$freeroot
 
 tree <- read.tree(tree.file)
 data <- read.csv(data.file)

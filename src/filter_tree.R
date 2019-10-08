@@ -9,6 +9,9 @@ op <- add_option(op, "--info", type='character')
 op <- add_option(op, "--outputtrees", type='character')
 op <- add_option(op, "--threads", type='numeric', default=2)
 op <- add_option(op, "--dir", type='logical', action='store_true', default=F)
+op <- add_option(op, "--newick", type='logical', action='store_true', default=F)
+op <- add_option(op, "--nexus", type='logical', action='store_true', default=F)
+op <- add_option(op, "--treetype", type='character', default='nexus')
 args <- parse_args(op)
 
 tree.file <- args$trees
@@ -16,14 +19,29 @@ info.file <- args$info
 output.tree.file <- args$outputtrees
 tree.type <- args$treetype
 threads <- args$threads
-input.is.dir <- args$dir
 
-if (input.is.dir) {
+is.dir <- args$dir
+is.newick <- args$newick
+is.nexus <- args$nexus
+
+if (is.dir) {
+	tree.type <- 'dir'
+} else if (is.newick) {
+	tree.type <- 'newick'
+} else if (is.nexus) {
+	tree.type <- 'nexus'
+}
+
+if (tree.type == 'dir') {
 	tree.files <- dir(tree.file) 
 	trees <- paste(tree.file, tree.files, sep="/") %>%
 		lapply(read.tree)
 	
 	names(trees) <- gsub(".nwk", "", tree.files)
+} else if (tree.type == 'newick') {
+	trees <- read.tree(tree.file)
+	if (class(trees) == "phylo")
+		trees <- list(trees)
 } else {
 	trees <- read.nexus(tree.file)
 }
