@@ -20,6 +20,8 @@ output.tree.file <- args$outputtrees
 tree.type <- args$treetype
 threads <- args$threads
 
+options(mc.cores=threads)
+
 is.dir <- args$dir
 is.newick <- args$newick
 is.nexus <- args$nexus
@@ -35,7 +37,7 @@ if (is.dir) {
 if (tree.type == 'dir') {
 	tree.files <- dir(tree.file) 
 	trees <- paste(tree.file, tree.files, sep="/") %>%
-		lapply(read.tree)
+		mclapply(read.tree)
 	
 	names(trees) <- gsub(".nwk", "", tree.files)
 } else if (tree.type == 'newick') {
@@ -55,7 +57,7 @@ tips <- split(info, info$DUPLICATE) %>%
 	mclapply(
 		function(x) {
 			split(x, x$TYPE) %>%
-				lapply(
+				mclapply(
 					function(y) {
 						y[1, ]
 					}
@@ -65,15 +67,13 @@ tips <- split(info, info$DUPLICATE) %>%
 				paste0(":0", collapse=",") %>%
 				paste0("(", ., ");") %>%
 				read.tree(text=.)
-		},
-		mc.cores=threads
+		}
 	)
 
 dup.trees <- mclapply(
 	trees,
 	keep.tip,
-	names(tips),
-	mc.cores=threads
+	names(tips)
 ) %>%
 	mclapply(
 		function(dup.tree) {
@@ -87,8 +87,7 @@ dup.trees <- mclapply(
 				)
 			}
 			dup.tree
-		},
-		mc.cores=threads
+		}
 	)
 
 write.nexus(dup.trees, file=output.tree.file)

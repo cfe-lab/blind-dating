@@ -101,5 +101,7 @@ if (type) {
 	info <- res$info
 }
 
+info <- info[order(info$COLDATE), ]
+
 write.csv(info, new.info.file, row.names=F, na="")
 write.fasta(f, names(f), new.fasta.file)
