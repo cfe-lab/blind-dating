@@ -3,6 +3,8 @@ library(optparse)
 
 source("~/git/node.dating/R/node.dating.R")
 
+get.val <- function(x, default) if (is.null(x)) default else x
+
 make.mean.row <- function(label, data, info, weight) {
 	info.dup <- subset(info, DUPLICATE == label)
 	data.dup <- subset(data, tip.label == label)
@@ -25,12 +27,12 @@ op <- add_option(op, "--data", type='character')
 op <- add_option(op, "--info", type='character')
 op <- add_option(op, "--stats", type='character')
 op <- add_option(op, "--output", type='character')
-op <- add_option(op, "--plotgroups", type='logical', action='store_true', default=F)
-op <- add_option(op, "--plotdups", type='logical', action='store_true', default=F)
-op <- add_option(op, "--nsteps", type='numeric', default=1000)
-op <- add_option(op, "--weight", type='character', default=NA)
-op <- add_option(op, "--real", type='logical', action='store_true', default=F)
-op <- add_option(op, "--freeroot", type='logical', action='store_true', default=F)
+op <- add_option(op, "--plotgroups", type='logical', action='store_true')
+op <- add_option(op, "--plotdups", type='logical', action='store_true')
+op <- add_option(op, "--nsteps", type='numeric')
+op <- add_option(op, "--weight", type='character')
+op <- add_option(op, "--real", type='logical', action='store_true')
+op <- add_option(op, "--freeroot", type='logical', action='store_true')
 op <- add_option(op, "--settings", type='character', default=NA)
 args <- parse_args(op)
 
@@ -51,8 +53,13 @@ data.file <- args$data
 info.file <- args$info
 stats.file <- args$stats
 output.file <- args$output
-use.dates <- args$real
-free.root <- args$freeroot
+use.dates <- get.val(args$real, FALSE)
+free.root <- get.val(args$freeroot, FALSE)
+
+args$plotgroups <- get.val(args$plotgroups, FALSE)
+args$plotdups <- get.val(args$plotdups, FALSE)
+args$nsteps <- get.val(args$nsteps, 1000)
+args$weight <- get.val(args$weight, NA)
 
 tree <- read.tree(tree.file)
 data <- read.csv(data.file)
@@ -109,7 +116,9 @@ node.dates <- tryCatch(
 		)
 	},
 	error=function(e) {
-		cat("Error: ", str(e), "\n")
+		cat("Error: ")
+		message(e)
+		cat("\n")
 		estimate.dates(
 			tree,
 			data.mean$date,
