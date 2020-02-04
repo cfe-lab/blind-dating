@@ -1,7 +1,7 @@
 library(ape)
 library(optparse)
 
-bd.src <- Sys.getenv("BDSRC", ".")
+#bd.src <- Sys.getenv("BDSRC", ".")
 
 get.val <- function(x, default) if (is.null(x)) default else x
 

@@ -2,10 +2,15 @@ library(ape)
 library(optparse)
 library(chemCal)
 
-bd.src <- Sys.getenv("BDSRC", ".")
-source(file.path(bd.src, "read.info.R"), chdir=TRUE)
+#bd.src <- Sys.getenv("BDSRC", ".")
+#source(file.path(bd.src, "read.info.R"), chdir=TRUE)
 
 get.val <- function(x, default) if (is.null(x)) default else x
+
+read.info <- function(file.name, labels) {
+	info <- read.csv(file.name, stringsAsFactors=FALSE)
+	info[match(labels, info$FULLSEQID), ]
+}
 
 concord <- function(x, y) {
 	mu.x <- sum(x) / length(x)
@@ -48,10 +53,10 @@ if (!is.na(settings.file)) {
 }
 
 
-if (is.null(args$rooted.tree)) {
+if (is.null(args$rootedtree)) {
 	tree.file <- args$tree
 } else {
-	tree.file <- args$rooted.tree
+	tree.file <- args$rootedtree
 }
 info.file <- args$info
 pat.id <- get.val(args$patid, NA)
@@ -64,12 +69,14 @@ regression.file <- get.val(args$regression, NA)
 training <- get.val(args$training, 0)
 weight <- get.val(args$weight, NA)
 
-if (is.na(data.file))
-	data.file <- paste0("stats/", pat.id, ".data.csv")
-if (is.na(stats.file))
-	stats.file <- paste0("stats/", pat.id, ".stats.csv")
-if (is.na(regression.file))
-	regression.file <- paste0("stats/", pat.id, ".regression.rds")
+if (!is.na(pat.id)) {
+	if (is.na(data.file))
+		data.file <- paste0("stats/", pat.id, ".data.csv")
+	if (is.na(stats.file))
+		stats.file <- paste0("stats/", pat.id, ".stats.csv")
+	if (is.na(regression.file))
+		regression.file <- paste0("stats/", pat.id, ".regression.rds")
+}
 
 tree <- read.tree(tree.file)
 info <- if (use.all) {
@@ -250,4 +257,5 @@ write.table(
 	sep=","
 )
 
-saveRDS(g, regression.file)
+if (!is.na(regression.file))
+	saveRDS(g, regression.file)
