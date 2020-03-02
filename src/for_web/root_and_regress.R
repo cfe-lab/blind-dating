@@ -63,7 +63,7 @@ data <- data.frame(
 	EstimatedDate95High = as.character(to.Date(est.date$`Confidence Limits2`), format = DATE_FMT),
 	stringsAsFactors = FALSE
 )
-data <- data[info$CENSORED == 1, ]
+data.censored <- data[info$Censored == 1, ]
 
 stats <- data.frame(
 	RunID = run.id,
@@ -77,5 +77,5 @@ stats <- data.frame(
 
 # write output (rooted tree, data and stats)
 write.tree(rooted.tree, rooted.tree.file)
-write.csv(data, data.file, row.names = FALSE)
+write.csv(data.censored, data.file, row.names = FALSE)
 write.csv(stats, stats.file, row.names = FALSE)

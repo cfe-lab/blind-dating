@@ -453,7 +453,7 @@ node.dates <- tryCatch(
 		)
 	},
 	error=function(e) {
-		cat("Error in estimate.dates: ")
+		cat("Warning: Error in estimate.dates: ")
 		message(e)
 		cat("\n")
 		estimate.dates(
@@ -482,7 +482,7 @@ info.combined <- mutate(info, node = 1:Ntip(tree)) %>%
 # calculate date breaks
 dates <- to.Date(info.combined$date)
 date.range <- year(max(dates)) - year(min(dates))
-sep <- max(1, as.integer(date.range / 5))
+sep <- max(1, round(date.range / 5))
 date.labels <- dates %>%
 	min() %>%
 	as.character("%Y") %>%
