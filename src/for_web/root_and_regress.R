@@ -72,6 +72,8 @@ stats <- data.frame(
 	EstimatedRootDate95Low = as.character(to.Date(root.date$`Confidence Limits`[1]), format = DATE_FMT),
 	EstimatedRootDate95High = as.character(to.Date(root.date$`Confidence Limits`[2]), format = DATE_FMT),
 	EstimatedEvolutionaryRate = coef(model)[[2]],
+	Fit = as.numeric(((AIC(null.model) - AIC(model)) > 10) &&
+					 	(root.date$`Confidence Limits`[1] < min(info$Date))),
 	stringsAsFactors = FALSE
 )
 

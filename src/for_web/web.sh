@@ -11,7 +11,7 @@
 # INPUT_FOLDER must contain:
 # (1) tree.nwk, newick tree
 # (2) info.csv, comma delimited file with the columns: ID (tips names of the newick tree),
-#   Date (collection date of sequences), Censored (0 if training and 1 if censored)
+#   Date (collection date of sequences), Query (0 if training and 1 if censored)
 # (3) runid.txt, file containing a run identifier
 #
 # OUTPUT_FOLDER will contain: 
@@ -21,7 +21,7 @@
 #   dAIC (difference between null AIC and linear model AIC), EstimatedRootDate (estimated date
 #   of the root as per the linear model), EstimatedRootDate95(Low|High) (95% confidence interval of 
 #   estimated root date), EstimatedEvolutionaryRate (estimated evolutionary rate as per the linear
-#   model)
+#   model), Fit (1 if the linear model fit (dAIC > 10 and EstimatedRootDate95Low < all dates) and 0 otherwise)
 # (3) data.csv, comma delimited file with columns: ID (sequence ID), EstimatedDate (estimated 
 #   date of the sequence as per the linear model), EstimatedDate(Low|High) (95% confidence 
 #   interval of date of the sequence)
@@ -31,8 +31,7 @@
 
 
 # R source directory
-### TODO: change to folder that these files are in ##
-BDSRC=~/working/blind-dating/src/for_web
+BDSRC=$(dirname $0)
 
 # Arguments
 INPUT=$1
