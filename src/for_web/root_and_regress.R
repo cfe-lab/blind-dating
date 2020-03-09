@@ -37,15 +37,15 @@ info$Date <- as.numeric(as.Date(info$Date, format = DATE_FMT))
 
 # root tree
 dates <- info$Date
-dates[info$Censored == 1] <- NA
+dates[info$Query == 1] <- NA
 
 rooted.tree <- rtt(tree, dates, opt.tol = 1e-16)
 
 # linear regression
 info$Divergence <- node.depth.edgelength(rooted.tree)[1:Ntip(rooted.tree)]
 
-model <- lm(Divergence ~ Date, data = info, subset = Censored == 0)
-null.model <- lm(Divergence ~ 1, data = info, subset = Censored == 0)
+model <- lm(Divergence ~ Date, data = info, subset = Query == 0)
+null.model <- lm(Divergence ~ 1, data = info, subset = Query == 0)
 
 est.date <- as.data.frame(do.call(
 	rbind,
@@ -63,7 +63,7 @@ data <- data.frame(
 	EstimatedDate95High = as.character(to.Date(est.date$`Confidence Limits2`), format = DATE_FMT),
 	stringsAsFactors = FALSE
 )
-data.censored <- data[info$Censored == 1, ]
+data.censored <- data[info$Query == 1, ]
 
 stats <- data.frame(
 	RunID = run.id,

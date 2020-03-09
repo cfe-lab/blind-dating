@@ -476,7 +476,7 @@ info.combined <- mutate(info, node = 1:Ntip(tree)) %>%
 	transmute(
 		node = node,
 		date = date,
-		Censored = as.factor(Censored)
+		Censored = as.factor(Query)
 	 )
 
 # calculate date breaks
@@ -501,12 +501,12 @@ fort.tree <- as_tibble(tree) %>%
 p <- ggplot(fort.tree, aes(x = x, y = y)) +
 	geom_tree(layout = 'slanted', colour = TREE_COLOUR, size = TREE_SIZE, alpha = TREE_ALPHA) +
 	geom_tippoint(aes(colour = Censored, shape = Censored), size = TIP_SIZE) +
-	scale_x_continuous(name = DIV_NAME, expand = expand_scale(mult = EXPAND)) +
+	scale_x_continuous(name = DIV_NAME, expand = expansion(mult = EXPAND)) +
 	scale_y_continuous(
 		name = DATE_NAME,
 		breaks = date.breaks,
 		labels = date.labels,
-		expand = expand_scale(mult = EXPAND)
+		expand = expansion(mult = EXPAND)
 	) +
 	scale_colour_manual(breaks = COLOUR_BREAKS, limits = COLOUR_BREAKS, values = COLOUR_VALUES) +
 	scale_shape_manual(breaks = SHAPE_BREAKS, limits = SHAPE_BREAKS, values = SHAPE_VALUES) +
@@ -515,7 +515,6 @@ p <- ggplot(fort.tree, aes(x = x, y = y)) +
 
 p$layers <- c(
 	geom_abline(
-		data = data.frame(x = 0),
 		intercept = root.date,
 		slope = 1 / mu,
 		colour = REGRESSION_COLOUR,

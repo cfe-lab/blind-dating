@@ -10,8 +10,8 @@
 #
 # INPUT_FOLDER must contain:
 # (1) tree.nwk, newick tree
-# (2) info.csv, comma delimited file with the columns: FULLSEQID (tips names of the newick tree),
-#   COLDATE (collection date of sequences), CENSORED (0 if training and 1 if censored)
+# (2) info.csv, comma delimited file with the columns: ID (tips names of the newick tree),
+#   Date (collection date of sequences), Censored (0 if training and 1 if censored)
 # (3) runid.txt, file containing a run identifier
 #
 # OUTPUT_FOLDER will contain: 
@@ -31,7 +31,7 @@
 
 
 # R source directory
-### TODO: change to approriate folder ###
+### TODO: change to folder that these files are in ##
 BDSRC=~/working/blind-dating/src/for_web
 
 # Arguments
