@@ -40,6 +40,9 @@ OUTPUT=$2
 # Input/Output paths  
 TREE=${INPUT}/tree.nwk
 INFO=${INPUT}/info.csv
+
+# check for file existence / access 
+if [[ -r "$TREE" && -r "$INFO" && -r "${INPUT}/runid.txt" && -d "${OUTPUT}" && -r "${OUTPUT}" ]]; then
 RUNID=$(cat ${INPUT}/runid.txt)
 
 ROOTEDTREE=${OUTPUT}/rooted_tree.nwk
@@ -54,5 +57,8 @@ Rscript ${BDSRC}/root_and_regress.R --runid=${RUNID} --tree=${TREE} --info=${INF
 # Plot
 Rscript ${BDSRC}/plot_divergence_vs_time.R --rootedtree=${ROOTEDTREE}  --info=${INFO} \
 	--stats=${STATS} --plotprefix=${PLOT}
-	
+else
+echo "Input/output file access or existence error"
+exit 1
+fi
 	

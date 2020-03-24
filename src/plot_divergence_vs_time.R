@@ -428,16 +428,51 @@ plot.prefix <- args$plotprefix
 ### TODO check arguments
 
 # read tree, info and stats
-tree <- read.tree(rooted.tree.file)
+tree <- di2multi(read.tree(rooted.tree.file))
 info <- read.csv(info.file, stringsAsFactors = FALSE)
 stats <- read.csv(stats.file, stringsAsFactors = FALSE)
 
+if (!all(c("ID", "Date", "Query") %in% names(info))) {
+        stop("Info file column names are incorrect")
+}
+
+info <- select(info, ID, Date, Query)
 info <- info[match(tree$tip.label, info$ID), ]
+
+if (any(is.na(info))) {
+        stop("Info file missing data")
+}
+
 info$Date <- as.numeric(as.Date(info$Date, format = DATE_FMT))
+
+if (any(is.na(info$Date))) {
+        stop("Date format incorrect (should be yyyy-mm-dd)")
+}
 
 # estimate node dates
 root.date <- as.numeric(as.Date(stats$EstimatedRootDate, format = DATE_FMT))
 mu <- stats$EstimatedEvolutionaryRate
+fit <- stats$Fit
+
+if (is.na(fit) || is.null(fit) || fit == 0) {
+	warning("Linear model did not fit. Will not generate plots.")
+	stop()
+}
+
+redo <- function(e) {
+	cat("Warning: Error in estimate.dates: ")
+	message(e)
+ 	cat("\n")
+	estimate.dates(
+		tree,
+		info$Date,
+		mu,
+		lik.tol=0,
+		nsteps=STEPS,
+		show.steps=0,
+		opt.tol=1e-16
+ 	)
+}
 
 node.dates <- tryCatch(
 	{
@@ -452,20 +487,8 @@ node.dates <- tryCatch(
 			opt.tol=1e-16
 		)
 	},
-	error=function(e) {
-		cat("Warning: Error in estimate.dates: ")
-		message(e)
-		cat("\n")
-		estimate.dates(
-			tree,
-			info$Date,
-			mu,
-			lik.tol=0,
-			nsteps=STEPS,
-			show.steps=0,
-			opt.tol=1e-16
-		)
-	}
+	stop=redo,
+	error=redo
 )
 
 info.combined <- mutate(info, node = 1:Ntip(tree)) %>% 

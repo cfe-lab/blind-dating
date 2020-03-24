@@ -1,11 +1,20 @@
 library(ape)
 library(optparse)
+library(dplyr)
 library(chemCal)
 
 DATE_FMT <- "%Y-%m-%d"
 
 # utility function
 to.Date <- function(...) as.Date(..., origin = "1970-01-01")
+
+get.child.lengths <- function(node) {
+	sum(tree$edge.length[tree$edge[, 1] == node])
+}
+
+is.cherry <- function(node) {
+	all(tree$edge[tree$edge[, 1] == node, 2] <= Ntip(tree))
+}
 
 # parse command line arguments
 op <- OptionParser()
@@ -30,10 +39,46 @@ stats.file <- args$stats
 tree <- read.tree(tree.file)
 info <- read.csv(info.file, stringsAsFactors = FALSE)
 
-### TODO check info has the correct columns
+if (!all(c("ID", "Date", "Query") %in% names(info))) {
+	stop("Info file column names are incorrect")
+}
 
+info <- select(info, ID, Date, Query)
 info <- info[match(tree$tip.label, info$ID), ]
+
+if (any(is.na(info))) {
+	stop("Info file missing data")
+}
+
 info$Date <- as.numeric(as.Date(info$Date, format = DATE_FMT))
+
+if (any(is.na(info$Date))) {
+	stop("Date format incorrect (should be yyyy-mm-dd)")
+}
+
+#browser()
+
+# remove zero length branches if they exist
+if (any(tree$edge.length == 0)) {
+	warning("Zero length branches detected. This could be caused by duplicate sequences. Removing duplicate sequences.")
+
+	node <- Nnode(tree) + Ntip(tree)
+
+	while (node > Ntip(tree)) {
+		if (get.child.lengths(node) == 0 && is.cherry(node)) {
+			tips <- tree$edge[tree$edge[, 1] == node, 2]
+			tip.info <- info[match(tree$tip.label[tips], info$ID), ]
+			max.tip <- tips[which.max(tip.info$Date)]
+			tree <- drop.tip(tree, max.tip)
+
+			node <- Nnode(tree) + Ntip(tree)
+		} else {
+			node <- node - 1
+		}
+	}
+
+	info <- info[match(tree$tip.label, info$ID), ]
+}
 
 # root tree
 dates <- info$Date
@@ -63,7 +108,6 @@ data <- data.frame(
 	EstimatedDate95High = as.character(to.Date(est.date$`Confidence Limits2`), format = DATE_FMT),
 	stringsAsFactors = FALSE
 )
-data.censored <- data[info$Query == 1, ]
 
 stats <- data.frame(
 	RunID = run.id,
@@ -79,5 +123,5 @@ stats <- data.frame(
 
 # write output (rooted tree, data and stats)
 write.tree(rooted.tree, rooted.tree.file)
-write.csv(data.censored, data.file, row.names = FALSE)
+write.csv(data, data.file, row.names = FALSE)
 write.csv(stats, stats.file, row.names = FALSE)

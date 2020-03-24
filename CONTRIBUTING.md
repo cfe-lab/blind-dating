@@ -1,4 +1,4 @@
-## To install libraries:
+## To install libraries:`
 
 Run
 
@@ -11,7 +11,7 @@ Rscript config.R
 Run
 
 ```
-sh src/web.sh INPUT_FOLDER OUTPUT_FOLDER
+bash src/web.sh INPUT_FOLDER OUTPUT_FOLDER
 ```
 
 to read from the `INPUT_FOLDER` and write to the `OUTPUT_FOLDER`. 
@@ -42,4 +42,4 @@ OUTPUT_FOLDER will contain:
 
 ## Note
 
-The data folder does not contain anything that is  usable. 
+The data folder does not contain anything that is usable. 
