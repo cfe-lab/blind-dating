@@ -59,13 +59,13 @@ if (any(is.na(info$Date))) {
 #browser()
 
 # remove zero length branches if they exist
-if (any(tree$edge.length == 0)) {
-	warning("Zero length branches detected. This could be caused by duplicate sequences. Removing duplicate sequences.")
+if (any(tree$edge.length < 1e-7)) {
+	warning("Tiny length branches detected. This could be caused by duplicate sequences. Removing duplicate sequences.")
 
 	node <- Nnode(tree) + Ntip(tree)
 
 	while (node > Ntip(tree)) {
-		if (get.child.lengths(node) == 0 && is.cherry(node)) {
+		if (get.child.lengths(node) < 1e-6 && is.cherry(node)) {
 			tips <- tree$edge[tree$edge[, 1] == node, 2]
 			tip.info <- info[match(tree$tip.label[tips], info$ID), ]
 			max.tip <- tips[which.max(tip.info$Date)]
