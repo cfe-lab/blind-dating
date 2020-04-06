@@ -199,15 +199,15 @@ estimate.dates <- function(
 			if (a == 0) {
 				y <- -c.0 / b
 				
-				if (bounds[1] < y && y < bounds[2])
+				if (! is.nan(y) && bounds[1] < y && y < bounds[2])
 					x <- c(y, x)
 			} else {
 				x.1 <- (-b + sqrt(b ^ 2 - 4 * a * c.0)) / (2 * a)
 				x.2 <- (-b - sqrt(b ^ 2 - 4 * a * c.0)) / (2 * a)
 				
-				if (bounds[1] < x.1 && x.1 < bounds[2])
+				if (! is.nan(x.1) && bounds[1] < x.1 && x.1 < bounds[2])
 					x <- c(x.1, x)
-				if (bounds[1] < x.2 && x.2 < bounds[2])
+                                if (! is.nan(x.2) && bounds[1] < x.2 && x.2 < bounds[2])
 					x <- c(x.2, x)
 			}
 		}
@@ -266,11 +266,11 @@ estimate.dates <- function(
 					  	(b + complex(real=-1/2, imaginary=-sqrt(3)/2) * C +
 					  	 	delta.0 / (complex(real=-1/2, imaginary=-sqrt(3)/2) * C)))
 			
-			if (bounds[1] < x.1 && x.1 < bounds[2])
+			if (! is.nan(x.1) && bounds[1] < x.1 && x.1 < bounds[2])
 				x <- c(x.1, x)
-			if (bounds[1] < x.2 && x.2 < bounds[2])
+			if (! is.nan(x.2) && bounds[1] < x.2 && x.2 < bounds[2])
 				x <- c(x.2, x)
-			if (bounds[1] < x.3 && x.3 < bounds[2])
+			if (! is.nan(x.3) && bounds[1] < x.3 && x.3 < bounds[2])
 				x <- c(x.3, x)
 		}
 		
@@ -428,7 +428,7 @@ plot.prefix <- args$plotprefix
 ### TODO check arguments
 
 # read tree, info and stats
-tree <- di2multi(read.tree(rooted.tree.file))
+tree <- read.tree(rooted.tree.file)
 info <- read.csv(info.file, stringsAsFactors = FALSE)
 stats <- read.csv(stats.file, stringsAsFactors = FALSE)
 
@@ -459,32 +459,44 @@ if (is.na(fit) || is.null(fit) || fit == 0) {
 	stop()
 }
 
+if (any(tree$edge.length < 0)) {
+        warning("Negative branch lengths detected. Will not generate plots.")
+	stop()
+}
+
+fixed.tree <- tree
+
+if (any(tree$edge.length == 0)) {
+	warning("Zero length branches detected. Automatically fixing...")
+	fixed.tree$edge.length[tree$edge.length == 0] <- 1e-10
+}
+
 redo <- function(e) {
 	cat("Warning: Error in estimate.dates: ")
 	message(e)
  	cat("\n")
 	estimate.dates(
-		tree,
+		fixed.tree,
 		info$Date,
 		mu,
 		lik.tol=0,
 		nsteps=STEPS,
 		show.steps=0,
-		opt.tol=1e-16
+		opt.tol=1e-11
  	)
 }
 
 node.dates <- tryCatch(
 	{
 		estimate.dates(
-			tree,
+			fixed.tree,
 			c(info$Date, root.date, rep(NA, Nnode(tree) - 1)),
 			mu,
 			node.mask = 1:(Ntip(tree) + 1),
 			lik.tol=0,
 			nsteps=STEPS,
 			show.steps=0,
-			opt.tol=1e-16
+			opt.tol=1e-11
 		)
 	},
 	stop=redo,
