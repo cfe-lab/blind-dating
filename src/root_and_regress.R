@@ -89,8 +89,12 @@ data <- data.frame(
 	EstimatedDate = as.character(to.Date(est.date$Prediction), format = DATE_FMT),
 	EstimatedDate95Low = as.character(to.Date(est.date$`Confidence Limits1`), format = DATE_FMT),
 	EstimatedDate95High = as.character(to.Date(est.date$`Confidence Limits2`), format = DATE_FMT),
+	Query=info$Query,
+	Date=info$Date,
 	stringsAsFactors = FALSE
-)
+) %>%
+	arrange(desc(Query), Date) %>%
+	select(-Date)
 
 stats <- data.frame(
 	RunID = run.id,
