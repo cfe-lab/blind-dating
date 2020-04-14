@@ -56,11 +56,18 @@ if (any(is.na(info$Date))) {
 	stop("Date format incorrect (should be yyyy-mm-dd)")
 }
 
-#browser()
-
-# remove zero length branches if they exist
+# checking tree
 if (any(tree$edge.length < 1e-7)) {
 	warning("Tiny length branches detected. This could be caused by duplicate sequences.")
+}
+
+if (!is.binary(tree)) {
+	warning("Tree is not bifurcating. Attemping to convert to binary tree.")
+	tree <- multi2di(tree)
+
+	if (!is.binary(tree)) {
+		stop("Failed to convert to binary tree.")
+	}
 }
 
 # root tree
